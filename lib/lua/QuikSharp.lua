@@ -1,8 +1,7 @@
 --~ (c) Victor Baybekov, 2014 All Rights Reserved
 
-package.path = package.path..";"..os.getenv('APPDATA').."\\QuikSharp\\lua\\?.lua;"..os.getenv('APPDATA').."\\QuikSharp\\lua\\?.luac"
-package.cpath = package.cpath..";"..os.getenv('APPDATA')..'\\QuikSharp\\lua\\clibs\\?.dll'
-
+package.path = package.path..";"..".\\?.lua;"..".\\?.luac"
+package.cpath = package.cpath..";"..'.\\clibs\\?.dll'
 
 local sleepMock = function(sec)
 	socket.select(nil, nil, sec/1000)
