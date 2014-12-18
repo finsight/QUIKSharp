@@ -1,1 +1,3 @@
 No public licence yet. This is a collection of old stuff and some of the stuff could be licenced in a different way. TODO need to sort out and clean up.
+
+lib/QL is licenced separately as GPL 2. Copied from http://sourceforge.net/projects/qllib/ for convenience.
