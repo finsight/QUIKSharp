@@ -96,6 +96,10 @@
     <DocumentationFile>..\..\bin\QuikSharp.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Newtonsoft.Json.6.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -111,47 +115,30 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Misc.cs" />
+    <Compile Include="Quik\Message.cs" />
+    <Compile Include="Quik\QuikService.cs" />
     <Compile Include="Tray.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="IClientsCallback.cs" />
-    <Compile Include="IClientsCallbackProxy.cs" />
-    <Compile Include="IClientService.cs" />
-    <Compile Include="IClientServiceProxy.cs" />
-    <Compile Include="IEchoService.cs" />
     <Compile Include="Quik\InfoParamEnum.cs" />
-    <Compile Include="Quik\IQuikCallback.cs" />
-    <Compile Include="Quik\IQuikService.cs" />
-    <Compile Include="Quik\QuikCallbackProxy.cs" />
-    <Compile Include="Quik\QuikService.cs" />
+    <Compile Include="Quik\IQuikCalls.cs" />
+    <Compile Include="Quik\IQuikCallbacks.cs" />
+    <Compile Include="Quik\QuikCallbackService.cs" />
     <Compile Include="ServiceManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ClientQuery.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\lib\lua\dkjson.lua">
       <Link>lua\dkjson.lua</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\..\lib\lua\dkjson.luac">
-      <Link>lua\dkjson.luac</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="..\..\lib\lua\QuikSharp.lua">
       <Link>lua\QuikSharp.lua</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\..\lib\lua\QuikSharp.luac">
-      <Link>lua\QuikSharp.luac</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="..\..\lib\lua\socket.lua">
       <Link>lua\socket.lua</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\lib\lua\socket.luac">
-      <Link>lua\socket.luac</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />

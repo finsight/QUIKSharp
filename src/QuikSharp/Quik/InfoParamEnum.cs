@@ -1,4 +1,7 @@
 ﻿namespace QuikSharp.Quik {
+    /// <summary>
+    /// 
+    /// </summary>
     public enum InfoParams {
         // ReSharper disable InconsistentNaming
 

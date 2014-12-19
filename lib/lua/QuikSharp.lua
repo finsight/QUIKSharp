@@ -31,7 +31,7 @@ local function connect(port)
 		else
 			sleep(100)
 			i = i + 1
-			print('Connection attempt #'..i)
+			message('Connection attempt #'..i)
 		end
 	end
 	return c

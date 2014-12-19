@@ -1,5 +1,9 @@
 namespace QuikSharp.Quik {
-    public interface IQuikCallback : IClientsCallback {
+    /// <summary>
+    /// .NET interface to QLUA API. Calling the members from .NET is the same as calling 
+    /// them from QLUA inside QUIK
+    /// </summary>
+    public partial interface IQuikCalls {
         /// <summary>
         /// Функция возвращает путь, по которому находится файл info.exe, исполняющий данный скрипт, без завершающего обратного слэша («\»). Например, C:\QuikFront. 
         /// </summary>
@@ -32,7 +36,6 @@ namespace QuikSharp.Quik {
         /// <param name="iconType"></param>
         /// <returns></returns>
         bool Message(string message, NotificationType iconType);
-
 
     }
 }
