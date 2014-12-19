@@ -22,7 +22,7 @@ namespace QuikSharp
         {
             // Create a simple tray menu with only one item.
             var trayMenu = new ContextMenu();
-            trayMenu.MenuItems.Add("Exit", OnExit);
+            trayMenu.MenuItems.Add("Exit", Program.ManualExitHandler);
 
             // Create a tray icon. In this example we use a
             // standard system icon for simplicity, but you
@@ -30,7 +30,7 @@ namespace QuikSharp
             TrayIcon = new NotifyIcon
             {
                 Text = "QuikSharp",
-                Icon = new Icon(SystemIcons.Information, 40, 40),
+                Icon = new Icon(SystemIcons.Application, 40, 40),
                 ContextMenu = trayMenu,
                 Visible = true
             };
@@ -48,7 +48,7 @@ namespace QuikSharp
 
         public void OnExit(object sender, EventArgs e)
         {
-            Application.Exit();
+            Application.Exit(); 
         }
 
         protected override void Dispose(bool isDisposing)
