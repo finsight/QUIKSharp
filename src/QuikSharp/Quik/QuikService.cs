@@ -103,7 +103,7 @@ namespace QuikSharp.Quik {
                                             TypeNameHandling = TypeNameHandling.None, // Objects
                                             TypeNameAssemblyFormat = FormatterAssemblyStyle.Simple
                                         });
-                                        Trace.WriteLine("Request: " + request);
+                                        //Trace.WriteLine("Request: " + request);
                                         // scenario: Quik is restarted or script is stopped
                                         // then writer must throw and we will add a message back
                                         // then we will iterate over messages and cancel expired ones
@@ -178,7 +178,7 @@ namespace QuikSharp.Quik {
                                 while (Started) {
                                     // TODO benchmark async
                                     var response = await reader.ReadLineAsync();
-                                    Trace.WriteLine("Response:" + response);
+                                    //Trace.WriteLine("Response:" + response);
                                     var message =
                                       JsonConvert.DeserializeObject<Envelope>(response, new JsonSerializerSettings { //<IMessage>
                                           TypeNameHandling = TypeNameHandling.None // .Objects

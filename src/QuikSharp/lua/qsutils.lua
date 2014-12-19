@@ -153,7 +153,7 @@ function receiveRequest()
             return nil, err
         else
             msg_table.d = json.decode(msg_table.d, 1, json.null)
-            log(requestString)
+            --log(requestString)
             return msg_table
         end
     else
@@ -170,7 +170,7 @@ function sendResponse(msg_table)
     if is_connected then
         local res, err = responseClient:send(responseString..'\n')
         if res then
-            log(responseString)
+            --log(responseString)
             return true
         else
             disconnected()
