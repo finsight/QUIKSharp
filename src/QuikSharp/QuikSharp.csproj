@@ -32,7 +32,7 @@
     <WcfConfigValidationEnabled>True</WcfConfigValidationEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -117,6 +117,9 @@
     <Compile Include="Misc.cs" />
     <Compile Include="Quik\Message.cs" />
     <Compile Include="Quik\QuikService.cs" />
+    <Compile Include="Quik\ServiceCalls.cs">
+      <DependentUpon>IQuikCalls.cs</DependentUpon>
+    </Compile>
     <Compile Include="Tray.cs">
       <SubType>Form</SubType>
     </Compile>

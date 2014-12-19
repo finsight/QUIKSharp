@@ -22,6 +22,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "project", "project", "{8E60
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{9C0672CC-6182-4469-B5DF-B92265713169}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuikSharp.Tests", "tests\QuikSharp.Tests\QuikSharp.Tests.csproj", "{E8381C47-9297-4BD3-B384-CD366037F587}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -74,6 +78,16 @@ Global
 		{48081C21-DFBA-4CBB-88AF-0BD9F606F424}.Release|Mixed Platforms.Build.0 = Release|x86
 		{48081C21-DFBA-4CBB-88AF-0BD9F606F424}.Release|x86.ActiveCfg = Release|x86
 		{48081C21-DFBA-4CBB-88AF-0BD9F606F424}.Release|x86.Build.0 = Release|x86
+		{E8381C47-9297-4BD3-B384-CD366037F587}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8381C47-9297-4BD3-B384-CD366037F587}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8381C47-9297-4BD3-B384-CD366037F587}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{E8381C47-9297-4BD3-B384-CD366037F587}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{E8381C47-9297-4BD3-B384-CD366037F587}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E8381C47-9297-4BD3-B384-CD366037F587}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8381C47-9297-4BD3-B384-CD366037F587}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8381C47-9297-4BD3-B384-CD366037F587}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{E8381C47-9297-4BD3-B384-CD366037F587}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{E8381C47-9297-4BD3-B384-CD366037F587}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -81,5 +95,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{DC5034B2-D9F6-4948-9D24-1DB9B728C6E7} = {995804B9-7FF9-435A-B397-4D793867131E}
 		{9BB350BD-1B1E-4F19-82D8-80D546C90DEE} = {995804B9-7FF9-435A-B397-4D793867131E}
+		{E8381C47-9297-4BD3-B384-CD366037F587} = {9C0672CC-6182-4469-B5DF-B92265713169}
 	EndGlobalSection
 EndGlobal

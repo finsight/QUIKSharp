@@ -145,14 +145,15 @@ function receiveRequest()
     if not is_connected then
         return nil, "not conencted"
     end
-    local requestString, err = responseClient:receive()
+    local requestString, err = requestClient:receive()
     if requestString then
         local msg_table, pos, err = json.decode(requestString, 1, json.null)
         if err then
             log(err, 3)
             return nil, err
         else
-            log(msg_table)
+            msg_table.d = json.decode(msg_table.d, 1, json.null)
+            log(requestString)
             return msg_table
         end
     else
@@ -162,13 +163,14 @@ function receiveRequest()
 end
 
 function sendResponse(msg_table)
-    local responseString = json.encode (msg_table, { indent = false })
     -- if not set explicitly then set CreatedTime "t" property here
     if not msg_table.t then msg_table.t = timemsec() end
+    msg_table.d = json.encode (msg_table.d, { indent = false })
+    local responseString = json.encode (msg_table, { indent = false })
     if is_connected then
         local res, err = responseClient:send(responseString..'\n')
         if res then
-            log(msg_table)
+            log(responseString)
             return true
         else
             disconnected()

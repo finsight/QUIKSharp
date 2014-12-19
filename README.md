@@ -4,10 +4,10 @@ Random collection of code related to Quik and QLua. My stuff from end of 2013 ex
 * QuikStarter is an obsolete utility to make Quik always running and reconnecting (probably taken from Stock#. Not needed since built-in reconnect is quite reliable. It is better to make SMS/Email notification if something unexpected happens)
 
 
-Why connect to .NET
+Why use .NET (and not Lua or DDE or other closed libs)
 =============
 One of the key rationale is that Quik is dumb, slow, illogical, made by violent lazy
-undergrads for users to suffer - while .NET is smart, performant and pleasure to work with. 
+undergrads for users to suffer (no offence, just trolling) - while .NET is smart, performant and pleasure to work with. 
 So Quik is like a Russian young soldier that only ansfers to commands and callbacks. 
 And nothing more.
 

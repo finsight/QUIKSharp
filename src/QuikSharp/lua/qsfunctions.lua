@@ -12,14 +12,25 @@ local service = {}
 --- Echoes its message
 -- @param msg message table
 -- @return same msg table
-function service.echo(msg)
-return msg
+function service.ping(msg)
+    -- need to know data structure the caller gives
+    msg.t = nil
+    if msg.d.Ping == "Ping" then
+        msg.d = {}
+        msg.d.Pong =  "Pong"
+        return msg
+    else
+        local ret = msg.d.Ping.." is not Ping"
+        msg.d = {}
+        msg.d.Pong =  ret
+        return msg
+    end
 end
 qsfunctions.service = service
 
 
 function qsfunctions.dispatch_and_process(msg)
-    return qf.service.echo(msg)
+    return qsfunctions.service.ping(msg)
 end
 
 return qsfunctions
