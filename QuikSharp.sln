@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.22310.1
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuikStarter", "src\QuikStarter\QuikStarter.csproj", "{2DC9F9AB-373B-481D-B13F-6F191DD12C57}"
 EndProject
@@ -20,13 +20,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "project", "project", "{8E60
 	ProjectSection(SolutionItems) = preProject
 		LICENSE.txt = LICENSE.txt
 		README.md = README.md
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lua", "lua", "{AC4E76B2-6DAF-4575-B162-1EE828863348}"
-	ProjectSection(SolutionItems) = preProject
-		lib\lua\dkjson.lua = lib\lua\dkjson.lua
-		lib\lua\QuikSharp.lua = lib\lua\QuikSharp.lua
-		lib\lua\socket.lua = lib\lua\socket.lua
 	EndProjectSection
 EndProject
 Global
@@ -88,6 +81,5 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{DC5034B2-D9F6-4948-9D24-1DB9B728C6E7} = {995804B9-7FF9-435A-B397-4D793867131E}
 		{9BB350BD-1B1E-4F19-82D8-80D546C90DEE} = {995804B9-7FF9-435A-B397-4D793867131E}
-		{AC4E76B2-6DAF-4575-B162-1EE828863348} = {995804B9-7FF9-435A-B397-4D793867131E}
 	EndGlobalSection
 EndGlobal

@@ -103,16 +103,19 @@ namespace QuikSharp.Quik {
                                             TypeNameHandling = TypeNameHandling.Objects,
                                             TypeNameAssemblyFormat = FormatterAssemblyStyle.Simple
                                         });
+                                        Trace.WriteLine("Request: " + request);
                                         // scenario: Quik is restarted or script is stopped
                                         // then writer must throw and we will add a message back
                                         // then we will iterate over messages and cancel expired ones
-                                        if (message.ValidUntilUtc >= DateTime.UtcNow) {
+                                        if (!message.ValidUntilUtc.HasValue || message.ValidUntilUtc >= DateTime.UtcNow) {
+                                            // TODO benchmark async
                                             await writer.WriteLineAsync(request);
                                             // await writer.FlushAsync(); // TODO check that it is not needed
                                         } else {
-                                            Results[message.CorrelationId].SetException(new TimeoutException("ValidUntilUTC is less than current time"));
+                                            Trace.Assert(message.Id.HasValue, "All requests must have correlation id");
+                                            Results[message.Id.Value].SetException(new TimeoutException("ValidUntilUTC is less than current time"));
                                             TaskCompletionSource<Message<IMessageData>> tcs;
-                                            Results.TryRemove(message.CorrelationId, out tcs);
+                                            Results.TryRemove(message.Id.Value, out tcs);
                                         }
                                     } catch (IOException) {
                                         // this catch is for unexpected and unchecked connection termination
@@ -173,17 +176,19 @@ namespace QuikSharp.Quik {
                                 var stream = new NetworkStream((Socket)s);
                                 var reader = new StreamReader(stream, true);
                                 while (Started) {
+                                    // TODO benchmark async
                                     var response = await reader.ReadLineAsync();
+                                    Trace.WriteLine("Response:" + response);
                                     var message =
                                       JsonConvert.DeserializeObject<Message<IMessageData>>(response, new JsonSerializerSettings {
                                           TypeNameHandling = TypeNameHandling.Objects
                                       });
-                                    if (message.CorrelationId > 0) {
+                                    if (message.Id.HasValue && message.Id > 0) {
                                         // it is a response message
-                                        if (!Results.ContainsKey(message.CorrelationId)) throw new ApplicationException("Unexpected correlation ID");
+                                        if (!Results.ContainsKey(message.Id.Value)) throw new ApplicationException("Unexpected correlation ID");
                                         TaskCompletionSource<Message<IMessageData>> tcs;
-                                        Results.TryRemove(message.CorrelationId, out tcs);
-                                        if (message.ValidUntilUtc >= DateTime.UtcNow) {
+                                        Results.TryRemove(message.Id.Value, out tcs);
+                                        if (!message.ValidUntilUtc.HasValue || message.ValidUntilUtc >= DateTime.UtcNow) {
                                             tcs.SetResult(message);
                                         } else {
                                             tcs.SetException(new TimeoutException("ValidUntilUTC is less than current time"));
