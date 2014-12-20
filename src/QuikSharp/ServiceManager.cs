@@ -1,6 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Threading.Tasks;
 using QuikSharp.Quik;
-using System.Threading.Tasks;
 
 namespace QuikSharp
 {

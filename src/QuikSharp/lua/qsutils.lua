@@ -10,15 +10,21 @@ local qsutils = {}
 --- Sleep that always works
 function delay(msec)
     if sleep then
-        sleep(msec)
+        pcall(sleep, msec)
     else
-        socket.select(nil, nil, msec / 1000)
+        pcall(socket.select, nil, nil, msec / 1000)
     end
 end
 
 -- high precision current time
 function timemsec()
-    return socket.gettime() * 1000
+    local st, res = pcall(socket.gettime)
+    if st then
+        return (res) * 1000
+    else
+        log("unexpected error in timemsec", 3)
+        error("unexpected error in timemsec")
+    end
 end
 
 -- is running from Quik
@@ -38,12 +44,12 @@ function log(msg, level)
         -- only warnings and recoverable errors to Quik
     end
         if message then
-            message(msg, level)
+            pcall(message, msg, level)
         end
     local logLine = "LOG "..level..": "..msg
     print(logLine)
-    logfile:write(timemsec().." "..logLine.."\n")
-    logfile:flush()
+    pcall(logfile.write, logfile, timemsec().." "..logLine.."\n")
+    pcall(logfile.flush, logfile)
 end
 
 -- current connection state
@@ -77,13 +83,15 @@ local function connectClient(port)
     print('Connecting to port '..port..' ...')
     local i = 0
     while true do
-        local c, err = socket.connect('localhost', port)
-        if c then
-            return c
+        local tcp = socket.tcp()
+        tcp:settimeout(2)
+        local status, ret = pcall(tcp.connect, tcp, 'localhost', port)
+        if status and ret then -- and client 
+            return tcp
         else
             delay(100)
             i = i + 1
-            print('Connection attempt #'..i)
+            if math.fmod(i,1) == 0 then log('Connection attempt #'..i) end
         end
     end
     return c
@@ -102,11 +110,13 @@ function qsutils.connect()
     if not is_connected then
         log('Connecting...')
         if requestClient then
-            requestClient:close()
+            -- Quik crashes without pcall
+            pcall(requestClient.close, requestClient)
         end
         requestClient = connectClient(requestPort)
         if responseClient then
-            responseClient:close()
+            -- Quik crashes without pcall
+            pcall(responseClient.close, responseClient)
         end
         responseClient = connectClient(responsePort)
         if requestClient and responseClient then
@@ -131,11 +141,11 @@ local function disconnected()
 --    last_disconnected_time = os.time()
     print('Disconnecting...')
     if requestClient then
-        requestClient:close()
+        pcall(requestClient.close, requestClient)
         requestClient = nil
     end
     if responseClient then
-        responseClient:close()
+        pcall(responseClient.close, responseClient)
         responseClient = nil
     end
 end
@@ -145,14 +155,13 @@ function receiveRequest()
     if not is_connected then
         return nil, "not conencted"
     end
-    local requestString, err = requestClient:receive()
-    if requestString then
+    local status, requestString= pcall(requestClient.receive, requestClient)
+    if status and requestString then
         local msg_table, pos, err = json.decode(requestString, 1, json.null)
         if err then
             log(err, 3)
             return nil, err
         else
-            msg_table.d = json.decode(msg_table.d, 1, json.null)
             --log(requestString)
             return msg_table
         end
@@ -165,11 +174,10 @@ end
 function sendResponse(msg_table)
     -- if not set explicitly then set CreatedTime "t" property here
     if not msg_table.t then msg_table.t = timemsec() end
-    msg_table.d = json.encode (msg_table.d, { indent = false })
     local responseString = json.encode (msg_table, { indent = false })
     if is_connected then
-        local res, err = responseClient:send(responseString..'\n')
-        if res then
+        local status, res = pcall(responseClient.send, responseClient, responseString..'\n')
+        if status and res then
             --log(responseString)
             return true
         else

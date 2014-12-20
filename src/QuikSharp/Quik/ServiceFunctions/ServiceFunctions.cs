@@ -1,19 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization.Formatters;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 
-namespace QuikSharp.Quik {
+namespace QuikSharp.Quik.ServiceFunctions {
 
-    public partial interface IQuikCalls {
-        /// <summary>
-        /// Send 'Ping' string
-        /// </summary>
-        /// <returns>'Pong' string</returns>
-        Task<string> Ping();
+    public interface IServiceFunctions : IQuikFunctions {
 
         /// <summary>
         /// Функция возвращает путь, по которому находится файл info.exe, исполняющий данный скрипт, без завершающего обратного слэша («\»). Например, C:\QuikFront. 
@@ -49,45 +38,14 @@ namespace QuikSharp.Quik {
         bool Message(string message, NotificationType iconType);
     }
 
-
     /// <summary>
-    /// Service calls implementations
+    /// Service functions implementations
     /// </summary>
-    public partial class QuikCalls : IQuikCalls {
-        public QuikCalls() {
+    public class ServiceFunctions : IServiceFunctions {
+        public ServiceFunctions() {
             QuikService.Start();
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        public class PingRequest : IMessage {
-            /// <summary>
-            /// 
-            /// </summary>
-            public string Ping { get; set; }
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        public class PingResponse : IMessage {
-            /// <summary>
-            /// 
-            /// </summary>
-            public string Pong { get; set; }
-        }
 
-        public async Task<string> Ping() {
-            var message = JsonConvert.SerializeObject(new PingRequest { Ping = "Ping" }, Formatting.None, new JsonSerializerSettings {
-                                            TypeNameHandling = TypeNameHandling.None, // Objects
-                                            TypeNameAssemblyFormat = FormatterAssemblyStyle.Simple
-                                        });
-            var env = new Envelope(message); //<IMessage>
-            var result = await env.Send();
-            var responseMsg = JsonConvert.DeserializeObject<PingResponse>(result.Data, new JsonSerializerSettings { //<IMessage>
-                                          TypeNameHandling = TypeNameHandling.None // .Objects
-                                      });
-            return responseMsg.Pong;
-        }
         public string GetWorkingFolder() { throw new NotImplementedException(); }
         public bool IsConnected() { throw new NotImplementedException(); }
         public string GetScriptPath() { throw new NotImplementedException(); }

@@ -12,19 +12,29 @@ namespace QuikSharp.Tests
     [TestFixture]
     public class Ping
     {
+        readonly DebugFunctions _df = new DebugFunctions();
+
         [Test]
         public void PingWorks() {
-            var qc = new QuikCalls();
-            var pong = qc.Ping().Result;
+            var pong = _df.Ping().Result;
+        }
+
+        /// <summary>
+        /// Nice error messages and error location in lua
+        /// </summary>
+        [Test]
+        public void DivideStringByZero() {
+            //Assert.Throws<AggregateException>(() => {
+                var x = _df.DivideStringByZero().Result;
+            //});
         }
 
         [Test]
         public void MultiPing() {
-            var qc = new QuikCalls();
             var sw = new Stopwatch();
             sw.Start();
-            for (int i = 0; i < 5000; i++) {
-                var pong = qc.Ping().Result;
+            for (int i = 0; i < 10000; i++) {
+                var pong = _df.Ping().Result;
             }
             sw.Stop();
             Console.WriteLine("MultiPing takes msecs: " + sw.ElapsedMilliseconds);

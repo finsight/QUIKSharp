@@ -5,10 +5,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Runtime.Serialization.Formatters;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
+using QuikSharp.Quik;
 
 // TODOs
 // http://stackoverflow.com/questions/1119841/net-console-application-exit-event
@@ -17,11 +16,16 @@ using Newtonsoft.Json;
 //
 
 
-namespace QuikSharp.Quik {
+namespace QuikSharp {
     /// <summary>
     /// 
     /// </summary>
     public static class QuikService {
+        // auto start when referenced for the first time
+        static QuikService() {
+            Start();
+        }
+
 
         /// <summary>
         /// 
@@ -43,13 +47,13 @@ namespace QuikSharp.Quik {
         /// <summary>
         /// IQuickCalls functions enqueue a message and return a task from TCS
         /// </summary>
-        internal static readonly BlockingCollection<Envelope> EnvelopeQueue //<IMessage>
-            = new BlockingCollection<Envelope>(); //<IMessage>
+        internal static readonly BlockingCollection<IMessage> EnvelopeQueue
+            = new BlockingCollection<IMessage>();
         /// <summary>
         /// If received message has a correlation id then use its Data to SetResult on TCS and remove the TCS from the dic
         /// </summary>
-        internal static readonly ConcurrentDictionary<long, TaskCompletionSource<Envelope>> //<IMessage>
-            Responses = new ConcurrentDictionary<long, TaskCompletionSource<Envelope>>(); //<IMessage>
+        internal static readonly ConcurrentDictionary<long, KeyValuePair<TaskCompletionSource<IMessage>, Type>>
+            Responses = new ConcurrentDictionary<long, KeyValuePair<TaskCompletionSource<IMessage>, Type>>();
 
         /// <summary>
         /// 
@@ -99,10 +103,7 @@ namespace QuikSharp.Quik {
                                     // BLOCKING
                                     var message = EnvelopeQueue.Take(_cts.Token);
                                     try {
-                                        var request = JsonConvert.SerializeObject(message, Formatting.None, new JsonSerializerSettings {
-                                            TypeNameHandling = TypeNameHandling.None, // Objects
-                                            TypeNameAssemblyFormat = FormatterAssemblyStyle.Simple
-                                        });
+                                        var request = message.ToJson();
                                         //Trace.WriteLine("Request: " + request);
                                         // scenario: Quik is restarted or script is stopped
                                         // then writer must throw and we will add a message back
@@ -113,8 +114,8 @@ namespace QuikSharp.Quik {
                                             await writer.FlushAsync(); // TODO check that it is not needed
                                         } else {
                                             Trace.Assert(message.Id.HasValue, "All requests must have correlation id");
-                                            Responses[message.Id.Value].SetException(new TimeoutException("ValidUntilUTC is less than current time"));
-                                            TaskCompletionSource<Envelope> tcs; // <IMessage>
+                                            Responses[message.Id.Value].Key.SetException(new TimeoutException("ValidUntilUTC is less than current time"));
+                                            KeyValuePair<TaskCompletionSource<IMessage>, Type> tcs; // <IMessage>
                                             Responses.TryRemove(message.Id.Value, out tcs);
                                         }
                                     } catch (IOException) {
@@ -179,27 +180,29 @@ namespace QuikSharp.Quik {
                                     // TODO benchmark async
                                     var response = await reader.ReadLineAsync();
                                     //Trace.WriteLine("Response:" + response);
-                                    var message =
-                                      JsonConvert.DeserializeObject<Envelope>(response, new JsonSerializerSettings { //<IMessage>
-                                          TypeNameHandling = TypeNameHandling.None // .Objects
-                                      });
-                                    if (message.Id.HasValue && message.Id > 0) {
-                                        // it is a response message
-                                        if (!Responses.ContainsKey(message.Id.Value)) throw new ApplicationException("Unexpected correlation ID");
-                                        TaskCompletionSource<Envelope> tcs; //<IMessage>
-                                        Responses.TryRemove(message.Id.Value, out tcs);
-                                        if (!message.ValidUntil.HasValue || message.ValidUntil >= DateTime.UtcNow) {
-                                            tcs.SetResult(message);
+                                    try {
+                                        var message = response.FromJson();
+                                        if (message.Id.HasValue && message.Id > 0) {
+                                            // it is a response message
+                                            if (!Responses.ContainsKey(message.Id.Value)) throw new ApplicationException("Unexpected correlation ID");
+                                            KeyValuePair<TaskCompletionSource<IMessage>, Type> tcs;
+                                            Responses.TryRemove(message.Id.Value, out tcs);
+                                            if (!message.ValidUntil.HasValue || message.ValidUntil >= DateTime.UtcNow) {
+                                                tcs.Key.SetResult(message);
+                                            } else {
+                                                tcs.Key.SetException(
+                                                    new TimeoutException("ValidUntilUTC is less than current time"));
+                                            }
                                         } else {
-                                            tcs.SetException(new TimeoutException("ValidUntilUTC is less than current time"));
+                                            // it is a callback message
+                                            ProcessCallbackMessage(message);
                                         }
-                                    } else {
-                                        // it is a callback message
-                                        ProcessCallbackMessage(message);
+                                    } catch (LuaException) {
+                                        Trace.WriteLine("Caught Lua exception");
                                     }
                                 }
                             } catch (IOException) {
-                                Trace.WriteLine("Connection closed");
+                                Trace.WriteLine("Connection closed due to IOException in resopnse listener");
                             } finally {
                                 ((Socket)s).Close();
                                 Sockets.Remove((Socket)s);
@@ -222,7 +225,7 @@ namespace QuikSharp.Quik {
             }, _cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
 
-        private static void ProcessCallbackMessage(Envelope message) { //<IMessage>
+        private static void ProcessCallbackMessage(IMessage message) {
             throw new NotImplementedException("Special processing for callbacks");
         }
 

@@ -1,22 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 
-// TODO Old stuff, sort it out
 
 namespace QuikSharp {
-    public enum NotificationType {
-        Error,
-        Warning,
-        Info
-    }
-
-
     public static class NetworkUtils {
 
         public static IPAddress LocalIPAddress() {

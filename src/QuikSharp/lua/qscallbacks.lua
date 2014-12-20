@@ -4,7 +4,6 @@ package.cpath = package.cpath..";"..'.\\clibs\\?.dll'
 
 local util = require("qsutils")
 
-
 local qscallbacks = {}
 
 function OnQuikSharpDisconnected()
@@ -18,9 +17,9 @@ end
 function OnStop(s)
     log("Bye, QuikSharp!")
     is_started = false
-    logfile:close()
+    pcall(logfile:close(logfile))
     if missed_values_file then
-        missed_values_file:close()
+        pcall(missed_values_file:close(missed_values_file))
         missed_values_file = nil
         missed_values_file_name = nil
     end
