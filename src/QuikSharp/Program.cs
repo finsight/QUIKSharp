@@ -46,12 +46,12 @@ namespace QuikSharp {
         }
         #endregion
         static void Main() {
+            // Do not spam console when used as a dependency and use Trace
             Trace.Listeners.Clear();
             Trace.Listeners.Add(new ConsoleTraceListener());
             // Some biolerplate to react to close window event, CTRL-C, kill, etc
             _handler += Handler;
             SetConsoleCtrlHandler(_handler, true);
-
 
             ServiceManager.StartServices();
 

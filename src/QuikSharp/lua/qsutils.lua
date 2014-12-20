@@ -7,6 +7,7 @@ require ("list")
 
 local qsutils = {}
 
+
 --- Sleep that always works
 function delay(msec)
     if sleep then
@@ -32,11 +33,7 @@ function is_quik()
     if getScriptPath then return true else return false end
 end
 
-os.execute("mkdir " .. "logs")
-logfile = io.open ("logs/QuikSharp.log", "a")
-missed_values_file = nil
-missed_values_file_name = nil
-
+--- Write to log file and to Quik messages
 function log(msg, level)
     if level ~= 2 and level ~= 3 then
         level = 1
@@ -52,74 +49,43 @@ function log(msg, level)
     pcall(logfile.flush, logfile)
 end
 
+-- log files
+os.execute("mkdir " .. "logs")
+logfile = io.open ("logs/QuikSharp.log", "a")
+missed_values_file = nil
+missed_values_file_name = nil
+
 -- current connection state
 local is_connected = false
+local port = 34130
+local server = socket.bind('localhost', port, 1)
+local client
 
-
--- a queue for responses/callbacks that cannot be sent
---local response_queue = List.new()
--- if cannot receive or send then put all responses to the queue
--- then reconnect from the main function and consume the queue + reset last_disconnected_time
---local last_disconnected_time
--- we need a limit to avoid out of memory exceptions, but at the same time we must
--- keep some data even if we had to disconnect the server temporary. E.g. history of limit order books is
--- not available from Quik and we do not want to lose it too often.
---local flush_timeout_sec = 10 * 60 -- 10 minutes
---local function should_flush()
---    if os.time() - last_disconnected_time < flush_timeout_sec then
---        return false
---    else
---        return true
---    end
---end
-
-local requestPort = 34130
-local responsePort = 34131
-local requestClient
-local responseClient
-
--- block until connection
-local function connectClient(port)
-    print('Connecting to port '..port..' ...')
+--- accept client on server
+local function getClient()
+    print('Waiting for a client')
     local i = 0
     while true do
-        local tcp = socket.tcp()
-        tcp:settimeout(2)
-        local status, ret = pcall(tcp.connect, tcp, 'localhost', port)
-        if status and ret then -- and client 
-            return tcp
+        local status, client, err = pcall(server.accept, server)
+        if status and client then
+            return client
         else
-            delay(100)
-            i = i + 1
-            if math.fmod(i,1) == 0 then log('Connection attempt #'..i) end
+            log(err, 3)
         end
     end
-    return c
 end
 
-function qsutils.connect()
-    -- TODO bad logic, keep it for a while as an example how to use queue
---    if not is_connected and should_flush() then
---        local pop_msg = List.popleft(response_queue)
---        while pop_msg and pop_msg.t / 1000 < os.time() - flush_timeout_sec do
---            -- write to file
---            pop_msg = List.popleft(response_queue)
---        end
---    end
 
+function qsutils.connect()
     if not is_connected then
         log('Connecting...')
-        if requestClient then
+        if client then
+            log("is_connected is false but client is not nil", 3)
             -- Quik crashes without pcall
-            pcall(requestClient.close, requestClient)
+            pcall(client.close, requestClient)
         end
-        requestClient = connectClient(requestPort)
-        if responseClient then
-            -- Quik crashes without pcall
-            pcall(responseClient.close, responseClient)
-        end
-        responseClient = connectClient(responsePort)
-        if requestClient and responseClient then
+        client = getClient()
+        if client then
             is_connected = true
             log 'Connected!'
             if missed_values_file then
@@ -138,15 +104,10 @@ end
 
 local function disconnected()
     is_connected = false
---    last_disconnected_time = os.time()
     print('Disconnecting...')
-    if requestClient then
-        pcall(requestClient.close, requestClient)
-        requestClient = nil
-    end
-    if responseClient then
-        pcall(responseClient.close, responseClient)
-        responseClient = nil
+    if client then
+        pcall(client.close, client)
+        client = nil
     end
 end
 
@@ -155,7 +116,7 @@ function receiveRequest()
     if not is_connected then
         return nil, "not conencted"
     end
-    local status, requestString= pcall(requestClient.receive, requestClient)
+    local status, requestString= pcall(client.receive, client)
     if status and requestString then
         local msg_table, pos, err = json.decode(requestString, 1, json.null)
         if err then
@@ -176,7 +137,7 @@ function sendResponse(msg_table)
     if not msg_table.t then msg_table.t = timemsec() end
     local responseString = json.encode (msg_table, { indent = false })
     if is_connected then
-        local status, res = pcall(responseClient.send, responseClient, responseString..'\n')
+        local status, res = pcall(client.send, client, responseString..'\n')
         if status and res then
             --log(responseString)
             return true

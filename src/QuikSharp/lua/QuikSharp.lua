@@ -27,7 +27,6 @@ function do_main()
                 log("Could not dispatch and process request: " .. err, 3)
             end
         else
-            log("received nil message")
             delay(1)
         end
     end
