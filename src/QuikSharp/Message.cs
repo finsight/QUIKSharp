@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace QuikSharp {
@@ -71,25 +69,6 @@ namespace QuikSharp {
         [JsonProperty(PropertyName = "d")]
         public string Data { get; set; }
 
-    }
-
-    static class MessageExtensions {
-        public static async Task<TResponse> Send<TResponse>(this IMessage request, int timeout = 0)
-            where TResponse : class, IMessage
-            {
-            var tcs = new TaskCompletionSource<IMessage>();
-            if (timeout > 0) {
-                var ct = new CancellationTokenSource(timeout);
-                ct.Token.Register(() => tcs.TrySetCanceled(), false);
-            }
-            var kvp = new KeyValuePair<TaskCompletionSource<IMessage>, Type>(tcs, typeof(TResponse));
-            if (request.Id == null) { request.Id = Interlocked.Increment(ref QuikService.CorrelationId); }
-            QuikService.Responses[request.Id.Value] = kvp;
-            // add to queue after responses dictionary
-            QuikService.EnvelopeQueue.Add(request);
-            var response = await tcs.Task;
-            return (response as TResponse);
-        }
     }
 
 }

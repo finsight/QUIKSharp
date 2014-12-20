@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using QuikSharp.Quik;
+using QuikSharp;
 
 namespace Profiler {
     public class Program {
         public static void Main() {
-            var qc = new DebugFunctions();
+            var qc = new DebugFunctions(Quik.DefaultPort);
             var sw = new Stopwatch();
             Console.WriteLine("Started");
             for (int round = 0; round < 10; round++) {

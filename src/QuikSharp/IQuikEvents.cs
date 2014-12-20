@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel;
 
-namespace QuikSharp.Quik {
+namespace QuikSharp {
 
     // TODO Redirect these callbacks to events or rather do with events from the beginning
 

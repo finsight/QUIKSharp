@@ -116,23 +116,23 @@
   <ItemGroup>
     <Compile Include="Misc.cs" />
     <Compile Include="NotificationType.cs" />
-    <Compile Include="Quik\DebugFunctions.cs">
+    <Compile Include="DebugFunctions.cs">
       <DependentUpon>IQuikFunctions.cs</DependentUpon>
     </Compile>
     <Compile Include="JsonExtensions.cs" />
     <Compile Include="Message.cs" />
-    <Compile Include="Quik\Quik.cs" />
-    <Compile Include="Quik\QuikEvents.cs">
+    <Compile Include="Quik.cs" />
+    <Compile Include="QuikEvents.cs">
       <DependentUpon>IQuikEvents.cs</DependentUpon>
     </Compile>
     <Compile Include="QuikService.cs" />
-    <Compile Include="Quik\ServiceFunctions\ServiceFunctions.cs" />
+    <Compile Include="ServiceFunctions\ServiceFunctions.cs" />
     <Compile Include="Tray.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Quik\ServiceFunctions\InfoParamEnum.cs" />
-    <Compile Include="Quik\IQuikFunctions.cs" />
-    <Compile Include="Quik\IQuikEvents.cs" />
+    <Compile Include="ServiceFunctions\InfoParamEnum.cs" />
+    <Compile Include="IQuikFunctions.cs" />
+    <Compile Include="IQuikEvents.cs" />
     <Compile Include="ServiceManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

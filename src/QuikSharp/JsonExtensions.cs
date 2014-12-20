@@ -4,7 +4,6 @@ using System.Runtime.Serialization.Formatters;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using QuikSharp.Quik;
 
 namespace QuikSharp {
     internal static class JsonExtensions {
@@ -15,8 +14,8 @@ namespace QuikSharp {
             return obj;
         }
 
-        public static IMessage FromJson(this string json) {
-            var obj = JsonConvert.DeserializeObject<IMessage>(json, new MessageConverter());
+        public static IMessage FromJson(this string json, QuikService service) {
+            var obj = JsonConvert.DeserializeObject<IMessage>(json, new MessageConverter(service));
             return obj;
         }
 
@@ -45,12 +44,14 @@ namespace QuikSharp {
     }
 
     internal class MessageConverter : JsonCreationConverter<IMessage> {
+        private QuikService _service;
+        public MessageConverter(QuikService service) { _service = service; }
         // we learn object type from correlation id and a type stored in responses dictionary
         protected override IMessage Create(Type objectType, JObject jObject) {
             if (FieldExists("lua_error", jObject)) {
                 var id = jObject.GetValue("id").Value<long>();
                 KeyValuePair<TaskCompletionSource<IMessage>, Type> kvp;
-                QuikService.Responses.TryRemove(id, out kvp);
+                _service.Responses.TryRemove(id, out kvp);
                 var tcs = kvp.Key;
                 var exn = new LuaException(jObject.GetValue("lua_error").Value<string>());
                 tcs.SetException(new LuaException(jObject.GetValue("lua_error").Value<string>()));
@@ -58,7 +59,7 @@ namespace QuikSharp {
             }
             else if (FieldExists("id", jObject)) {
                 var id = jObject.GetValue("id").Value<long>();
-                objectType  = QuikService.Responses[id].Value;
+                objectType  = _service.Responses[id].Value;
                 return (IMessage)Activator.CreateInstance(objectType);
             } else if (FieldExists("cmd", jObject)) {
                 // without id we have a command

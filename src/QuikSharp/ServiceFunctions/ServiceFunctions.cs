@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace QuikSharp.Quik.ServiceFunctions {
+namespace QuikSharp.ServiceFunctions {
 
-    public interface IServiceFunctions : IQuikFunctions {
+    public interface IServiceFunctions : IQuikFunctions  {
 
         /// <summary>
         /// Функция возвращает путь, по которому находится файл info.exe, исполняющий данный скрипт, без завершающего обратного слэша («\»). Например, C:\QuikFront. 
@@ -41,10 +41,10 @@ namespace QuikSharp.Quik.ServiceFunctions {
     /// <summary>
     /// Service functions implementations
     /// </summary>
-    public class ServiceFunctions : IServiceFunctions {
-        public ServiceFunctions() {
-            QuikService.Start();
-        }
+    internal class ServiceFunctions : IServiceFunctions {
+        public ServiceFunctions(int port) { QuikService = new QuikService(port); }
+
+        public QuikService QuikService { get; private set; }
 
         public string GetWorkingFolder() { throw new NotImplementedException(); }
         public bool IsConnected() { throw new NotImplementedException(); }

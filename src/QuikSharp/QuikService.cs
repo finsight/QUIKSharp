@@ -19,46 +19,44 @@ namespace QuikSharp {
     /// <summary>
     /// 
     /// </summary>
-    public static class QuikService {
-        // auto start when referenced for the first time
-        //static QuikService() {
-        //    Start();
-        //}
-
-
+    public class QuikService {
+        public QuikService(int port) {
+            _port = port;
+            Start();
+        }
         /// <summary>
         /// 
         /// </summary>
-        public static bool Started { get; private set; }
+        public bool IsStarted { get; private set; }
 
-        private static readonly IPAddress Host = IPAddress.Parse("127.0.0.1");
-        private const int _PORT = 34130;
-        private static TcpClient _client;
-        private static readonly Object SyncRoot = new object();
+        private readonly IPAddress _host = IPAddress.Parse("127.0.0.1");
+        private readonly int _port;
+        private TcpClient _client;
+        private readonly Object _syncRoot = new object();
         //private static readonly List<Socket> Sockets = new List<Socket>();
-        private static CancellationTokenSource _cts;
+        private CancellationTokenSource _cts;
 
         /// <summary>
         /// Current correlation id. Use Interlocked.Increment to get a new id.
         /// </summary>
-        internal static long CorrelationId = 0;
+        internal static long CorrelationId;
         /// <summary>
         /// IQuickCalls functions enqueue a message and return a task from TCS
         /// </summary>
-        internal static readonly BlockingCollection<IMessage> EnvelopeQueue
+        internal readonly BlockingCollection<IMessage> EnvelopeQueue
             = new BlockingCollection<IMessage>();
         /// <summary>
         /// If received message has a correlation id then use its Data to SetResult on TCS and remove the TCS from the dic
         /// </summary>
-        internal static readonly ConcurrentDictionary<long, KeyValuePair<TaskCompletionSource<IMessage>, Type>>
+        internal readonly ConcurrentDictionary<long, KeyValuePair<TaskCompletionSource<IMessage>, Type>>
             Responses = new ConcurrentDictionary<long, KeyValuePair<TaskCompletionSource<IMessage>, Type>>();
 
         /// <summary>
         /// 
         /// </summary>
-        public static void Stop() {
-            if (!Started) return;
-            Started = false;
+        public void Stop() {
+            if (!IsStarted) return;
+            IsStarted = false;
             _cts.Cancel();
         }
 
@@ -66,16 +64,16 @@ namespace QuikSharp {
         /// 
         /// </summary>
         /// <exception cref="ApplicationException">Response message id does not exists in results dictionary</exception>
-        public static void Start() {
-            if (Started) return;
-            Started = true;
+        public void Start() {
+            if (IsStarted) return;
+            IsStarted = true;
             _cts = new CancellationTokenSource();
 
             // Request Task
-            Task.Factory.StartNew(async () => {
+            Task.Factory.StartNew(() => {
                 try {
                     // Enter the listening loop. 
-                    while (Started) {
+                    while (IsStarted) {
                         Trace.WriteLine("Connecting on request channel... ");
                         EnsureConnectedClient();
                         // here we have a connected TCP client
@@ -83,7 +81,7 @@ namespace QuikSharp {
                         try {
                             var stream = new NetworkStream(_client.Client);
                             var writer = new StreamWriter(stream);
-                            while (Started) {
+                            while (IsStarted) {
                                 // BLOCKING
                                 var message = EnvelopeQueue.Take(_cts.Token);
                                 try {
@@ -115,16 +113,16 @@ namespace QuikSharp {
                         }
                     }
                 } catch (Exception e) {
-                    //Trace.WriteLine(e);
+                    Trace.WriteLine(e);
                 } finally {
                     try {
-                        Monitor.Enter(SyncRoot);
+                        Monitor.Enter(_syncRoot);
                         if (_client != null) {
                             _client.Client.Shutdown(SocketShutdown.Both);
                             _client.Close();
                         }
                     } finally {
-                        Monitor.Exit(SyncRoot);
+                        Monitor.Exit(_syncRoot);
                     }
                 }
             }, _cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
@@ -134,7 +132,7 @@ namespace QuikSharp {
             Task.Factory.StartNew(async () => {
                 try {
 
-                    while (Started) {
+                    while (IsStarted) {
                         Trace.WriteLine("Connecting on response channel... ");
                         EnsureConnectedClient();
                         // here we have a connected TCP client
@@ -142,12 +140,12 @@ namespace QuikSharp {
                         try {
                             var stream = new NetworkStream(_client.Client);
                             var reader = new StreamReader(stream, true);
-                            while (Started) {
+                            while (IsStarted) {
                                 // TODO benchmark async
                                 var response = await reader.ReadLineAsync();
                                 //Trace.WriteLine("Response:" + response);
                                 try {
-                                    var message = response.FromJson();
+                                    var message = response.FromJson(this);
                                     if (message.Id.HasValue && message.Id > 0) {
                                         // it is a response message
                                         if (!Responses.ContainsKey(message.Id.Value)) throw new ApplicationException("Unexpected correlation ID");
@@ -175,13 +173,13 @@ namespace QuikSharp {
                     Trace.WriteLine(e);
                 } finally {
                     try {
-                        Monitor.Enter(SyncRoot);
+                        Monitor.Enter(_syncRoot);
                         if (_client != null) {
                             _client.Client.Shutdown(SocketShutdown.Both);
                             _client.Close();
                         }
                     } finally {
-                        Monitor.Exit(SyncRoot);
+                        Monitor.Exit(_syncRoot);
                     }
                 }
             }, _cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
@@ -193,26 +191,26 @@ namespace QuikSharp {
 
         }
 
-        private static void EnsureConnectedClient() {
+        private void EnsureConnectedClient() {
             try {
 
                 if (_client != null && _client.Connected && _client.Client.IsConnectedNow()) {
                     // reuse connected client
                 } else {
-                    Monitor.Enter(SyncRoot);
+                    Monitor.Enter(_syncRoot);
                     if (!(_client != null && _client.Connected && _client.Client.IsConnectedNow())) {
                         // create a new client
                         _client = new TcpClient();
                         // TODO profile with different options
                         //_client.ExclusiveAddressUse = true;
-                        //_client.NoDelay = true;
+                        _client.NoDelay = true;
 
-                        _client.Connect(Host, _PORT);
+                        _client.Connect(_host, _port);
                         
                     }
                 }
             } finally {
-                Monitor.Exit(SyncRoot);
+                Monitor.Exit(_syncRoot);
             }
         }
 
@@ -220,5 +218,23 @@ namespace QuikSharp {
             if (message == null) throw new ArgumentNullException("message");
             throw new NotImplementedException("Special processing for callbacks");
         }
+
+
+        internal async Task<TResponse> Send<TResponse>(IMessage request, int timeout = 0)
+            where TResponse : class, IMessage {
+            var tcs = new TaskCompletionSource<IMessage>();
+            if (timeout > 0) {
+                var ct = new CancellationTokenSource(timeout);
+                ct.Token.Register(() => tcs.TrySetCanceled(), false);
+            }
+            var kvp = new KeyValuePair<TaskCompletionSource<IMessage>, Type>(tcs, typeof(TResponse));
+            if (request.Id == null) { request.Id = Interlocked.Increment(ref CorrelationId); }
+            Responses[request.Id.Value] = kvp;
+            // add to queue after responses dictionary
+            EnvelopeQueue.Add(request);
+            var response = await tcs.Task;
+            return (response as TResponse);
+        }
+
     }
 }

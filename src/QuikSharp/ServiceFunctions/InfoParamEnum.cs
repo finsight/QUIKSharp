@@ -1,4 +1,4 @@
-﻿namespace QuikSharp.Quik {
+﻿namespace QuikSharp {
     /// <summary>
     /// 
     /// </summary>
