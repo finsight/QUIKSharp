@@ -42,7 +42,7 @@ namespace QuikSharp.ServiceFunctions {
     /// Service functions implementations
     /// </summary>
     internal class ServiceFunctions : IServiceFunctions {
-        public ServiceFunctions(int port) { QuikService = new QuikService(port); }
+        public ServiceFunctions(int port) { QuikService = QuikService.Create(port); }
 
         public QuikService QuikService { get; private set; }
 

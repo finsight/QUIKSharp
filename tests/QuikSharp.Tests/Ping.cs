@@ -20,9 +20,9 @@ namespace QuikSharp.Tests
         /// </summary>
         [Test]
         public void DivideStringByZero() {
-            //Assert.Throws<AggregateException>(() => {
+            Assert.Throws<AggregateException>(() => {
                 var x = _df.DivideStringByZero().Result;
-            //});
+            });
         }
 
         [Test]
@@ -36,7 +36,7 @@ namespace QuikSharp.Tests
                 sw.Reset();
                 sw.Start();
 
-                var count = 10000;
+                var count = 1000;
 
                 //var array = new Task<string>[count];
                 //for (int i = 0; i < array.Length; i++) {

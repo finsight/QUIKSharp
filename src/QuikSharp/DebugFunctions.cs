@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace QuikSharp {
     public class DebugFunctions : IQuikFunctions {
-        public DebugFunctions(int port) { QuikService = new QuikService(port); }
+        public DebugFunctions(int port) { QuikService = QuikService.Create(port); }
 
         public QuikService QuikService { get; private set; }
         class PingRequest : StringMessage {

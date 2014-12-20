@@ -2,10 +2,10 @@
 
 namespace QuikSharp
 {
-    static class ServiceManager
-    {
-        public static void StartServices()
-        {
+    static class ServiceManager {
+        private static QuikService quikService;
+        public static void StartServices() {
+            quikService = QuikService.Create(Quik.DefaultPort);
             Task.Run(() => Tray.Run());
         }
 

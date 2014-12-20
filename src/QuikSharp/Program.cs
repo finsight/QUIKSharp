@@ -57,7 +57,7 @@ namespace QuikSharp {
 
             // hold the console so it doesn’t run off the end
             while (!_exitSystem) {
-                Thread.Sleep(500);
+                Thread.Sleep(100);
             }
         }
 

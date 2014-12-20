@@ -20,7 +20,24 @@ namespace QuikSharp {
     /// 
     /// </summary>
     public class QuikService {
-        public QuikService(int port) {
+        private static Dictionary<int,QuikService> _services = 
+            new Dictionary<int, QuikService>();
+
+        public static QuikService Create(int port) {
+            lock (_services) {
+                QuikService service;
+                if (_services.ContainsKey(port)) {
+                    service = _services[port];
+                    service.Start();
+                } else {
+                    service = new QuikService(port);
+                    _services[port] = service;
+                }
+                return service;
+            }
+        }
+
+        private QuikService(int port) {
             _port = port;
             Start();
         }
@@ -82,9 +99,10 @@ namespace QuikSharp {
                             var stream = new NetworkStream(_client.Client);
                             var writer = new StreamWriter(stream);
                             while (IsStarted) {
-                                // BLOCKING
-                                var message = EnvelopeQueue.Take(_cts.Token);
+                                IMessage message = null;
                                 try {
+                                    // BLOCKING
+                                    message = EnvelopeQueue.Take(_cts.Token);
                                     var request = message.ToJson();
                                     //Trace.WriteLine("Request: " + request);
                                     // scenario: Quik is restarted or script is stopped
@@ -104,7 +122,7 @@ namespace QuikSharp {
                                 } catch (IOException) {
                                     // this catch is for unexpected and unchecked connection termination
                                     // add back, there was an error while writing
-                                    EnvelopeQueue.Add(message);
+                                    if (message != null) { EnvelopeQueue.Add(message); }
                                     break;
                                 }
                             }
@@ -184,34 +202,33 @@ namespace QuikSharp {
                 }
             }, _cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
 
-
-            //Task.Factory.StartNew(() => {
-            //    Task.WaitAll(requestTask, responseTask);
-            //});
-
         }
 
         private void EnsureConnectedClient() {
+            var entered = false;
             try {
-
                 if (_client != null && _client.Connected && _client.Client.IsConnectedNow()) {
-                    // reuse connected client
+                    // reuse alive client
                 } else {
                     Monitor.Enter(_syncRoot);
+                    entered = true;
                     if (!(_client != null && _client.Connected && _client.Client.IsConnectedNow())) {
-                        // create a new client
-                        _client = new TcpClient();
-                        // TODO profile with different options
-                        //_client.ExclusiveAddressUse = true;
-                        _client.NoDelay = true;
-
-                        _client.Connect(_host, _port);
-                        
+                        var connected = false;
+                        while (!connected) {
+                            try {
+                                _client = new TcpClient {
+                                    ExclusiveAddressUse = true, 
+                                    NoDelay = true
+                                };
+                                _client.Connect(_host, _port);
+                                connected = true;
+                            } catch {
+                                Trace.WriteLine("Trying to connect...");
+                            }
+                        }
                     }
                 }
-            } finally {
-                Monitor.Exit(_syncRoot);
-            }
+            } finally { if (entered) { Monitor.Exit(_syncRoot); } }
         }
 
         private static void ProcessCallbackMessage(IMessage message) {

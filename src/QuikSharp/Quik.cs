@@ -5,7 +5,7 @@ namespace QuikSharp {
         public static readonly int DefaultPort = 34130;
 
         public Quik(int port = 34130) {
-            QuikService = new QuikService(port);
+            QuikService = QuikService.Create(port);
             ServiceFunctions = new ServiceFunctions.ServiceFunctions(port);
         }
 
