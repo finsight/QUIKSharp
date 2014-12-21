@@ -23,6 +23,15 @@ namespace QuikSharp {
         Task<ClassInfo> GetClassInfo(string classID);
 
         /// <summary>
+        /// Функция предназначена для получения информации по бумаге. 
+        /// </summary>
+        Task<SecurityInfo> GetSecurityInfo(string classCode, string secCode);
+        /// <summary>
+        /// Функция предназначена для получения информации по бумаге. 
+        /// </summary>
+        Task<SecurityInfo> GetSecurityInfo(ISecurity security);
+
+        /// <summary>
         /// Функция предназначена для получения списка кодов бумаг для списка классов, заданного списком кодов.
         /// </summary>
         Task<string[]> GetClassSecurities(string classID);
@@ -49,6 +58,16 @@ namespace QuikSharp {
             var response = await QuikService.Send<Message<ClassInfo>>(
                 (new Message<string>(classID, "getClassInfo")));
             return response.Data;
+        }
+
+        public async Task<SecurityInfo> GetSecurityInfo(string classCode, string secCode) {
+            var response = await QuikService.Send<Message<SecurityInfo>>(
+                (new Message<string>(classCode + "|" + secCode, "getSecurityInfo")));
+            return response.Data;
+        }
+
+        public async Task<SecurityInfo> GetSecurityInfo(ISecurity security) {
+            return await GetSecurityInfo(security.ClassCode, security.SecCode);
         }
 
         public async Task<string[]> GetClassSecurities(string classID) {

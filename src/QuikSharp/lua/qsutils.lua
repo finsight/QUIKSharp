@@ -59,6 +59,24 @@ function split(inputstr, sep)
     return t
 end
 
+local function from_json(str)
+    local status, msg= pcall(json.decode, str)
+    if status then
+        return msg
+    else
+--        error(msg)
+    end
+end
+
+local function to_json(msg)
+    local status, str= pcall(json.encode, msg)
+    if status then
+        return str
+    else
+--        error(str)
+    end
+end
+
 
 -- log files
 os.execute("mkdir " .. "logs")
@@ -129,7 +147,7 @@ function receiveRequest()
     end
     local status, requestString= pcall(client.receive, client)
     if status and requestString then
-        local msg_table, pos, err = json.decode(requestString) --, 1, json.null)
+        local msg_table, pos, err = from_json(requestString)
         if err then
             log(err, 3)
             return nil, err
@@ -146,7 +164,7 @@ end
 function sendResponse(msg_table)
     -- if not set explicitly then set CreatedTime "t" property here
     -- if not msg_table.t then msg_table.t = timemsec() end
-    local responseString = json.encode (msg_table) -- , { indent = false })
+    local responseString = to_json(msg_table)
     if is_connected then
         local status, res = pcall(client.send, client, responseString..'\n')
         if status and res then

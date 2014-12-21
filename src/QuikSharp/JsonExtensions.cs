@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 using QuikSharp.DataStructures;
 
 namespace QuikSharp {
-    internal static class JsonExtensions {
+    public static class JsonExtensions {
         public static T FromJson<T>(this string json) {
             var obj = JsonConvert.DeserializeObject<T>(json, new JsonSerializerSettings {
                 TypeNameHandling = TypeNameHandling.None
@@ -17,7 +17,7 @@ namespace QuikSharp {
             return obj;
         }
 
-        public static IMessage FromJson(this string json, QuikService service) {
+        internal static IMessage FromJson(this string json, QuikService service) {
             var obj = JsonConvert.DeserializeObject<IMessage>(json, new MessageConverter(service));
             return obj;
         }

@@ -10,7 +10,7 @@ namespace QuikSharp.Tests {
 
         [Test]
         public void GetClassesList() {
-            Console.WriteLine("GetClassesList: " 
+            Console.WriteLine("GetClassesList: "
                 + String.Join(",", _q.Class.GetClassesList().Result));
         }
 
@@ -23,6 +23,8 @@ namespace QuikSharp.Tests {
             }
         }
 
+
+
         [Test]
         public void GetClassSecurities() {
             var list = _q.Class.GetClassesList().Result;
@@ -32,6 +34,11 @@ namespace QuikSharp.Tests {
             }
         }
 
+        [Test]
+        public void GetSecurityInfo() {
+            Console.WriteLine("GetSecurityInfo for RIH5: "
+            + String.Join(",", _q.Class.GetSecurityInfo("SPBFUT", "RIH5").Result.ToJson()));
+        }
 
     }
 }

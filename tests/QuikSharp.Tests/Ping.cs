@@ -69,10 +69,8 @@ namespace QuikSharp.Tests
             // We access results asyncronously and do not wait
             // for round trips to Lua and back on each ping
             // Task.Result takes 43% and stream reader takes 7% (of 2x reduced time!)
-            // We are bound by Lua here
-            // Average time 500 msec per 5000 calls or 10 calls per msec or 100 microseconds per call
-            // Warmed up standalone profile takes on average 800 msec per 10000 calls, 12.5 calls per msec or 80 micros
-            // Quik is c.2x times slower 
+            // We are bound by Lua and pure sockets on locahost here
+
             var sw = new Stopwatch();
             Console.WriteLine("Started");
             for (int round = 0; round < 10; round++) {

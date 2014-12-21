@@ -151,6 +151,14 @@ function qsfunctions.getClassSecurities(msg)
     return msg
 end
 
+--- Функция позволяет узнать, заказан ли с сервера стакан по указанному классу и бумаге.
+function qsfunctions.getSecurityInfo(msg)
+    local spl = split(msg.data, "|")
+    local class_code, sec_code = spl[1], spl[2]
+    msg.data = getSecurityInfo(class_code, sec_code)
+    return msg
+end
+
 ------------------------------
 -- Order Book functions (Функции для работы со стаканом котировок)
 ------------------------------

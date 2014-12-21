@@ -120,10 +120,12 @@
   <ItemGroup>
     <Compile Include="ClassFunctions\ClassFunctions.cs" />
     <Compile Include="ClassFunctions\ClassInfo.cs" />
+    <Compile Include="ClassFunctions\SecurityInfo.cs" />
     <Compile Include="DataStructures\EventNames.cs" />
     <Compile Include="DataStructures\Flags.cs" />
     <Compile Include="DataStructures\AllTradesLine.cs" />
     <Compile Include="DataStructures\QuikDateTime.cs" />
+    <Compile Include="ISecurity.cs" />
     <Compile Include="Misc.cs" />
     <Compile Include="NotificationType.cs" />
     <Compile Include="DebugFunctions.cs">
