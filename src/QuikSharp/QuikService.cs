@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using QuikSharp.DataStructures;
@@ -163,7 +164,7 @@ namespace QuikSharp {
                         Trace.WriteLine("Response channel connected");
                         try {
                             var stream = new NetworkStream(_client.Client);
-                            var reader = new StreamReader(stream, true);
+                            var reader = new StreamReader(stream, Encoding.GetEncoding(1251)); //true
                             while (IsStarted) {
                                 // TODO benchmark async
                                 var response = await reader.ReadLineAsync();
