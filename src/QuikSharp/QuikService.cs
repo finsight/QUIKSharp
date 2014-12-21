@@ -152,11 +152,9 @@ namespace QuikSharp {
                 }
             }, _cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
 
-
             // Response Task
             Task.Factory.StartNew(async () => {
                 try {
-
                     while (IsStarted) {
                         Trace.WriteLine("Connecting on response channel... ");
                         EnsureConnectedClient();
@@ -212,7 +210,6 @@ namespace QuikSharp {
                     }
                 }
             }, _cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
-
         }
 
         private void EnsureConnectedClient() {

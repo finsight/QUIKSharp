@@ -3,7 +3,7 @@
 package.path = package.path..";"..".\\?.lua;"..".\\?.luac"
 package.cpath = package.cpath..";"..'.\\clibs\\?.dll'
 local socket = require ("socket")
-local json = require ("dkjson")
+local json = require "cjson" --require ("dkjson")
 
 local qsutils = {}
 
@@ -115,7 +115,7 @@ function receiveRequest()
     end
     local status, requestString= pcall(client.receive, client)
     if status and requestString then
-        local msg_table, pos, err = json.decode(requestString, 1, json.null)
+        local msg_table, pos, err = json.decode(requestString) --, 1, json.null)
         if err then
             log(err, 3)
             return nil, err
@@ -132,7 +132,7 @@ end
 function sendResponse(msg_table)
     -- if not set explicitly then set CreatedTime "t" property here
     -- if not msg_table.t then msg_table.t = timemsec() end
-    local responseString = json.encode (msg_table, { indent = false })
+    local responseString = json.encode (msg_table) -- , { indent = false })
     if is_connected then
         local status, res = pcall(client.send, client, responseString..'\n')
         if status and res then

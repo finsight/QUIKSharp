@@ -2,3 +2,9 @@
 * Initial release. Tested connection and basic Quik functions and events.
 #### 0.1.1 - December 21 2014
 * NuGet package (tested)
+#### 0.1.3 - December 21 2014
+* More than 3x  performance improvement with cjson instead of dkjson in Quik and c.30% in 
+a standalone Lua. Now they are almost at par - Quik just 13% slower. Now we have 80 micros
+for Quik and 70 micros for a standalone Lua (60 in profiler in release mode).
+* Added ClassFunctions (Функции для обращения к спискам доступных параметров) and several simple events
+* Correct Encoding to 1251

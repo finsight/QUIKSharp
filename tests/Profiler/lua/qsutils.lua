@@ -3,7 +3,7 @@
 package.path = package.path..";"..".\\?.lua;"..".\\?.luac"
 package.cpath = package.cpath..";"..'.\\clibs\\?.dll'
 local socket = require ("socket")
-local json = require ("dkjson")
+local json = require "cjson"
 
 local qsutils = {}
 
@@ -28,19 +28,18 @@ function timemsec()
     end
 end
 
-
+is_debug = true
 
 --- Write to log file and to Quik messages
 function log(msg, level)
-    if level == 1 or level == 2 or level == 3 then
+    if not msg then msg = "" end
+    if level == 1 or level == 2 or level == 3 or is_debug then
         -- only warnings and recoverable errors to Quik
         if message then
             pcall(message, msg, level)
         end
-    else
-        level = 0
     end
-
+    if not level then level = 0 end
     local logLine = "LOG "..level..": "..msg
     print(logLine)
     pcall(logfile.write, logfile, timemsec().." "..logLine.."\n")
@@ -116,7 +115,7 @@ function receiveRequest()
     end
     local status, requestString= pcall(client.receive, client)
     if status and requestString then
-        local msg_table, pos, err = json.decode(requestString, 1, json.null)
+        local msg_table, pos, err = json.decode(requestString)
         if err then
             log(err, 3)
             return nil, err
@@ -133,7 +132,7 @@ end
 function sendResponse(msg_table)
     -- if not set explicitly then set CreatedTime "t" property here
     -- if not msg_table.t then msg_table.t = timemsec() end
-    local responseString = json.encode (msg_table, { indent = false })
+    local responseString = json.encode (msg_table)
     if is_connected then
         local status, res = pcall(client.send, client, responseString..'\n')
         if status and res then

@@ -126,4 +126,32 @@ function qsfunctions.PrintDbgStr(msg)
 end
 
 
+
+------------------------------
+-- Class functions
+------------------------------
+--- Функция предназначена для получения списка кодов классов, переданных с сервера в ходе сеанса связи.
+function qsfunctions.getClassesList(msg)
+    msg.data = getClassesList()
+--    if  msg.data then log(msg.data) else log("getClassesList returned nil") end
+    return msg
+end
+
+--- Функция предназначена для получения информации о классе.
+function qsfunctions.getClassInfo(msg)
+    msg.data = getClassInfo(msg.data)
+    if msg.data then log(msg.data.name) else log("getClassInfo  returned nil") end
+    return msg
+end
+
+--- Функция предназначена для получения списка кодов бумаг для списка классов, заданного списком кодов.
+function qsfunctions.getClassSecurities(msg)
+    msg.data = getClassSecurities(msg.data)
+--    if msg.data then log(msg.data) else log("getClassSecurities returned nil") end
+    return msg
+end
+
+
+
+
 return qsfunctions

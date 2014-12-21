@@ -40,9 +40,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\Newtonsoft.Json.6.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="QuikSharp, Version=0.1.1.0, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="QuikSharp, Version=0.1.2.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\QuikSharp.0.1.1\lib\net45\QuikSharp.dll</HintPath>
+      <HintPath>..\..\packages\QuikSharp.0.1.2\lib\net45\QuikSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -58,7 +58,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="lua\dkjson.lua" />
     <None Include="lua\qscallbacks.lua" />
     <None Include="lua\qsfunctions.lua" />
     <None Include="lua\qsutils.lua" />
@@ -66,7 +65,9 @@
     <None Include="lua\socket.lua" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
+    <Content Include="lua\clibs\cjson.dll" />
     <Content Include="lua\clibs\socket\core.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
