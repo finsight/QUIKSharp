@@ -43,6 +43,10 @@ function qsfunctions.ping(msg)
     end
 end
 
+function qsfunctions.echo(msg)
+    return msg
+end
+
 --- Test error handling
 function qsfunctions.divide_string_by_zero(msg)
     msg.data = "asd" / 1

@@ -24,7 +24,7 @@ namespace QuikSharp {
     /// 
     /// </summary>
     public class QuikService {
-        private static Dictionary<int,QuikService> _services = 
+        private static Dictionary<int, QuikService> _services =
             new Dictionary<int, QuikService>();
 
         public static QuikService Create(int port) {
@@ -63,7 +63,7 @@ namespace QuikSharp {
         /// <summary>
         /// Current correlation id. Use Interlocked.Increment to get a new id.
         /// </summary>
-        internal static long CorrelationId;
+        private static int CorrelationId;
         /// <summary>
         /// IQuickCalls functions enqueue a message and return a task from TCS
         /// </summary>
@@ -166,28 +166,31 @@ namespace QuikSharp {
                             while (IsStarted) {
                                 // TODO benchmark async
                                 var response = await reader.ReadLineAsync();
+
+                                // TODO (!) process the response on a new task - now we are waiting for message processing before receiving next messages
+
                                 //Trace.WriteLine("Response:" + response);
                                 try {
                                     if (response == null) {
                                         throw new IOException("Lua returned an empty response or closed the connection");
                                     }
                                     var message = response.FromJson(this);
-                                        if (message.Id.HasValue && message.Id > 0) {
-                                            // it is a response message
-                                            if (!Responses.ContainsKey(message.Id.Value)) throw new ApplicationException("Unexpected correlation ID");
-                                            KeyValuePair<TaskCompletionSource<IMessage>, Type> tcs;
-                                            Responses.TryRemove(message.Id.Value, out tcs);
-                                            if (!message.ValidUntil.HasValue || message.ValidUntil >= DateTime.UtcNow) {
-                                                tcs.Key.SetResult(message);
-                                            } else {
-                                                tcs.Key.SetException(
-                                                    new TimeoutException("ValidUntilUTC is less than current time"));
-                                            }
+                                    if (message.Id.HasValue && message.Id > 0) {
+                                        // it is a response message
+                                        if (!Responses.ContainsKey(message.Id.Value)) throw new ApplicationException("Unexpected correlation ID");
+                                        KeyValuePair<TaskCompletionSource<IMessage>, Type> tcs;
+                                        Responses.TryRemove(message.Id.Value, out tcs);
+                                        if (!message.ValidUntil.HasValue || message.ValidUntil >= DateTime.UtcNow) {
+                                            tcs.Key.SetResult(message);
                                         } else {
-                                            // it is a callback message
-                                            ProcessCallbackMessage(message);
+                                            tcs.Key.SetException(
+                                                new TimeoutException("ValidUntilUTC is less than current time"));
                                         }
-                                    
+                                    } else {
+                                        // it is a callback message
+                                        ProcessCallbackMessage(message);
+                                    }
+
                                 } catch (LuaException) {
                                     //Trace.WriteLine("Caught Lua exception");
                                 }
@@ -225,7 +228,7 @@ namespace QuikSharp {
                         while (!connected) {
                             try {
                                 _client = new TcpClient {
-                                    ExclusiveAddressUse = true, 
+                                    ExclusiveAddressUse = true,
                                     NoDelay = true
                                 };
                                 _client.Connect(_host, _port);
@@ -315,6 +318,23 @@ namespace QuikSharp {
             }
         }
 
+        /// <summary>
+        /// Generate a new unique ID
+        /// </summary>
+        public int GetNewId() {
+            lock (_syncRoot) {
+                var newId = Interlocked.Increment(ref CorrelationId);
+                // 2^31 = 2147483648
+                // with 1 000 000 messages per second it will take more than
+                // 35 hours to overflow => safe for use as TRANS_ID in SendTransaction
+                // very weird stuff: ”никальный идентификационный номер за€вки, значение от 1 до 2 294 967 294 
+                if (newId > 0) {
+                    return newId;
+                }
+                CorrelationId = 1;
+                return 1;
+            }
+        }
 
         internal async Task<TResponse> Send<TResponse>(IMessage request, int timeout = 0)
             where TResponse : class, IMessage, new() {
@@ -324,7 +344,9 @@ namespace QuikSharp {
                 ct.Token.Register(() => tcs.TrySetCanceled(), false);
             }
             var kvp = new KeyValuePair<TaskCompletionSource<IMessage>, Type>(tcs, typeof(TResponse));
-            if (request.Id == null) { request.Id = Interlocked.Increment(ref CorrelationId); }
+            if (request.Id == null) {
+                request.Id = GetNewId();
+            }
             Responses[request.Id.Value] = kvp;
             // add to queue after responses dictionary
             EnvelopeQueue.Add(request);

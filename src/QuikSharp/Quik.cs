@@ -1,7 +1,13 @@
 ﻿// Copyright (C) 2014 Victor Baybekov
 
 namespace QuikSharp {
+    /// <summary>
+    /// Main class to abstract Quik as a .NET class
+    /// </summary>
     public class Quik {
+        /// <summary>
+        /// 34130
+        /// </summary>
         public const int DefaultPort = 34130;
 
         public Quik(int port = DefaultPort) {
@@ -12,7 +18,7 @@ namespace QuikSharp {
             Service = new ServiceFunctions(port);
             Class = new ClassFunctions(port);
             OrderBook = new OrderBookFunctions(port);
-
+            Trading = new TradingFunctions(port);
         }
 
         private QuikService QuikService { get; set; }
@@ -38,5 +44,10 @@ namespace QuikSharp {
         /// Функции для работы со стаканом котировок
         /// </summary>
         public IOrderBookFunctions OrderBook { get; set; }
+
+        /// <summary>
+        /// Функции взаимодействия скрипта Lua и Рабочего места QUIK
+        /// </summary>
+        public ITradingFunctions Trading { get; set; }
     }
 }

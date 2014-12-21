@@ -5,10 +5,14 @@ using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using QuikSharp.DataStructures;
 
 namespace QuikSharp {
+    /// <summary>
+    /// Extensions for JSON.NET
+    /// </summary>
     public static class JsonExtensions {
         public static T FromJson<T>(this string json) {
             var obj = JsonConvert.DeserializeObject<T>(json, new JsonSerializerSettings {
@@ -24,25 +28,80 @@ namespace QuikSharp {
 
         public static object FromJson(this string json, Type type) {
             var obj = JsonConvert.DeserializeObject(json, type, new JsonSerializerSettings {
-                TypeNameHandling = TypeNameHandling.None
+                TypeNameHandling = TypeNameHandling.None,
+                //NullValueHandling = NullValueHandling.Ignore
             });
             return obj;
         }
 
         public static string ToJson<T>(this T obj) {
-            
+
             var message = JsonConvert.SerializeObject(obj, Formatting.None,
                 new JsonSerializerSettings {
                     TypeNameHandling = TypeNameHandling.None, // Objects
-                    TypeNameAssemblyFormat = FormatterAssemblyStyle.Simple
+                    TypeNameAssemblyFormat = FormatterAssemblyStyle.Simple,
+                    //NullValueHandling = NullValueHandling.Ignore
                 });
             return message;
         }
     }
 
-    public class LuaException : Exception {
-        public LuaException(string message) : base(message) {
-            
+    /// <summary>
+    /// Limits enum serialization only to defined values
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class SafeEnumConverter<T> : StringEnumConverter {
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
+            var isDef = Enum.IsDefined(typeof(T), value);
+            if (!isDef) {
+                value = null;
+            }
+            base.WriteJson(writer, value, serializer);
+        }
+    }
+
+
+    /// <summary>
+    /// Serialize as string with ToString()
+    /// </summary>
+    public class ToStringConverter<T> : JsonConverter {
+
+        public override bool CanConvert(Type objectType) { return true; }
+
+        public override object ReadJson(JsonReader reader,
+                                        Type objectType,
+                                         object existingValue,
+                                         JsonSerializer serializer) {
+
+            var t = JToken.Load(reader);
+
+            // Load JObject from stream
+            //JObject jObject = JObject.Load(reader);
+
+            // Create target object based on JObject
+            T target = t.Value<T>();
+
+            return target;
+        }
+
+        public override void WriteJson(JsonWriter writer,
+                                       object value,
+                                       JsonSerializer serializer) {
+            var t = JToken.FromObject(value.ToString());
+            t.WriteTo(writer);
+        }
+    }
+
+    /// <summary>
+    /// Convert DateTime to HHMMSS
+    /// </summary>
+    // ReSharper disable once InconsistentNaming
+    public class HHMMSSDateTimeConverter : IsoDateTimeConverter {
+        /// <summary>
+        /// 
+        /// </summary>
+        public HHMMSSDateTimeConverter() {
+            base.DateTimeFormat = "hhmmss";
         }
     }
 
@@ -50,6 +109,7 @@ namespace QuikSharp {
         private QuikService _service;
         public MessageConverter(QuikService service) { _service = service; }
         // we learn object type from correlation id and a type stored in responses dictionary
+        // ReSharper disable once RedundantAssignment
         protected override IMessage Create(Type objectType, JObject jObject) {
             if (FieldExists("lua_error", jObject)) {
                 var id = jObject.GetValue("id").Value<long>();
@@ -59,10 +119,9 @@ namespace QuikSharp {
                 var exn = new LuaException(jObject.GetValue("lua_error").Value<string>());
                 tcs.SetException(new LuaException(jObject.GetValue("lua_error").Value<string>()));
                 throw exn;
-            }
-            else if (FieldExists("id", jObject)) {
+            } else if (FieldExists("id", jObject)) {
                 var id = jObject.GetValue("id").Value<long>();
-                objectType  = _service.Responses[id].Value;
+                objectType = _service.Responses[id].Value;
                 return (IMessage)Activator.CreateInstance(objectType);
             } else if (FieldExists("cmd", jObject)) {
                 // without id we have an event
@@ -87,12 +146,12 @@ namespace QuikSharp {
                         case EventNames.OnStop:
                             objectType = typeof(Message<string>);
                             return (IMessage)Activator.CreateInstance(objectType);
-                        
+
                         case EventNames.OnDepoLimit:
                             break;
                         case EventNames.OnDepoLimitDelete:
                             break;
-                        
+
                         case EventNames.OnFirm:
                             break;
                         case EventNames.OnFuturesClientHolding:
@@ -128,7 +187,7 @@ namespace QuikSharp {
                 } else {
                     // TODO if we have a custom event (e.g. add some processing  of standard Quik event) then we must process it here
                     return (IMessage)Activator.CreateInstance(typeof(Message<string>));
-                }                
+                }
             }
             throw new ApplicationException("Not implemented event deserialization");
         }

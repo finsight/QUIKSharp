@@ -119,13 +119,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClassFunctions\ClassFunctions.cs" />
-    <Compile Include="ClassFunctions\ClassInfo.cs" />
-    <Compile Include="ClassFunctions\SecurityInfo.cs" />
+    <Compile Include="DataStructures\ClassInfo.cs" />
+    <Compile Include="DataStructures\SecurityInfo.cs" />
     <Compile Include="DataStructures\EventNames.cs" />
     <Compile Include="DataStructures\Flags.cs" />
-    <Compile Include="DataStructures\AllTradesLine.cs" />
+    <Compile Include="DataStructures\AllTrade.cs" />
     <Compile Include="DataStructures\QuikDateTime.cs" />
     <Compile Include="ISecurity.cs" />
+    <Compile Include="LuaException.cs" />
     <Compile Include="Misc.cs" />
     <Compile Include="NotificationType.cs" />
     <Compile Include="DebugFunctions.cs">
@@ -138,6 +139,13 @@
     <Compile Include="QuikEvents.cs" />
     <Compile Include="QuikService.cs" />
     <Compile Include="ServiceFunctions\ServiceFunctions.cs" />
+    <Compile Include="DataStructures\DepoLimit.cs" />
+    <Compile Include="DataStructures\DepoLimitEx.cs" />
+    <Compile Include="DataStructures\MoneyLimit.cs" />
+    <Compile Include="DataStructures\MoneyLimitEx.cs" />
+    <Compile Include="TradingFunctions\TradingFunctions.cs" />
+    <Compile Include="DataStructures\TransactionReply.cs" />
+    <Compile Include="TradingFunctions\TransactionSpecification.cs" />
     <Compile Include="Tray.cs">
       <SubType>Form</SubType>
     </Compile>
