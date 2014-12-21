@@ -8,8 +8,8 @@ and events.
 A simple Ping/Pong benchmark shows c.60 microseconds roundtrip time for Quik
  (MacBook Air 2012). This is almost negligible compared to Quik's native latency
  (from the terminal to a remote server). This is also very close to the limit,
-e.g. compare it with [Linux kernel test from ZMQ](http://zeromq.org/results:rt-tests-v031) 
-- 60 us ~= median in the test (the numbers there are divided by 2).
+e.g. compare it with [Linux kernel test from ZMQ](http://zeromq.org/results:rt-tests-v031) -
+ 60 us is approximately equal to the median in the test (the numbers there are divided by 2).
 
 Russian version: вопросы и комментарии оставляйте в [Issues](https://github.com/buybackoff/QuikSharp/issues).
 
