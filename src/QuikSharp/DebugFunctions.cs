@@ -32,5 +32,14 @@ namespace QuikSharp {
             return response.Data;
         }
 
+        /// <summary>
+        /// Check if running inside Quik
+        /// </summary>
+        public async Task<bool> IsQuik() {
+            var response = await QuikService.Send<StringMessage>(
+                (new StringMessage("", "is_quik")));
+            return response.Data == "1";
+        }
+
     }
 }

@@ -38,20 +38,44 @@ namespace QuikSharp {
     /// OnTrade - новая сделка 
     /// OnTransReply - ответ на транзакцию 
     /// </summary>
-    internal interface IQuikEvents {
+    public interface IQuikEvents {
+        event EventHandler Stop;
+        event EventHandler OnAccountBalance;
+        event EventHandler OnAccountPosition;
+        event EventHandler OnAllTrade;
+        event EventHandler OnCleanUp;
+        /// <summary>
+        /// Функция вызывается перед закрытием терминала QUIK. 
+        /// </summary>
+        event OnCloseHandler OnClose;
+        event EventHandler OnConnected;
+        event EventHandler OnDepoLimit;
+        event EventHandler OnDepoLimitDelete;
+        event EventHandler OnDisconnected;
+        event EventHandler OnFirm;
+        event EventHandler OnFuturesClientHolding;
+        event EventHandler OnFuturesLimitChange;
+        event EventHandler OnFuturesLimitDelete;
         /// <summary>
         /// Функция вызывается терминалом QUIK перед вызовом функции main(). В качестве параметра принимает значение полного пути к запускаемому скрипту. 
         /// Примечание: В данной функции пользователь имеет возможность инициализировать все необходимые переменные и библиотеки перед запуском основного потока main()
         /// </summary>
-        /// <param name="scriptPath"></param>
-        void OnInit(string scriptPath);
-
+        event OnInitHandler OnInit;
+        event EventHandler OnMoneyLimit;
+        event EventHandler OnMoneyLimitDelete;
+        event EventHandler OnNegDeal;
+        event EventHandler OnNegTrade;
+        event EventHandler OnOrder;
+        event EventHandler OnParam;
+        event EventHandler OnQuote;
         /// <summary>
         /// Функция вызывается терминалом QUIK при остановке скрипта из диалога управления. 
         /// Примечание: Значение параметра «stop_flag» – «1».После окончания выполнения функции таймаут завершения работы скрипта 5 секунд. По истечении этого интервала функция main() завершается принудительно. При этом возможна потеря системных ресурсов.
         /// </summary>
-        /// <param name="stopFlag"></param>
-        void OnStop(int stopFlag);
+        event OnStopHandler OnStop;
+        event EventHandler OnStopOrder;
+        event EventHandler OnTrade;
+        event EventHandler OnTransReply;
 
     }
 }

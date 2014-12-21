@@ -15,6 +15,11 @@ namespace QuikSharp.Tests
             var pong = _df.Ping().Result;
         }
 
+        [Test]
+        public void IsQuik() {
+            Console.WriteLine(_df.IsQuik().Result);
+        }
+
         /// <summary>
         /// Nice error messages and error location in lua
         /// </summary>

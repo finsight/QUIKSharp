@@ -4,7 +4,6 @@
     /// </summary>
     public enum InfoParams {
         // ReSharper disable InconsistentNaming
-
         /// <summary>
         /// Версия программы
         /// </summary>
@@ -141,7 +140,6 @@
         /// Максимальная задержка данных
         /// </summary>
         MAXPINGDURATION
-
         // ReSharper restore InconsistentNaming
     }
 }

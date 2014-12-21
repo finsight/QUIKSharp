@@ -25,7 +25,6 @@ namespace QuikSharp {
     internal abstract class BaseMessage : IMessage {
         protected static readonly long Epoch = (new DateTime(1970, 1, 1, 3, 0, 0, 0)).Ticks/10000L;
         protected BaseMessage(string command = null, DateTime? validUntil = null) {
-            Id = Interlocked.Increment(ref QuikService.CorrelationId);
             Command = command ?? this.GetType().Name;
             CreatedTime = DateTime.Now.Ticks / 10000L - Epoch;
             ValidUntil = validUntil;
@@ -56,9 +55,11 @@ namespace QuikSharp {
     /// Default implementation for a simple message with one string value
     /// </summary>
     internal class StringMessage : BaseMessage {
+        public StringMessage() : base() {
+            
+        }
         public StringMessage(string message, string command, DateTime? validUntil = null) {
-            Id = Interlocked.Increment(ref QuikService.CorrelationId);
-            Command = command ?? GetType().Name;
+            Command = (command ?? GetType().Name).Trim();
             CreatedTime = DateTime.Now.Ticks / 10000L - Epoch;
             ValidUntil = validUntil;
             Data = message;
@@ -66,7 +67,7 @@ namespace QuikSharp {
         /// <summary>
         /// String message
         /// </summary>
-        [JsonProperty(PropertyName = "d")]
+        [JsonProperty(PropertyName = "data")]
         public string Data { get; set; }
 
     }

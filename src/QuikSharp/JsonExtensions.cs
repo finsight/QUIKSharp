@@ -4,6 +4,7 @@ using System.Runtime.Serialization.Formatters;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using QuikSharp.DataStructures;
 
 namespace QuikSharp {
     internal static class JsonExtensions {
@@ -62,10 +63,76 @@ namespace QuikSharp {
                 objectType  = _service.Responses[id].Value;
                 return (IMessage)Activator.CreateInstance(objectType);
             } else if (FieldExists("cmd", jObject)) {
-                // without id we have a command
-                throw new NotImplementedException();
+                // without id we have an event
+                EventNames eventName;
+                var parsed = Enum.TryParse(jObject.GetValue("cmd").Value<string>(), true, out eventName);
+                if (parsed) {
+                    switch (eventName) {
+                        case EventNames.OnAccountBalance:
+                            break;
+                        case EventNames.OnAccountPosition:
+                            break;
+                        case EventNames.OnAllTrade:
+                            objectType = typeof(AllTrade);
+                            return (IMessage)Activator.CreateInstance(objectType);
+                        case EventNames.OnCleanUp:
+                            break;
+                        case EventNames.OnClose:
+                            objectType = typeof(StringMessage);
+                            return (IMessage)Activator.CreateInstance(objectType);
+                        case EventNames.OnConnected:
+                            break;
+                        case EventNames.OnDepoLimit:
+                            break;
+                        case EventNames.OnDepoLimitDelete:
+                            break;
+                        case EventNames.OnDisconnected:
+                            break;
+                        case EventNames.OnFirm:
+                            break;
+                        case EventNames.OnFuturesClientHolding:
+                            break;
+                        case EventNames.OnFuturesLimitChange:
+                            break;
+                        case EventNames.OnFuturesLimitDelete:
+                            break;
+                        case EventNames.OnInit:
+                            objectType = typeof(StringMessage);
+                            return (IMessage)Activator.CreateInstance(objectType);
+                        case EventNames.OnMoneyLimit:
+                            break;
+                        case EventNames.OnMoneyLimitDelete:
+                            break;
+                        case EventNames.OnNegDeal:
+                            break;
+                        case EventNames.OnNegTrade:
+                            break;
+                        case EventNames.OnOrder:
+                            break;
+                        case EventNames.OnParam:
+                            break;
+                        case EventNames.OnQuote:
+                            break;
+                        case EventNames.OnStop:
+                            objectType = typeof(StringMessage);
+                            return (IMessage)Activator.CreateInstance(objectType);
+                        case EventNames.OnStopOrder:
+                            break;
+                        case EventNames.OnTrade:
+                            break;
+                        case EventNames.OnTransReply:
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                } else {
+                    // TODO if we have a custom event (e.g. add some processing 
+                    // of standard Quik event) then we must process it here
+                    objectType = typeof(StringMessage);
+                    return (IMessage)Activator.CreateInstance(objectType);
+                }                
             }
-            throw new ApplicationException();
+            throw new ApplicationException("Not implemented event deserialization");
         }
 
         private static bool FieldExists(string fieldName, JObject jObject) {

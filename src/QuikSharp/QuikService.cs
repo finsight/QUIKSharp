@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using QuikSharp.DataStructures;
 
 // TODOs
 // http://stackoverflow.com/questions/1119841/net-console-application-exit-event
@@ -40,11 +41,14 @@ namespace QuikSharp {
         private QuikService(int port) {
             _port = port;
             Start();
+            Events = new QuikEvents();
         }
         /// <summary>
         /// 
         /// </summary>
         public bool IsStarted { get; private set; }
+
+        internal QuikEvents Events { get; set; }
 
         private readonly IPAddress _host = IPAddress.Parse("127.0.0.1");
         private readonly int _port;
@@ -126,8 +130,8 @@ namespace QuikSharp {
                                     break;
                                 }
                             }
-                        } catch (IOException) {
-                            Trace.WriteLine("Request channel IOException in unexpected place");
+                        } catch (IOException e) {
+                            Trace.WriteLine(e.Message);
                         }
                     }
                 } catch (Exception e) {
@@ -163,28 +167,32 @@ namespace QuikSharp {
                                 var response = await reader.ReadLineAsync();
                                 //Trace.WriteLine("Response:" + response);
                                 try {
-                                    var message = response.FromJson(this);
-                                    if (message.Id.HasValue && message.Id > 0) {
-                                        // it is a response message
-                                        if (!Responses.ContainsKey(message.Id.Value)) throw new ApplicationException("Unexpected correlation ID");
-                                        KeyValuePair<TaskCompletionSource<IMessage>, Type> tcs;
-                                        Responses.TryRemove(message.Id.Value, out tcs);
-                                        if (!message.ValidUntil.HasValue || message.ValidUntil >= DateTime.UtcNow) {
-                                            tcs.Key.SetResult(message);
-                                        } else {
-                                            tcs.Key.SetException(
-                                                new TimeoutException("ValidUntilUTC is less than current time"));
-                                        }
-                                    } else {
-                                        // it is a callback message
-                                        ProcessCallbackMessage(message);
+                                    if (response == null) {
+                                        throw new IOException("Lua returned an empty response or closed the connection");
                                     }
+                                    var message = response.FromJson(this);
+                                        if (message.Id.HasValue && message.Id > 0) {
+                                            // it is a response message
+                                            if (!Responses.ContainsKey(message.Id.Value)) throw new ApplicationException("Unexpected correlation ID");
+                                            KeyValuePair<TaskCompletionSource<IMessage>, Type> tcs;
+                                            Responses.TryRemove(message.Id.Value, out tcs);
+                                            if (!message.ValidUntil.HasValue || message.ValidUntil >= DateTime.UtcNow) {
+                                                tcs.Key.SetResult(message);
+                                            } else {
+                                                tcs.Key.SetException(
+                                                    new TimeoutException("ValidUntilUTC is less than current time"));
+                                            }
+                                        } else {
+                                            // it is a callback message
+                                            ProcessCallbackMessage(message);
+                                        }
+                                    
                                 } catch (LuaException) {
                                     //Trace.WriteLine("Caught Lua exception");
                                 }
                             }
-                        } catch (IOException) {
-                            Trace.WriteLine("Response channel IOException in unexpected place");
+                        } catch (IOException e) {
+                            Trace.WriteLine(e.Message);
                         }
                     }
                 } catch (Exception e) {
@@ -223,7 +231,7 @@ namespace QuikSharp {
                                 _client.Connect(_host, _port);
                                 connected = true;
                             } catch {
-                                Trace.WriteLine("Trying to connect...");
+                                //Trace.WriteLine("Trying to connect...");
                             }
                         }
                     }
@@ -231,14 +239,79 @@ namespace QuikSharp {
             } finally { if (entered) { Monitor.Exit(_syncRoot); } }
         }
 
-        private static void ProcessCallbackMessage(IMessage message) {
+        private void ProcessCallbackMessage(IMessage message) {
             if (message == null) throw new ArgumentNullException("message");
-            throw new NotImplementedException("Special processing for callbacks");
+            EventNames eventName;
+            var parsed = Enum.TryParse(message.Command, true, out eventName);
+            if (parsed) {
+                switch (eventName) {
+                    case EventNames.OnAccountBalance:
+                        break;
+                    case EventNames.OnAccountPosition:
+                        break;
+                    case EventNames.OnAllTrade:
+                        break;
+                    case EventNames.OnCleanUp:
+                        break;
+                    case EventNames.OnClose:
+                        Trace.Assert(message is StringMessage);
+                        Events.OnCloseCall();
+                        break;
+                    case EventNames.OnConnected:
+                        break;
+                    case EventNames.OnDepoLimit:
+                        break;
+                    case EventNames.OnDepoLimitDelete:
+                        break;
+                    case EventNames.OnDisconnected:
+                        break;
+                    case EventNames.OnFirm:
+                        break;
+                    case EventNames.OnFuturesClientHolding:
+                        break;
+                    case EventNames.OnFuturesLimitChange:
+                        break;
+                    case EventNames.OnFuturesLimitDelete:
+                        break;
+                    case EventNames.OnInit:
+                        Trace.Assert(message is StringMessage);
+                        Events.OnInitCall(((StringMessage)message).Data, _port);
+                        break;
+                    case EventNames.OnMoneyLimit:
+                        break;
+                    case EventNames.OnMoneyLimitDelete:
+                        break;
+                    case EventNames.OnNegDeal:
+                        break;
+                    case EventNames.OnNegTrade:
+                        break;
+                    case EventNames.OnOrder:
+                        break;
+                    case EventNames.OnParam:
+                        break;
+                    case EventNames.OnQuote:
+                        break;
+                    case EventNames.OnStop:
+                        Trace.Assert(message is StringMessage);
+                        Events.OnStopCall(int.Parse(((StringMessage)message).Data));
+                        break;
+                    case EventNames.OnStopOrder:
+                        break;
+                    case EventNames.OnTrade:
+                        break;
+                    case EventNames.OnTransReply:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            } else {
+                throw new NotImplementedException("Special processing for custom callbacks");
+            }
         }
 
 
         internal async Task<TResponse> Send<TResponse>(IMessage request, int timeout = 0)
-            where TResponse : class, IMessage {
+            where TResponse : class, IMessage, new() {
             var tcs = new TaskCompletionSource<IMessage>();
             if (timeout > 0) {
                 var ct = new CancellationTokenSource(timeout);

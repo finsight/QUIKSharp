@@ -28,21 +28,19 @@ function timemsec()
     end
 end
 
--- is running from Quik
-function is_quik()
-    if getScriptPath then return true else return false end
-end
+
 
 --- Write to log file and to Quik messages
 function log(msg, level)
-    if level ~= 2 and level ~= 3 then
-        level = 1
-    else
+    if level == 1 or level == 2 or level == 3 then
         -- only warnings and recoverable errors to Quik
-    end
         if message then
             pcall(message, msg, level)
         end
+    else
+        level = 0
+    end
+
     local logLine = "LOG "..level..": "..msg
     print(logLine)
     pcall(logfile.write, logfile, timemsec().." "..logLine.."\n")
@@ -56,7 +54,7 @@ missed_values_file = nil
 missed_values_file_name = nil
 
 -- current connection state
-local is_connected = false
+is_connected = false
 local port = 34130
 local server = socket.bind('localhost', port, 1)
 local client
@@ -78,7 +76,7 @@ end
 
 function qsutils.connect()
     if not is_connected then
-        log('Connecting...')
+        log('Connecting...', 1)
         if client then
             log("is_connected is false but client is not nil", 3)
             -- Quik crashes without pcall
@@ -87,7 +85,7 @@ function qsutils.connect()
         client = getClient()
         if client then
             is_connected = true
-            log 'Connected!'
+            log('Connected!', 1)
             if missed_values_file then
                 missed_values_file:flush()
                 missed_values_file:close()
@@ -134,7 +132,7 @@ end
 
 function sendResponse(msg_table)
     -- if not set explicitly then set CreatedTime "t" property here
-    if not msg_table.t then msg_table.t = timemsec() end
+    -- if not msg_table.t then msg_table.t = timemsec() end
     local responseString = json.encode (msg_table, { indent = false })
     if is_connected then
         local status, res = pcall(client.send, client, responseString..'\n')

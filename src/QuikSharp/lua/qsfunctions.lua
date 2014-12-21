@@ -25,26 +25,102 @@ end
 
 
 ------------------------------
--- Service functions
+-- Debug functions
 ------------------------------
 --- Echoes its message
 -- @param msg message table
 -- @return same msg table
 function qsfunctions.ping(msg)
     -- need to know data structure the caller gives
-    msg.t = nil
-    if msg.d == "Ping" then
-        msg.d = "Pong"
+    msg.t = 0 -- avoid time generation. Could also leave original
+    if msg.data == "Ping" then
+        msg.data = "Pong"
         return msg
     else
-        msg.d = msg.d .. " is not Ping"
+        msg.data = msg.data .. " is not Ping"
         return msg
     end
 end
 
 --- Test error handling
 function qsfunctions.divide_string_by_zero(msg)
-    msg.d = "asd" / 1
+    msg.data = "asd" / 1
+    return msg
+end
+
+function qsfunctions.is_quik(msg)
+    if getScriptPath then msg.data = 1 else msg.data = 0 end
+    return msg
+end
+
+------------------------------
+-- Service functions
+------------------------------
+--- Функция предназначена для определения состояния подключения клиентского места к
+-- серверу. Возвращает «1», если клиентское место подключено и «0», если не подключено.
+function qsfunctions.isConnected(msg)
+    -- set time when function was called
+    msg.t = timemsec()
+    msg.data = isConnected()
+    return msg
+end
+
+
+--- Функция возвращает путь, по которому находится файл info.exe, исполняющий данный
+-- скрипт, без завершающего обратного слэша («\»). Например, C:\QuikFront.
+function qsfunctions.getWorkingFolder(msg)
+    -- set time when function was called
+    msg.t = timemsec()
+    msg.data = getWorkingFolder()
+    return msg
+end
+
+--- Функция возвращает путь, по которому находится запускаемый скрипт, без завершающего
+-- обратного слэша («\»). Например, C:\QuikFront\Scripts.
+function qsfunctions.getScriptPath(msg)
+    -- set time when function was called
+    msg.t = timemsec()
+    msg.data = getScriptPath()
+    return msg
+end
+
+--- Функция возвращает значения параметров информационного окна (пункт меню
+-- Связь / Информационное окно…).
+function qsfunctions.getInfoParam(msg)
+    -- set time when function was called
+    msg.t = timemsec()
+    msg.data = getInfoParam(msg.data)
+    return msg
+end
+
+--- Функция отображает сообщения в терминале QUIK.
+function qsfunctions.message(msg)
+    log(msg.data, 1)
+    msg.data = ""
+    return msg
+end
+function qsfunctions.warning_message(msg)
+    log(msg.data, 2)
+    msg.data = ""
+    return msg
+end
+function qsfunctions.error_message(msg)
+    log(msg.data, 3)
+    msg.data = ""
+    return msg
+end
+
+--- Функция приостанавливает выполнение скрипта.
+function qsfunctions.sleep(msg)
+    delay(msg.data)
+    msg.data = ""
+    return msg
+end
+
+--- Функция для вывода отладочной информации. 
+function qsfunctions.PrintDbgStr(msg)
+    log(msg.data, 0)
+    msg.data = ""
     return msg
 end
 

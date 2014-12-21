@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Ping.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceFuncitonsTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

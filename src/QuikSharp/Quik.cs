@@ -1,16 +1,23 @@
-﻿using QuikSharp.ServiceFunctions;
-
-namespace QuikSharp {
+﻿namespace QuikSharp {
     public class Quik {
-        public static readonly int DefaultPort = 34130;
+        public const int DefaultPort = 34130;
 
-        public Quik(int port = 34130) {
+        public Quik(int port = DefaultPort) {
             QuikService = QuikService.Create(port);
-            ServiceFunctions = new ServiceFunctions.ServiceFunctions(port);
+            Debug = new DebugFunctions(port);
+            Service = new ServiceFunctions(port);
+            Events = QuikService.Events;
         }
 
-        internal QuikService QuikService { get; private set; }
+        private QuikService QuikService { get; set; }
 
-        public IServiceFunctions ServiceFunctions { get; private set; }
+        internal DebugFunctions Debug { get; set; }
+
+        public IQuikEvents Events { get; set; }
+
+        public IServiceFunctions Service { get; private set; }
+
+        
+
     }
 }

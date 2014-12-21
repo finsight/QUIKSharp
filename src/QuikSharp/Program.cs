@@ -13,6 +13,9 @@ namespace QuikSharp {
     // http://stackoverflow.com/questions/1119841/net-console-application-exit-event
 
     static class Program {
+
+        private static Quik _quik;
+
         static bool _exitSystem;
 
         #region Trap application termination
@@ -55,10 +58,24 @@ namespace QuikSharp {
 
             ServiceManager.StartServices();
 
+            _quik = new Quik();
+            Console.WriteLine("Running in Quik? : " + _quik.Debug.IsQuik().Result);
+
+            _quik.Events.OnStop += Events_OnStop;
+            _quik.Events.OnClose += Events_OnClose;
+
             // hold the console so it doesn’t run off the end
             while (!_exitSystem) {
                 Thread.Sleep(100);
             }
+        }
+
+        static void Events_OnClose() {
+            Console.WriteLine("Events_OnClose: ");
+        }
+
+        static void Events_OnStop(int signal) {
+            Console.WriteLine("Events_OnStop: " + signal);
         }
 
         static void Cleanup() {
