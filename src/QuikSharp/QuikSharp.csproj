@@ -131,6 +131,7 @@
     </Compile>
     <Compile Include="JsonExtensions.cs" />
     <Compile Include="Message.cs" />
+    <Compile Include="OrderBookFunctions\OrderBookFunctions.cs" />
     <Compile Include="Quik.cs" />
     <Compile Include="QuikEvents.cs" />
     <Compile Include="QuikService.cs" />

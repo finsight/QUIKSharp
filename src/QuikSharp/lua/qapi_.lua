@@ -55,18 +55,18 @@ end
 function OnQuote(cl, sc )
   s = ""
 	if cl == cls and sc == sec then
-		ql2 = getQuoteLevel2(cls, sec)
-		for i=1,ql2.bid_count do
-			s = s.. string.format("%1.2f:%1.2f\n", ql2.bid[i].quantity, ql2.bid[i].price)
-		end
-		s = s .. "###\n"
-		for i=1,ql2.offer_count do
-			s = s.. string.format("%1.2f:%1.2f\n", ql2.offer[i].quantity, ql2.offer[i].price)
-		end
-	end
-	if cmd == "stakan" and string.len(s)>0 then
-	   response = s
-	end 
+  ql2 = getQuoteLevel2(cls, sec)
+  for i=1,ql2.bid_count do
+      s = s.. string.format("%1.2f:%1.2f\n", ql2.bid[i].quantity, ql2.bid[i].price)
+  end
+  s = s .. "###\n"
+  for i=1,ql2.offer_count do
+      s = s.. string.format("%1.2f:%1.2f\n", ql2.offer[i].quantity, ql2.offer[i].price)
+  end
+end
+if cmd == "stakan" and string.len(s)>0 then
+    response = s
+end
 end
 
 -- вызывается при нажатии кнопки "остановить" в диалоге
@@ -177,15 +177,15 @@ function processCommand(request)
     cmd = "svecha"
   end
   if command == "isc" then -- проверка соединения. отвечаем сразу
-    response = tostring(isConnected())
-  end 
-  if command == "stm" then -- время сервера, отвечаем сразу
-    response = getInfoParam("SERVERTIME")
-    --message("Ответ: " .. response, 1)
+  response = tostring(isConnected())
   end
-  if command == "trd" then -- время сервера, отвечаем сразу
-    response = getInfoParam("TRADEDATE")
-    --message("Ответ: " .. response, 1)
+if command == "stm" then -- время сервера, отвечаем сразу
+response = getInfoParam("SERVERTIME")
+--message("Ответ: " .. response, 1)
+end
+if command == "trd" then -- время сервера, отвечаем сразу
+response = getInfoParam("TRADEDATE")
+--message("Ответ: " .. response, 1)
   end
   if command == "go " then
     ind = string.find(request,":",3,true)

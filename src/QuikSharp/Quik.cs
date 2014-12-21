@@ -11,6 +11,8 @@ namespace QuikSharp {
             Debug = new DebugFunctions(port);
             Service = new ServiceFunctions(port);
             Class = new ClassFunctions(port);
+            OrderBook = new OrderBookFunctions(port);
+
         }
 
         private QuikService QuikService { get; set; }
@@ -32,5 +34,9 @@ namespace QuikSharp {
         /// </summary>
         public IClassFunctions Class { get; private set; }
 
+        /// <summary>
+        /// Функции для работы со стаканом котировок
+        /// </summary>
+        public IOrderBookFunctions OrderBook { get; set; }
     }
 }

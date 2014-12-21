@@ -140,7 +140,7 @@ end
 --- Функция предназначена для получения информации о классе.
 function qsfunctions.getClassInfo(msg)
     msg.data = getClassInfo(msg.data)
-    if msg.data then log(msg.data.name) else log("getClassInfo  returned nil") end
+--    if msg.data then log(msg.data.name) else log("getClassInfo  returned nil") end
     return msg
 end
 
@@ -151,7 +151,31 @@ function qsfunctions.getClassSecurities(msg)
     return msg
 end
 
+------------------------------
+-- Order Book functions (Функции для работы со стаканом котировок)
+------------------------------
+--- Функция заказывает на сервер получение стакана по указанному классу и бумаге.
+function qsfunctions.Subscribe_Level_II_Quotes(msg)
+    local spl = split(msg.data, "|")
+    local class_code, sec_code = spl[1], spl[2]
+    msg.data = Subscribe_Level_II_Quotes(class_code, sec_code)
+    return msg
+end
 
+--- Функция отменяет заказ на получение с сервера стакана по указанному классу и бумаге.
+function qsfunctions.Unsubscribe_Level_II_Quotes(msg)
+    local spl = split(msg.data, "|")
+    local class_code, sec_code = spl[1], spl[2]
+    msg.data = Unsubscribe_Level_II_Quotes(class_code, sec_code)
+    return msg
+end
 
+--- Функция позволяет узнать, заказан ли с сервера стакан по указанному классу и бумаге.
+function qsfunctions.IsSubscribed_Level_II_Quotes(msg)
+    local spl = split(msg.data, "|")
+    local class_code, sec_code = spl[1], spl[2]
+    msg.data = IsSubscribed_Level_II_Quotes(class_code, sec_code)
+    return msg
+end
 
 return qsfunctions
