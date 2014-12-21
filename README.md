@@ -9,6 +9,8 @@ A simple Ping/Pong benchmark shows c.80 microseconds roundtrip time for a standa
 Lua interpreter and c.190 microseconds for Quik (MacBook Air 2012). This is almost negligible 
 compared to Quik's native latency (from the terminal to a remote server).
 
+Russian version: вопросы и комментарии оставляйте в [Issues](https://github.com/buybackoff/QuikSharp/issues).
+
 Install & Usage
 ==================
 
@@ -27,12 +29,11 @@ Why use .NET for Quik
 =============
 (and not Lua or DDE or other libs)
 
-* Because one should be crazy to use 3rd party closed source code with unclear
-licensing and support for trading (even tested and popular like StockSharp).
+* Because one should be crazy to use for trading some 3rd party *closed source* code 
+with unclear licensing and support (even tested and popular like StockSharp).
 
-* Because Quik is dumb, slow, illogical, made by violent lazy
-undergrads for users to suffer (no offence, just trolling) - while .NET is smart, 
-performant and pleasure to work with.
+* Because Quik is dumb, slow and painful - while .NET is smart, 
+fast and pleasure to work with.
 
 * Because Quik is a niche legacy soft that has its market share for 
 historical reasons. One should not invest more than a minimum into such software, but 
