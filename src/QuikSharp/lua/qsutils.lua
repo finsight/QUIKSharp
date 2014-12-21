@@ -28,19 +28,18 @@ function timemsec()
     end
 end
 
-
+is_debug = true
 
 --- Write to log file and to Quik messages
 function log(msg, level)
-    if level == 1 or level == 2 or level == 3 then
+    if not msg then msg = "" end
+    if level == 1 or level == 2 or level == 3 or is_debug then
         -- only warnings and recoverable errors to Quik
         if message then
             pcall(message, msg, level)
         end
-    else
-        level = 0
     end
-
+    if not level then level = 0 end
     local logLine = "LOG "..level..": "..msg
     print(logLine)
     pcall(logfile.write, logfile, timemsec().." "..logLine.."\n")

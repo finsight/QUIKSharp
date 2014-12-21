@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace QuikSharp {
 
+    /// <summary>
+    /// Сервисные функции
+    /// </summary>
     public interface IServiceFunctions : IQuikFunctions {
 
         /// <summary>
@@ -52,42 +55,42 @@ namespace QuikSharp {
         public QuikService QuikService { get; private set; }
 
         public async Task<string> GetWorkingFolder() {
-            var response = await QuikService.Send<StringMessage>(
-                (new StringMessage("", "getWorkingFolder")));
+            var response = await QuikService.Send<Message<string>>(
+                (new Message<string>("", "getWorkingFolder")));
             return response.Data;
         }
 
         public async Task<bool> IsConnected() {
-            var response = await QuikService.Send<StringMessage>(
-                (new StringMessage("", "isConnected")));
+            var response = await QuikService.Send<Message<string>>(
+                (new Message<string>("", "isConnected")));
             return response.Data == "1";
         }
 
         public async Task<string> GetScriptPath() {
-            var response = await QuikService.Send<StringMessage>(
-                (new StringMessage("", "getScriptPath")));
+            var response = await QuikService.Send<Message<string>>(
+                (new Message<string>("", "getScriptPath")));
             return response.Data;
         }
 
         public async Task<string> GetInfoParam(InfoParams param) {
-            var response = await QuikService.Send<StringMessage>(
-                (new StringMessage(param.ToString(), "getInfoParam")));
+            var response = await QuikService.Send<Message<string>>(
+                (new Message<string>(param.ToString(), "getInfoParam")));
             return response.Data;
         }
 
         public async Task<bool> Message(string message, NotificationType iconType = NotificationType.Info) {
             switch (iconType) {
                 case NotificationType.Info:
-                    await QuikService.Send<StringMessage>(
-                        (new StringMessage(message, "message")));
+                    await QuikService.Send<Message<string>>(
+                        (new Message<string>(message, "message")));
                     break;
                 case NotificationType.Warning:
-                    await QuikService.Send<StringMessage>(
-                        (new StringMessage(message, "warning_message")));
+                    await QuikService.Send<Message<string>>(
+                        (new Message<string>(message, "warning_message")));
                     break;
                 case NotificationType.Error:
-                    await QuikService.Send<StringMessage>(
-                        (new StringMessage(message, "error_message")));
+                    await QuikService.Send<Message<string>>(
+                        (new Message<string>(message, "error_message")));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("iconType");
@@ -96,8 +99,8 @@ namespace QuikSharp {
         }
 
         public async Task<bool> PrintDbgStr(string message) {
-            await QuikService.Send<StringMessage>(
-                (new StringMessage(message, "PrintDbgStr ")));
+            await QuikService.Send<Message<string>>(
+                (new Message<string>(message, "PrintDbgStr ")));
             return true;
         }
     }

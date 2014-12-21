@@ -118,6 +118,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClassFunctions\ClassFunctions.cs" />
+    <Compile Include="ClassFunctions\ClassInfo.cs" />
     <Compile Include="DataStructures\EventNames.cs" />
     <Compile Include="DataStructures\Flags.cs" />
     <Compile Include="DataStructures\AllTradesLine.cs" />
@@ -130,9 +132,7 @@
     <Compile Include="JsonExtensions.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Quik.cs" />
-    <Compile Include="QuikEvents.cs">
-      <DependentUpon>IQuikEvents.cs</DependentUpon>
-    </Compile>
+    <Compile Include="QuikEvents.cs" />
     <Compile Include="QuikService.cs" />
     <Compile Include="ServiceFunctions\ServiceFunctions.cs" />
     <Compile Include="Tray.cs">

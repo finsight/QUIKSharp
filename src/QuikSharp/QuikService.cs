@@ -254,18 +254,24 @@ namespace QuikSharp {
                     case EventNames.OnAllTrade:
                         break;
                     case EventNames.OnCleanUp:
+                        Trace.Assert(message is Message<string>);
+                        Events.OnCleanUpCall();
                         break;
                     case EventNames.OnClose:
-                        Trace.Assert(message is StringMessage);
+                        Trace.Assert(message is Message<string>);
                         Events.OnCloseCall();
                         break;
                     case EventNames.OnConnected:
+                        Trace.Assert(message is Message<string>);
+                        Events.OnConnectedCall();
                         break;
                     case EventNames.OnDepoLimit:
                         break;
                     case EventNames.OnDepoLimitDelete:
                         break;
                     case EventNames.OnDisconnected:
+                        Trace.Assert(message is Message<string>);
+                        Events.OnDisconnectedCall();
                         break;
                     case EventNames.OnFirm:
                         break;
@@ -276,8 +282,8 @@ namespace QuikSharp {
                     case EventNames.OnFuturesLimitDelete:
                         break;
                     case EventNames.OnInit:
-                        Trace.Assert(message is StringMessage);
-                        Events.OnInitCall(((StringMessage)message).Data, _port);
+                        Trace.Assert(message is Message<string>);
+                        Events.OnInitCall(((Message<string>)message).Data, _port);
                         break;
                     case EventNames.OnMoneyLimit:
                         break;
@@ -294,8 +300,8 @@ namespace QuikSharp {
                     case EventNames.OnQuote:
                         break;
                     case EventNames.OnStop:
-                        Trace.Assert(message is StringMessage);
-                        Events.OnStopCall(int.Parse(((StringMessage)message).Data));
+                        Trace.Assert(message is Message<string>);
+                        Events.OnStopCall(int.Parse(((Message<string>)message).Data));
                         break;
                     case EventNames.OnStopOrder:
                         break;

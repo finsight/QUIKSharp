@@ -74,22 +74,25 @@ namespace QuikSharp {
                             break;
                         case EventNames.OnAccountPosition:
                             break;
+
                         case EventNames.OnAllTrade:
-                            objectType = typeof(AllTrade);
+                            objectType = typeof(Message<AllTrade>);
                             return (IMessage)Activator.CreateInstance(objectType);
+
                         case EventNames.OnCleanUp:
-                            break;
                         case EventNames.OnClose:
-                            objectType = typeof(StringMessage);
-                            return (IMessage)Activator.CreateInstance(objectType);
                         case EventNames.OnConnected:
-                            break;
+                        case EventNames.OnDisconnected:
+                        case EventNames.OnInit:
+                        case EventNames.OnStop:
+                            objectType = typeof(Message<string>);
+                            return (IMessage)Activator.CreateInstance(objectType);
+                        
                         case EventNames.OnDepoLimit:
                             break;
                         case EventNames.OnDepoLimitDelete:
                             break;
-                        case EventNames.OnDisconnected:
-                            break;
+                        
                         case EventNames.OnFirm:
                             break;
                         case EventNames.OnFuturesClientHolding:
@@ -98,9 +101,6 @@ namespace QuikSharp {
                             break;
                         case EventNames.OnFuturesLimitDelete:
                             break;
-                        case EventNames.OnInit:
-                            objectType = typeof(StringMessage);
-                            return (IMessage)Activator.CreateInstance(objectType);
                         case EventNames.OnMoneyLimit:
                             break;
                         case EventNames.OnMoneyLimitDelete:
@@ -115,9 +115,7 @@ namespace QuikSharp {
                             break;
                         case EventNames.OnQuote:
                             break;
-                        case EventNames.OnStop:
-                            objectType = typeof(StringMessage);
-                            return (IMessage)Activator.CreateInstance(objectType);
+
                         case EventNames.OnStopOrder:
                             break;
                         case EventNames.OnTrade:
@@ -128,10 +126,8 @@ namespace QuikSharp {
                             throw new ArgumentOutOfRangeException();
                     }
                 } else {
-                    // TODO if we have a custom event (e.g. add some processing 
-                    // of standard Quik event) then we must process it here
-                    objectType = typeof(StringMessage);
-                    return (IMessage)Activator.CreateInstance(objectType);
+                    // TODO if we have a custom event (e.g. add some processing  of standard Quik event) then we must process it here
+                    return (IMessage)Activator.CreateInstance(typeof(Message<string>));
                 }                
             }
             throw new ApplicationException("Not implemented event deserialization");

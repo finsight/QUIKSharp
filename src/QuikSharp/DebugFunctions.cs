@@ -6,12 +6,12 @@ namespace QuikSharp {
         public DebugFunctions(int port) { QuikService = QuikService.Create(port); }
 
         public QuikService QuikService { get; private set; }
-        class PingRequest : StringMessage {
+        class PingRequest : Message<string> {
             public PingRequest()
                 : base("Ping", "ping", null) { }
         }
 
-        class PingResponse : StringMessage {
+        class PingResponse : Message<string> {
             public PingResponse()
                 : base("Pong", "ping", null) { }
         }
@@ -28,7 +28,7 @@ namespace QuikSharp {
         /// </summary>
         /// <returns></returns>
         public async Task<string> DivideStringByZero() {
-            var response = await QuikService.Send<StringMessage>((new StringMessage("", "divide_string_by_zero")));
+            var response = await QuikService.Send<Message<string>>((new Message<string>("", "divide_string_by_zero")));
             return response.Data;
         }
 
@@ -36,8 +36,8 @@ namespace QuikSharp {
         /// Check if running inside Quik
         /// </summary>
         public async Task<bool> IsQuik() {
-            var response = await QuikService.Send<StringMessage>(
-                (new StringMessage("", "is_quik")));
+            var response = await QuikService.Send<Message<string>>(
+                (new Message<string>("", "is_quik")));
             return response.Data == "1";
         }
 

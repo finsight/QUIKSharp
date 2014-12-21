@@ -29,7 +29,7 @@ let summary = "Quik Lua interface in .NET"
 
 // Longer description of the project
 // (used as a description for NuGet package; line breaks are automatically cleaned up)
-let description = """See GitHub repo for details."""
+let description = """Quik Lua interface in .NET."""
 
 // List of author names (for NuGet package)
 let authors = [ "Victor Baybekov (@buybackoff)" ]

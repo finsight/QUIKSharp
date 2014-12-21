@@ -3,26 +3,39 @@ using System;
 
 namespace QuikSharp {
 
-    public delegate void OnCloseHandler();
+    /// <summary>
+    /// Handler for events without arguments
+    /// </summary>
+    public delegate void VoidHandler();
     public delegate void OnInitHandler(string path, int port);
     public delegate void OnStopHandler(int signal);
 
     internal class QuikEvents : IQuikEvents {
-        public event EventHandler Stop;
         public event EventHandler OnAccountBalance;
         public event EventHandler OnAccountPosition;
         public event EventHandler OnAllTrade;
-        public event EventHandler OnCleanUp;
+        /// <summary>
+        /// Функция вызывается терминалом QUIK при смене сессии и при выгрузке файла qlua.dll. 
+        /// </summary>
+        public event VoidHandler OnCleanUp;
+        internal void OnCleanUpCall() { OnCleanUp(); }
         /// <summary>
         /// Функция вызывается перед закрытием терминала QUIK. 
         /// </summary>
-        public event OnCloseHandler OnClose;
+        public event VoidHandler OnClose;
         internal void OnCloseCall() { OnClose(); }
-
-        public event EventHandler OnConnected;
+        /// <summary>
+        /// Функция вызывается терминалом QUIK при установлении связи с сервером QUIK. 
+        /// </summary>
+        public event VoidHandler OnConnected;
+        internal void OnConnectedCall() { OnConnected(); }
         public event EventHandler OnDepoLimit;
         public event EventHandler OnDepoLimitDelete;
-        public event EventHandler OnDisconnected;
+        /// <summary>
+        /// Функция вызывается терминалом QUIK при отключении от сервера QUIK. 
+        /// </summary>
+        public event VoidHandler OnDisconnected;
+        internal void OnDisconnectedCall() { OnDisconnected(); }
         public event EventHandler OnFirm;
         public event EventHandler OnFuturesClientHolding;
         public event EventHandler OnFuturesLimitChange;

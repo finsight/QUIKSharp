@@ -44,6 +44,7 @@ and it is the choice for new development.
 LICENCE
 ============
 QuikSharp - Quik Lua interface in .NET
+
 Copyright Ⓒ 2014 Victor Baybekov
 
 This program is free software: you can redistribute it and/or modify

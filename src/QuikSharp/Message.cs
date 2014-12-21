@@ -52,14 +52,16 @@ namespace QuikSharp {
         public DateTime? ValidUntil { get; set; }
     }
 
+
     /// <summary>
-    /// Default implementation for a simple message with one string value
+    /// Default generic implementation
     /// </summary>
-    internal class StringMessage : BaseMessage {
-        public StringMessage() : base() {
-            
+    internal class Message<T> : BaseMessage {
+        public Message()
+            : base() {
+
         }
-        public StringMessage(string message, string command, DateTime? validUntil = null) {
+        public Message(T message, string command, DateTime? validUntil = null) {
             Command = (command ?? GetType().Name).Trim();
             CreatedTime = DateTime.Now.Ticks / 10000L - Epoch;
             ValidUntil = validUntil;
@@ -69,7 +71,7 @@ namespace QuikSharp {
         /// String message
         /// </summary>
         [JsonProperty(PropertyName = "data")]
-        public string Data { get; set; }
+        public T Data { get; set; }
 
     }
 

@@ -40,19 +40,18 @@ namespace QuikSharp {
     /// OnTransReply - ответ на транзакцию 
     /// </summary>
     public interface IQuikEvents {
-        event EventHandler Stop;
         event EventHandler OnAccountBalance;
         event EventHandler OnAccountPosition;
         event EventHandler OnAllTrade;
-        event EventHandler OnCleanUp;
+        event VoidHandler OnCleanUp;
         /// <summary>
         /// Функция вызывается перед закрытием терминала QUIK. 
         /// </summary>
-        event OnCloseHandler OnClose;
-        event EventHandler OnConnected;
+        event VoidHandler OnClose;
+        event VoidHandler OnConnected;
         event EventHandler OnDepoLimit;
         event EventHandler OnDepoLimitDelete;
-        event EventHandler OnDisconnected;
+        event VoidHandler OnDisconnected;
         event EventHandler OnFirm;
         event EventHandler OnFuturesClientHolding;
         event EventHandler OnFuturesLimitChange;

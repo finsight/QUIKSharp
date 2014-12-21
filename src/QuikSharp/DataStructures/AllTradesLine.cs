@@ -1,6 +1,8 @@
 ﻿// Copyright (C) 2014 Victor Baybekov
 
 namespace QuikSharp.DataStructures {
+
+
     /// <summary>
     /// Таблица с параметрами обезличенной сделки 
     /// </summary>
