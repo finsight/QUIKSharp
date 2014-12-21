@@ -18,8 +18,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuikSharp", "src\QuikSharp\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "project", "project", "{8E6032D5-4061-44AD-8151-7F70FE09880A}"
 	ProjectSection(SolutionItems) = preProject
+		build.fsx = build.fsx
 		LICENSE.txt = LICENSE.txt
+		NuGet\QuikSharp.nuspec = NuGet\QuikSharp.nuspec
 		README.md = README.md
+		RELEASE_NOTES.md = RELEASE_NOTES.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{9C0672CC-6182-4469-B5DF-B92265713169}"

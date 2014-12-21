@@ -1,3 +1,5 @@
+// Copyright (C) 2014 Victor Baybekov
+
 namespace QuikSharp {
     /// <summary>
     /// A marker interface for all classes that implement Quik functions (grouped by QLUA.chm manual)

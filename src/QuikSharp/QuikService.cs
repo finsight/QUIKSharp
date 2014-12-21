@@ -1,3 +1,5 @@
+// Copyright (C) 2014 Victor Baybekov
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

@@ -1,4 +1,6 @@
-﻿namespace QuikSharp {
+﻿// Copyright (C) 2014 Victor Baybekov
+
+namespace QuikSharp {
     public class Quik {
         public const int DefaultPort = 34130;
 
@@ -11,7 +13,7 @@
 
         private QuikService QuikService { get; set; }
 
-        internal DebugFunctions Debug { get; set; }
+        public DebugFunctions Debug { get; set; }
 
         public IQuikEvents Events { get; set; }
 

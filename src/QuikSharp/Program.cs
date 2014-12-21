@@ -1,8 +1,9 @@
-﻿using System;
+﻿// Copyright (C) 2014 Victor Baybekov
+
+using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Windows.Forms;
 
 namespace QuikSharp {
 

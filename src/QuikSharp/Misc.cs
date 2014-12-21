@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿// Copyright (C) 2014 Victor Baybekov
+
+using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;

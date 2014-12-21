@@ -1,5 +1,6 @@
+// Copyright (C) 2014 Victor Baybekov
+
 using System;
-using System.Threading;
 using Newtonsoft.Json;
 
 namespace QuikSharp {
