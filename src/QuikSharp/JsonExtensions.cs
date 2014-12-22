@@ -53,6 +53,17 @@ namespace QuikSharp {
                 });
             return message;
         }
+
+        public static string ToJsonFormatted<T>(this T obj) {
+
+            var message = JsonConvert.SerializeObject(obj, Formatting.Indented,
+                new JsonSerializerSettings {
+                    TypeNameHandling = TypeNameHandling.None, // Objects
+                    TypeNameAssemblyFormat = FormatterAssemblyStyle.Simple,
+                    //NullValueHandling = NullValueHandling.Ignore
+                });
+            return message;
+        }
     }
 
     /// <summary>

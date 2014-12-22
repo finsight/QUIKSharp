@@ -80,12 +80,17 @@ end
 
 -- log files
 os.execute("mkdir " .. "logs")
-logfile = io.open ("logs/QuikSharp.log", "a")
+logfile = io.open (script_path.. "/logs/QuikSharp.log", "a")
 missed_values_file = nil
 missed_values_file_name = nil
 
 -- current connection state
+
 is_connected = false
+--- indicates that QuikSharp was connected during this session
+-- used to write missed values to a file and then resend them if a client was connected
+-- to avoid resending missed values, stop the script in Quik
+was_connected = false
 local port = 34130
 local server = socket.bind('localhost', port, 1)
 local client
@@ -116,6 +121,7 @@ function qsutils.connect()
         client = getClient()
         if client then
             is_connected = true
+            was_connected = true
             log('Connected!', 1)
             if missed_values_file then
                 log("Loading missed values from "..missed_values_file_name, 2)
@@ -127,6 +133,7 @@ function qsutils.connect()
                 for line in io.lines(previous_file_name) do
                     client:send(line..'\n')
                 end
+                os.remove(previous_file_name)
             end
         end
     end
@@ -178,7 +185,7 @@ function sendResponse(msg_table)
         end
     end
     -- we need this break instead of else because we could lose connection inside the previous if
-    if not is_connected then
+    if not is_connected and was_connected then
         if not missed_values_file then
             missed_values_file_name = script_path .. "/logs/MissedValues."..os.time()..".log"
             missed_values_file = io.open(missed_values_file_name, "a")

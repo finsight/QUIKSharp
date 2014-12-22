@@ -4,11 +4,9 @@
 function is_quik()
     if getScriptPath then return true else return false end
 end
-script_path = ""
+script_path = "."
 if is_quik() then
     script_path = getScriptPath()
-else
-    script_path = "."
 end
 package.path = package.path .. ";" .. script_path .. "\\?.lua;" .. script_path .. "\\?.luac"
 package.cpath = package.cpath .. ";" .. script_path .. '\\clibs\\?.dll'
