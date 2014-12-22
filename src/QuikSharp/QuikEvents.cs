@@ -17,6 +17,12 @@ namespace QuikSharp {
     public delegate void InitHandler(string path, int port);
 
     /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="orderbook"></param>
+    public delegate void QuoteHandler(OrderBook orderbook);
+
+    /// <summary>
     /// Обработчик события OnStop
     /// </summary>
     public delegate void StopHandler(int signal);
@@ -72,7 +78,9 @@ namespace QuikSharp {
         public event EventHandler OnNegTrade;
         public event EventHandler OnOrder;
         public event EventHandler OnParam;
-        public event EventHandler OnQuote;
+
+        public event QuoteHandler OnQuote;
+        internal void OnQuoteCall(OrderBook orderBook) { if (OnQuote != null) OnQuote(orderBook); }
 
         public event StopHandler OnStop;
         internal void OnStopCall(int signal) { if (OnStop != null) OnStop(signal); }

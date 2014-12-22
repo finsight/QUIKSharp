@@ -55,6 +55,7 @@
     <Compile Include="Ping.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceFuncitonsTest.cs" />
+    <Compile Include="TradingFunctionsTest.cs" />
     <Compile Include="TransactionSpecTest.cs" />
   </ItemGroup>
   <ItemGroup>

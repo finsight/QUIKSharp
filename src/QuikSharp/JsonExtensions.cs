@@ -203,7 +203,10 @@ namespace QuikSharp {
                         case EventNames.OnParam:
                             break;
                         case EventNames.OnQuote:
-                            break;
+                            var msg = new Message<OrderBook> {Data = new OrderBook()};
+                            //objectType = typeof(Message<OrderBook>);
+                            return (IMessage) msg; //Activator.CreateInstance(objectType);
+
                         case EventNames.OnStopOrder:
                             break;
                         case EventNames.OnTrade:

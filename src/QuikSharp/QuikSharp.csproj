@@ -120,6 +120,7 @@
   <ItemGroup>
     <Compile Include="ClassFunctions\ClassFunctions.cs" />
     <Compile Include="DataStructures\ClassInfo.cs" />
+    <Compile Include="DataStructures\OrderBook.cs" />
     <Compile Include="DataStructures\SecurityInfo.cs" />
     <Compile Include="DataStructures\EventNames.cs" />
     <Compile Include="DataStructures\Flags.cs" />

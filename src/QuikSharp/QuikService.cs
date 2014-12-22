@@ -280,6 +280,7 @@ namespace QuikSharp {
                         Trace.Assert(message is Message<string>);
                         Events.OnDisconnectedCall();
                         break;
+
                     case EventNames.OnFirm:
                         break;
                     case EventNames.OnFuturesClientHolding:
@@ -305,7 +306,10 @@ namespace QuikSharp {
                     case EventNames.OnParam:
                         break;
                     case EventNames.OnQuote:
+                        Trace.Assert(message is Message<OrderBook>);
+                        Events.OnQuoteCall(((Message<OrderBook>)message).Data);
                         break;
+
                     case EventNames.OnStop:
                         Trace.Assert(message is Message<string>);
                         Events.OnStopCall(int.Parse(((Message<string>)message).Data));

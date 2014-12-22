@@ -50,6 +50,20 @@ function OnInit(script_path)
     log("Hello, QuikSharp! Running inside Quik from the path: "..getScriptPath(), 1)
 end
 
+--- Функция вызывается терминалом QUIK при получении изменения стакана котировок.
+function OnQuote(class_code, sec_code)
+    if is_connected then
+        local msg = {}
+        msg.cmd = "OnQuote"
+        -- msg.t = timemsec()
+        ql2 = getQuoteLevel2(class_code, sec_code)
+        msg.data = ql2
+        msg.data.class_code = class_code
+        msg.data.sec_code = sec_code
+        sendResponse(msg)
+    end
+end
+
 --- Функция вызывается терминалом QUIK при остановке скрипта из диалога управления и при закрытии терминала QUIK.
 function OnStop(s)
     if is_connected then

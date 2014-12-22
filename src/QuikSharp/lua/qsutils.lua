@@ -59,7 +59,7 @@ function split(inputstr, sep)
     return t
 end
 
-local function from_json(str)
+function from_json(str)
     local status, msg= pcall(json.decode, str)
     if status then
         return msg
@@ -68,7 +68,7 @@ local function from_json(str)
     end
 end
 
-local function to_json(msg)
+function to_json(msg)
     local status, str= pcall(json.encode, msg)
     if status then
         return str

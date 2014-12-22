@@ -70,7 +70,7 @@ namespace QuikSharp {
         event EventHandler OnNegTrade;
         event EventHandler OnOrder;
         event EventHandler OnParam;
-        event EventHandler OnQuote;
+        event QuoteHandler OnQuote;
         /// <summary>
         /// Функция вызывается терминалом QUIK при остановке скрипта из диалога управления. 
         /// Примечание: Значение параметра «stop_flag» – «1».После окончания выполнения функции таймаут завершения работы скрипта 5 секунд. По истечении этого интервала функция main() завершается принудительно. При этом возможна потеря системных ресурсов.
