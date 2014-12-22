@@ -8,3 +8,7 @@ a standalone Lua. Now they are almost at par - Quik just 13% slower. Now we have
 for Quik and 70 micros for a standalone Lua (60 in profiler in release mode).
 * Added ClassFunctions (Функции для обращения к спискам доступных параметров) and several simple events
 * Correct Encoding to 1251
+#### 0.1.4 - December 22 2014
+* Implemented sendTransaction and tested its error handling (no actual trades yet)
+* Imlpemented several data structures and functions
+* Improved performance by c.30% in response listener by spawning new tasks for each message

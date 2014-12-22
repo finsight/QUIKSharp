@@ -12,11 +12,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using QuikSharp.DataStructures;
 
-// TODOs
-// http://stackoverflow.com/questions/1119841/net-console-application-exit-event
-// A message queue could be easily persisted with Spreads's Stream type - actually a good
-// use case for Rx instead of a blocking queue
-//
 
 
 namespace QuikSharp {
@@ -63,7 +58,7 @@ namespace QuikSharp {
         /// <summary>
         /// Current correlation id. Use Interlocked.Increment to get a new id.
         /// </summary>
-        private static int CorrelationId;
+        private static int _correlationId;
         /// <summary>
         /// IQuickCalls functions enqueue a message and return a task from TCS
         /// </summary>
@@ -164,36 +159,43 @@ namespace QuikSharp {
                             var stream = new NetworkStream(_client.Client);
                             var reader = new StreamReader(stream, Encoding.GetEncoding(1251)); //true
                             while (IsStarted) {
-                                // TODO benchmark async
                                 var response = await reader.ReadLineAsync();
-
-                                // TODO (!) process the response on a new task - now we are waiting for message processing before receiving next messages
-
-                                //Trace.WriteLine("Response:" + response);
-                                try {
-                                    if (response == null) {
-                                        throw new IOException("Lua returned an empty response or closed the connection");
-                                    }
-                                    var message = response.FromJson(this);
-                                    if (message.Id.HasValue && message.Id > 0) {
-                                        // it is a response message
-                                        if (!Responses.ContainsKey(message.Id.Value)) throw new ApplicationException("Unexpected correlation ID");
-                                        KeyValuePair<TaskCompletionSource<IMessage>, Type> tcs;
-                                        Responses.TryRemove(message.Id.Value, out tcs);
-                                        if (!message.ValidUntil.HasValue || message.ValidUntil >= DateTime.UtcNow) {
-                                            tcs.Key.SetResult(message);
-                                        } else {
-                                            tcs.Key.SetException(
-                                                new TimeoutException("ValidUntilUTC is less than current time"));
-                                        }
-                                    } else {
-                                        // it is a callback message
-                                        ProcessCallbackMessage(message);
-                                    }
-
-                                } catch (LuaException) {
-                                    //Trace.WriteLine("Caught Lua exception");
+                                if (response == null) {
+                                    throw new IOException("Lua returned an empty response or closed the connection");
                                 }
+
+                                // No IO exceptions possible for response, move its processing
+                                // to the threadpool and wait for the next mesaage
+                                // A new task here gives c.30% boost for full TransactionSpec echo
+
+                                // ReSharper disable once UnusedVariable
+                                var doNotAwaitMe =  Task.Factory.StartNew(r => {
+                                    //var r = response;
+                                    //Trace.WriteLine("Response:" + response);
+                                    try {
+                                        
+                                        var message = (r as string).FromJson(this);
+                                        if (message.Id.HasValue && message.Id > 0) {
+                                            // it is a response message
+                                            if (!Responses.ContainsKey(message.Id.Value)) throw new ApplicationException("Unexpected correlation ID");
+                                            KeyValuePair<TaskCompletionSource<IMessage>, Type> tcs;
+                                            Responses.TryRemove(message.Id.Value, out tcs);
+                                            if (!message.ValidUntil.HasValue || message.ValidUntil >= DateTime.UtcNow) {
+                                                tcs.Key.SetResult(message);
+                                            } else {
+                                                tcs.Key.SetException(
+                                                    new TimeoutException("ValidUntilUTC is less than current time"));
+                                            }
+                                        } else {
+                                            // it is a callback message
+                                            ProcessCallbackMessage(message);
+                                        }
+
+                                    } catch (LuaException) {
+                                        //Trace.WriteLine("Caught Lua exception");
+                                    }
+                                }, response, TaskCreationOptions.PreferFairness);
+                                
                             }
                         } catch (IOException e) {
                             Trace.WriteLine(e.Message);
@@ -309,12 +311,26 @@ namespace QuikSharp {
                     case EventNames.OnTrade:
                         break;
                     case EventNames.OnTransReply:
+                        throw new InvalidOperationException("OnTransReply must be processed " +
+                            "in SendTransaction() with Id set to TRANS_ID ");
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
             } else {
-                throw new NotImplementedException("Special processing for custom callbacks");
+                switch (message.Command) {
+                    case "transactionSentToRemoteServer":
+                        // TODO what to do here? Nothing?
+                        // We will catch Lua errors while parsing json
+                        // if we are here then a transaction was sent
+                        // and a response with TRANS_ID is still in responses
+
+                        // TODO Test that lua error in sendTransaction in caught in the sending task
+
+                        break;
+                    default:
+                        throw new NotImplementedException("Special processing for custom callbacks");
+                }
             }
         }
 
@@ -323,7 +339,7 @@ namespace QuikSharp {
         /// </summary>
         public int GetNewId() {
             lock (_syncRoot) {
-                var newId = Interlocked.Increment(ref CorrelationId);
+                var newId = Interlocked.Increment(ref _correlationId);
                 // 2^31 = 2147483648
                 // with 1 000 000 messages per second it will take more than
                 // 35 hours to overflow => safe for use as TRANS_ID in SendTransaction
@@ -331,7 +347,7 @@ namespace QuikSharp {
                 if (newId > 0) {
                     return newId;
                 }
-                CorrelationId = 1;
+                _correlationId = 1;
                 return 1;
             }
         }

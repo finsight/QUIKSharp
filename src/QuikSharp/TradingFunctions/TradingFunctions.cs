@@ -66,7 +66,10 @@ namespace QuikSharp {
         //Task<string> getTradeDate();
 
         /// <summary>
-        ///  функция для работы с заявками
+        /// Функция отправляет транзакцию на сервер QUIK. В случае ошибки 
+        /// обработки транзакции в терминале QUIK Task выдаст ошибку типа 
+        /// LuaException с описанием ошибки. 
+        /// Функция асинхронно ждет результат транзакции, возвращаемый OnTransReply.
         /// </summary>
         Task<TransactionReply> SendTransaction(TransactionSpecification transaction);
 
@@ -138,6 +141,19 @@ namespace QuikSharp {
         public Task<DepoLimitEx> GetDepoEx(string firmId, string clientCode, string secCode, string accID, int limitKind) { throw new NotImplementedException(); }
         public Task<MoneyLimit> GetMoney(string clientCode, string firmId, string tag, string currCode) { throw new NotImplementedException(); }
         public Task<MoneyLimitEx> GetMoneyEx(string firmId, string clientCode, string tag, string curr_code, int limitKind) { throw new NotImplementedException(); }
-        public Task<TransactionReply> SendTransaction(TransactionSpecification transaction) { throw new NotImplementedException(); }
+
+
+        public async Task<TransactionReply> SendTransaction(TransactionSpecification transaction) {
+            // this is what Send doesn anyway, but to illustrate
+            // that Lua will set a message id inside OnTransReply
+            // and we will receive OnTransReply table right here if 
+            // sendTransaction was successful 
+            if (!transaction.TRANS_ID.HasValue) {
+                transaction.TRANS_ID = QuikService.GetNewId();
+            }
+            var response = await QuikService.Send<Message<TransactionReply>>(
+                (new Message<TransactionSpecification>(transaction, "sendTransaction")));
+            return response.Data;
+        }
     }
 }

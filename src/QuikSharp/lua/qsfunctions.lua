@@ -190,4 +190,31 @@ function qsfunctions.IsSubscribed_Level_II_Quotes(msg)
     return msg
 end
 
+
+
+------------------------------
+-- Trading functions
+------------------------------
+--- отправляет транзакцию на сервер и возвращает пустое сообщение, которое
+-- будет проигноировано. Вместо него, отправитель будет ждать события
+-- OnTransReply, из которого по TRANS_ID он получит результат отправленной транзакции
+function qsfunctions.sendTransaction(msg)
+    local res = sendTransaction(msg.data)
+    if res~="" then
+        -- error handling
+        msg.cmd = "lua_transaction_error"
+        msg.lua_error = res
+        return msg
+    else
+        -- transaction sent
+        msg.cmd = "transactionSentToRemoteServer"
+        msg.id = nil
+        msg.data = nil
+        return msg
+    end
+
+
+end
+
+
 return qsfunctions

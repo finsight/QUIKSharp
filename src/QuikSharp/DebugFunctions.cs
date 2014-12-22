@@ -24,11 +24,25 @@ namespace QuikSharp {
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="msg"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public async Task<T> Echo<T>(T msg) {
+            // could have used StringMessage directly. This is an example of how to define DTOs for custom commands
+            var response = await QuikService.Send<Message<T>>(
+                (new Message<T>(msg, "echo")));
+            return response.Data;
+        }
+
+        /// <summary>
         /// This method returns LuaException and demonstrates how Lua errors are caught
         /// </summary>
         /// <returns></returns>
         public async Task<string> DivideStringByZero() {
-            var response = await QuikService.Send<Message<string>>((new Message<string>("", "divide_string_by_zero")));
+            var response = await QuikService.Send<Message<string>>(
+                (new Message<string>("", "divide_string_by_zero")));
             return response.Data;
         }
 

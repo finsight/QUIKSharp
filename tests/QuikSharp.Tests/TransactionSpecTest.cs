@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using NUnit.Framework;
 
@@ -27,7 +29,8 @@ namespace QuikSharp.Tests {
 
     [TestFixture]
     public class TransactionSpecTest {
-        
+        readonly DebugFunctions _df = new DebugFunctions(Quik.DefaultPort);
+        Quik _q = new Quik();
         /// <summary>
         /// Make sure that Buy or Sell is never set by default
         /// That would be a very stupid mistake, but such king of mistakes are the most
@@ -78,12 +81,87 @@ namespace QuikSharp.Tests {
         [Test]
         public void CouldSerializeDateTimePropertyAsString() {
             var t = new TypeWithDateTimeSerializedAsString();
-            t.AsString = DateTime.Now;
+            var now = DateTime.Now;
+            t.AsString = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second);
             var j = t.ToJson();
             Console.WriteLine(j);
             var t2 = j.FromJson<TypeWithDateTimeDeSerializedAsString>();
             Assert.AreEqual(t.AsString.Value.ToString("hhmmss"), t2.AsString);
+            var t1 = j.FromJson<TypeWithDateTimeSerializedAsString>();
+            Assert.AreEqual(t.AsString, t1.AsString);
+        }
 
+        [Test]
+        public void CouldSerializeEmptyTransactionSpec() {
+            var t = new TransactionSpecification();
+            var j = t.ToJson();
+            Console.WriteLine(j);
+            var t2 = j.FromJson<TransactionSpecification>();
+            Assert.AreEqual(t.ToJson(), t2.ToJson());
+        }
+
+
+        [Test]
+        public void CouldSerializeEmptyTransactionSpecMulti() {
+            var t = new TransactionSpecification();
+            var sw = new Stopwatch();
+            sw.Start();
+            for (int i = 0; i < 100000; i++) {
+                var j = t.ToJson();
+                var t2 = j.FromJson<TransactionSpecification>();
+            }
+            sw.Stop();
+            Console.WriteLine("Multiserialization takes msecs: " + sw.ElapsedMilliseconds);
+        }
+
+        /// <summary>
+        /// Very important than this works!
+        /// (both with nulls and with ignored nulls
+        /// </summary>
+        [Test]
+        public void CouldEchoTransactionSpec() {
+            var t = new TransactionSpecification();
+            var echoed = _df.Echo(t).Result;
+            Console.WriteLine(t.ToJson());
+            Console.WriteLine(echoed.ToJson());
+            Assert.AreEqual(t.ToJson(), echoed.ToJson());
+        }
+
+        [Test]
+        public void MultiEchoTransactionSpec() {
+
+            var sw = new Stopwatch();
+            Console.WriteLine("Started");
+            for (int round = 0; round < 10; round++) {
+                sw.Reset();
+                sw.Start();
+
+                var count = 1000;
+                var t = new TransactionSpecification();
+
+                var array = new Task<TransactionSpecification>[count];
+                for (int i = 0; i < array.Length; i++) {
+                    array[i] = _df.Echo(t);
+                }
+                for (int i = 0; i < array.Length; i++) {
+                    var res = array[i].Result;
+                    array[i] = null;
+                }
+
+                sw.Stop();
+                Console.WriteLine("MultiPing takes msecs: " + sw.ElapsedMilliseconds);
+            }
+        }
+
+
+        [Test]
+        public void CouldSendTransactionSpec() {
+            var t = new TransactionSpecification();
+            var result = _q.Trading.SendTransaction(t).Result;
+
+            Console.WriteLine("Sent Id: " + t.TRANS_ID);
+            Console.WriteLine("Received Id: " + result.trans_id);
+            Assert.AreEqual(t.TRANS_ID, result.trans_id);
         }
 
     }

@@ -157,7 +157,7 @@ namespace QuikSharp {
     /// <summary>
     /// Условие исполнения заявки, необязательный параметр. Возможные значения:
     /// </summary>
-    [JsonConverter(typeof(SafeEnumConverter<TransactionOperation>))]
+    [JsonConverter(typeof(SafeEnumConverter<ExecutionCondition>))]
     public enum ExecutionCondition {
         // ReSharper disable InconsistentNaming
         /// <summary>
@@ -292,7 +292,7 @@ namespace QuikSharp {
         /// <summary>
         /// Вид транзакции, имеющий одно из следующих значений:
         /// </summary>
-        public TransactionAction ACTION { get; set; }
+        public TransactionAction? ACTION { get; set; }
         /// <summary>
         /// Идентификатор участника торгов (код фирмы)
         /// </summary>
@@ -308,7 +308,7 @@ namespace QuikSharp {
         /// <summary>
         /// Тип заявки, необязательный параметр. Значения: «L» – лимитированная (по умолчанию), «M» – рыночная
         /// </summary>
-        public TransactionType TYPE { get; set; }
+        public TransactionType? TYPE { get; set; }
         /// <summary>
         /// Признак того, является ли заявка заявкой Маркет-Мейкера. Возможные значения: «YES» или «NO». Значение по умолчанию (если параметр отсутствует): «NO»
         /// </summary>
@@ -316,11 +316,11 @@ namespace QuikSharp {
         /// <summary>
         /// Направление заявки, обязательный параметр. Значения: «S» – продать, «B» – купить
         /// </summary>
-        public TransactionOperation OPERATION { get; set; }
+        public TransactionOperation? OPERATION { get; set; }
         /// <summary>
         /// Условие исполнения заявки, необязательный параметр. Возможные значения:
         /// </summary>
-        public ExecutionCondition EXECUTION_CONDITION { get; set; }
+        public ExecutionCondition? EXECUTION_CONDITION { get; set; }
         /// <summary>
         /// Количество лотов в заявке, обязательный параметр
         /// </summary>
@@ -329,31 +329,37 @@ namespace QuikSharp {
         /// <summary>
         /// Цена заявки, за единицу инструмента. Обязательный параметр. При выставлении рыночной заявки (TYPE=M) на Срочном рынке FORTS необходимо указывать значение цены – укажите наихудшую (минимально или максимально возможную – в зависимости от направленности), заявка все равно будет исполнена по рыночной цене. Для других рынков при выставлении рыночной заявки укажите price= 0.
         /// </summary>
+        [JsonConverter(typeof(ToStringConverter<double>))]
         public double PRICE { get; set; }
         /// <summary>
         /// Объем сделки РЕПО-М в рублях
         /// </summary>
+        [JsonConverter(typeof(ToStringConverter<double?>))]
         public double? REPOVALUE { get; set; }
         /// <summary>
         /// Начальное значение дисконта в заявке на сделку РЕПО-М
         /// </summary>
+        [JsonConverter(typeof(ToStringConverter<double?>))]
         public double? START_DISCOUNT { get; set; }
         /// <summary>
         /// Нижнее предельное значение дисконта в заявке на сделку РЕПО-М
         /// </summary>
+        [JsonConverter(typeof(ToStringConverter<double?>))]
         public double? LOWER_DISCOUNT { get; set; }
         /// <summary>
         /// Верхнее предельное значение дисконта в заявке на сделку РЕПО-М
         /// </summary>
+        [JsonConverter(typeof(ToStringConverter<double?>))]
         public double? UPPER_DISCOUNT { get; set; }
         /// <summary>
         /// Стоп-цена, за единицу инструмента. Используется только при «ACTION» = «NEW_STOP_ORDER»
         /// </summary>
+        [JsonConverter(typeof(ToStringConverter<double?>))]
         public double? STOPPRICE { get; set; }
         /// <summary>
         /// Тип стоп-заявки. Возможные значения:
         /// </summary>
-        public StopOrderKind STOP_ORDER_KIND { get; set; }
+        public StopOrderKind? STOP_ORDER_KIND { get; set; }
         /// <summary>
         /// Класс инструмента условия. Используется только при «STOP_ORDER_KIND» = «CONDITION_PRICE_BY_OTHER_SEC».
         /// </summary>
@@ -369,6 +375,7 @@ namespace QuikSharp {
         /// <summary>
         /// Цена связанной лимитированной заявки. Используется только при «STOP_ORDER_KIND» = «WITH_LINKED_LIMIT_ORDER»
         /// </summary>
+        [JsonConverter(typeof(ToStringConverter<double?>))]
         public double? LINKED_ORDER_PRICE { get; set; }
         /// <summary>
         /// Срок действия стоп-заявки. Возможные значения: «GTC» – до отмены, «TODAY» - до окончания текущей торговой сессии, Дата в формате «ГГММДД».
@@ -377,29 +384,32 @@ namespace QuikSharp {
         /// <summary>
         /// Цена условия «стоп-лимит» для заявки типа «Тэйк-профит и стоп-лимит»
         /// </summary>
+        [JsonConverter(typeof(ToStringConverter<double?>))]
         public double? STOPPRICE2 { get; set; }
         /// <summary>
         /// Признак исполнения заявки по рыночной цене при наступлении условия «стоп-лимит». Значения «YES» или «NO». Параметр заявок типа «Тэйк-профит и стоп-лимит»
         /// </summary>
         // TODO (?) Is No default here?	
-        public 	YesOrNo	 MARKET_STOP_LIMIT	{get; set;}
+        public YesOrNo? MARKET_STOP_LIMIT { get; set; }
         /// <summary>
         /// Признак исполнения заявки по рыночной цене при наступлении условия «тэйк-профит». Значения «YES» или «NO». Параметр заявок типа «Тэйк-профит и стоп-лимит»
         /// </summary>
         // TODO (?) Is No default here?	
-        public 	YesOrNo	 MARKET_TAKE_PROFIT	{get; set;}
+        public YesOrNo? MARKET_TAKE_PROFIT { get; set; }
         /// <summary>
         /// Признак действия заявки типа «Тэйк-профит и стоп-лимит» в течение определенного интервала времени. Значения «YES» или «NO»
         /// </summary>
         // TODO (?) Is No default here?	
-        public 	YesOrNo	 IS_ACTIVE_IN_TIME	{get; set;}
+        public YesOrNo? IS_ACTIVE_IN_TIME { get; set; }
         /// <summary>
         /// Время начала действия заявки типа «Тэйк-профит и стоп-лимит» в формате «ЧЧММСС»
         /// </summary>
+        [JsonConverter(typeof(HHMMSSDateTimeConverter))]
         public DateTime? ACTIVE_FROM_TIME { get; set; }
         /// <summary>
         /// Время окончания действия заявки типа «Тэйк-профит и стоп-лимит» в формате «ЧЧММСС»
         /// </summary>
+        [JsonConverter(typeof(HHMMSSDateTimeConverter))]
         public DateTime? ACTIVE_TO_TIME { get; set; }
         /// <summary>
         /// Код организации – партнера по внебиржевой сделке.Применяется при «ACTION» = «NEW_NEG_DEAL», «ACTION» = «NEW_REPO_NEG_DEAL» или «ACTION» = «NEW_EXT_REPO_NEG_DEAL»
@@ -416,6 +426,7 @@ namespace QuikSharp {
         /// <summary>
         /// Уникальный идентификационный номер заявки, значение от 1 до 2 294 967 294
         /// </summary>
+        [JsonConverter(typeof(ToStringConverter<long?>))]
         public long? TRANS_ID { get; set; }
         /// <summary>
         /// Код расчетов при исполнении внебиржевых заявок
@@ -424,6 +435,7 @@ namespace QuikSharp {
         /// <summary>
         /// Цена второй части РЕПО
         /// </summary>
+        [JsonConverter(typeof(ToStringConverter<double?>))]
         public double? PRICE2 { get; set; }
         /// <summary>
         /// Срок РЕПО. Параметр сделок РЕПО-М
@@ -437,10 +449,11 @@ namespace QuikSharp {
         /// Признак блокировки бумаг на время операции РЕПО («YES», «NO»)
         /// </summary>
         // TODO (?) Is No default here?	
-        public 	YesOrNo	 BLOCK_SECURITIES	{get; set;}
+        public YesOrNo? BLOCK_SECURITIES { get; set; }
         /// <summary>
         /// Ставка фиксированного возмещения, выплачиваемого в случае неисполнения второй части РЕПО, в процентах
         /// </summary>
+        [JsonConverter(typeof(ToStringConverter<double?>))]
         public double? REFUNDRATE { get; set; }
         /// <summary>
         /// Текстовый комментарий, указанный в заявке. Используется при снятии группы заявок
@@ -450,7 +463,7 @@ namespace QuikSharp {
         /// Признак крупной сделки (YES/NO). Параметр внебиржевой сделки
         /// </summary>
         // TODO (?) Is No default here?	
-        public 	YesOrNo	 LARGE_TRADE	{get; set;}
+        public YesOrNo? LARGE_TRADE { get; set; }
         /// <summary>
         /// Код валюты расчетов по внебиржевой сделки, например «SUR» – рубли РФ, «USD» – доллары США. Параметр внебиржевой сделки
         /// </summary>
@@ -458,7 +471,7 @@ namespace QuikSharp {
         /// <summary>
         /// Лицо, от имени которого и за чей счет регистрируется сделка (параметр внебиржевой сделки). Возможные значения:
         /// </summary>
-        public ForAccount FOR_ACCOUNT { get; set; }
+        public ForAccount? FOR_ACCOUNT { get; set; }
         /// <summary>
         /// Дата исполнения внебиржевой сделки
         /// </summary>
@@ -467,23 +480,25 @@ namespace QuikSharp {
         /// Признак снятия стоп-заявки при частичном исполнении связанной лимитированной заявки. Используется только при «STOP_ORDER_KIND» = «WITH_LINKED_LIMIT_ORDER». Возможные значения: «YES» или «NO»
         /// </summary>
         // TODO (?) Is No default here?
-        public 	YesOrNo	 KILL_IF_LINKED_ORDER_PARTLY_FILLED	{get; set;}
+        public YesOrNo? KILL_IF_LINKED_ORDER_PARTLY_FILLED { get; set; }
         /// <summary>
         /// Величина отступа от максимума (минимума) цены последней сделки. Используется при «STOP_ORDER_KIND» = «TAKE_PROFIT_STOP_ORDER» или «ACTIVATED_BY_ORDER_TAKE_PROFIT_STOP_ORDER»
         /// </summary>
+        [JsonConverter(typeof(ToStringConverter<double?>))]
         public double? OFFSET { get; set; }
         /// <summary>
         /// Единицы измерения отступа. Возможные значения:
         /// </summary>
-        public OffsetUnits OFFSET_UNITS { get; set; }
+        public OffsetUnits? OFFSET_UNITS { get; set; }
         /// <summary>
         /// Величина защитного спрэда. Используется при «STOP_ORDER_KIND» = «TAKE_PROFIT_STOP_ORDER» или ACTIVATED_BY_ORDER_TAKE_PROFIT_STOP_ORDER»
         /// </summary>
+        [JsonConverter(typeof(ToStringConverter<double?>))]
         public double? SPREAD { get; set; }
         /// <summary>
         /// Единицы измерения защитного спрэда. Используется при «STOP_ORDER_KIND» = «TAKE_PROFIT_STOP_ORDER» или «ACTIVATED_BY_ORDER_TAKE_PROFIT_STOP_ORDER»
         /// </summary>
-        public OffsetUnits SPREAD_UNITS { get; set; }
+        public OffsetUnits? SPREAD_UNITS { get; set; }
         /// <summary>
         /// Регистрационный номер заявки-условия. Используется при «STOP_ORDER_KIND» = «ACTIVATED_BY_ORDER_SIMPLE_STOP_ORDER» или «ACTIVATED_BY_ORDER_TAKE_PROFIT_STOP_ORDER»
         /// </summary>
@@ -492,12 +507,12 @@ namespace QuikSharp {
         /// Признак использования в качестве объема заявки «по исполнению» исполненного количества бумаг заявки-условия. Возможные значения: «YES» или «NO». Используется при «STOP_ORDER_KIND» = «ACTIVATED_BY_ORDER_SIMPLE_STOP_ORDER» или «ACTIVATED_BY_ORDER_TAKE_PROFIT_STOP_ORDER»
         /// </summary>
         // TODO (?) Is No default here?	
-        public 	YesOrNo	 USE_BASE_ORDER_BALANCE	{get; set;}
+        public YesOrNo? USE_BASE_ORDER_BALANCE { get; set; }
         /// <summary>
         /// Признак активации заявки «по исполнению» при частичном исполнении заявки-условия. Возможные значения: «YES» или «NO». Используется при «STOP_ORDER_KIND» = «ACTIVATED_BY_ORDER_SIMPLE_STOP_ORDER» или «ACTIVATED_BY_ORDER_TAKE_PROFIT_STOP_ORDER»
         /// </summary>
         // TODO (?) Is No default here?	
-        public 	YesOrNo	 ACTIVATE_IF_BASE_ORDER_PARTLY_FILLED	{get; set;}
+        public YesOrNo? ACTIVATE_IF_BASE_ORDER_PARTLY_FILLED { get; set; }
         /// <summary>
         /// Идентификатор базового контракта для фьючерсов или опционов. Обязательный параметр снятия заявок на рынке FORTS
         /// </summary>
@@ -509,32 +524,38 @@ namespace QuikSharp {
         /// <summary>
         /// Номер первой заявки
         /// </summary>
+        [JsonConverter(typeof(ToStringConverter<long?>))]
         public long? FIRST_ORDER_NUMBER { get; set; }
         /// <summary>
         /// Количество в первой заявке
         /// </summary>
+        [JsonConverter(typeof(ToStringConverter<int?>))]
         public int? FIRST_ORDER_NEW_QUANTITY { get; set; }
         /// <summary>
         /// Цена в первой заявке
         /// </summary>
+        [JsonConverter(typeof(ToStringConverter<double?>))]
         public double? FIRST_ORDER_NEW_PRICE { get; set; }
         /// <summary>
         /// Номер второй заявки
         /// </summary>
+        [JsonConverter(typeof(ToStringConverter<long?>))]
         public long? SECOND_ORDER_NUMBER { get; set; }
         /// <summary>
         /// Количество во второй заявке
         /// </summary>
+        [JsonConverter(typeof(ToStringConverter<int?>))]
         public int? SECOND_ORDER_NEW_QUANTITY { get; set; }
         /// <summary>
         /// Цена во второй заявке
         /// </summary>
+        [JsonConverter(typeof(ToStringConverter<double?>))]
         public double? SECOND_ORDER_NEW_PRICE { get; set; }
         /// <summary>
         /// Признак снятия активных заявок по данному инструменту. Используется только при «ACTION» = «NEW_QUOTE». Возможные значения: «YES» или «NO»
         /// </summary>
         // TODO (?) Is No default here?	
-        public 	YesOrNo	 KILL_ACTIVE_ORDERS	{get; set;}
+        public YesOrNo? KILL_ACTIVE_ORDERS { get; set; }
         /// <summary>
         /// Направление операции в сделке, подтверждаемой отчетом
         /// </summary>
@@ -542,6 +563,7 @@ namespace QuikSharp {
         /// <summary>
         /// Номер подтверждаемой отчетом сделки для исполнения
         /// </summary>
+        [JsonConverter(typeof(ToStringConverter<long?>))]
         public long? NEG_TRADE_NUMBER { get; set; }
         /// <summary>
         /// Лимит открытых позиций, при «Тип лимита» = «Ден.средства» или «Всего»
@@ -567,7 +589,7 @@ namespace QuikSharp {
         /// Признак проверки попадания цены заявки в диапазон допустимых цен. Параметр Срочного рынка FORTS. Необязательный параметр транзакций установки новых заявок по классам «Опционы ФОРТС» и «РПС: Опционы ФОРТС». Возможные значения: «YES» - выполнять проверку, «NO» - не выполнять
         /// </summary>
         // TODO (?) Is No default here?	
-        public 	YesOrNo	 CHECK_LIMITS	{get; set;}
+        public YesOrNo? CHECK_LIMITS { get; set; }
         /// <summary>
         /// Ссылка, которая связывает две сделки РЕПО или РПС. Сделка может быть заключена только между контрагентами, указавшими одинаковое значение этого параметра в своих заявках. Параметр представляет собой набор произвольный набор количеством до 10 символов (допускаются цифры и буквы). Необязательный параметр
         /// </summary>

@@ -16,6 +16,12 @@ namespace QuikSharp.Tests
         }
 
         [Test]
+        public void EchoWorks() {
+            var echo = _df.Echo("echo").Result;
+            Assert.AreEqual("echo", echo);
+        }
+
+        [Test]
         public void IsQuik() {
             Console.WriteLine(_df.IsQuik().Result);
         }

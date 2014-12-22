@@ -72,15 +72,8 @@ namespace QuikSharp {
                                         Type objectType,
                                          object existingValue,
                                          JsonSerializer serializer) {
-
             var t = JToken.Load(reader);
-
-            // Load JObject from stream
-            //JObject jObject = JObject.Load(reader);
-
-            // Create target object based on JObject
             T target = t.Value<T>();
-
             return target;
         }
 
@@ -96,12 +89,31 @@ namespace QuikSharp {
     /// Convert DateTime to HHMMSS
     /// </summary>
     // ReSharper disable once InconsistentNaming
-    public class HHMMSSDateTimeConverter : IsoDateTimeConverter {
-        /// <summary>
-        /// 
-        /// </summary>
-        public HHMMSSDateTimeConverter() {
-            base.DateTimeFormat = "hhmmss";
+    public class HHMMSSDateTimeConverter : JsonConverter {
+        public override bool CanConvert(Type objectType) { return true; }
+
+        public override object ReadJson(JsonReader reader,
+                                        Type objectType,
+                                         object existingValue,
+                                         JsonSerializer serializer) {
+            var t = JToken.Load(reader);
+            string target = t.Value<string>();
+            if (target != null) {
+                int hh = int.Parse(target.Substring(0, 2));
+                int mm = int.Parse(target.Substring(2, 2));
+                int ss = int.Parse(target.Substring(4, 2));
+                var now = DateTime.Now;
+                var dt = new DateTime(now.Year, now.Month, now.Day, hh, mm, ss);
+                return dt;
+            }
+            return null;
+        }
+
+        public override void WriteJson(JsonWriter writer,
+                                       object value,
+                                       JsonSerializer serializer) {
+            var t = JToken.FromObject(((DateTime)value).ToString("hhmmss"));
+            t.WriteTo(writer);
         }
     }
 
@@ -113,11 +125,19 @@ namespace QuikSharp {
         protected override IMessage Create(Type objectType, JObject jObject) {
             if (FieldExists("lua_error", jObject)) {
                 var id = jObject.GetValue("id").Value<long>();
+                var cmd = jObject.GetValue("cmd").Value<string>();
+                var message = jObject.GetValue("lua_error").Value<string>();
+                LuaException exn; 
+                if (cmd == "lua_transaction_error") {
+                    exn = new TransactionException(message);
+                } else {
+                    exn = new LuaException(message);
+                }
                 KeyValuePair<TaskCompletionSource<IMessage>, Type> kvp;
                 _service.Responses.TryRemove(id, out kvp);
                 var tcs = kvp.Key;
-                var exn = new LuaException(jObject.GetValue("lua_error").Value<string>());
-                tcs.SetException(new LuaException(jObject.GetValue("lua_error").Value<string>()));
+                tcs.SetException(exn);
+                // terminate listener task that was processing this task
                 throw exn;
             } else if (FieldExists("id", jObject)) {
                 var id = jObject.GetValue("id").Value<long>();
@@ -174,13 +194,13 @@ namespace QuikSharp {
                             break;
                         case EventNames.OnQuote:
                             break;
-
                         case EventNames.OnStopOrder:
                             break;
                         case EventNames.OnTrade:
                             break;
                         case EventNames.OnTransReply:
-                            break;
+                            objectType = typeof(Message<TransactionReply>);
+                            return (IMessage)Activator.CreateInstance(objectType);
                         default:
                             throw new ArgumentOutOfRangeException();
                     }

@@ -145,7 +145,7 @@
     <Compile Include="DataStructures\MoneyLimitEx.cs" />
     <Compile Include="TradingFunctions\TradingFunctions.cs" />
     <Compile Include="DataStructures\TransactionReply.cs" />
-    <Compile Include="TradingFunctions\TransactionSpecification.cs" />
+    <Compile Include="DataStructures\TransactionSpecification.cs" />
     <Compile Include="Tray.cs">
       <SubType>Form</SubType>
     </Compile>

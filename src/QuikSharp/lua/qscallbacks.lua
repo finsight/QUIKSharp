@@ -58,4 +58,15 @@ function OnStop(s)
     return 1000
 end
 
+--- подробнее см. qsfunctions.sendTransaction
+function OnTransReply(trans_reply)
+    local msg = {}
+    -- это сообщение будет отправлено в то задание, которое изначально отправило транзакцию
+    msg.id = trans_reply.trans_id
+    msg.data = trans_reply
+    msg.cmd = "sendTransaction"
+    return 1000
+end
+
+
 return qscallbacks

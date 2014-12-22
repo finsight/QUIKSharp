@@ -57,8 +57,7 @@ namespace QuikSharp {
     /// Default generic implementation
     /// </summary>
     internal class Message<T> : BaseMessage {
-        public Message()
-            : base() {
+        public Message() {
 
         }
         public Message(T message, string command, DateTime? validUntil = null) {
