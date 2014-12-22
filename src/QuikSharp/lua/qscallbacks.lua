@@ -7,9 +7,25 @@ local util = require("qsutils")
 
 local qscallbacks = {}
 
+--- Мы сохраняем пропущенные значения только если скрипт работает, но соединение прервалось
+-- Если скрипт останавливается, то мы удаляем накопленные пропущенные значения
+-- QuikSharp должен работать пока работает Квик, он не рассчитан на остановку внутри Квика.
+-- При этом клиент может подключаться и отключаться сколько угодно и всегда получит пропущенные
+-- сообщения после переподключения (если хватит места на диске)
+local function CleanUp()
+    -- close log
+    pcall(logfile:close(logfile))
+    -- discard missed values if any
+    if missed_values_file then
+        pcall(missed_values_file:close(missed_values_file))
+        missed_values_file = nil
+        pcall(os.remove, missed_values_file_name)
+        missed_values_file_name = nil
+    end
+end
+
 --- Функция вызывается когда соединение с QuikSharp клиентом обрывается
 function OnQuikSharpDisconnected()
-
     -- TODO any recovery or risk management logic here
 end
 
@@ -31,7 +47,6 @@ function OnAllTrade(alltrade)
     end
 end
 
-
 --- Функция вызывается перед закрытием терминала QUIK.
 function OnClose()
     if is_connected then
@@ -41,6 +56,7 @@ function OnClose()
         msg.data = ""
         sendResponse(msg)
     end
+    CleanUp()
 end
 
 --- Функция вызывается терминалом QUIK перед вызовом функции main().
@@ -63,7 +79,7 @@ function OnOrder(order)
     msg.id = nil -- значение в order.trans_id
     msg.data = order
     msg.cmd = "OnOrder"
-    return msg
+    sendResponse(msg)
 end
 
 --- Функция вызывается терминалом QUIK при получении изменения стакана котировок.
@@ -88,6 +104,8 @@ end
 
 --- Функция вызывается терминалом QUIK при остановке скрипта из диалога управления и при закрытии терминала QUIK.
 function OnStop(s)
+    is_started = false
+
     if is_connected then
         local msg = {}
         msg.cmd = "OnStop"
@@ -95,15 +113,8 @@ function OnStop(s)
         msg.data = s
         sendResponse(msg)
     end
-
     log("Bye, QuikSharp!")
-    is_started = false
-    pcall(logfile:close(logfile))
-    if missed_values_file then
-        pcall(missed_values_file:close(missed_values_file))
-        missed_values_file = nil
-        missed_values_file_name = nil
-    end
+    CleanUp()
     --	send disconnect
     return 1000
 end
@@ -115,7 +126,7 @@ function OnTrade(trade)
     msg.id = nil -- значение в OnTrade.trans_id
     msg.data = trade
     msg.cmd = "OnTrade"
-    return msg
+    sendResponse(msg)
 end
 
 --- Функция вызывается терминалом QUIK при получении ответа на транзакцию пользователя.
@@ -125,7 +136,7 @@ function OnTransReply(trans_reply)
     msg.id = nil -- значение в trans_reply.trans_id
     msg.data = trans_reply
     msg.cmd = "OnTransReply"
-    return msg
+    sendResponse(msg)
 end
 
 

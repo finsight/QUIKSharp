@@ -155,12 +155,14 @@ namespace QuikSharp.Tests {
 
 
         [Test]
-        public void CouldSendTransactionSpec() {
+        public void CouldSendEmptyTransactionSpec() {
             var t = new Transaction();
             var result = _q.Trading.SendTransaction(t).Result;
 
             Console.WriteLine("Sent Id: " + t.TRANS_ID);
-            Assert.IsTrue(result > 0);
+            Console.WriteLine("Result Id: " + result);            
+            Assert.IsTrue(result < 0);
+            Console.WriteLine("Error: " + t.ErrorMessage);
         }
 
     }

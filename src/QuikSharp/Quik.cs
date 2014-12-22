@@ -18,7 +18,7 @@ namespace QuikSharp {
             QuikService = QuikService.Create(port);
             // poor man's DI
             QuikService.Storage = Storage;
-            Events = new QuikEvents(QuikService);
+            Events = QuikService.Events;
             Debug = new DebugFunctions(port);
             Service = new ServiceFunctions(port);
             Class = new ClassFunctions(port);

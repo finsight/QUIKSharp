@@ -8,8 +8,8 @@ script_path = "."
 if is_quik() then
     script_path = getScriptPath()
 end
-package.path = package.path .. ";" .. script_path .. "\\?.lua;" .. script_path .. "\\?.luac"
-package.cpath = package.cpath .. ";" .. script_path .. '\\clibs\\?.dll'
+package.path = package.path .. ";" .. script_path .. "\\?.lua;" .. script_path .. "\\?.luac"..";"..".\\?.lua;"..".\\?.luac"
+package.cpath = package.cpath .. ";" .. script_path .. '\\clibs\\?.dll'..";"..'.\\clibs\\?.dll'
 
 local util = require("qsutils")
 local qf = require("qsfunctions")
@@ -41,6 +41,7 @@ function do_main()
     end
 end
 
+--- catch errors
 function main()
     local status, err = pcall(do_main)
     if status then

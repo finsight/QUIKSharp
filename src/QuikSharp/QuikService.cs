@@ -50,7 +50,7 @@ namespace QuikSharp {
 
         
 
-        private QuikEvents Events { get; set; }
+        internal QuikEvents Events { get; set; }
         internal IPersistentStorage Storage { get; set; }
         
 

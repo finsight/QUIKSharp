@@ -25,10 +25,11 @@ function qsfunctions.dispatch_and_process(msg)
 end
 
 
-------------------------------
--- Debug functions
-------------------------------
---- Echoes its message
+---------------------
+-- Debug functions --
+---------------------
+
+--- Returns Pong to Ping
 -- @param msg message table
 -- @return same msg table
 function qsfunctions.ping(msg)
@@ -43,24 +44,29 @@ function qsfunctions.ping(msg)
     end
 end
 
+--- Echoes its message
 function qsfunctions.echo(msg)
     return msg
 end
 
 --- Test error handling
 function qsfunctions.divide_string_by_zero(msg)
-    msg.data = "asd" / 1
+    msg.data = "asd" / 0
     return msg
 end
 
+--- Is running inside quik
 function qsfunctions.is_quik(msg)
     if getScriptPath then msg.data = 1 else msg.data = 0 end
     return msg
 end
 
-------------------------------
--- Service functions
-------------------------------
+
+
+-----------------------
+-- Service functions --
+-----------------------
+
 --- Функция предназначена для определения состояния подключения клиентского места к
 -- серверу. Возвращает «1», если клиентское место подключено и «0», если не подключено.
 function qsfunctions.isConnected(msg)
@@ -69,7 +75,6 @@ function qsfunctions.isConnected(msg)
     msg.data = isConnected()
     return msg
 end
-
 
 --- Функция возвращает путь, по которому находится файл info.exe, исполняющий данный
 -- скрипт, без завершающего обратного слэша («\»). Например, C:\QuikFront.
@@ -131,9 +136,10 @@ end
 
 
 
-------------------------------
--- Class functions
-------------------------------
+---------------------
+-- Class functions --
+---------------------
+
 --- Функция предназначена для получения списка кодов классов, переданных с сервера в ходе сеанса связи.
 function qsfunctions.getClassesList(msg)
     msg.data = getClassesList()
@@ -163,9 +169,12 @@ function qsfunctions.getSecurityInfo(msg)
     return msg
 end
 
-------------------------------
--- Order Book functions (Функции для работы со стаканом котировок)
-------------------------------
+
+
+---------------------------------------------------------------------
+-- Order Book functions (Функции для работы со стаканом котировок) --
+---------------------------------------------------------------------
+
 --- Функция заказывает на сервер получение стакана по указанному классу и бумаге.
 function qsfunctions.Subscribe_Level_II_Quotes(msg)
     local spl = split(msg.data, "|")
@@ -192,9 +201,10 @@ end
 
 
 
-------------------------------
--- Trading functions
-------------------------------
+-----------------------
+-- Trading functions --
+-----------------------
+
 --- отправляет транзакцию на сервер и возвращает пустое сообщение, которое
 -- будет проигноировано. Вместо него, отправитель будет ждать события
 -- OnTransReply, из которого по TRANS_ID он получит результат отправленной транзакции
@@ -210,8 +220,6 @@ function qsfunctions.sendTransaction(msg)
         msg.data = true
         return msg
     end
-
 end
-
 
 return qsfunctions
