@@ -7,9 +7,24 @@ local util = require("qsutils")
 
 local qscallbacks = {}
 
+--- Функция вызывается когда соединение с QuikSharp клиентом обрывается
 function OnQuikSharpDisconnected()
+
     -- TODO any recovery or risk management logic here
 end
+
+
+--- Функция вызывается терминалом QUIK при получении обезличенной сделки.
+function OnAllTrade(alltrade)
+    if is_connected then
+        local msg = {}
+        msg.cmd = "OnAllTrade"
+        msg.t = timemsec()
+        msg.data = alltrade
+        sendResponse(msg)
+    end
+end
+
 
 --- Функция вызывается перед закрытием терминала QUIK.
 function OnClose()
@@ -25,7 +40,6 @@ end
 --- Функция вызывается терминалом QUIK перед вызовом функции main().
 -- В качестве параметра принимает значение полного пути к запускаемому скрипту.
 function OnInit(script_path)
-
     if is_connected then
         local msg = {}
         msg.cmd = "OnInit"

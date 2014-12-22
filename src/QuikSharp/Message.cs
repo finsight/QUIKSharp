@@ -26,7 +26,7 @@ namespace QuikSharp {
     internal abstract class BaseMessage : IMessage {
         protected static readonly long Epoch = (new DateTime(1970, 1, 1, 3, 0, 0, 0)).Ticks/10000L;
         protected BaseMessage(string command = null, DateTime? validUntil = null) {
-            Command = command ?? this.GetType().Name;
+            Command = command ?? GetType().Name;
             CreatedTime = DateTime.Now.Ticks / 10000L - Epoch;
             ValidUntil = validUntil;
         }

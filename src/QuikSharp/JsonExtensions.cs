@@ -14,6 +14,9 @@ namespace QuikSharp {
     /// Extensions for JSON.NET
     /// </summary>
     public static class JsonExtensions {
+        /// <summary>
+        /// 
+        /// </summary>
         public static T FromJson<T>(this string json) {
             var obj = JsonConvert.DeserializeObject<T>(json, new JsonSerializerSettings {
                 TypeNameHandling = TypeNameHandling.None
@@ -26,6 +29,9 @@ namespace QuikSharp {
             return obj;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static object FromJson(this string json, Type type) {
             var obj = JsonConvert.DeserializeObject(json, type, new JsonSerializerSettings {
                 TypeNameHandling = TypeNameHandling.None,
@@ -34,6 +40,9 @@ namespace QuikSharp {
             return obj;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static string ToJson<T>(this T obj) {
 
             var message = JsonConvert.SerializeObject(obj, Formatting.None,
@@ -97,16 +106,14 @@ namespace QuikSharp {
                                          object existingValue,
                                          JsonSerializer serializer) {
             var t = JToken.Load(reader);
-            string target = t.Value<string>();
-            if (target != null) {
-                int hh = int.Parse(target.Substring(0, 2));
-                int mm = int.Parse(target.Substring(2, 2));
-                int ss = int.Parse(target.Substring(4, 2));
-                var now = DateTime.Now;
-                var dt = new DateTime(now.Year, now.Month, now.Day, hh, mm, ss);
-                return dt;
-            }
-            return null;
+            var target = t.Value<string>();
+            if (target == null) return null;
+            var hh = int.Parse(target.Substring(0, 2));
+            var mm = int.Parse(target.Substring(2, 2));
+            var ss = int.Parse(target.Substring(4, 2));
+            var now = DateTime.Now;
+            var dt = new DateTime(now.Year, now.Month, now.Day, hh, mm, ss);
+            return dt;
         }
 
         public override void WriteJson(JsonWriter writer,
@@ -128,10 +135,12 @@ namespace QuikSharp {
                 var cmd = jObject.GetValue("cmd").Value<string>();
                 var message = jObject.GetValue("lua_error").Value<string>();
                 LuaException exn; 
-                if (cmd == "lua_transaction_error") {
-                    exn = new TransactionException(message);
-                } else {
-                    exn = new LuaException(message);
+                switch (cmd) { case "lua_transaction_error":
+                        exn = new TransactionException(message);
+                        break;
+                    default:
+                        exn = new LuaException(message);
+                        break;
                 }
                 KeyValuePair<TaskCompletionSource<IMessage>, Type> kvp;
                 _service.Responses.TryRemove(id, out kvp);
@@ -146,7 +155,8 @@ namespace QuikSharp {
             } else if (FieldExists("cmd", jObject)) {
                 // without id we have an event
                 EventNames eventName;
-                var parsed = Enum.TryParse(jObject.GetValue("cmd").Value<string>(), true, out eventName);
+                string cmd = jObject.GetValue("cmd").Value<string>();
+                var parsed = Enum.TryParse(cmd, true, out eventName);
                 if (parsed) {
                     switch (eventName) {
                         case EventNames.OnAccountBalance:
@@ -205,11 +215,20 @@ namespace QuikSharp {
                             throw new ArgumentOutOfRangeException();
                     }
                 } else {
-                    // TODO if we have a custom event (e.g. add some processing  of standard Quik event) then we must process it here
-                    return (IMessage)Activator.CreateInstance(typeof(Message<string>));
+                    // if we have a custom event (e.g. add some processing  of standard Quik event) then we must process it here
+                    switch (cmd) {
+                        case "transactionSentToRemoteServer":
+                            // We will catch Lua errors while parsing json
+                            // if we are here then a transaction was sent
+                            // and a response with TRANS_ID is still in responses
+                            return (IMessage)Activator.CreateInstance(typeof(Message<string>));
+                        default:
+                            //return (IMessage)Activator.CreateInstance(typeof(Message<string>));
+                            throw new InvalidOperationException("Unknown command in a message: " + cmd);
+                    }
                 }
             }
-            throw new ApplicationException("Not implemented event deserialization");
+            throw new ArgumentException("Bad message format: no cmd or lua_error fields");
         }
 
         private static bool FieldExists(string fieldName, JObject jObject) {
@@ -217,8 +236,6 @@ namespace QuikSharp {
         }
     }
 
-
-    // Thanks to jdavies http://stackoverflow.com/a/8031283/801189
 
     internal abstract class JsonCreationConverter<T> : JsonConverter {
         /// <summary>
@@ -254,7 +271,7 @@ namespace QuikSharp {
         public override void WriteJson(JsonWriter writer,
                                        object value,
                                        JsonSerializer serializer) {
-            throw new NotImplementedException();
+            throw new InvalidOperationException();
         }
     }
 }

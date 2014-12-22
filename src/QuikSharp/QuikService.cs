@@ -22,6 +22,9 @@ namespace QuikSharp {
         private static Dictionary<int, QuikService> _services =
             new Dictionary<int, QuikService>();
 
+        /// <summary>
+        /// For each port only one instance of QuikService
+        /// </summary>
         public static QuikService Create(int port) {
             lock (_services) {
                 QuikService service;
@@ -111,9 +114,8 @@ namespace QuikSharp {
                                     // then writer must throw and we will add a message back
                                     // then we will iterate over messages and cancel expired ones
                                     if (!message.ValidUntil.HasValue || message.ValidUntil >= DateTime.UtcNow) {
-                                        // TODO benchmark async
                                         writer.WriteLine(request);
-                                        writer.Flush(); // TODO check with async
+                                        writer.Flush();
                                     } else {
                                         Trace.Assert(message.Id.HasValue, "All requests must have correlation id");
                                         Responses[message.Id.Value].Key.SetException(
@@ -255,6 +257,8 @@ namespace QuikSharp {
                     case EventNames.OnAccountPosition:
                         break;
                     case EventNames.OnAllTrade:
+                        Trace.Assert(message is Message<AllTrade>);
+                        Events.OnAllTradeCall(((Message<AllTrade>)message).Data);
                         break;
                     case EventNames.OnCleanUp:
                         Trace.Assert(message is Message<string>);
@@ -313,23 +317,18 @@ namespace QuikSharp {
                     case EventNames.OnTransReply:
                         throw new InvalidOperationException("OnTransReply must be processed " +
                             "in SendTransaction() with Id set to TRANS_ID ");
-                        break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
             } else {
                 switch (message.Command) {
                     case "transactionSentToRemoteServer":
-                        // TODO what to do here? Nothing?
                         // We will catch Lua errors while parsing json
                         // if we are here then a transaction was sent
                         // and a response with TRANS_ID is still in responses
-
-                        // TODO Test that lua error in sendTransaction in caught in the sending task
-
                         break;
                     default:
-                        throw new NotImplementedException("Special processing for custom callbacks");
+                        throw new InvalidOperationException("Unknown command in a message: " + message.Command);
                 }
             }
         }
@@ -337,7 +336,7 @@ namespace QuikSharp {
         /// <summary>
         /// Generate a new unique ID
         /// </summary>
-        public int GetNewId() {
+        public int GetNewUniqueId() {
             lock (_syncRoot) {
                 var newId = Interlocked.Increment(ref _correlationId);
                 // 2^31 = 2147483648
@@ -361,7 +360,7 @@ namespace QuikSharp {
             }
             var kvp = new KeyValuePair<TaskCompletionSource<IMessage>, Type>(tcs, typeof(TResponse));
             if (request.Id == null) {
-                request.Id = GetNewId();
+                request.Id = GetNewUniqueId();
             }
             Responses[request.Id.Value] = kvp;
             // add to queue after responses dictionary

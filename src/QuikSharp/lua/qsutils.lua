@@ -138,6 +138,7 @@ local function disconnected()
         pcall(client.close, client)
         client = nil
     end
+    OnQuikSharpDisconnected()
 end
 
 --- get a decoded message as a table

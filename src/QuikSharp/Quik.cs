@@ -2,7 +2,7 @@
 
 namespace QuikSharp {
     /// <summary>
-    /// Main class to abstract Quik as a .NET class
+    /// Quik interface in .NET
     /// </summary>
     public class Quik {
         /// <summary>
@@ -10,6 +10,9 @@ namespace QuikSharp {
         /// </summary>
         public const int DefaultPort = 34130;
 
+        /// <summary>
+        /// Quik interface in .NET constructor
+        /// </summary>
         public Quik(int port = DefaultPort) {
             QuikService = QuikService.Create(port);
             Events = QuikService.Events;
@@ -23,6 +26,9 @@ namespace QuikSharp {
 
         private QuikService QuikService { get; set; }
 
+        /// <summary>
+        /// Debug functions
+        /// </summary>
         public DebugFunctions Debug { get; set; }
 
         /// <summary>

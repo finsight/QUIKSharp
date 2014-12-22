@@ -149,7 +149,7 @@ namespace QuikSharp {
             // and we will receive OnTransReply table right here if 
             // sendTransaction was successful 
             if (!transaction.TRANS_ID.HasValue) {
-                transaction.TRANS_ID = QuikService.GetNewId();
+                transaction.TRANS_ID = QuikService.GetNewUniqueId();
             }
             var response = await QuikService.Send<Message<TransactionReply>>(
                 (new Message<TransactionSpecification>(transaction, "sendTransaction")));
