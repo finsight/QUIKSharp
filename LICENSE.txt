@@ -1,5 +1,27 @@
+Dual Licensing
+==============
 
-                    GNU GENERAL PUBLIC LICENSE
+This library is dual-licensed: you can redistribute it and/or modify
+it under the terms of the GNU General Public License version 3 as 
+published by the Free Software Foundation. For the terms of this 
+license, see GNU GPL v3 section below or <http://www.gnu.org/licenses/>.
+
+You could use this library under the terms of the GNU General
+Public License, but WITHOUT ANY WARRANTY; without even the implied 
+warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+Alternatively, you can license this library under a proprierary 
+license. Please contact the author for details.
+
+
+GNU GPL v3
+==========
+
+                    
+					
+					
+					GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 
  Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>

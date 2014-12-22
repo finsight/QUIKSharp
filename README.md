@@ -1,6 +1,6 @@
 ﻿QuikSharp
 ==========
-QuikSharp is Quik Lua interface in .NET.
+QuikSharp is Quik interface in .NET.
 
 QuikSharp exposes all functions and events available in QLUA as C# async functions
 and events.
@@ -44,21 +44,39 @@ and it is the choice for new development.
 
 
 LICENCE
-============
-QuikSharp - Quik Lua interface in .NET
+=======
+QuikSharp - Quik interface in .NET
 
 Copyright Ⓒ 2014 Victor Baybekov
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+This library is dual-licensed: you can redistribute it and/or modify
+it under the terms of the GNU General Public License version 3 as 
+published by the Free Software Foundation. For the terms of this 
+license, see the GNU GPL v3 section of the LICENSE.txt file or 
+<http://www.gnu.org/licenses/>.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+You could use this library under the terms of the GNU General
+Public License, but WITHOUT ANY WARRANTY; without even the implied 
+warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+Alternatively, you can license this library under a proprierary 
+license. Please contact the author for details.
+
+
+ЛИЦЕНЗИЯ
+--------
+Вы можете использовать эту библиотеку под лицензией GNU GPL v3. Это значит,
+что если Вы включаете код библиотеки в свое приложение и распространяете 
+это приложение сторонним пользователям, то вы должны опубликовать код Вашего
+приложения. Если Вы используете код для личных целей, то Вы можете вносить любые
+изменения и использовать библиотеку как угодно. Ответственность автора за хорошие и 
+плохие результаты использования библиотеки полностью исключена. Автор не дает никаких
+гарантий, что в какой-то момент Вы не сольете счет, используя библиотеку, и не будете должны 
+брокеру, клиентам, родственникам и бюджету РФ (даже если читаете текст лицензии).
+В случае разночтений англоязычной и русскоязычной версий приоритет имеет англоязычная.
+
+Если Вам нужна коммерческая лицензия для этой библиотеки, напишите автору
+в разделе Issues этого репозитария.
+
 
