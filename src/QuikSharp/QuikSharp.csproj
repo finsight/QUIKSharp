@@ -100,6 +100,12 @@
     <DocumentationFile>..\..\bin\QuikSharp.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Esent.Collections">
+      <HintPath>..\..\packages\Microsoft.Database.Collections.Generic.1.9.2.0\lib\net40\Esent.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="Esent.Interop">
+      <HintPath>..\..\packages\ManagedEsent.1.9.2.0\lib\net40\Esent.Interop.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\Newtonsoft.Json.6.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -108,6 +114,19 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Reactive.Core">
+      <HintPath>..\..\packages\Rx-Core.2.2.5\lib\net45\System.Reactive.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Interfaces">
+      <HintPath>..\..\packages\Rx-Interfaces.2.2.5\lib\net45\System.Reactive.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Linq">
+      <HintPath>..\..\packages\Rx-Linq.2.2.5\lib\net45\System.Reactive.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.PlatformServices">
+      <HintPath>..\..\packages\Rx-PlatformServices.2.2.5\lib\net45\System.Reactive.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web" />
@@ -120,20 +139,24 @@
   <ItemGroup>
     <Compile Include="ClassFunctions\ClassFunctions.cs" />
     <Compile Include="DataStructures\ClassInfo.cs" />
+    <Compile Include="DataStructures\IWithLuaTimeStamp.cs" />
     <Compile Include="DataStructures\OrderBook.cs" />
     <Compile Include="DataStructures\SecurityInfo.cs" />
     <Compile Include="DataStructures\EventNames.cs" />
     <Compile Include="DataStructures\Flags.cs" />
     <Compile Include="DataStructures\AllTrade.cs" />
     <Compile Include="DataStructures\QuikDateTime.cs" />
+    <Compile Include="DataStructures\Transaction\OrderTradeFlags.cs" />
+    <Compile Include="DataStructures\Transaction\Trade.cs" />
+    <Compile Include="DataStructures\Transaction\Order.cs" />
+    <Compile Include="DataStructures\Transaction\Transaction.cs" />
+    <Compile Include="DebugFunctions.cs" />
+    <Compile Include="IPersistentStorage.cs" />
     <Compile Include="ISecurity.cs" />
     <Compile Include="LuaException.cs" />
     <Compile Include="Misc.cs" />
     <Compile Include="NotificationType.cs" />
-    <Compile Include="DebugFunctions.cs">
-      <DependentUpon>IQuikFunctions.cs</DependentUpon>
-    </Compile>
-    <Compile Include="JsonExtensions.cs" />
+    <Compile Include="Serialization.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="OrderBookFunctions\OrderBookFunctions.cs" />
     <Compile Include="Quik.cs" />
@@ -145,8 +168,8 @@
     <Compile Include="DataStructures\MoneyLimit.cs" />
     <Compile Include="DataStructures\MoneyLimitEx.cs" />
     <Compile Include="TradingFunctions\TradingFunctions.cs" />
-    <Compile Include="DataStructures\TransactionReply.cs" />
-    <Compile Include="DataStructures\TransactionSpecification.cs" />
+    <Compile Include="DataStructures\Transaction\TransactionReply.cs" />
+    <Compile Include="DataStructures\Transaction\TransactionEnums.cs" />
     <Compile Include="Tray.cs">
       <SubType>Form</SubType>
     </Compile>

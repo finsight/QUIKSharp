@@ -1,6 +1,7 @@
 ﻿// Copyright (C) 2014 Victor Baybekov
 
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace QuikSharp {
@@ -22,7 +23,7 @@ namespace QuikSharp {
     /// getBuySellInfo - функция для получения параметров таблицы «Купить/Продать» 
     /// getBuySellInfoEx - функция для получения параметров (включая вид лимита) таблицы «Купить/Продать» 
     /// </summary>
-    public interface ITradingFunctions : IQuikFunctions {
+    public interface ITradingFunctions : IQuikService {
 
         /// <summary>
         /// Функция для получения информации по бумажным лимитам
@@ -42,7 +43,7 @@ namespace QuikSharp {
         /// <summary>
         ///  функция для получения информации по денежным лимитам указанного типа
         /// </summary>
-        Task<MoneyLimitEx> GetMoneyEx(string firmId, string clientCode, string tag, string curr_code, int limitKind);
+        Task<MoneyLimitEx> GetMoneyEx(string firmId, string clientCode, string tag, string currCode, int limitKind);
         ///// <summary>
         /////  функция для получения информации по фьючерсным лимитам
         ///// </summary>
@@ -66,12 +67,13 @@ namespace QuikSharp {
         //Task<string> getTradeDate();
 
         /// <summary>
-        /// Функция отправляет транзакцию на сервер QUIK. В случае ошибки 
-        /// обработки транзакции в терминале QUIK Task выдаст ошибку типа 
-        /// LuaException с описанием ошибки. 
-        /// Функция асинхронно ждет результат транзакции, возвращаемый OnTransReply.
+        /// Функция отправляет транзакцию на сервер QUIK и сохраняет ее в словаре транзакций
+        /// с идентификатором trans_id. Возвращает идентификатор
+        /// транзакции trans_id (позитивное число) в случае успеха или индентификатор,
+        /// умноженный на -1 (-trans_id) (негативное число) в случае ошибки. Также в случае 
+        /// ошибки функция созраняет текст ошибки в свойтво ErrorMessage транзакции.
         /// </summary>
-        Task<TransactionReply> SendTransaction(TransactionSpecification transaction);
+        Task<long> SendTransaction(Transaction transaction);
 
         ///// <summary>
         /////  функция для расчета максимально возможного количества лотов в заявке
@@ -140,20 +142,42 @@ namespace QuikSharp {
         public Task<DepoLimit> GetDepo(string clientCode, string firmId, string secCode, string account) { throw new NotImplementedException(); }
         public Task<DepoLimitEx> GetDepoEx(string firmId, string clientCode, string secCode, string accID, int limitKind) { throw new NotImplementedException(); }
         public Task<MoneyLimit> GetMoney(string clientCode, string firmId, string tag, string currCode) { throw new NotImplementedException(); }
-        public Task<MoneyLimitEx> GetMoneyEx(string firmId, string clientCode, string tag, string curr_code, int limitKind) { throw new NotImplementedException(); }
+        public Task<MoneyLimitEx> GetMoneyEx(string firmId, string clientCode, string tag, string currCode, int limitKind) { throw new NotImplementedException(); }
 
 
-        public async Task<TransactionReply> SendTransaction(TransactionSpecification transaction) {
-            // this is what Send doesn anyway, but to illustrate
-            // that Lua will set a message id inside OnTransReply
-            // and we will receive OnTransReply table right here if 
-            // sendTransaction was successful 
-            if (!transaction.TRANS_ID.HasValue) {
-                transaction.TRANS_ID = QuikService.GetNewUniqueId();
+        /// <summary>
+        /// Send a single transaction to Quik server
+        /// </summary>
+        /// <param name="transaction"></param>
+        /// <returns></returns>
+        public async Task<long> SendTransaction(Transaction transaction) {
+            Trace.Assert(!transaction.TRANS_ID.HasValue, "TRANS_ID should be assigned autimatically in SendTransaction functions");
+
+            transaction.TRANS_ID = QuikService.GetNewUniqueId();
+
+            Trace.Assert(transaction.Comment == null,
+                "Currently we use Comment to store correlation id for a transaction, " +
+                "its reply, trades and orders. Support for comments will be added later if needed");
+            // TODO Comments are useful to kill all orders with a single KILL_ALL_ORDERS
+            // But see e.g. this http://www.quik.ru/forum/import/27073/27076/
+
+            transaction.Comment = QuikService.PrependWithSessionId(transaction.TRANS_ID.Value);
+
+            try {
+                var response = await QuikService.Send<Message<bool>>(
+                (new Message<Transaction>(transaction, "sendTransaction")));
+                Trace.Assert(response.Data);
+                // store transaction
+                QuikService.Storage.Set(transaction.Comment, transaction);
+                return transaction.TRANS_ID.Value;
+            } catch (TransactionException e) {
+                transaction.ErrorMessage = e.Message;
+                // dirty hack: if transaction was sent we return its id,
+                // else we return negative id so the caller will know that
+                // the transaction was not sent
+                return (-transaction.TRANS_ID.Value);
             }
-            var response = await QuikService.Send<Message<TransactionReply>>(
-                (new Message<TransactionSpecification>(transaction, "sendTransaction")));
-            return response.Data;
+
         }
     }
 }

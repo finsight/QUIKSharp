@@ -207,12 +207,9 @@ function qsfunctions.sendTransaction(msg)
         return msg
     else
         -- transaction sent
-        msg.cmd = "transactionSentToRemoteServer"
-        msg.id = nil
-        msg.data = nil
+        msg.data = true
         return msg
     end
-
 
 end
 

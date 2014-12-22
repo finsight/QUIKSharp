@@ -16,6 +16,8 @@
     <tags>@tags@</tags>
     <dependencies>
       <dependency id="Newtonsoft.Json" />
+      <dependency id="Microsoft.Database.Collections.Generic" />
+      <dependency id="Rx-Main" />
     </dependencies>
   </metadata>
   <files>

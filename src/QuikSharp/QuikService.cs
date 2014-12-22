@@ -11,8 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using QuikSharp.DataStructures;
-
-
+using QuikSharp.DataStructures.Transaction;
 
 namespace QuikSharp {
     /// <summary>
@@ -21,19 +20,19 @@ namespace QuikSharp {
     public class QuikService {
         private static Dictionary<int, QuikService> _services =
             new Dictionary<int, QuikService>();
-
+        private static readonly object StaticSync = new object();
         /// <summary>
         /// For each port only one instance of QuikService
         /// </summary>
         public static QuikService Create(int port) {
-            lock (_services) {
+            lock (StaticSync) {
                 QuikService service;
                 if (_services.ContainsKey(port)) {
                     service = _services[port];
                     service.Start();
                 } else {
                     service = new QuikService(port);
-                    _services[port] = service;
+                    _services.Add(port, service);
                 }
                 return service;
             }
@@ -42,14 +41,20 @@ namespace QuikSharp {
         private QuikService(int port) {
             _port = port;
             Start();
-            Events = new QuikEvents();
+            Events = new QuikEvents(this);
         }
         /// <summary>
         /// 
         /// </summary>
         public bool IsStarted { get; private set; }
 
-        internal QuikEvents Events { get; set; }
+        
+
+        private QuikEvents Events { get; set; }
+        internal IPersistentStorage Storage { get; set; }
+        
+
+        internal readonly string SessionId = DateTime.Now.ToString("yyMMddHHmmss");
 
         private readonly IPAddress _host = IPAddress.Parse("127.0.0.1");
         private readonly int _port;
@@ -171,11 +176,11 @@ namespace QuikSharp {
                                 // A new task here gives c.30% boost for full TransactionSpec echo
 
                                 // ReSharper disable once UnusedVariable
-                                var doNotAwaitMe =  Task.Factory.StartNew(r => {
+                                var doNotAwaitMe = Task.Factory.StartNew(r => {
                                     //var r = response;
                                     //Trace.WriteLine("Response:" + response);
                                     try {
-                                        
+
                                         var message = (r as string).FromJson(this);
                                         if (message.Id.HasValue && message.Id > 0) {
                                             // it is a response message
@@ -197,7 +202,7 @@ namespace QuikSharp {
                                         //Trace.WriteLine("Caught Lua exception");
                                     }
                                 }, response, TaskCreationOptions.PreferFairness);
-                                
+
                             }
                         } catch (IOException e) {
                             Trace.WriteLine(e.Message);
@@ -301,14 +306,21 @@ namespace QuikSharp {
                         break;
                     case EventNames.OnNegTrade:
                         break;
+
                     case EventNames.OnOrder:
+                        Trace.Assert(message is Message<Order>);
+                        var ord = ((Message<Order>)message).Data;
+                        ord.LuaTimeStamp = message.CreatedTime;
+                        Events.OnOrderCall(ord);
                         break;
+
                     case EventNames.OnParam:
                         break;
+
                     case EventNames.OnQuote:
                         Trace.Assert(message is Message<OrderBook>);
-                        var ob = ((Message<OrderBook>) message).Data;
-                        ob.local_time = message.CreatedTime;
+                        var ob = ((Message<OrderBook>)message).Data;
+                        ob.LuaTimeStamp = message.CreatedTime;
                         Events.OnQuoteCall(ob);
                         break;
 
@@ -316,23 +328,30 @@ namespace QuikSharp {
                         Trace.Assert(message is Message<string>);
                         Events.OnStopCall(int.Parse(((Message<string>)message).Data));
                         break;
+
                     case EventNames.OnStopOrder:
                         break;
+
                     case EventNames.OnTrade:
+                        Trace.Assert(message is Message<Trade>);
+                        var trade = ((Message<Trade>)message).Data;
+                        trade.LuaTimeStamp = message.CreatedTime;
+                        Events.OnTradeCall(trade);
                         break;
+
                     case EventNames.OnTransReply:
-                        throw new InvalidOperationException("OnTransReply must be processed " +
-                            "in SendTransaction() with Id set to TRANS_ID ");
+                        Trace.Assert(message is Message<TransactionReply>);
+                        var trReply = ((Message<TransactionReply>)message).Data;
+                        trReply.LuaTimeStamp = message.CreatedTime;
+                        Events.OnTransReplyCall(trReply);
+                        break;
+
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
             } else {
                 switch (message.Command) {
-                    case "transactionSentToRemoteServer":
-                        // We will catch Lua errors while parsing json
-                        // if we are here then a transaction was sent
-                        // and a response with TRANS_ID is still in responses
-                        break;
+                    // an error from an event not request (from req is caught is response loop)
                     case "lua_error":
                         Trace.Assert(message is Message<string>);
                         Trace.TraceError(((Message<string>)message).Data);
@@ -344,9 +363,9 @@ namespace QuikSharp {
         }
 
         /// <summary>
-        /// Generate a new unique ID
+        /// Generate a new unique ID for current session
         /// </summary>
-        public int GetNewUniqueId() {
+        internal int GetNewUniqueId() {
             lock (_syncRoot) {
                 var newId = Interlocked.Increment(ref _correlationId);
                 // 2^31 = 2147483648
@@ -359,6 +378,10 @@ namespace QuikSharp {
                 _correlationId = 1;
                 return 1;
             }
+        }
+
+        internal string PrependWithSessionId(long id) {
+            return SessionId + "." + id;
         }
 
         internal async Task<TResponse> Send<TResponse>(IMessage request, int timeout = 0)

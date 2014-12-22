@@ -13,10 +13,12 @@ namespace QuikSharp {
         /// <summary>
         /// Quik interface in .NET constructor
         /// </summary>
-        public Quik(int port = DefaultPort) {
+        public Quik(int port = DefaultPort, IPersistentStorage storage = null) {
+            if (storage == null) { Storage = new EsentStorage(); } else { Storage = storage; }
             QuikService = QuikService.Create(port);
-            Events = QuikService.Events;
-
+            // poor man's DI
+            QuikService.Storage = Storage;
+            Events = new QuikEvents(QuikService);
             Debug = new DebugFunctions(port);
             Service = new ServiceFunctions(port);
             Class = new ClassFunctions(port);
@@ -25,6 +27,11 @@ namespace QuikSharp {
         }
 
         private QuikService QuikService { get; set; }
+
+        /// <summary>
+        /// Persistent transaction storage
+        /// </summary>
+        public IPersistentStorage Storage { get; set; }
 
         /// <summary>
         /// Debug functions

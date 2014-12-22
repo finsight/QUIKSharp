@@ -133,7 +133,8 @@ function qsutils.connect()
                 for line in io.lines(previous_file_name) do
                     client:send(line..'\n')
                 end
-                os.remove(previous_file_name)
+                -- remove manually
+                -- os.remove(previous_file_name)
             end
         end
     end

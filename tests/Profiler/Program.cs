@@ -48,9 +48,9 @@ namespace Profiler {
                 sw.Start();
 
                 var count = 10000;
-                var t = new TransactionSpecification();
+                var t = new Transaction();
 
-                var array = new Task<TransactionSpecification>[count];
+                var array = new Task<Transaction>[count];
                 for (int i = 0; i < array.Length; i++) {
                     array[i] = _df.Echo(t);
                 }

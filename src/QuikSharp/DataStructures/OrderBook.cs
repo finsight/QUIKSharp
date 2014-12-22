@@ -1,8 +1,12 @@
-﻿namespace QuikSharp {
+﻿// Copyright (C) 2014 Victor Baybekov
+
+using QuikSharp.DataStructures;
+
+namespace QuikSharp {
     /// <summary>
     /// Стакан
     /// </summary>
-    public class OrderBook {
+    public class OrderBook : IWithLuaTimeStamp {
         // ReSharper disable InconsistentNaming
         /// <summary>
         /// Строка стакана
@@ -30,8 +34,7 @@
         /// <summary>
         /// time in msec from lua epoch
         /// </summary>
-        // TODO make JsonConverter for lua time epoch
-        public long local_time { get; set; }
+        public long LuaTimeStamp { get; set; }
 
         /// <summary>
         /// Result of getInfoParam("SERVERTIME") right before getQuoteLevel2 call

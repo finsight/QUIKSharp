@@ -8,7 +8,7 @@ namespace QuikSharp {
     /// <summary>
     /// Сервисные функции
     /// </summary>
-    public interface IServiceFunctions : IQuikFunctions {
+    public interface IServiceFunctions : IQuikService {
 
         /// <summary>
         /// Функция возвращает путь, по которому находится файл info.exe, исполняющий данный скрипт, без завершающего обратного слэша («\»). Например, C:\QuikFront. 

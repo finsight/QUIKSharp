@@ -56,6 +56,16 @@ function OnInit(script_path)
     log("Hello, QuikSharp! Running inside Quik from the path: "..getScriptPath(), 1)
 end
 
+--- Функция вызывается терминалом QUIK при получении сделки.
+function OnOrder(order)
+    local msg = {}
+    msg.t = timemsec()
+    msg.id = nil -- значение в order.trans_id
+    msg.data = order
+    msg.cmd = "OnOrder"
+    return msg
+end
+
 --- Функция вызывается терминалом QUIK при получении изменения стакана котировок.
 function OnQuote(class_code, sec_code)
     if true then -- is_connected
@@ -98,14 +108,24 @@ function OnStop(s)
     return 1000
 end
 
---- подробнее см. qsfunctions.sendTransaction
+--- Функция вызывается терминалом QUIK при получении сделки.
+function OnTrade(trade)
+    local msg = {}
+    msg.t = timemsec()
+    msg.id = nil -- значение в OnTrade.trans_id
+    msg.data = trade
+    msg.cmd = "OnTrade"
+    return msg
+end
+
+--- Функция вызывается терминалом QUIK при получении ответа на транзакцию пользователя.
 function OnTransReply(trans_reply)
     local msg = {}
-    -- это сообщение будет отправлено в то задание, которое изначально отправило транзакцию
-    msg.id = trans_reply.trans_id
+    msg.t = timemsec()
+    msg.id = nil -- значение в trans_reply.trans_id
     msg.data = trans_reply
-    msg.cmd = "sendTransaction"
-    return 1000
+    msg.cmd = "OnTransReply"
+    return msg
 end
 
 

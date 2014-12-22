@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿// Copyright (C) 2014 Victor Baybekov
+
+using Newtonsoft.Json;
 
 namespace QuikSharp {
     /// <summary>

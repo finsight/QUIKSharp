@@ -1,4 +1,4 @@
-﻿using System;
+﻿// Copyright (C) 2014 Victor Baybekov
 
 namespace QuikSharp {
     /// <summary>

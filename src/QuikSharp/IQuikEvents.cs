@@ -39,7 +39,7 @@ namespace QuikSharp {
     /// OnTrade - новая сделка 
     /// OnTransReply - ответ на транзакцию 
     /// </summary>
-    public interface IQuikEvents {
+    public interface IQuikEvents : IQuikService {
         event EventHandler OnAccountBalance;
         event EventHandler OnAccountPosition;
         /// <summary>
@@ -68,7 +68,7 @@ namespace QuikSharp {
         event EventHandler OnMoneyLimitDelete;
         event EventHandler OnNegDeal;
         event EventHandler OnNegTrade;
-        event EventHandler OnOrder;
+        event OrderHandler OnOrder;
         event EventHandler OnParam;
         event QuoteHandler OnQuote;
         /// <summary>
@@ -77,8 +77,8 @@ namespace QuikSharp {
         /// </summary>
         event StopHandler OnStop;
         event EventHandler OnStopOrder;
-        event EventHandler OnTrade;
-        event EventHandler OnTransReply;
+        event TradeHandler OnTrade;
+        event TransReplyHandler OnTransReply;
 
     }
 }

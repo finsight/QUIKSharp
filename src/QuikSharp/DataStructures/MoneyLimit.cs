@@ -1,4 +1,6 @@
-﻿namespace QuikSharp {
+﻿// Copyright (C) 2014 Victor Baybekov
+
+namespace QuikSharp {
     /// <summary>
     /// При обработке изменения денежного лимита функция getMoney возвращает таблицу Lua с параметрами: 
     /// </summary>

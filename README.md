@@ -1,6 +1,6 @@
 ﻿QuikSharp
 ==========
-QuikSharp is Quik interface in .NET.
+QuikSharp is the Quik Lua interface ported to .NET.
 
 QuikSharp exposes all functions and events available in QLUA as C# async functions
 and events.

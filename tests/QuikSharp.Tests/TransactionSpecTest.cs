@@ -93,22 +93,22 @@ namespace QuikSharp.Tests {
 
         [Test]
         public void CouldSerializeEmptyTransactionSpec() {
-            var t = new TransactionSpecification();
+            var t = new Transaction();
             var j = t.ToJson();
             Console.WriteLine(j);
-            var t2 = j.FromJson<TransactionSpecification>();
+            var t2 = j.FromJson<Transaction>();
             Assert.AreEqual(t.ToJson(), t2.ToJson());
         }
 
 
         [Test]
         public void CouldSerializeEmptyTransactionSpecMulti() {
-            var t = new TransactionSpecification();
+            var t = new Transaction();
             var sw = new Stopwatch();
             sw.Start();
             for (int i = 0; i < 100000; i++) {
                 var j = t.ToJson();
-                var t2 = j.FromJson<TransactionSpecification>();
+                var t2 = j.FromJson<Transaction>();
             }
             sw.Stop();
             Console.WriteLine("Multiserialization takes msecs: " + sw.ElapsedMilliseconds);
@@ -120,7 +120,7 @@ namespace QuikSharp.Tests {
         /// </summary>
         [Test]
         public void CouldEchoTransactionSpec() {
-            var t = new TransactionSpecification();
+            var t = new Transaction();
             var echoed = _df.Echo(t).Result;
             Console.WriteLine(t.ToJson());
             Console.WriteLine(echoed.ToJson());
@@ -137,9 +137,9 @@ namespace QuikSharp.Tests {
                 sw.Start();
 
                 var count = 1000;
-                var t = new TransactionSpecification();
+                var t = new Transaction();
 
-                var array = new Task<TransactionSpecification>[count];
+                var array = new Task<Transaction>[count];
                 for (int i = 0; i < array.Length; i++) {
                     array[i] = _df.Echo(t);
                 }
@@ -156,12 +156,11 @@ namespace QuikSharp.Tests {
 
         [Test]
         public void CouldSendTransactionSpec() {
-            var t = new TransactionSpecification();
+            var t = new Transaction();
             var result = _q.Trading.SendTransaction(t).Result;
 
             Console.WriteLine("Sent Id: " + t.TRANS_ID);
-            Console.WriteLine("Received Id: " + result.trans_id);
-            Assert.AreEqual(t.TRANS_ID, result.trans_id);
+            Assert.IsTrue(result > 0);
         }
 
     }

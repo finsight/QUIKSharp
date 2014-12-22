@@ -1,4 +1,6 @@
-﻿namespace QuikSharp {
+﻿// Copyright (C) 2014 Victor Baybekov
+
+namespace QuikSharp {
     /// <summary>
     /// Лимиты по бумагам
     /// </summary>

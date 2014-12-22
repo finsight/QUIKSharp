@@ -2,7 +2,7 @@
 
 using System;
 
-namespace QuikSharp.DataStructures {
+namespace QuikSharp {
     /// <summary>
     /// Формат даты и времени, используемый таблицах.
     /// Для корректного отображения даты и времени все параметры должны быть заданы. 

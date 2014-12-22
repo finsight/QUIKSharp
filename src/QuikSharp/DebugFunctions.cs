@@ -1,8 +1,10 @@
-﻿using System.Diagnostics;
+﻿// Copyright (C) 2014 Victor Baybekov
+
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace QuikSharp {
-    public class DebugFunctions : IQuikFunctions {
+    public class DebugFunctions : IQuikService {
         public DebugFunctions(int port) { QuikService = QuikService.Create(port); }
 
         public QuikService QuikService { get; private set; }
