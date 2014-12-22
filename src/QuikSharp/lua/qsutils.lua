@@ -118,13 +118,14 @@ function qsutils.connect()
             is_connected = true
             log('Connected!', 1)
             if missed_values_file then
+                log("Loading missed values from "..missed_values_file_name, 2)
                 missed_values_file:flush()
                 missed_values_file:close()
                 missed_values_file = nil
                 local previous_file_name = missed_values_file_name
                 missed_values_file_name = nil
                 for line in io.lines(previous_file_name) do
-                    responseClient:send(line..'\n')
+                    client:send(line..'\n')
                 end
             end
         end
@@ -167,11 +168,11 @@ function sendResponse(msg_table)
     -- if not msg_table.t then msg_table.t = timemsec() end
     local responseString = to_json(msg_table)
     if is_connected then
-        local status, res = pcall(client.send, client, responseString..'\n')
-        if status and res then
-            --log(responseString)
-            return true
-        else
+            local status, res = pcall(client.send, client, responseString..'\n')
+            if status and res then
+                --log(responseString)
+                return true
+            else
             disconnected()
             return nil, err
         end
@@ -179,7 +180,7 @@ function sendResponse(msg_table)
     -- we need this break instead of else because we could lose connection inside the previous if
     if not is_connected then
         if not missed_values_file then
-            missed_values_file_name = "logs/MissedValues."..os.time()..".log"
+            missed_values_file_name = script_path .. "/logs/MissedValues."..os.time()..".log"
             missed_values_file = io.open(missed_values_file_name, "a")
         end
         missed_values_file:write(responseString..'\n')

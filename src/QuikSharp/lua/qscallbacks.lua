@@ -13,6 +13,12 @@ function OnQuikSharpDisconnected()
     -- TODO any recovery or risk management logic here
 end
 
+--- Функция вызывается когда скрипт ловит ошибку в функциях обратного вызова
+function OnError(message)
+    msg.cmd = "lua_error"
+    msg.data = "Lua error: " .. message
+    sendResponse(msg)
+end
 
 --- Функция вызывается терминалом QUIK при получении обезличенной сделки.
 function OnAllTrade(alltrade)
@@ -52,15 +58,21 @@ end
 
 --- Функция вызывается терминалом QUIK при получении изменения стакана котировок.
 function OnQuote(class_code, sec_code)
-    if is_connected then
+    if true then -- is_connected
         local msg = {}
         msg.cmd = "OnQuote"
-        -- msg.t = timemsec()
-        ql2 = getQuoteLevel2(class_code, sec_code)
-        msg.data = ql2
-        msg.data.class_code = class_code
-        msg.data.sec_code = sec_code
-        sendResponse(msg)
+        msg.t = timemsec()
+        local server_time = getInfoParam("SERVERTIME")
+        local status, ql2 = pcall(getQuoteLevel2, class_code, sec_code)
+        if status then
+            msg.data = ql2
+            msg.data.class_code = class_code
+            msg.data.sec_code = sec_code
+            msg.data.server_time = server_time
+            sendResponse(msg)
+        else
+            OnError(ql2)
+        end
     end
 end
 

@@ -28,6 +28,17 @@
         public string sec_code { get; set; }
 
         /// <summary>
+        /// time in msec from lua epoch
+        /// </summary>
+        // TODO make JsonConverter for lua time epoch
+        public long local_time { get; set; }
+
+        /// <summary>
+        /// Result of getInfoParam("SERVERTIME") right before getQuoteLevel2 call
+        /// </summary>
+        public string server_time { get; set; }
+
+        /// <summary>
         /// Количество котировок покупки
         /// </summary>
         public double bid_count { get; set; }

@@ -307,7 +307,9 @@ namespace QuikSharp {
                         break;
                     case EventNames.OnQuote:
                         Trace.Assert(message is Message<OrderBook>);
-                        Events.OnQuoteCall(((Message<OrderBook>)message).Data);
+                        var ob = ((Message<OrderBook>) message).Data;
+                        ob.local_time = message.CreatedTime;
+                        Events.OnQuoteCall(ob);
                         break;
 
                     case EventNames.OnStop:
@@ -330,6 +332,10 @@ namespace QuikSharp {
                         // We will catch Lua errors while parsing json
                         // if we are here then a transaction was sent
                         // and a response with TRANS_ID is still in responses
+                        break;
+                    case "lua_error":
+                        Trace.Assert(message is Message<string>);
+                        Trace.TraceError(((Message<string>)message).Data);
                         break;
                     default:
                         throw new InvalidOperationException("Unknown command in a message: " + message.Command);

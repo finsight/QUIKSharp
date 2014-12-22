@@ -82,7 +82,7 @@ namespace QuikSharp {
         }
 
         static void Events_OnClose() {
-            Console.WriteLine("Events_OnClose: ");
+            Console.WriteLine("Events_OnQuote: ");
         }
 
         static void Events_OnStop(int signal) {

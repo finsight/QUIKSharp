@@ -61,6 +61,7 @@ namespace QuikSharp {
 
         }
         public Message(T message, string command, DateTime? validUntil = null) {
+            Command = command;
             CreatedTime = DateTime.Now.Ticks / 10000L - Epoch;
             ValidUntil = validUntil;
             Data = message;

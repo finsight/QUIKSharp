@@ -4,13 +4,15 @@
 function is_quik()
     if getScriptPath then return true else return false end
 end
+script_path = ""
 if is_quik() then
-    package.path = package.path .. ";" .. getScriptPath() .. "\\?.lua;" .. getScriptPath() .. "\\?.luac"
-    package.cpath = package.cpath .. ";" .. getScriptPath() .. '\\clibs\\?.dll'
+    script_path = getScriptPath()
 else
-    package.path = package.path .. ";" .. ".\\?.lua;" .. ".\\?.luac"
-    package.cpath = package.cpath .. ";" .. '.\\clibs\\?.dll'
+    script_path = "."
 end
+package.path = package.path .. ";" .. script_path .. "\\?.lua;" .. script_path .. "\\?.luac"
+package.cpath = package.cpath .. ";" .. script_path .. '\\clibs\\?.dll'
+
 local util = require("qsutils")
 local qf = require("qsfunctions")
 require("qscallbacks")

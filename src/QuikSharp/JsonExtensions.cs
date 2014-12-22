@@ -225,6 +225,8 @@ namespace QuikSharp {
                             // if we are here then a transaction was sent
                             // and a response with TRANS_ID is still in responses
                             return (IMessage)Activator.CreateInstance(typeof(Message<string>));
+                        case "lua_error":
+                            return (IMessage)Activator.CreateInstance(typeof(Message<string>));
                         default:
                             //return (IMessage)Activator.CreateInstance(typeof(Message<string>));
                             throw new InvalidOperationException("Unknown command in a message: " + cmd);
