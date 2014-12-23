@@ -1,5 +1,7 @@
 ﻿// Copyright (C) 2014 Victor Baybekov
 
+using System;
+using Newtonsoft.Json;
 using QuikSharp.DataStructures;
 
 namespace QuikSharp {
@@ -41,14 +43,16 @@ namespace QuikSharp {
         /// </summary>
         public string server_time { get; set; }
 
-        /// <summary>
-        /// Количество котировок покупки
-        /// </summary>
-        public double bid_count { get; set; }
-        /// <summary>
-        /// Количество котировок продажи
-        /// </summary>
-        public double offer_count { get; set; }
+        ///// <summary>
+        ///// Количество котировок покупки
+        ///// </summary>
+        //[Obsolete("Use bid array length instead")]
+        //public double bid_count { get; set; }
+        ///// <summary>
+        ///// Количество котировок продажи
+        ///// </summary>
+        //[Obsolete("Use offer array length instead")]
+        //public double offer_count { get; set; }
         
 
         /// <summary>

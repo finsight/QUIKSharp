@@ -64,6 +64,7 @@ namespace QuikSharp {
 
             _quik.Events.OnAllTrade += Events_OnAllTrade;
             _quik.Events.OnQuote += Events_OnQuote;
+            _quik.Events.OnOrder += Events_OnOrder;
             _quik.Events.OnStop += Events_OnStop;
             _quik.Events.OnClose += Events_OnClose;
 
@@ -73,8 +74,12 @@ namespace QuikSharp {
             }
         }
 
+        static void Events_OnOrder(DataStructures.Transaction.Order order) {
+            Console.WriteLine("Events_OnOrder: " + order.ToJson());
+        }
+
         static void Events_OnQuote(OrderBook ob) {
-            Console.WriteLine("Events_OnAllTrade: " + ob.ToJson());
+            Console.WriteLine("Events_OnQuote: " + ob.ToJson());
         }
 
         static void Events_OnAllTrade(DataStructures.AllTrade allTrade) {

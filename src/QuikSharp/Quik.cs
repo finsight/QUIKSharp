@@ -1,5 +1,7 @@
 ﻿// Copyright (C) 2014 Victor Baybekov
 
+using System;
+
 namespace QuikSharp {
     /// <summary>
     /// Quik interface in .NET
@@ -26,7 +28,14 @@ namespace QuikSharp {
             Trading = new TradingFunctions(port);
         }
 
+
         private QuikService QuikService { get; set; }
+
+
+        /// <summary>
+        /// Quik current data is all in local time. This property allows to convert it to UTC datetime
+        /// </summary>
+        public TimeZoneInfo TimeZoneInfo { get; set; }
 
         /// <summary>
         /// Persistent transaction storage

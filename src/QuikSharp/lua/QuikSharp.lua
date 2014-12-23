@@ -18,7 +18,7 @@ require("qscallbacks")
 local is_started = true
 
 function do_main()
-    log("Entered main function")
+    log("Entered main function", 0)
     while is_started do
         -- if not connected, connect
         util.connect()
