@@ -36,10 +36,13 @@ function OnError(message)
     sendResponse(msg)
 end
 
+
+
 --- Функция вызывается терминалом QUIK при получении обезличенной сделки.
 function OnAllTrade(alltrade)
     if is_connected then
         local msg = {}
+        msg.t = timemsec()
         msg.cmd = "OnAllTrade"
         msg.t = timemsec()
         msg.data = alltrade

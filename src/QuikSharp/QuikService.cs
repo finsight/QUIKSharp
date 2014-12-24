@@ -263,7 +263,9 @@ namespace QuikSharp {
                         break;
                     case EventNames.OnAllTrade:
                         Trace.Assert(message is Message<AllTrade>);
-                        Events.OnAllTradeCall(((Message<AllTrade>)message).Data);
+                        var allTrade = ((Message<AllTrade>) message).Data;
+                        allTrade.LuaTimeStamp = message.CreatedTime;
+                        Events.OnAllTradeCall(allTrade);
                         break;
                     case EventNames.OnCleanUp:
                         Trace.Assert(message is Message<string>);

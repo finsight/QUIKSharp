@@ -1,81 +1,99 @@
 ﻿// Copyright (C) 2014 Victor Baybekov
 
-namespace QuikSharp.DataStructures {
+using Newtonsoft.Json;
 
+namespace QuikSharp.DataStructures {
 
     /// <summary>
     /// Таблица с параметрами обезличенной сделки 
     /// </summary>
-    public class AllTrade {
+    public class AllTrade : IWithLuaTimeStamp {
         /// <summary>
         /// Номер сделки в торговой системе
         /// </summary>
-        public long trade_num { get; set; }
+        [JsonProperty("trade_num")]
+        public long TradeNum { get; set; }
         /// <summary>
         /// Набор битовых флагов:
         /// бит 0 (0x1)  Сделка на продажу  
         /// бит 1 (0x2)  Сделка на покупку  
         /// </summary>
-        public AllTradeFlags flags { get; set; }
+        [JsonProperty("flags")]
+        public AllTradeFlags Flags { get; set; }
         /// <summary>
         /// Цена
         /// </summary>
-        public double price { get; set; }
+        [JsonProperty("price")]
+        public double Price { get; set; }
         /// <summary>
         /// Количество бумаг в последней сделке в лотах
         /// </summary>
-        public long qty { get; set; }
+        [JsonProperty("qty")]
+        public long Qty { get; set; }
         /// <summary>
         /// Объем в денежных средствах
         /// </summary>
-        public double value { get; set; }
+        [JsonProperty("value")]
+        public double Value { get; set; }
         /// <summary>
         /// Накопленный купонный доход
         /// </summary>
-        public double accruedint { get; set; }
+        [JsonProperty("accruedint")]
+        public double Accruedint { get; set; }
         /// <summary>
         /// Доходность
         /// </summary>
-        public double yield { get; set; }
+        [JsonProperty("yield")]
+        public double Yield { get; set; }
         /// <summary>
         /// Код расчетов
         /// </summary>
-        public string settlecode { get; set; }
+        [JsonProperty("settlecode")]
+        public string Settlecode { get; set; }
         /// <summary>
         /// Ставка РЕПО (%)
         /// </summary>
-        public double reporate { get; set; }
+        [JsonProperty("reporate")]
+        public double Reporate { get; set; }
         /// <summary>
         /// Сумма РЕПО
         /// </summary>
-        public double repovalue { get; set; }
+        [JsonProperty("repovalue")]
+        public double Repovalue { get; set; }
         /// <summary>
         /// Объем выкупа РЕПО
         /// </summary>
-        public double repo2value { get; set; }
+        [JsonProperty("repo2value")]
+        public double Repo2Value { get; set; }
         /// <summary>
         /// Срок РЕПО в днях
         /// </summary>
-        public double repoterm { get; set; }
+        [JsonProperty("repoterm")]
+        public double Repoterm { get; set; }
         /// <summary>
         /// Код бумаги заявки
         /// </summary>
-        public string sec_code { get; set; }
+        [JsonProperty("sec_code")]
+        public string SecCode { get; set; }
         /// <summary>
         /// Код класса
         /// </summary>
-        public string class_code { get; set; }
+        [JsonProperty("class_code")]
+        public string ClassCode { get; set; }
         /// <summary>
         /// Дата и время 
         /// </summary>
-        public QuikDateTime datetime { get; set; }
+        [JsonProperty("datetime")]
+        public QuikDateTime Datetime { get; set; }
         /// <summary>
         /// Период торговой сессии. Возможные значения:
         /// «0» – Открытие; 
         /// «1» – Нормальный; 
         /// «2» – Закрытие 
         /// </summary>
-        public int period { get; set; }
+        [JsonProperty("period")]
+        public int Period { get; set; }
 
+        public long LuaTimeStamp { get; set; }
     }
 }
