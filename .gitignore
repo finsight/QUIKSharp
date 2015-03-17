@@ -186,3 +186,7 @@ docs/content/release-notes.md
 
 *.ide
 .idea
+
+
+!src/QuikSharp/lua/clibs/*.dll
+!src/QuikSharp/lua/clibs/socket/*.dll
