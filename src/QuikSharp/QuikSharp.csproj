@@ -215,6 +215,7 @@
     <Content Include="lua\clibs\cjson.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="lua\clibs\lua51.dll" />
     <Content Include="lua\clibs\socket\core.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

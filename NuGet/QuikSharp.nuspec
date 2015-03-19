@@ -32,5 +32,6 @@
     <file src="..\bin\lua\socket.lua" target="content\lua" />
     <file src="..\bin\lua\clibs\socket\core.dll" target="content\lua\clibs\socket" />
     <file src="..\bin\lua\clibs\cjson.dll" target="content\lua\clibs" />
+    <file src="..\bin\lua\clibs\lua51.dll" target="content\lua\clibs" />
   </files>
 </package>

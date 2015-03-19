@@ -12,3 +12,5 @@ for Quik and 70 micros for a standalone Lua (60 in profiler in release mode).
 * Implemented sendTransaction and tested its error handling (no actual trades yet)
 * Imlpemented several data structures and functions
 * Improved performance by c.30% in response listener by spawning new tasks for each message
+#### 0.1.5 - March 19 2015
+* Fixed lua51.dll proxy issue

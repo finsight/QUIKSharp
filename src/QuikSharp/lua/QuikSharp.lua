@@ -7,6 +7,7 @@ end
 script_path = "."
 if is_quik() then
     script_path = getScriptPath()
+	package.loadlib(getScriptPath()  .. "\\clibs\\lua51.dll", "main")
 end
 package.path = package.path .. ";" .. script_path .. "\\?.lua;" .. script_path .. "\\?.luac"..";"..".\\?.lua;"..".\\?.luac"
 package.cpath = package.cpath .. ";" .. script_path .. '\\clibs\\?.dll'..";"..'.\\clibs\\?.dll'
