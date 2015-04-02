@@ -12,7 +12,7 @@
     <summary>@summary@</summary>
     <description>@description@</description>
     <releaseNotes>@releaseNotes@</releaseNotes>
-    <copyright>Copyright Ⓒ 2014 Victor Baybekov</copyright>
+    <copyright>Copyright Ⓒ 2015 Victor Baybekov</copyright>
     <tags>@tags@</tags>
     <dependencies>
       <dependency id="Newtonsoft.Json" />

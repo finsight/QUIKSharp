@@ -3,17 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuikStarter", "src\QuikStarter\QuikStarter.csproj", "{2DC9F9AB-373B-481D-B13F-6F191DD12C57}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{995804B9-7FF9-435A-B397-4D793867131E}"
-	ProjectSection(SolutionItems) = preProject
-		lib\quikcs\Trans2Quik\TRANS2QUIK.dll = lib\quikcs\Trans2Quik\TRANS2QUIK.dll
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuikDDE_WinForms", "lib\quikcs\QuikDDE_WinForms\QuikDDE_WinForms.csproj", "{DC5034B2-D9F6-4948-9D24-1DB9B728C6E7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuikDDE_Console", "lib\quikcs\QuikDDE_Console\QuikDDE_Console.csproj", "{9BB350BD-1B1E-4F19-82D8-80D546C90DEE}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuikSharp", "src\QuikSharp\QuikSharp.csproj", "{48081C21-DFBA-4CBB-88AF-0BD9F606F424}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "project", "project", "{8E6032D5-4061-44AD-8151-7F70FE09880A}"
@@ -41,36 +30,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2DC9F9AB-373B-481D-B13F-6F191DD12C57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2DC9F9AB-373B-481D-B13F-6F191DD12C57}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2DC9F9AB-373B-481D-B13F-6F191DD12C57}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{2DC9F9AB-373B-481D-B13F-6F191DD12C57}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{2DC9F9AB-373B-481D-B13F-6F191DD12C57}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{2DC9F9AB-373B-481D-B13F-6F191DD12C57}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2DC9F9AB-373B-481D-B13F-6F191DD12C57}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2DC9F9AB-373B-481D-B13F-6F191DD12C57}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{2DC9F9AB-373B-481D-B13F-6F191DD12C57}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{2DC9F9AB-373B-481D-B13F-6F191DD12C57}.Release|x86.ActiveCfg = Release|Any CPU
-		{DC5034B2-D9F6-4948-9D24-1DB9B728C6E7}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{DC5034B2-D9F6-4948-9D24-1DB9B728C6E7}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{DC5034B2-D9F6-4948-9D24-1DB9B728C6E7}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{DC5034B2-D9F6-4948-9D24-1DB9B728C6E7}.Debug|x86.ActiveCfg = Debug|x86
-		{DC5034B2-D9F6-4948-9D24-1DB9B728C6E7}.Debug|x86.Build.0 = Debug|x86
-		{DC5034B2-D9F6-4948-9D24-1DB9B728C6E7}.Release|Any CPU.ActiveCfg = Release|x86
-		{DC5034B2-D9F6-4948-9D24-1DB9B728C6E7}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{DC5034B2-D9F6-4948-9D24-1DB9B728C6E7}.Release|Mixed Platforms.Build.0 = Release|x86
-		{DC5034B2-D9F6-4948-9D24-1DB9B728C6E7}.Release|x86.ActiveCfg = Release|x86
-		{DC5034B2-D9F6-4948-9D24-1DB9B728C6E7}.Release|x86.Build.0 = Release|x86
-		{9BB350BD-1B1E-4F19-82D8-80D546C90DEE}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{9BB350BD-1B1E-4F19-82D8-80D546C90DEE}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{9BB350BD-1B1E-4F19-82D8-80D546C90DEE}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{9BB350BD-1B1E-4F19-82D8-80D546C90DEE}.Debug|x86.ActiveCfg = Debug|x86
-		{9BB350BD-1B1E-4F19-82D8-80D546C90DEE}.Debug|x86.Build.0 = Debug|x86
-		{9BB350BD-1B1E-4F19-82D8-80D546C90DEE}.Release|Any CPU.ActiveCfg = Release|x86
-		{9BB350BD-1B1E-4F19-82D8-80D546C90DEE}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{9BB350BD-1B1E-4F19-82D8-80D546C90DEE}.Release|Mixed Platforms.Build.0 = Release|x86
-		{9BB350BD-1B1E-4F19-82D8-80D546C90DEE}.Release|x86.ActiveCfg = Release|x86
-		{9BB350BD-1B1E-4F19-82D8-80D546C90DEE}.Release|x86.Build.0 = Release|x86
 		{48081C21-DFBA-4CBB-88AF-0BD9F606F424}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{48081C21-DFBA-4CBB-88AF-0BD9F606F424}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48081C21-DFBA-4CBB-88AF-0BD9F606F424}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
@@ -108,8 +67,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{DC5034B2-D9F6-4948-9D24-1DB9B728C6E7} = {995804B9-7FF9-435A-B397-4D793867131E}
-		{9BB350BD-1B1E-4F19-82D8-80D546C90DEE} = {995804B9-7FF9-435A-B397-4D793867131E}
 		{E8381C47-9297-4BD3-B384-CD366037F587} = {9C0672CC-6182-4469-B5DF-B92265713169}
 		{65866E9F-302F-45BE-9BB0-77B3057916CE} = {9C0672CC-6182-4469-B5DF-B92265713169}
 	EndGlobalSection

@@ -96,7 +96,7 @@ namespace QuikSharp {
 
         static void Cleanup() {
 #if DEBUG
-            MessageBox.Show("Bye!");
+            System.Windows.Forms.MessageBox.Show("Bye!");
 #endif
             Console.WriteLine("Bye!");
             ServiceManager.StopServices();

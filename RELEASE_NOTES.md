@@ -14,3 +14,6 @@ for Quik and 70 micros for a standalone Lua (60 in profiler in release mode).
 * Improved performance by c.30% in response listener by spawning new tasks for each message
 #### 0.1.5 - March 19 2015
 * Fixed lua51.dll proxy issue
+#### 0.1.6 - April 3 2015
+* Fixed lua51.dll bug
+* Apache 2.0 instead of GPL
