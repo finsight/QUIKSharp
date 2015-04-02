@@ -41,40 +41,16 @@ should abstract away its idiosyncrasies as much as possible. Most platforms have
 and it is the choice for new development.
 
 
-LICENCE
-=======
-QuikSharp - Quik interface in .NET
+License
+----------------------
 
-Copyright Ⓒ 2014 Victor Baybekov
+(c) Victor Baybekov 2015
 
-This library is dual-licensed: you can redistribute it and/or modify
-it under the terms of the GNU General Public License version 3 as 
-published by the Free Software Foundation. For the terms of this 
-license, see the GNU GPL v3 section of the LICENSE.txt file or 
-<http://www.gnu.org/licenses/>.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-You could use this library under the terms of the GNU General
-Public License, but WITHOUT ANY WARRANTY; without even the implied 
-warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU General Public License for more details.
+    http://www.apache.org/licenses/LICENSE-2.0
 
-Alternatively, you can license this library under a proprierary 
-license. Please contact the author for details.
-
-
-ЛИЦЕНЗИЯ
---------
-Вы можете использовать эту библиотеку под лицензией GNU GPL v3. Это значит,
-что если Вы включаете библиотеку в свое приложение и распространяете 
-это приложение сторонним пользователям, то вы должны опубликовать код Вашего
-приложения. Если Вы используете код для личных целей, то Вы можете вносить любые
-изменения и использовать библиотеку как угодно. Ответственность автора за
-результаты использования библиотеки полностью исключена. Автор не дает никаких
-гарантий, что в какой-то момент Вы не сольете счет, используя библиотеку, и не будете должны 
-брокеру, клиентам, родственникам и бюджету РФ (даже если читаете текст лицензии).
-В случае разночтений англоязычной и русскоязычной версий приоритет имеет англоязычная.
-
-Если Вам нужна коммерческая лицензия для этой библиотеки, напишите автору
-в разделе Issues этого репозитария.
-
-
+This software is distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
