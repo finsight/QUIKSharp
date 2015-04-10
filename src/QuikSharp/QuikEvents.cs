@@ -113,7 +113,23 @@ namespace QuikSharp {
         internal void OnOrderCall(Order order) {
             if (OnOrder != null) OnOrder(order);
             // invoke event specific for the transaction
-            var tr = QuikService.Storage.Get<Transaction>(order.Comment);
+            string correlationId = order.Comment;
+
+            #region Totally untested code or handling manual transactions
+            if (!QuikService.Storage.Contains(correlationId)) {
+                Debug.Assert(order.TransID == 0);
+                correlationId = "manual:" + order.OrderNum + ":" + correlationId;
+                var fakeTrans = new Transaction() {
+                    Comment = correlationId,
+                    IsManual = true
+                    // TODO map order properties back to transaction
+                    // ideally, make C# property names consistent (Lua names are set as JSON.NET properties via an attribute)
+                };
+                QuikService.Storage.Set<Transaction>(correlationId, fakeTrans);
+            }
+            #endregion
+
+            var tr = QuikService.Storage.Get<Transaction>(correlationId);
             if (tr != null) {
                 tr.OnOrderCall(order);
                 // persist transaction with added order
@@ -141,6 +157,21 @@ namespace QuikSharp {
         internal void OnTradeCall(Trade trade) {
             if (OnTrade != null) OnTrade(trade);
             // invoke event specific for the transaction
+            string correlationId = trade.Comment;
+
+            #region Totally untested code or handling manual transactions
+            if (!QuikService.Storage.Contains(correlationId)) {
+                correlationId = "manual:" + trade.OrderNum + ":" + correlationId;
+                var fakeTrans = new Transaction() {
+                    Comment = correlationId,
+                    IsManual = true
+                    // TODO map order properties back to transaction
+                    // ideally, make C# property names consistent (Lua names are set as JSON.NET properties via an attribute)
+                };
+                QuikService.Storage.Set<Transaction>(correlationId, fakeTrans);
+            }
+            #endregion
+
             var tr = QuikService.Storage.Get<Transaction>(trade.Comment);
             if (tr != null) {
                 tr.OnTradeCall(trade);

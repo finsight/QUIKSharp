@@ -440,5 +440,8 @@ namespace QuikSharp {
 
 
         // ReSharper restore InconsistentNaming
+
+        [JsonIgnore] // do not pass to Quik
+        public bool IsManual { get; set; }
     }
 }
