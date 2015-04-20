@@ -1,4 +1,4 @@
-// Copyright (C) 2014 Victor Baybekov
+// Copyright (C) 2015 Victor Baybekov
 
 using System;
 using System.Collections.Generic;
@@ -293,7 +293,7 @@ namespace QuikSharp {
         /// Текстовый комментарий, указанный в заявке - поручение (brokerref in Trades/Orders). 
         /// Используется при снятии группы заявок
         /// </summary>
-        [JsonProperty("Comment")]
+        [JsonProperty("brokerref")]
         public string Comment { get; set; }
         /// <summary>
         /// Признак крупной сделки (YES/NO). Параметр внебиржевой сделки

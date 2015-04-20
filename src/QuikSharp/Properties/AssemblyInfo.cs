@@ -4,10 +4,10 @@ using System.Reflection;
 [assembly: AssemblyTitleAttribute("QuikSharp")]
 [assembly: AssemblyProductAttribute("QuikSharp")]
 [assembly: AssemblyDescriptionAttribute("Quik Lua interface in .NET")]
-[assembly: AssemblyVersionAttribute("0.1.6")]
-[assembly: AssemblyFileVersionAttribute("0.1.6")]
+[assembly: AssemblyVersionAttribute("0.2.0")]
+[assembly: AssemblyFileVersionAttribute("0.2.0")]
 namespace System {
     internal static class AssemblyVersionInformation {
-        internal const string Version = "0.1.6";
+        internal const string Version = "0.2.0";
     }
 }

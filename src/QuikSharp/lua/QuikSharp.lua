@@ -1,4 +1,4 @@
---~ Copyright Ⓒ 2014 Victor Baybekov
+--~ Copyright Ⓒ 2015 Victor Baybekov
 
 -- is running from Quik
 function is_quik()

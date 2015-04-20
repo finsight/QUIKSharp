@@ -1,3 +1,5 @@
+#### 0.2.0 - April 20 2015
+* Fixed race conditions both in Lua and on C# side
 #### 0.1.0 - December 21 2014
 * Initial release. Tested connection and basic Quik functions and events.
 #### 0.1.1 - December 21 2014

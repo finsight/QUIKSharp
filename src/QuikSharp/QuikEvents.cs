@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2014 Victor Baybekov
+﻿// Copyright (C) 2015 Victor Baybekov
 
 using System;
 using System.Diagnostics;
@@ -131,9 +131,12 @@ namespace QuikSharp {
 
             var tr = QuikService.Storage.Get<Transaction>(correlationId);
             if (tr != null) {
-                tr.OnOrderCall(order);
-                // persist transaction with added order
-                QuikService.Storage.Set(order.Comment, tr);
+                lock (tr)
+                {
+                    tr.OnOrderCall(order);
+                    // persist transaction with added order
+                    QuikService.Storage.Set(order.Comment, tr);
+                }
             }
             Trace.Assert(tr != null, "Transaction must exist in persistent storage until it is completed and all order messages are recieved");
         }
@@ -174,9 +177,12 @@ namespace QuikSharp {
 
             var tr = QuikService.Storage.Get<Transaction>(trade.Comment);
             if (tr != null) {
-                tr.OnTradeCall(trade);
-                // persist transaction with added trade
-                QuikService.Storage.Set(trade.Comment, tr);
+                lock (tr)
+                {
+                    tr.OnTradeCall(trade);
+                    // persist transaction with added trade
+                    QuikService.Storage.Set(trade.Comment, tr);
+                }
             }
             Trace.Assert(tr != null, "Transaction must exist in persistent storage until it is completed and all trades messages are recieved");
         }
@@ -188,9 +194,12 @@ namespace QuikSharp {
             // invoke event specific for the transaction
             var tr = QuikService.Storage.Get<Transaction>(reply.Comment);
             if (tr != null) {
-                tr.OnTransReplyCall(reply);
-                // persist transaction with added reply
-                QuikService.Storage.Set(reply.Comment, tr);
+                lock (tr)
+                {
+                    tr.OnTransReplyCall(reply);
+                    // persist transaction with added reply
+                    QuikService.Storage.Set(reply.Comment, tr);
+                }
             }
             Trace.Assert(tr != null, "Transaction must exist in persistent storage until it is completed and its reply is recieved");
         }

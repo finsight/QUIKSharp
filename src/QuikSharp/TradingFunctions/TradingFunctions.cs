@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2014 Victor Baybekov
+﻿// Copyright (C) 2015 Victor Baybekov
 
 using System;
 using System.Diagnostics;
@@ -151,24 +151,29 @@ namespace QuikSharp {
         /// <param name="transaction"></param>
         /// <returns></returns>
         public async Task<long> SendTransaction(Transaction transaction) {
-            Trace.Assert(!transaction.TRANS_ID.HasValue, "TRANS_ID should be assigned autimatically in SendTransaction functions");
+            Trace.Assert(!transaction.TRANS_ID.HasValue, "TRANS_ID should be assigned automatically in SendTransaction functions");
 
             transaction.TRANS_ID = QuikService.GetNewUniqueId();
 
-            Trace.Assert(transaction.Comment == null,
+            //    Console.WriteLine("Trans Id from function = {0}", transaction.TRANS_ID);
+
+            Trace.Assert(transaction.CLIENT_CODE == null,
                 "Currently we use Comment to store correlation id for a transaction, " +
                 "its reply, trades and orders. Support for comments will be added later if needed");
             // TODO Comments are useful to kill all orders with a single KILL_ALL_ORDERS
             // But see e.g. this http://www.quik.ru/forum/import/27073/27076/
 
-            transaction.Comment = QuikService.PrependWithSessionId(transaction.TRANS_ID.Value);
+            transaction.CLIENT_CODE = QuikService.PrependWithSessionId(transaction.TRANS_ID.Value);
 
             try {
                 var response = await QuikService.Send<Message<bool>>(
                 (new Message<Transaction>(transaction, "sendTransaction")));
                 Trace.Assert(response.Data);
+
                 // store transaction
-                QuikService.Storage.Set(transaction.Comment, transaction);
+                QuikService.Storage.Set(transaction.CLIENT_CODE, transaction);
+
+
                 return transaction.TRANS_ID.Value;
             } catch (TransactionException e) {
                 transaction.ErrorMessage = e.Message;

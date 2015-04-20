@@ -1,4 +1,4 @@
---~ Copyright Ⓒ 2014 Victor Baybekov
+--~ Copyright Ⓒ 2015 Victor Baybekov
 
 package.path = package.path..";"..".\\?.lua;"..".\\?.luac"
 package.cpath = package.cpath..";"..'.\\clibs\\?.dll'
@@ -33,7 +33,7 @@ end
 function OnError(message)
     msg.cmd = "lua_error"
     msg.data = "Lua error: " .. message
-    sendResponse(msg)
+    sendCallback(msg)
 end
 
 
@@ -46,7 +46,7 @@ function OnAllTrade(alltrade)
         msg.cmd = "OnAllTrade"
         msg.t = timemsec()
         msg.data = alltrade
-        sendResponse(msg)
+        sendCallback(msg)
     end
 end
 
@@ -57,7 +57,7 @@ function OnClose()
         msg.cmd = "OnClose"
         msg.t = timemsec()
         msg.data = ""
-        sendResponse(msg)
+        sendCallback(msg)
     end
     CleanUp()
 end
@@ -70,7 +70,7 @@ function OnInit(script_path)
         msg.cmd = "OnInit"
         msg.t = timemsec()
         msg.data = script_path
-        sendResponse(msg)
+        sendCallback(msg)
     end
     log("Hello, QuikSharp! Running inside Quik from the path: "..getScriptPath(), 1)
 end
@@ -82,7 +82,7 @@ function OnOrder(order)
     msg.id = nil -- значение в order.trans_id
     msg.data = order
     msg.cmd = "OnOrder"
-    sendResponse(msg)
+    sendCallback(msg)
 end
 
 --- Функция вызывается терминалом QUIK при получении изменения стакана котировок.
@@ -98,7 +98,7 @@ function OnQuote(class_code, sec_code)
             msg.data.class_code = class_code
             msg.data.sec_code = sec_code
             msg.data.server_time = server_time
-            sendResponse(msg)
+            sendCallback(msg)
         else
             OnError(ql2)
         end
@@ -114,7 +114,7 @@ function OnStop(s)
         msg.cmd = "OnStop"
         msg.t = timemsec()
         msg.data = s
-        sendResponse(msg)
+        sendCallback(msg)
     end
     log("Bye, QuikSharp!")
     CleanUp()
@@ -129,7 +129,7 @@ function OnTrade(trade)
     msg.id = nil -- значение в OnTrade.trans_id
     msg.data = trade
     msg.cmd = "OnTrade"
-    sendResponse(msg)
+    sendCallback(msg)
 end
 
 --- Функция вызывается терминалом QUIK при получении ответа на транзакцию пользователя.
@@ -139,7 +139,7 @@ function OnTransReply(trans_reply)
     msg.id = nil -- значение в trans_reply.trans_id
     msg.data = trans_reply
     msg.cmd = "OnTransReply"
-    sendResponse(msg)
+    sendCallback(msg)
 end
 
 

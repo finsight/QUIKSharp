@@ -1,4 +1,4 @@
-// Copyright (C) 2014 Victor Baybekov
+// Copyright (C) 2015 Victor Baybekov
 
 using System.Runtime.Caching;
 using Microsoft.Isam.Esent.Collections.Generic;
@@ -35,6 +35,8 @@ namespace QuikSharp {
 
         private static readonly MemoryCache Cache = MemoryCache.Default;
 
+        private object syncRoot = new object();
+
         /// <summary>
         /// Useful for more advanced manipulation than IPersistentStorage
         /// QuikSharp depends only on IPersistentStorage
@@ -42,35 +44,49 @@ namespace QuikSharp {
         public static PersistentDictionary<string, PersistentBlob> Storage { get { return EsentDic; } }
 
         public void Set<T>(string key, T value) {
-            Cache[key] = value;
-            EsentDic[key] = value.ToBlob();
+            lock (syncRoot)
+            {
+                Cache[key] = value;
+                EsentDic[key] = value.ToBlob();
+            }
         }
 
         public T Get<T>(string key) {
-            var v = Cache[key];
-            if (v != null)
+            lock (syncRoot)
             {
-                return (T)v;
+                var v = Cache[key];
+                if (v != null)
+                {
+                    return (T) v;
+                }
+                v = EsentDic[key].FromBlob<T>();
+                Cache[key] = v;
+                return (T) v;
             }
-            v = EsentDic[key].FromBlob<T>();
-            Cache[key] = v;
-            return (T)v;
         }
 
         public bool Contains(string key) {
-            if (Cache.Contains(key)) {
-                return true;
+            lock (syncRoot)
+            {
+                if (Cache.Contains(key))
+                {
+                    return true;
+                }
+                if (EsentDic.ContainsKey(key))
+                {
+                    return true;
+                }
+                return false;
             }
-            if (EsentDic.ContainsKey(key)) {
-                return true;
-            }
-            return false;
         }
 
         public bool Remove(string key) {
-            Cache.Remove(key);
-            var s = EsentDic.Remove(key);
-            return s;
+            lock (syncRoot)
+            {
+                Cache.Remove(key);
+                var s = EsentDic.Remove(key);
+                return s;
+            }
         }
     }
 }

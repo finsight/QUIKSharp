@@ -1,4 +1,4 @@
---~ Copyright Ⓒ 2014 Victor Baybekov
+--~ Copyright Ⓒ 2015 Victor Baybekov
 
 package.path = package.path .. ";" .. ".\\?.lua;" .. ".\\?.luac"
 package.cpath = package.cpath .. ";" .. '.\\clibs\\?.dll'

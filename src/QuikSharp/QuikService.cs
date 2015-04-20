@@ -1,4 +1,4 @@
-// Copyright (C) 2014 Victor Baybekov
+// Copyright (C) 2015 Victor Baybekov
 
 using System;
 using System.Collections.Concurrent;
@@ -38,8 +38,9 @@ namespace QuikSharp {
             }
         }
 
-        private QuikService(int port) {
-            _port = port;
+        private QuikService(int responsePort) {
+            _responsePort = responsePort;
+            _callbackPort = _responsePort + 1;
             Start();
             Events = new QuikEvents(this);
         }
@@ -48,19 +49,22 @@ namespace QuikSharp {
         /// </summary>
         public bool IsStarted { get; private set; }
 
-        
+
 
         internal QuikEvents Events { get; set; }
         internal IPersistentStorage Storage { get; set; }
-        
+
 
         internal readonly string SessionId = DateTime.Now.ToString("yyMMddHHmmss");
 
         private readonly IPAddress _host = IPAddress.Parse("127.0.0.1");
-        private readonly int _port;
-        private TcpClient _client;
+        private readonly int _responsePort;
+        private readonly int _callbackPort;
+        private TcpClient _responseClient;
+        private TcpClient _callbackClient;
+
         private readonly Object _syncRoot = new object();
-        //private static readonly List<Socket> Sockets = new List<Socket>();
+
         private CancellationTokenSource _cts;
 
         /// <summary>
@@ -72,6 +76,7 @@ namespace QuikSharp {
         /// </summary>
         internal readonly BlockingCollection<IMessage> EnvelopeQueue
             = new BlockingCollection<IMessage>();
+
         /// <summary>
         /// If received message has a correlation id then use its Data to SetResult on TCS and remove the TCS from the dic
         /// </summary>
@@ -106,7 +111,7 @@ namespace QuikSharp {
                         // here we have a connected TCP client
                         Trace.WriteLine("Request channel connected");
                         try {
-                            var stream = new NetworkStream(_client.Client);
+                            var stream = new NetworkStream(_responseClient.Client);
                             var writer = new StreamWriter(stream);
                             while (IsStarted) {
                                 IMessage message = null;
@@ -144,9 +149,9 @@ namespace QuikSharp {
                 } finally {
                     try {
                         Monitor.Enter(_syncRoot);
-                        if (_client != null) {
-                            _client.Client.Shutdown(SocketShutdown.Both);
-                            _client.Close();
+                        if (_responseClient != null) {
+                            _responseClient.Client.Shutdown(SocketShutdown.Both);
+                            _responseClient.Close();
                         }
                     } finally {
                         Monitor.Exit(_syncRoot);
@@ -163,7 +168,7 @@ namespace QuikSharp {
                         // here we have a connected TCP client
                         Trace.WriteLine("Response channel connected");
                         try {
-                            var stream = new NetworkStream(_client.Client);
+                            var stream = new NetworkStream(_responseClient.Client);
                             var reader = new StreamReader(stream, Encoding.GetEncoding(1251)); //true
                             while (IsStarted) {
                                 var response = await reader.ReadLineAsync();
@@ -182,20 +187,16 @@ namespace QuikSharp {
                                     try {
 
                                         var message = (r as string).FromJson(this);
-                                        if (message.Id.HasValue && message.Id > 0) {
-                                            // it is a response message
-                                            if (!Responses.ContainsKey(message.Id.Value)) throw new ApplicationException("Unexpected correlation ID");
-                                            KeyValuePair<TaskCompletionSource<IMessage>, Type> tcs;
-                                            Responses.TryRemove(message.Id.Value, out tcs);
-                                            if (!message.ValidUntil.HasValue || message.ValidUntil >= DateTime.UtcNow) {
-                                                tcs.Key.SetResult(message);
-                                            } else {
-                                                tcs.Key.SetException(
-                                                    new TimeoutException("ValidUntilUTC is less than current time"));
-                                            }
+                                        Trace.Assert(message.Id.HasValue && message.Id > 0);
+                                        // it is a response message
+                                        if (!Responses.ContainsKey(message.Id.Value)) throw new ApplicationException("Unexpected correlation ID");
+                                        KeyValuePair<TaskCompletionSource<IMessage>, Type> tcs;
+                                        Responses.TryRemove(message.Id.Value, out tcs);
+                                        if (!message.ValidUntil.HasValue || message.ValidUntil >= DateTime.UtcNow) {
+                                            tcs.Key.SetResult(message);
                                         } else {
-                                            // it is a callback message
-                                            ProcessCallbackMessage(message);
+                                            tcs.Key.SetException(
+                                                new TimeoutException("ValidUntilUTC is less than current time"));
                                         }
 
                                     } catch (LuaException) {
@@ -213,34 +214,93 @@ namespace QuikSharp {
                 } finally {
                     try {
                         Monitor.Enter(_syncRoot);
-                        if (_client != null) {
-                            _client.Client.Shutdown(SocketShutdown.Both);
-                            _client.Close();
+                        if (_responseClient != null) {
+                            _responseClient.Client.Shutdown(SocketShutdown.Both);
+                            _responseClient.Close();
                         }
                     } finally {
                         Monitor.Exit(_syncRoot);
                     }
                 }
             }, _cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+
+
+            // Callback Task
+            Task.Factory.StartNew(async () => {
+                try {
+                    while (IsStarted) {
+                        Trace.WriteLine("Connecting on callback channel... ");
+                        EnsureConnectedClient();
+                        // here we have a connected TCP client
+                        Trace.WriteLine("Callback channel connected");
+                        try {
+                            var stream = new NetworkStream(_callbackClient.Client);
+                            var reader = new StreamReader(stream, Encoding.GetEncoding(1251)); //true
+                            while (IsStarted) {
+                                var callback = await reader.ReadLineAsync();
+                                if (callback == null) {
+                                    throw new IOException("Lua returned an empty response or closed the connection");
+                                }
+
+                                // No IO exceptions possible for response, move its processing
+                                // to the threadpool and wait for the next mesaage
+                                // A new task here gives c.30% boost for full TransactionSpec echo
+
+                                // ReSharper disable once UnusedVariable
+                                var doNotAwaitMe = Task.Factory.StartNew(r => {
+                                    //var r = response;
+                                    //Trace.WriteLine("Response:" + response);
+                                    try {
+
+                                        var message = (r as string).FromJson(this);
+                                        Trace.Assert(!(message.Id.HasValue && message.Id > 0));
+                                        // it is a callback message
+                                        ProcessCallbackMessage(message);
+
+                                    } catch (LuaException) {
+                                        //Trace.WriteLine("Caught Lua exception");
+                                    }
+                                }, callback, TaskCreationOptions.PreferFairness);
+
+                            }
+                        } catch (IOException e) {
+                            Trace.WriteLine(e.Message);
+                        }
+                    }
+                } catch (Exception e) {
+                    Trace.WriteLine(e);
+                } finally {
+                    try {
+                        Monitor.Enter(_syncRoot);
+                        if (_callbackClient != null) {
+                            _callbackClient.Client.Shutdown(SocketShutdown.Both);
+                            _callbackClient.Close();
+                        }
+                    } finally {
+                        Monitor.Exit(_syncRoot);
+                    }
+                }
+            }, _cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+
+
         }
 
         private void EnsureConnectedClient() {
             var entered = false;
             try {
-                if (_client != null && _client.Connected && _client.Client.IsConnectedNow()) {
+                Monitor.Enter(_syncRoot);
+                if (_responseClient != null && _responseClient.Connected && _responseClient.Client.IsConnectedNow()) {
                     // reuse alive client
                 } else {
-                    Monitor.Enter(_syncRoot);
-                    entered = true;
-                    if (!(_client != null && _client.Connected && _client.Client.IsConnectedNow())) {
+                    if (!(_responseClient != null && _responseClient.Connected && _responseClient.Client.IsConnectedNow())) {
                         var connected = false;
                         while (!connected) {
                             try {
-                                _client = new TcpClient {
+                                _responseClient = new TcpClient {
                                     ExclusiveAddressUse = true,
                                     NoDelay = true
                                 };
-                                _client.Connect(_host, _port);
+                                _responseClient.Connect(_host, _responsePort);
                                 connected = true;
                             } catch {
                                 //Trace.WriteLine("Trying to connect...");
@@ -248,7 +308,27 @@ namespace QuikSharp {
                         }
                     }
                 }
-            } finally { if (entered) { Monitor.Exit(_syncRoot); } }
+
+                if (_callbackClient != null && _callbackClient.Connected && _callbackClient.Client.IsConnectedNow()) {
+                    // reuse alive client
+                } else {
+                    if (!(_callbackClient != null && _callbackClient.Connected && _callbackClient.Client.IsConnectedNow())) {
+                        var connected = false;
+                        while (!connected) {
+                            try {
+                                _callbackClient = new TcpClient {
+                                    ExclusiveAddressUse = true,
+                                    NoDelay = true
+                                };
+                                _callbackClient.Connect(_host, _callbackPort);
+                                connected = true;
+                            } catch {
+                                //Trace.WriteLine("Trying to connect...");
+                            }
+                        }
+                    }
+                }
+            } finally { Monitor.Exit(_syncRoot); }
         }
 
         private void ProcessCallbackMessage(IMessage message) {
@@ -263,7 +343,7 @@ namespace QuikSharp {
                         break;
                     case EventNames.OnAllTrade:
                         Trace.Assert(message is Message<AllTrade>);
-                        var allTrade = ((Message<AllTrade>) message).Data;
+                        var allTrade = ((Message<AllTrade>)message).Data;
                         allTrade.LuaTimeStamp = message.CreatedTime;
                         Events.OnAllTradeCall(allTrade);
                         break;
@@ -298,7 +378,7 @@ namespace QuikSharp {
                         break;
                     case EventNames.OnInit:
                         Trace.Assert(message is Message<string>);
-                        Events.OnInitCall(((Message<string>)message).Data, _port);
+                        Events.OnInitCall(((Message<string>)message).Data, _callbackPort);
                         break;
                     case EventNames.OnMoneyLimit:
                         break;

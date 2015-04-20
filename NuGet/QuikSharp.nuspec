@@ -17,14 +17,14 @@
     <dependencies>
       <dependency id="Newtonsoft.Json" />
       <dependency id="Microsoft.Database.Collections.Generic" />
-      <dependency id="Rx-Main" />
     </dependencies>
   </metadata>
   <files>
     <file src="..\bin\QuikSharp.dll" target="lib\net45" />
     <file src="..\bin\QuikSharp.xml" target="lib\net45" />
     <file src="..\bin\QuikSharp.pdb" target="lib\net45" />
-    
+
+    <file src="..\bin\lua\dkjson.lua" target="content\lua" />
     <file src="..\bin\lua\qscallbacks.lua" target="content\lua" />
     <file src="..\bin\lua\qsfunctions.lua" target="content\lua" />
     <file src="..\bin\lua\qsutils.lua" target="content\lua" />

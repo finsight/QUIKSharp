@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2014 Victor Baybekov
+﻿// Copyright (C) 2015 Victor Baybekov
 
 namespace QuikSharp {
     /// <summary>

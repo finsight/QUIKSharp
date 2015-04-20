@@ -67,8 +67,8 @@ namespace Profiler {
         }
 
         public static void Main() {
-            //Ping();
-            EchoTransaction();
+            Ping();
+            //EchoTransaction();
         }
     }
 }

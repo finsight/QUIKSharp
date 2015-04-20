@@ -1,9 +1,11 @@
-﻿// Copyright (C) 2014 Victor Baybekov
+﻿// Copyright (C) 2015 Victor Baybekov
 
 using System;
+using System.Linq;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace QuikSharp {
 
@@ -51,8 +53,35 @@ namespace QuikSharp {
         #endregion
         static void Main() {
             // Do not spam console when used as a dependency and use Trace
+            //Trace.Listeners.Clear();
+            //Trace.Listeners.Add(new ConsoleTraceListener());
+            //// Some biolerplate to react to close window event, CTRL-C, kill, etc
+            //_handler += Handler;
+            //SetConsoleCtrlHandler(_handler, true);
+
+            //ServiceManager.StartServices();
+
+            //_quik = new Quik();
+            ////Console.WriteLine("Running in Quik? : " + _quik.Debug.IsQuik().Result);
+
+
+
+            //_quik.Events.OnAllTrade += Events_OnAllTrade;
+            //_quik.Events.OnQuote += Events_OnQuote;
+            //_quik.Events.OnOrder += Events_OnOrder;
+            //_quik.Events.OnStop += Events_OnStop;
+            //_quik.Events.OnClose += Events_OnClose;
+
+
+            // ************************************************************************************
+
+
+            string securityCode = "RIM5";
+
+            // Do not spam console when used as a dependency and use Trace
             Trace.Listeners.Clear();
             Trace.Listeners.Add(new ConsoleTraceListener());
+
             // Some biolerplate to react to close window event, CTRL-C, kill, etc
             _handler += Handler;
             SetConsoleCtrlHandler(_handler, true);
@@ -62,11 +91,52 @@ namespace QuikSharp {
             _quik = new Quik();
             //Console.WriteLine("Running in Quik? : " + _quik.Debug.IsQuik().Result);
 
-            _quik.Events.OnAllTrade += Events_OnAllTrade;
-            _quik.Events.OnQuote += Events_OnQuote;
-            _quik.Events.OnOrder += Events_OnOrder;
+            // _quik.Events.OnAllTrade += Events_OnAllTrade;         
             _quik.Events.OnStop += Events_OnStop;
             _quik.Events.OnClose += Events_OnClose;
+            string time = _quik.Service.GetInfoParam(InfoParams.SERVERTIME).Result;
+
+            DateTime time2 = Convert.ToDateTime(time);
+
+            Console.WriteLine(time2);
+
+
+            #region Example
+
+            double bestBidPrice = 0;
+            double bestOfferPrice = 0;
+
+            _quik.Events.OnQuote += (orderBook) => {
+                    if (orderBook.sec_code == securityCode) {
+                        bestBidPrice = orderBook.bid.OrderByDescending(o => o.price).First().price;
+                        bestOfferPrice = orderBook.offer.OrderByDescending(o => o.price).Last().price;
+                    }
+                };
+
+            var n = 0;
+            var sw = new Stopwatch();
+            sw.Start();
+            while (n <= 200) {
+
+                Console.Write("Best bid: " + bestBidPrice);
+                Console.WriteLine(" Best offer: " + bestOfferPrice);
+
+                // this line caused threading issues with CJSON, when two threads were calling ToJson at the same time
+                time = _quik.Service.GetInfoParam(InfoParams.SERVERTIME).Result;
+
+                Thread.Sleep(50);
+
+                n++;
+            }
+
+            sw.Stop();
+            Console.WriteLine("Elapsed: " + sw.ElapsedMilliseconds);
+            Console.WriteLine("Per call: " + (sw.ElapsedMilliseconds / n));
+            Console.WriteLine("While Exit");
+
+            #endregion
+
+
 
             // hold the console so it doesn’t run off the end
             while (!_exitSystem) {
