@@ -1,1 +1,0 @@
-QuikStarter.exe
