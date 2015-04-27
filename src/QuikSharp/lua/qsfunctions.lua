@@ -222,4 +222,27 @@ function qsfunctions.sendTransaction(msg)
     end
 end
 
+--------------------------
+-- Stop order functions --
+--------------------------
+
+--- Возвращает список стоп-заявок
+function qsfunctions.GetStopOrders(msg)
+	if msg.data ~= "" then
+		local spl = split(msg.data, "|")
+		class_code, sec_code = spl[1], spl[2]
+	end
+
+	local count = getNumberOf("stop_orders")
+	local stop_orders = {}
+	for i = 0, count - 1 do
+		local stop_order = getItem("stop_orders", i)
+		if msg.data == "" or (stop_order.class_code == class_code and stop_order.sec_code == sec_code) then
+			table.insert(stop_orders, stop_order)
+		end
+	end
+	msg.data = stop_orders
+	return msg
+end
+
 return qsfunctions

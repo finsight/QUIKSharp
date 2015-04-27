@@ -26,6 +26,7 @@ namespace QuikSharp {
             Class = new ClassFunctions(port);
             OrderBook = new OrderBookFunctions(port);
             Trading = new TradingFunctions(port);
+            StopOrders = new StopOrders(port, this);
         }
 
 
@@ -71,5 +72,11 @@ namespace QuikSharp {
         /// Функции взаимодействия скрипта Lua и Рабочего места QUIK
         /// </summary>
         public ITradingFunctions Trading { get; set; }
+
+        /// <summary>
+        /// Функции для работы со стоп-заявками
+        /// </summary>
+        public StopOrders StopOrders { get; private set; }
+
     }
 }
