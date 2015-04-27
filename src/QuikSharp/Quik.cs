@@ -29,6 +29,7 @@ namespace QuikSharp {
             StopOrders = new StopOrders(port, this);
         }
 
+
         private QuikService QuikService { get; set; }
 
 
@@ -72,10 +73,10 @@ namespace QuikSharp {
         /// </summary>
         public ITradingFunctions Trading { get; set; }
 
-		/// <summary>
-		/// Функции для работы со стоп-заявками
-		/// </summary>
-		public StopOrders StopOrders { get; private set; }
+        /// <summary>
+        /// Функции для работы со стоп-заявками
+        /// </summary>
+        public StopOrders StopOrders { get; private set; }
 
     }
 }
