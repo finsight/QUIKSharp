@@ -26,7 +26,7 @@ namespace QuikSharp {
             Class = new ClassFunctions(port);
             OrderBook = new OrderBookFunctions(port);
             Trading = new TradingFunctions(port);
-			StopOrders = new StopOrders(port, this);
+            StopOrders = new StopOrders(port, this);
         }
 
         private QuikService QuikService { get; set; }

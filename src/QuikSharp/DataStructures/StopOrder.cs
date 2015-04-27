@@ -4,199 +4,199 @@ using Newtonsoft.Json;
 
 namespace QuikSharp
 {
-	/// <summary>
-	/// Стоп-заявка
-	/// На основе http://help.qlua.org/ch4_6_6.htm
-	/// </summary>
-	public class StopOrder
-	{
-		/// <summary>
-		/// Регистрационный номер стоп-заявки на сервере QUIK
-		/// </summary>
-		[JsonProperty("order_num")]
-		public long OrderNum { get; set; }
+    /// <summary>
+    /// Стоп-заявка
+    /// На основе http://help.qlua.org/ch4_6_6.htm
+    /// </summary>
+    public class StopOrder
+    {
+        /// <summary>
+        /// Регистрационный номер стоп-заявки на сервере QUIK
+        /// </summary>
+        [JsonProperty("order_num")]
+        public long OrderNum { get; set; }
 
-		/// <summary>
-		/// Торговый счет
-		/// </summary>
-		[JsonProperty("account")]
-		public string Account { get; set; }
+        /// <summary>
+        /// Торговый счет
+        /// </summary>
+        [JsonProperty("account")]
+        public string Account { get; set; }
 
-		/// <summary>
-		/// Код клиента
-		/// </summary>
-		[JsonProperty("client_code")]
-		public string ClientCode { get; set; }
+        /// <summary>
+        /// Код клиента
+        /// </summary>
+        [JsonProperty("client_code")]
+        public string ClientCode { get; set; }
 
-		/// <summary>
-		/// Код бумаги заявки
-		/// </summary>
-		[JsonProperty("sec_code")]
-		public string SecurityCode { get; set; }
+        /// <summary>
+        /// Код бумаги заявки
+        /// </summary>
+        [JsonProperty("sec_code")]
+        public string SecurityCode { get; set; }
 
-		/// <summary>
-		/// Код класса заявки
-		/// </summary>
-		[JsonProperty("class_code")]
-		public string ClassCode { get; set; }
+        /// <summary>
+        /// Код класса заявки
+        /// </summary>
+        [JsonProperty("class_code")]
+        public string ClassCode { get; set; }
 
-		private int _stopOrderTypeInt;
-		[JsonProperty("stop_order_type")]
-		public int StopOrderTypeInt
-		{
-			get { return _stopOrderTypeInt; }
-			set
-			{
-				_stopOrderTypeInt = value;
-				StopOrderType = GetStopOrderType(value);
-			}
-		}
+        private int _stopOrderTypeInt;
+        [JsonProperty("stop_order_type")]
+        public int StopOrderTypeInt
+        {
+            get { return _stopOrderTypeInt; }
+            set
+            {
+                _stopOrderTypeInt = value;
+                StopOrderType = GetStopOrderType(value);
+            }
+        }
 
-		/// <summary>
-		/// Вид стоп заявки.
-		/// </summary>
-		[JsonIgnore]
-		public StopOrderType StopOrderType { get; set; }
+        /// <summary>
+        /// Вид стоп заявки.
+        /// </summary>
+        [JsonIgnore]
+        public StopOrderType StopOrderType { get; set; }
 
-		private int _conditionInt;
-		[JsonProperty("condition")]
-		public int ConditionInt
-		{
-			get{return _conditionInt;}
-			set 
-			{
-				_conditionInt = value;
-				Condition = GetCondition(value);
-			}
-		}
+        private int _conditionInt;
+        [JsonProperty("condition")]
+        public int ConditionInt
+        {
+            get{return _conditionInt;}
+            set 
+            {
+                _conditionInt = value;
+                Condition = GetCondition(value);
+            }
+        }
 
-		/// <summary>
-		/// Направленность стоп-цены.
-		/// </summary>
-		[JsonIgnore]
-		public Condition Condition { get; set; }
+        /// <summary>
+        /// Направленность стоп-цены.
+        /// </summary>
+        [JsonIgnore]
+        public Condition Condition { get; set; }
 
-		/// <summary>
-		/// Стоп-цена
-		/// </summary>
-		[JsonProperty("condition_price")]
-		public float ConditionPrice { get; set; }
+        /// <summary>
+        /// Стоп-цена
+        /// </summary>
+        [JsonProperty("condition_price")]
+        public float ConditionPrice { get; set; }
 
-		/// <summary>
-		/// Цена
-		/// </summary>
-		[JsonProperty("price")]
-		public float Price { get; set; }
+        /// <summary>
+        /// Цена
+        /// </summary>
+        [JsonProperty("price")]
+        public float Price { get; set; }
 
-		/// <summary>
-		/// Количество в лотах
-		/// </summary>
-		[JsonProperty("qty")]
-		public int Quantity { get; set; }
+        /// <summary>
+        /// Количество в лотах
+        /// </summary>
+        [JsonProperty("qty")]
+        public int Quantity { get; set; }
 
-		/// <summary>
-		/// Исполненное количество
-		/// </summary>
-		[JsonProperty("filled_qty")]
-		public int FilledQuantity { get; set; }
+        /// <summary>
+        /// Исполненное количество
+        /// </summary>
+        [JsonProperty("filled_qty")]
+        public int FilledQuantity { get; set; }
 
-		/// <summary>
-		/// Стоп-лимит цена (для заявок типа «Тэйк-профит и стоп-лимит»)
-		/// </summary>
-		[JsonProperty("condition_price2")]
-		public float ConditionPrice2 { get; set; }
+        /// <summary>
+        /// Стоп-лимит цена (для заявок типа «Тэйк-профит и стоп-лимит»)
+        /// </summary>
+        [JsonProperty("condition_price2")]
+        public float ConditionPrice2 { get; set; }
 
-		/// <summary>
-		/// Набор битовых флагов.
-		/// </summary>
-		[JsonProperty("flags")]
-		public int Flags
-		{
-			set { ParseFlags(value); }
-		}
+        /// <summary>
+        /// Набор битовых флагов.
+        /// </summary>
+        [JsonProperty("flags")]
+        public int Flags
+        {
+            set { ParseFlags(value); }
+        }
 
-		[JsonIgnore]
-		public bool IsActive { get; private set; }
+        [JsonIgnore]
+        public bool IsActive { get; private set; }
 
-		[JsonIgnore]
-		public Operation Operation { get; set; }
+        [JsonIgnore]
+        public Operation Operation { get; set; }
 
-		private void ParseFlags(int flags)
-		{
-			//Based on: http://help.qlua.org/ch9_2.htm
+        private void ParseFlags(int flags)
+        {
+            //Based on: http://help.qlua.org/ch9_2.htm
 
-			IsActive = (flags & 0x1) != 0;
-			Operation = (flags & 0x4) != 0 ? Operation.Sell : Operation.Buy;
-		}
+            IsActive = (flags & 0x1) != 0;
+            Operation = (flags & 0x4) != 0 ? Operation.Sell : Operation.Buy;
+        }
 
-		private StopOrderType GetStopOrderType(int code)
-		{
-			switch (code)
-			{
-				case 1:
-					return StopOrderType.StopLimit;
-				case 6:
-					return StopOrderType.TakeProfit;
-				default:
-					return StopOrderType.NotImplemented;
-			}
-		}
+        private StopOrderType GetStopOrderType(int code)
+        {
+            switch (code)
+            {
+                case 1:
+                    return StopOrderType.StopLimit;
+                case 6:
+                    return StopOrderType.TakeProfit;
+                default:
+                    return StopOrderType.NotImplemented;
+            }
+        }
 
-		private Condition GetCondition(int code)
-		{
-			switch (code)
-			{
-				case 4:
-					return Condition.LessOrEqual;
-				case 5:
-					return Condition.MoreOrEqual;
-				default:
-					throw new Exception("Not supported code: " + code);
-			}
-		}
-	}
+        private Condition GetCondition(int code)
+        {
+            switch (code)
+            {
+                case 4:
+                    return Condition.LessOrEqual;
+                case 5:
+                    return Condition.MoreOrEqual;
+                default:
+                    throw new Exception("Not supported code: " + code);
+            }
+        }
+    }
 
-	public enum StopOrderType
-	{
-		NotImplemented,
+    public enum StopOrderType
+    {
+        NotImplemented,
 
-		/// <summary>
-		/// «1» – стоп-лимит
-		/// </summary>
-		StopLimit,
+        /// <summary>
+        /// «1» – стоп-лимит
+        /// </summary>
+        StopLimit,
 
-		//«2» – условие по другому инструменту,
-		//«3» – со связанной заявкой,
-		
-		/// <summary>
-		///«6» – тейк-профит 
-		/// </summary>
-		TakeProfit
+        //«2» – условие по другому инструменту,
+        //«3» – со связанной заявкой,
+        
+        /// <summary>
+        ///«6» – тейк-профит 
+        /// </summary>
+        TakeProfit
 
-		//«7» – стоп-лимит по исполнению активной заявки,
-		//«8» –  тейк-профит по исполнению активной заявки,
-		//«9» - тэйк-профит и стоп-лимит
-	}
+        //«7» – стоп-лимит по исполнению активной заявки,
+        //«8» –  тейк-профит по исполнению активной заявки,
+        //«9» - тэйк-профит и стоп-лимит
+    }
 
-	/// <summary>
-	/// Направленность стоп-цены. Возможные значения.
-	/// </summary>
-	public enum Condition
-	{
-		/// <summary>
-		/// «4» – <=
-		/// </summary>
-		LessOrEqual,
+    /// <summary>
+    /// Направленность стоп-цены. Возможные значения.
+    /// </summary>
+    public enum Condition
+    {
+        /// <summary>
+        /// «4» – <=
+        /// </summary>
+        LessOrEqual,
 
-		/// <summary>
-		/// «5» – >=
-		/// </summary>
-		MoreOrEqual
-	}
+        /// <summary>
+        /// «5» – >=
+        /// </summary>
+        MoreOrEqual
+    }
 
-	public enum Operation
-	{
-		Buy,
-		Sell
-	}
+    public enum Operation
+    {
+        Buy,
+        Sell
+    }
 }
