@@ -36,8 +36,11 @@ namespace QuikSharp.Tests {
 
         [Test]
         public void GetSecurityInfo() {
-            Console.WriteLine("GetSecurityInfo for RIH5: "
-            + String.Join(",", _q.Class.GetSecurityInfo("SPBFUT", "RIH5").Result.ToJson()));
+            Console.WriteLine("GetSecurityInfo for RIM5: "
+            + String.Join(",", _q.Class.GetSecurityInfo("SPBFUT", "RIM5").Result.ToJson()));
+
+            Console.WriteLine("GetSecurityInfo for LKOH: "
+            + String.Join(",", _q.Class.GetSecurityInfo("TQBR", "LKOH").Result.ToJson()));
         }
 
     }
