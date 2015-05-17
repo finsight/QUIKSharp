@@ -51,7 +51,7 @@ namespace QuikSharp
                 STOPPRICE = stopOrder.ConditionPrice,
                 PRICE = stopOrder.Price,
                 QUANTITY = stopOrder.Quantity,
-                STOP_ORDER_KIND = ConverStopOrderType(stopOrder.StopOrderType),
+                STOP_ORDER_KIND = ConvertStopOrderType(stopOrder.StopOrderType),
                 OPERATION = stopOrder.Operation == Operation.Buy?TransactionOperation.B : TransactionOperation.S
             };
 
@@ -69,7 +69,7 @@ namespace QuikSharp
             await Quik.Trading.SendTransaction(newStopOrderTransaction);
         }
 
-        private StopOrderKind ConverStopOrderType(StopOrderType stopOrderType)
+        private StopOrderKind ConvertStopOrderType(StopOrderType stopOrderType)
         {
             switch (stopOrderType)
             {

@@ -212,5 +212,10 @@ namespace QuikSharp.DataStructures.Transaction {
         [JsonProperty("passive_only_order")]
         public int PassiveOnlyOrder { get; set; }
 
+        /// <summary>
+        /// Тип операции - Buy или Sell
+        /// </summary>
+        [JsonIgnore]
+        public Operation Operation { get; set; }
     }
 }
