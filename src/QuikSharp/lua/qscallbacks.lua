@@ -44,7 +44,6 @@ function OnAllTrade(alltrade)
         local msg = {}
         msg.t = timemsec()
         msg.cmd = "OnAllTrade"
-        msg.t = timemsec()
         msg.data = alltrade
         sendCallback(msg)
     end

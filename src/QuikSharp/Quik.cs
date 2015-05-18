@@ -28,6 +28,8 @@ namespace QuikSharp {
             Trading = new TradingFunctions(port);
             StopOrders = new StopOrders(port, this);
             Orders = new OrderFunctions(this);
+            Candles = new CandleFunctions(port);
+            QuikService.Candles = Candles;
         }
 
 
@@ -84,5 +86,9 @@ namespace QuikSharp {
         /// </summary>
         public OrderFunctions Orders { get; private set; }
 
+        /// <summary>
+        /// Функции для работы со свечами
+        /// </summary>
+        public CandleFunctions Candles { get; private set; }
     }
 }

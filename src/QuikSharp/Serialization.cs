@@ -259,6 +259,10 @@ namespace QuikSharp {
                             return new Message<TransactionReply> {
                                 Data = new TransactionReply()
                             };
+
+                        case EventNames.NewCandle:
+                            return new Message<Candle> {Data = new Candle()};
+
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
