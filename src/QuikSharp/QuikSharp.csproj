@@ -158,7 +158,7 @@
     <Compile Include="DataStructures\DepoLimitEx.cs" />
     <Compile Include="DataStructures\MoneyLimit.cs" />
     <Compile Include="DataStructures\MoneyLimitEx.cs" />
-    <Compile Include="StopOrders.cs" />
+    <Compile Include="StopOrderFunctions.cs" />
     <Compile Include="TradingFunctions\TradingFunctions.cs" />
     <Compile Include="DataStructures\Transaction\TransactionReply.cs" />
     <Compile Include="DataStructures\Transaction\TransactionEnums.cs" />

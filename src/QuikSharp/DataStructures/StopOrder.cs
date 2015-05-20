@@ -115,18 +115,37 @@ namespace QuikSharp
             set { ParseFlags(value); }
         }
 
-        [JsonIgnore]
-        public bool IsActive { get; private set; }
-
+        /// <summary>
+        /// Заявка на продажу, иначе – на покупку.
+        /// </summary>
         [JsonIgnore]
         public Operation Operation { get; set; }
+
+        /// <summary>
+        /// Состояние стоп-заявки.
+        /// </summary>
+        [JsonIgnore]
+        public StopOrderState State { get; set; }
+
+        /// <summary>
+        /// Стоп-заявка ожидает активации.
+        /// </summary>
+        [JsonIgnore]
+        public bool IsWaitingActivation { get; set; }
 
         private void ParseFlags(int flags)
         {
             //Based on: http://help.qlua.org/ch9_2.htm
 
-            IsActive = (flags & 0x1) != 0;
+            if((flags & 0x1) != 0)
+                State = StopOrderState.Active;
+            else if ((flags & 0x2) != 0)
+                State = StopOrderState.Removed;
+            else
+                State = StopOrderState.Triggered;
+
             Operation = (flags & 0x4) != 0 ? Operation.Sell : Operation.Buy;
+            IsWaitingActivation = (flags & 0x20) != 0;
         }
 
         private StopOrderType GetStopOrderType(int code)
@@ -198,5 +217,26 @@ namespace QuikSharp
     {
         Buy,
         Sell
+    }
+
+    /// <summary>
+    /// Состояние стоп-заявки
+    /// </summary>
+    public enum StopOrderState
+    {
+        /// <summary>
+        /// Активна
+        /// </summary>
+        Active,
+
+        /// <summary>
+        /// Исполнена
+        /// </summary>
+        Triggered,
+
+        /// <summary>
+        /// Снята
+        /// </summary>
+        Removed
     }
 }

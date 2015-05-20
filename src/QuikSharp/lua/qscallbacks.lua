@@ -141,5 +141,13 @@ function OnTransReply(trans_reply)
     sendCallback(msg)
 end
 
+function OnStopOrder(stop_order)
+	local msg = {}
+    msg.t = timemsec()
+    msg.id = nil -- значение в OnTrade.trans_id
+    msg.data = stop_order
+    msg.cmd = "OnStopOrder"
+    sendCallback(msg)
+end
 
 return qscallbacks

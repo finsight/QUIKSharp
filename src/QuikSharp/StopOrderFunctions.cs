@@ -7,12 +7,20 @@ namespace QuikSharp
     /// <summary>
     /// Функции для работы со стоп-заявками
     /// </summary>
-    public class StopOrders
+    public class StopOrderFunctions
     {
         private QuikService QuikService { get; set; }
         private Quik Quik { get; set; }
 
-        public StopOrders(int port, Quik quik)
+        public delegate void StopOrderHandler(StopOrder stopOrder);
+        public event StopOrderHandler NewStopOrder;
+        internal void RaiseNewStopOrderEvent(StopOrder stopOrder)
+        {
+            if (NewStopOrder != null)
+                NewStopOrder(stopOrder);
+        }
+
+        public StopOrderFunctions(int port, Quik quik)
         {
             QuikService = QuikService.Create(port);
             Quik = quik;

@@ -26,10 +26,11 @@ namespace QuikSharp {
             Class = new ClassFunctions(port);
             OrderBook = new OrderBookFunctions(port);
             Trading = new TradingFunctions(port);
-            StopOrders = new StopOrders(port, this);
+            StopOrders = new StopOrderFunctions(port, this);
             Orders = new OrderFunctions(this);
             Candles = new CandleFunctions(port);
             QuikService.Candles = Candles;
+            QuikService.StopOrders = StopOrders;
         }
 
 
@@ -79,7 +80,7 @@ namespace QuikSharp {
         /// <summary>
         /// Функции для работы со стоп-заявками
         /// </summary>
-        public StopOrders StopOrders { get; private set; }
+        public StopOrderFunctions StopOrders { get; private set; }
 
         /// <summary>
         /// Функции для работы с заявками

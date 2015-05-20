@@ -1,4 +1,5 @@
-﻿using QuikSharp.DataStructures.Transaction;
+﻿using System.Threading.Tasks;
+using QuikSharp.DataStructures.Transaction;
 
 namespace QuikSharp
 {
@@ -18,7 +19,7 @@ namespace QuikSharp
         /// Создание новой заявки.
         /// </summary>
         /// <param name="order">Инфомация о новой заявки, на основе которой будет сформирована транзакция.</param>
-        public async void CreateOrder(Order order)
+        public async Task<long> CreateOrder(Order order)
         {
             Transaction newOrderTransaction = new Transaction
             {
@@ -30,7 +31,7 @@ namespace QuikSharp
                 OPERATION = order.Operation == Operation.Buy ? TransactionOperation.B : TransactionOperation.S,
                 PRICE = order.Price
             };
-            await Quik.Trading.SendTransaction(newOrderTransaction);
+            return await Quik.Trading.SendTransaction(newOrderTransaction);
         }
 
         public async void KillOrder(Order order)

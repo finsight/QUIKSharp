@@ -27,7 +27,6 @@ namespace QuikSharp.DataStructures {
         OnStopOrder,
         OnTrade,
         OnTransReply,
-
         NewCandle
     }
 }

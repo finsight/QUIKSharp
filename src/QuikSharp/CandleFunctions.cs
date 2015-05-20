@@ -12,12 +12,12 @@ namespace QuikSharp
     {
         private QuikService QuikService { get; set; }
 
-        public event EventHandler<Candle> NewCandle;
-
+        public delegate void CandleHandler(Candle candle);
+        public event CandleHandler NewCandle;
         internal void RaiseNewCandleEvent(Candle candle)
         {
             if (NewCandle != null)
-                NewCandle(this, candle);
+                NewCandle(candle);
         }
 
         public CandleFunctions(int port)

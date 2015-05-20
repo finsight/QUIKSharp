@@ -249,7 +249,7 @@ namespace QuikSharp {
                             };
 
                         case EventNames.OnStopOrder:
-                            break;
+                            return new Message<StopOrder> {Data = new StopOrder()};
 
                         case EventNames.OnTrade:
                             return new Message<Trade> {
