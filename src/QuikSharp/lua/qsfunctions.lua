@@ -251,10 +251,14 @@ end
 
 --- Возвращаем все свечи по идентификатору графика. График должен быть открыт
 function qsfunctions.GetCandles(msg)
-	local first_candle = 0
-	local tag = msg.data
-	local count = getNumCandles(tag)
-	local line = 0
+	local spl = split(msg.data, "|")
+	local tag = spl[1]
+	local line = tonumber(spl[2])
+	local first_candle = tonumber(spl[3])
+	local count = tonumber(spl[4])
+	if count == 0 then
+		count = getNumCandles(tag)
+	end
 	local t,_,_ = getCandlesByIndex(tag, line, first_candle, count)
 	local candles = {}
 	for i = 0, count - 1 do

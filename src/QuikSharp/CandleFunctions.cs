@@ -26,13 +26,26 @@ namespace QuikSharp
         }
 
         /// <summary>
-        /// Возвращает 
+        /// Функция предназначена для получения информации о свечках по идентификатору (заказ данных для построения графика плагин не осуществляет, поэтому для успешного доступа нужный график должен быть открыт). Возвращаются все доступные свечки.
         /// </summary>
-        /// <param name="tag">Строковый идентификатор графика или индикатора</param>
+        /// <param name="graphicTag">Строковый идентификатор графика или индикатора</param>
         /// <returns></returns>
-        public async Task<List<Candle>> GetCandles(string tag)
+        public async Task<List<Candle>> GetAllCandles(string graphicTag)
         {
-            var message = new Message<string>(tag, "GetCandles");
+            return GetCandles(graphicTag, 0, 0, 0).Result;
+        }
+
+        /// <summary>
+        /// Функция предназначена для получения информации о свечках по идентификатору (заказ данных для построения графика плагин не осуществляет, поэтому для успешного доступа нужный график должен быть открыт).   
+        /// </summary>
+        /// <param name="graphicTag">Строковый идентификатор графика или индикатора</param>
+        /// <param name="line">Номер линии графика или индикатора. Первая линия имеет номер 0</param>
+        /// <param name="first">Индекс первой свечки. Первая (самая левая) свечка имеет индекс 0</param>
+        /// <param name="count">Количество запрашиваемых свечек</param>
+        /// <returns></returns>
+        public async Task<List<Candle>> GetCandles(string graphicTag, int line, int first, int count)
+        {
+            var message = new Message<string>(graphicTag + "|" + line + "|" + first + "|" + count, "GetCandles");
             Message<List<Candle>> response = await QuikService.Send<Message<List<Candle>>>(message);
             return response.Data;
         }
