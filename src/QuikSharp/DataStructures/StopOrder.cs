@@ -80,13 +80,13 @@ namespace QuikSharp
         /// Стоп-цена
         /// </summary>
         [JsonProperty("condition_price")]
-        public float ConditionPrice { get; set; }
+        public decimal ConditionPrice { get; set; }
 
         /// <summary>
         /// Цена
         /// </summary>
         [JsonProperty("price")]
-        public float Price { get; set; }
+        public decimal Price { get; set; }
 
         /// <summary>
         /// Количество в лотах
@@ -104,7 +104,7 @@ namespace QuikSharp
         /// Стоп-лимит цена (для заявок типа «Тэйк-профит и стоп-лимит»)
         /// </summary>
         [JsonProperty("condition_price2")]
-        public float ConditionPrice2 { get; set; }
+        public decimal ConditionPrice2 { get; set; }
 
         /// <summary>
         /// Набор битовых флагов.
