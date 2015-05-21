@@ -12,6 +12,9 @@ namespace QuikSharp
         private QuikService QuikService { get; set; }
 
         public delegate void CandleHandler(Candle candle);
+        /// <summary>
+        /// Событие получения новой свечи. Для срабатывания необходимо подписаться с помощью метода Subscribe.
+        /// </summary>
         public event CandleHandler NewCandle;
         internal void RaiseNewCandleEvent(Candle candle)
         {

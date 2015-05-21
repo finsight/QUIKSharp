@@ -37,18 +37,14 @@ namespace QuikSharp.DataStructures
         [JsonProperty("volume")]
         public int Volume{ get; set; }
 
+        /// <summary>
+        /// Дата и время
+        /// </summary>
+        [JsonProperty("datetime")]
+        public QuikDateTime Datetime { get; set; }
+
         //todo: not wrapped following:
         //"doesExist": 1,
-        //"datetime": {
-        //  "ms": 0,
-        //  "year": 2015,
-        //  "day": 24,
-        //  "week_day": 5,
-        //  "month": 4,
-        //  "sec": 0,
-        //  "hour": 14,
-        //  "min": 26
-        //},
 
         #region Candles subscription info
         // Информация о принадлежности свечки к одной из подписок. Заполняется в тех свечках, которые приходят в событии NewCandle
