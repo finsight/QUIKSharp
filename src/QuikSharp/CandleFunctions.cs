@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using QuikSharp.DataStructures;
 
@@ -50,21 +49,21 @@ namespace QuikSharp
             return response.Data;
         }
 
-        public async void Subscribe(string classCode, string securityCode, string interval)
+        public async void Subscribe(string classCode, string securityCode, CandleInterval interval)
         {
-            var message = new Message<string>(classCode + "|" + securityCode + "|" + interval, "SubscribeToCandles");            
+            var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "SubscribeToCandles");            
             await QuikService.Send<Message<string>>(message);
         }
 
-        public async void Unsubscribe(string classCode, string securityCode, string interval)
+        public async void Unsubscribe(string classCode, string securityCode, CandleInterval interval)
         {
-            var message = new Message<string>(classCode + "|" + securityCode + "|" + interval, "UnsubscribeFromCandles");            
+            var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "UnsubscribeFromCandles");            
             await QuikService.Send<Message<string>>(message);     
         }
 
-        public async Task<bool> IsSubscribed(string classCode, string securityCode, string interval)
+        public async Task<bool> IsSubscribed(string classCode, string securityCode, CandleInterval interval)
         {
-            var message = new Message<string>(classCode + "|" + securityCode + "|" + interval, "IsSubscribed");
+            var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "IsSubscribed");
             Message<bool> response = await QuikService.Send<Message<bool>>(message);
             return response.Data;
         }

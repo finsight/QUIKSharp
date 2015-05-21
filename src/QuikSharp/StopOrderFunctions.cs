@@ -54,7 +54,7 @@ namespace QuikSharp
                 ACTION = TransactionAction.NEW_STOP_ORDER,
                 ACCOUNT = stopOrder.Account,
                 CLASSCODE = stopOrder.ClassCode,
-                SECCODE = stopOrder.SecurityCode,
+                SECCODE = stopOrder.SecCode,
                 EXPIRY_DATE = "GTC",//до отмены
                 STOPPRICE = stopOrder.ConditionPrice,
                 PRICE = stopOrder.Price,
@@ -96,7 +96,7 @@ namespace QuikSharp
             {
                 ACTION = TransactionAction.KILL_STOP_ORDER,
                 CLASSCODE = stopOrder.ClassCode,
-                SECCODE = stopOrder.SecurityCode,
+                SECCODE = stopOrder.SecCode,
                 STOP_ORDER_KEY = stopOrder.OrderNum.ToString()
             };
             await Quik.Trading.SendTransaction(killStopOrderTransaction);

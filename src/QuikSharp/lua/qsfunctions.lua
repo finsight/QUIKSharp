@@ -274,8 +274,8 @@ last_indexes = {}
 
 --- Подписаться на получения свечей по заданному инструмент и интервалу
 function qsfunctions.SubscribeToCandles(msg)
-	local class, seq, interval = GetCandlesParam(msg)
-	local ds, error_descr = CreateDataSource(class, seq, INTERVAL_M1)
+	local class, sec, interval = GetCandlesParam(msg)
+	local ds, error_descr = CreateDataSource(class, sec, interval)
 
 	if(error_descr ~= nil) then
 		msg.cmd = "lua_create_data_source_error"
@@ -285,21 +285,21 @@ function qsfunctions.SubscribeToCandles(msg)
 	
 	if ds == nil then
 		msg.cmd = "lua_create_data_source_error"
-		msg.lua_error = "Can't create data source for " .. class .. ", " .. seq .. ", " .. tostring(interval)
+		msg.lua_error = "Can't create data source for " .. class .. ", " .. sec .. ", " .. tostring(interval)
 	else
-		local key = GetKey(class, seq, interval)
+		local key = GetKey(class, sec, interval)
 		data_sources[key] = ds
 		last_indexes[key] = ds:Size()
 		ds:SetUpdateCallback(
 			function(index) 
-				DataSourceCallback(index, class, seq, interval) 
+				DataSourceCallback(index, class, sec, interval) 
 			end)
 	end
 	return msg
 end
 
-function DataSourceCallback(index, class, seq, interval)
-	local key = GetKey(class, seq, interval)
+function DataSourceCallback(index, class, sec, interval)
+	local key = GetKey(class, sec, interval)
 	if index ~= last_indexes[key] then
 		last_indexes[key] = index
 
@@ -311,6 +311,10 @@ function DataSourceCallback(index, class, seq, interval)
 		candle.volume = data_sources[key]:V(index - 1)
 		candle.datetime = data_sources[key]:T(index - 1)
 
+		candle.sec = sec
+		candle.class = class
+		candle.interval = interval
+
 		local msg = {}
         msg.t = timemsec()
         msg.cmd = "NewCandle"
@@ -321,8 +325,8 @@ end
 
 --- Отписать от получения свечей по заданному инструменту и интервалу
 function qsfunctions.UnsubscribeFromCandles(msg)
-	local class, seq, interval = GetCandlesParam(msg)
-	local key = GetKey(class, seq, interval)
+	local class, sec, interval = GetCandlesParam(msg)
+	local key = GetKey(class, sec, interval)
 	data_sources[key]:Close()
 	data_sources[key] = nil
 	last_indexes[key] = nil
@@ -331,8 +335,8 @@ end
 
 --- Проверить открыта ли подписка на заданный инструмент и интервал
 function qsfunctions.IsSubscribed(msg)
-	local class, seq, interval = GetCandlesParam(msg)
-	local key = GetKey(class, seq, interval)
+	local class, sec, interval = GetCandlesParam(msg)
+	local key = GetKey(class, sec, interval)
 	for k, v in pairs(data_sources) do
 		if key == k then
 			msg.data = true;
@@ -346,12 +350,12 @@ end
 --- Возвращает из msg информацию о инструменте на который подписываемся и интервале
 function GetCandlesParam(msg)
 	local spl = split(msg.data, "|")
-	return spl[1], spl[2], spl[3]
+	return spl[1], spl[2], tonumber(spl[3])
 end
 
 --- Возвращает уникальный ключ для инструмента на который подписываемся и инетрвала
-function GetKey(class, seq, interval)
-	return class .. "|" .. seq .. "|" .. interval
+function GetKey(class, sec, interval)
+	return class .. "|" .. sec .. "|" .. tostring(interval)
 end
 
 return qsfunctions

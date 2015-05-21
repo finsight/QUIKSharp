@@ -32,7 +32,7 @@ namespace QuikSharp
         /// Код бумаги заявки
         /// </summary>
         [JsonProperty("sec_code")]
-        public string SecurityCode { get; set; }
+        public string SecCode { get; set; }
 
         /// <summary>
         /// Код класса заявки

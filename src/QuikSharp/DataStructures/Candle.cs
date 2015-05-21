@@ -35,7 +35,7 @@ namespace QuikSharp.DataStructures
         /// Объем последней сделки
         /// </summary>
         [JsonProperty("volume")]
-        public int Volume{get; set; }
+        public int Volume{ get; set; }
 
         //todo: not wrapped following:
         //"doesExist": 1,
@@ -49,5 +49,28 @@ namespace QuikSharp.DataStructures
         //  "hour": 14,
         //  "min": 26
         //},
+
+        #region Candles subscription info
+        // Информация о принадлежности свечки к одной из подписок. Заполняется в тех свечках, которые приходят в событии NewCandle
+
+        /// <summary>
+        /// Код инструмента.
+        /// </summary>
+        [JsonProperty("sec")]
+        public string Sec { get; set; }
+
+        /// <summary>
+        /// Код класса.
+        /// </summary>
+        [JsonProperty("class")]
+        public string Class { get; set; }
+
+        /// <summary>
+        /// Интервал подписки.
+        /// </summary>
+        [JsonProperty("interval")]
+        public CandleInterval Interval { get; set; }
+
+        #endregion
     }
 }
