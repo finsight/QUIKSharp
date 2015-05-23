@@ -47,26 +47,26 @@ namespace QuikSharp
         /// <returns></returns>
         public async Task<List<Candle>> GetCandles(string graphicTag, int line, int first, int count)
         {
-            var message = new Message<string>(graphicTag + "|" + line + "|" + first + "|" + count, "GetCandles");
+            var message = new Message<string>(graphicTag + "|" + line + "|" + first + "|" + count, "get_candles");
             Message<List<Candle>> response = await QuikService.Send<Message<List<Candle>>>(message);
             return response.Data;
         }
 
         public async void Subscribe(string classCode, string securityCode, CandleInterval interval)
         {
-            var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "SubscribeToCandles");            
+            var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "subscribe_to_candles");            
             await QuikService.Send<Message<string>>(message);
         }
 
         public async void Unsubscribe(string classCode, string securityCode, CandleInterval interval)
         {
-            var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "UnsubscribeFromCandles");            
+            var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "unsubscribe_from_candles");            
             await QuikService.Send<Message<string>>(message);     
         }
 
         public async Task<bool> IsSubscribed(string classCode, string securityCode, CandleInterval interval)
         {
-            var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "IsSubscribed");
+            var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "is_subscribed");
             Message<bool> response = await QuikService.Send<Message<bool>>(message);
             return response.Data;
         }

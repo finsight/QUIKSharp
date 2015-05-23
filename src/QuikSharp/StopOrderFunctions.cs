@@ -32,7 +32,7 @@ namespace QuikSharp
         /// <returns></returns>
         public async Task<List<StopOrder>> GetStopOrders()
         {
-            var message = new Message<string>("", "GetStopOrders");
+            var message = new Message<string>("", "get_stop_orders");
             Message<List<StopOrder>> response = await QuikService.Send<Message<List<StopOrder>>>(message);
             return response.Data;			
         }
@@ -42,7 +42,7 @@ namespace QuikSharp
         /// </summary>
         public async Task<List<StopOrder>> GetStopOrders(string classCode, string securityCode)
         {
-            var message = new Message<string>(classCode + "|" + securityCode, "GetStopOrders");
+            var message = new Message<string>(classCode + "|" + securityCode, "get_stop_orders");
             Message<List<StopOrder>> response = await QuikService.Send<Message<List<StopOrder>>>(message);
             return response.Data;
         }
