@@ -7,12 +7,20 @@ namespace QuikSharp
     /// <summary>
     /// Функции для работы со стоп-заявками
     /// </summary>
-    public class StopOrders
+    public class StopOrderFunctions
     {
         private QuikService QuikService { get; set; }
         private Quik Quik { get; set; }
 
-        public StopOrders(int port, Quik quik)
+        public delegate void StopOrderHandler(StopOrder stopOrder);
+        public event StopOrderHandler NewStopOrder;
+        internal void RaiseNewStopOrderEvent(StopOrder stopOrder)
+        {
+            if (NewStopOrder != null)
+                NewStopOrder(stopOrder);
+        }
+
+        public StopOrderFunctions(int port, Quik quik)
         {
             QuikService = QuikService.Create(port);
             Quik = quik;
@@ -24,7 +32,7 @@ namespace QuikSharp
         /// <returns></returns>
         public async Task<List<StopOrder>> GetStopOrders()
         {
-            var message = new Message<string>("", "GetStopOrders");
+            var message = new Message<string>("", "get_stop_orders");
             Message<List<StopOrder>> response = await QuikService.Send<Message<List<StopOrder>>>(message);
             return response.Data;			
         }
@@ -34,7 +42,7 @@ namespace QuikSharp
         /// </summary>
         public async Task<List<StopOrder>> GetStopOrders(string classCode, string securityCode)
         {
-            var message = new Message<string>(classCode + "|" + securityCode, "GetStopOrders");
+            var message = new Message<string>(classCode + "|" + securityCode, "get_stop_orders");
             Message<List<StopOrder>> response = await QuikService.Send<Message<List<StopOrder>>>(message);
             return response.Data;
         }
@@ -46,12 +54,12 @@ namespace QuikSharp
                 ACTION = TransactionAction.NEW_STOP_ORDER,
                 ACCOUNT = stopOrder.Account,
                 CLASSCODE = stopOrder.ClassCode,
-                SECCODE = stopOrder.SecurityCode,
+                SECCODE = stopOrder.SecCode,
                 EXPIRY_DATE = "GTC",//до отмены
                 STOPPRICE = stopOrder.ConditionPrice,
                 PRICE = stopOrder.Price,
                 QUANTITY = stopOrder.Quantity,
-                STOP_ORDER_KIND = ConverStopOrderType(stopOrder.StopOrderType),
+                STOP_ORDER_KIND = ConvertStopOrderType(stopOrder.StopOrderType),
                 OPERATION = stopOrder.Operation == Operation.Buy?TransactionOperation.B : TransactionOperation.S
             };
 
@@ -69,7 +77,7 @@ namespace QuikSharp
             await Quik.Trading.SendTransaction(newStopOrderTransaction);
         }
 
-        private StopOrderKind ConverStopOrderType(StopOrderType stopOrderType)
+        private StopOrderKind ConvertStopOrderType(StopOrderType stopOrderType)
         {
             switch (stopOrderType)
             {
@@ -88,7 +96,7 @@ namespace QuikSharp
             {
                 ACTION = TransactionAction.KILL_STOP_ORDER,
                 CLASSCODE = stopOrder.ClassCode,
-                SECCODE = stopOrder.SecurityCode,
+                SECCODE = stopOrder.SecCode,
                 STOP_ORDER_KEY = stopOrder.OrderNum.ToString()
             };
             await Quik.Trading.SendTransaction(killStopOrderTransaction);

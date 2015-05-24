@@ -76,7 +76,6 @@ namespace QuikSharp {
         /// Примечание: Значение параметра «stop_flag» – «1».После окончания выполнения функции таймаут завершения работы скрипта 5 секунд. По истечении этого интервала функция main() завершается принудительно. При этом возможна потеря системных ресурсов.
         /// </summary>
         event StopHandler OnStop;
-        event EventHandler OnStopOrder;
         event TradeHandler OnTrade;
         event TransReplyHandler OnTransReply;
 

@@ -249,7 +249,7 @@ namespace QuikSharp {
                             };
 
                         case EventNames.OnStopOrder:
-                            break;
+                            return new Message<StopOrder> {Data = new StopOrder()};
 
                         case EventNames.OnTrade:
                             return new Message<Trade> {
@@ -259,6 +259,10 @@ namespace QuikSharp {
                             return new Message<TransactionReply> {
                                 Data = new TransactionReply()
                             };
+
+                        case EventNames.NewCandle:
+                            return new Message<Candle> {Data = new Candle()};
+
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
