@@ -136,6 +136,7 @@
     <Compile Include="DataStructures\Flags.cs" />
     <Compile Include="DataStructures\AllTrade.cs" />
     <Compile Include="DataStructures\QuikDateTime.cs" />
+    <Compile Include="DataStructures\State.cs" />
     <Compile Include="DataStructures\StopOrder.cs" />
     <Compile Include="DataStructures\Transaction\OrderTradeFlags.cs" />
     <Compile Include="DataStructures\Transaction\Trade.cs" />

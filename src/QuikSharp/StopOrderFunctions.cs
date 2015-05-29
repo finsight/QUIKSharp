@@ -47,7 +47,7 @@ namespace QuikSharp
             return response.Data;
         }
 
-        public async void CreateStopOrder(StopOrder stopOrder)
+        public async Task<long> CreateStopOrder(StopOrder stopOrder)
         {
             Transaction newStopOrderTransaction = new Transaction
             {
@@ -74,7 +74,7 @@ namespace QuikSharp
             //["EXECUTION_CONDITION"] = "FILL_OR_KILL",
     
 
-            await Quik.Trading.SendTransaction(newStopOrderTransaction);
+            return await Quik.Trading.SendTransaction(newStopOrderTransaction);
         }
 
         private StopOrderKind ConvertStopOrderType(StopOrderType stopOrderType)

@@ -188,6 +188,8 @@ namespace QuikSharp {
         internal void OnTransReplyCall(TransactionReply reply) {
             if (OnTransReply != null) OnTransReply(reply);
             // invoke event specific for the transaction
+            if (reply.Comment == null)//"Initialization user successful" transaction doesn't contain comment
+                return;
             var tr = QuikService.Storage.Get<Transaction>(reply.Comment);
             if (tr != null) {
                 lock (tr)

@@ -34,7 +34,7 @@ namespace QuikSharp {
         }
 
 
-        private QuikService QuikService { get; set; }
+        public QuikService QuikService { get; set; }
 
 
         /// <summary>

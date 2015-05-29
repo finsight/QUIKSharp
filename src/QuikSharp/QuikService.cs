@@ -471,6 +471,11 @@ namespace QuikSharp {
             }
         }
 
+        public void InitializeCorrelationId(int startCorrelationId)
+        {
+            _correlationId = startCorrelationId;
+        }
+
         internal string PrependWithSessionId(long id) {
             return SessionId + "." + id;
         }
