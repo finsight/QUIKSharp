@@ -127,8 +127,10 @@
   <ItemGroup>
     <Compile Include="ClassFunctions\ClassFunctions.cs" />
     <Compile Include="DataStructures\ClassInfo.cs" />
+    <Compile Include="DataStructures\FuturesClientHolding.cs" />
     <Compile Include="DataStructures\IWithLuaTimeStamp.cs" />
     <Compile Include="DataStructures\OrderBook.cs" />
+    <Compile Include="DataStructures\ParamTable.cs" />
     <Compile Include="DataStructures\SecurityInfo.cs" />
     <Compile Include="DataStructures\EventNames.cs" />
     <Compile Include="DataStructures\Flags.cs" />
@@ -157,7 +159,7 @@
     <Compile Include="DataStructures\MoneyLimitEx.cs" />
     <Compile Include="TradingFunctions\TradingFunctions.cs" />
     <Compile Include="DataStructures\Transaction\TransactionReply.cs" />
-    <Compile Include="DataStructures\Transaction\TransactionEnums.cs" />
+    <Compile Include="DataStructures\TransactionEnums.cs" />
     <Compile Include="Tray.cs">
       <SubType>Form</SubType>
     </Compile>

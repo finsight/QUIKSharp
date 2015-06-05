@@ -3,6 +3,7 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using QuikSharp.DataStructures;
 
 namespace QuikSharp {
 
@@ -51,11 +52,16 @@ namespace QuikSharp {
         ///// <summary>
         /////  функция для получения информации по фьючерсным позициям
         ///// </summary>
-        //Task<string> getFuturesHolding();
-        ///// <summary>
-        /////  функция для получения значений Таблицы текущих значений параметров
-        ///// </summary>
-        //Task<string> getParamEx();
+        Task<FuturesClientHolding> GetFuturesHolding(string firmId, string accId,string secCode,int posType);
+       
+        /// <summary>
+        /// функция для получения значений Таблицы текущих значений параметров
+        /// </summary>
+        /// <param name="classCode"></param>
+        /// <param name="secCode"></param>
+        /// <param name="paramName"></param>
+        /// <returns></returns>
+        Task<ParamTable> GetParamEx(string classCode, string secCode, string paramName);
 
         ///// <summary>
         /////  функция для получения информации по инструменту
@@ -139,10 +145,41 @@ namespace QuikSharp {
         //        ? new string[0]
         //        : response.Data.TrimEnd(',').Split(new[] { "," }, StringSplitOptions.None);
         //}
-        public Task<DepoLimit> GetDepo(string clientCode, string firmId, string secCode, string account) { throw new NotImplementedException(); }
+        public async Task<DepoLimit> GetDepo(string clientCode, string firmId, string secCode, string account) 
+        {
+            var response = await QuikService.Send<Message<DepoLimit>>(
+                    (new Message<string>(clientCode + "|" + firmId + "|" + secCode + "|" + account, "getDepo")));
+            return response.Data;
+        }
+        
         public Task<DepoLimitEx> GetDepoEx(string firmId, string clientCode, string secCode, string accID, int limitKind) { throw new NotImplementedException(); }
         public Task<MoneyLimit> GetMoney(string clientCode, string firmId, string tag, string currCode) { throw new NotImplementedException(); }
         public Task<MoneyLimitEx> GetMoneyEx(string firmId, string clientCode, string tag, string currCode, int limitKind) { throw new NotImplementedException(); }
+      
+        
+        public async Task<ParamTable> GetParamEx(string classCode, string secCode, string paramName) 
+        {
+            var response = await QuikService.Send<Message<ParamTable>>(
+                    (new Message<string>(classCode + "|" + secCode + "|" + paramName, "getParamEx")));
+                return response.Data;            
+        }
+
+        public async Task<FuturesClientHolding> GetFuturesHolding(string firmId, string accId, string secCode, int posType)
+        {
+            var response = await QuikService.Send<Message<FuturesClientHolding>>(
+                    (new Message<string>(firmId + "|" + accId + "|" + secCode + "|" + posType, "getFuturesHolding")));
+            
+            return response.Data;
+        }
+
+
+
+
+        /*public async Task<ClassInfo> GetClassInfo(string classID) {
+            var response = await QuikService.Send<Message<ClassInfo>>(
+                (new Message<string>(classID, "getClassInfo")));
+            return response.Data;
+        }*/
 
 
         /// <summary>

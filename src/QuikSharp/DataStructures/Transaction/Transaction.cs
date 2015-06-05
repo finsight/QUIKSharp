@@ -162,7 +162,7 @@ namespace QuikSharp {
         /// <summary>
         /// Признак того, является ли заявка заявкой Маркет-Мейкера. Возможные значения: «YES» или «NO». Значение по умолчанию (если параметр отсутствует): «NO»
         /// </summary>
-        public YesOrNoDefault MARKET_MAKER_ORDER { get; set; }
+        public YesOrNoDefault? MARKET_MAKER_ORDER { get; set; }
 
         /// <summary>
         /// Условие исполнения заявки, необязательный параметр. Возможные значения:

@@ -134,8 +134,6 @@ function qsfunctions.PrintDbgStr(msg)
     return msg
 end
 
-
-
 ---------------------
 -- Class functions --
 ---------------------
@@ -199,8 +197,6 @@ function qsfunctions.IsSubscribed_Level_II_Quotes(msg)
     return msg
 end
 
-
-
 -----------------------
 -- Trading functions --
 -----------------------
@@ -220,6 +216,31 @@ function qsfunctions.sendTransaction(msg)
         msg.data = true
         return msg
     end
+end
+
+--- Функция предназначена для получения значений всех параметров биржевой информации из Таблицы текущих значений параметров. 
+-- С помощью этой функции можно получить любое из значений Таблицы текущих значений параметров для заданных кодов класса и бумаги. 
+
+function qsfunctions.getParamEx(msg)
+    local spl = split(msg.data, "|")
+    local class_code, sec_code, param_name = spl[1], spl[2], spl[3]
+    msg.data = getParamEx(class_code, sec_code, param_name)
+    return msg
+end
+
+-- Функция предназначена для получения информации по бумажным лимитам. 
+function qsfunctions.getDepo(msg)
+    local spl = split(msg.data, "|")
+    local clientCode, firmId, secCode, account = spl[1], spl[2], spl[3], spl[4]
+    msg.data = getDepo(clientCode, firmId, secCode, account)
+    return msg
+end
+
+function qsfunctions.getFuturesHolding(msg)
+    local spl = split(msg.data, "|")
+    local firmId, accId, secCode, posType = spl[1], spl[2], spl[3], spl[4]
+    msg.data = getFuturesHolding(firmId, accId, secCode, posType)
+    return msg
 end
 
 return qsfunctions
