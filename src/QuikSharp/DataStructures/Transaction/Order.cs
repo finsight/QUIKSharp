@@ -1,5 +1,5 @@
 ﻿// Copyright (C) 2015 Victor Baybekov
-
+using QuikSharp.DataStructures.Transaction;
 using Newtonsoft.Json;
 
 namespace QuikSharp.DataStructures.Transaction {
@@ -10,7 +10,6 @@ namespace QuikSharp.DataStructures.Transaction {
 
         [JsonProperty("lua_timestamp")]
         public long LuaTimeStamp { get; internal set; }
-
         /// <summary>
         /// Номер заявки в торговой системе
         /// </summary>
@@ -211,11 +210,23 @@ namespace QuikSharp.DataStructures.Transaction {
         /// </summary>
         [JsonProperty("passive_only_order")]
         public int PassiveOnlyOrder { get; set; }
-
+        private Quik Quik { get; set; }
         /// <summary>
         /// Тип операции - Buy или Sell
         /// </summary>
         [JsonIgnore]
         public Operation Operation { get; set; }
+        public async void KillOrder()
+        {
+            QuikSharp.Transaction killOrderTransaction = new QuikSharp.Transaction
+            {
+                ACTION = TransactionAction.KILL_ORDER,
+                CLASSCODE = ClassCode,
+                SECCODE = SecCode,
+                STOP_ORDER_KEY = OrderNum.ToString()
+            };
+            
+            await Quik.Trading.SendTransaction(killOrderTransaction);
+        }
     }
 }

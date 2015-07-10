@@ -51,15 +51,24 @@ namespace QuikSharp {
     /// 
     /// </summary>
     /// <param name="trade"></param>
-    public delegate void TradeHandler(Trade trade   );
+    public delegate void TradeHandler(Trade trade);
+    /// <summary>
+    /// Обработчик события OnAccountPosition
+    /// </summary>
+    /// <param name="position"></param>
+    public delegate void PositionHandler(AccountPosition position);
+    /// <summary>
+    /// Обработчик события OnAccountBalance
+    /// </summary>
+    /// <param name="balance"></param>
+    public delegate void BalanceHandler(AccountBalance balance);
 
     internal class QuikEvents : IQuikEvents {
         public QuikEvents(QuikService service) { QuikService = service; }
         public QuikService QuikService { get; private set; }
 
 
-        public event EventHandler OnAccountBalance;
-        public event EventHandler OnAccountPosition;
+
 
 
         public event AllTradeHandler OnAllTrade;
@@ -143,6 +152,11 @@ namespace QuikSharp {
 
 
         public event EventHandler OnParam;
+        public event BalanceHandler OnAccountBalance;
+        internal void OnAccountBalanceCall(AccountBalance balance) { if (OnAccountBalance != null) OnAccountBalance(balance); }
+
+        public event PositionHandler OnAccountPosition;
+        internal void OnAccountPositionCall(AccountPosition position) { if (OnAccountPosition != null) OnAccountPosition(position); }
 
 
         public event QuoteHandler OnQuote;
