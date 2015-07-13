@@ -42,6 +42,7 @@ namespace QuikSharp.Tests {
             Console.WriteLine("GetSecurityInfo for LKOH: "
             + String.Join(",", _q.Class.GetSecurityInfo("TQBR", "LKOH").Result.ToJson()));
         }
-
+        
+        
     }
 }

@@ -44,6 +44,7 @@ function OnAllTrade(alltrade)
         local msg = {}
         msg.t = timemsec()
         msg.cmd = "OnAllTrade"
+        msg.t = timemsec()
         msg.data = alltrade
         sendCallback(msg)
     end
@@ -103,7 +104,35 @@ function OnQuote(class_code, sec_code)
         end
     end
 end
+if is_connected then
+        local msg = {}
+        msg.t = timemsec()
+        msg.cmd = "OnAllTrade"
+        msg.t = timemsec()
+        msg.data = alltrade
+        sendCallback(msg)
+    end
 
+--Функция вызывается терминалом QUIK при получении изменений текущей позиции по счету.
+function OnAccountBalance(balance)
+	if is_connected then
+		local msg = {}
+		msg.t = timemsec()
+		msg.data = balance
+		msg.cmd = "OnAccountbalance"
+		sendCallback(msg)
+	end
+end
+--Функция вызывается терминалом QUIK при изменении денежной позиции по счету.
+function OnAccountPosition(position)
+	if is_connected then
+		local msg = {}
+		msg.t = timemsec()
+		msg.data = balance
+		msg.cmd = "OnAccountbalance"
+		sendCallback(msg)
+	end
+end
 --- Функция вызывается терминалом QUIK при остановке скрипта из диалога управления и при закрытии терминала QUIK.
 function OnStop(s)
     is_started = false

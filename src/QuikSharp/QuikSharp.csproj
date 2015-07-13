@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{48081C21-DFBA-4CBB-88AF-0BD9F606F424}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>QuikSharp</RootNamespace>
     <AssemblyName>QuikSharp</AssemblyName>
@@ -101,13 +101,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Esent.Collections">
-      <HintPath>..\..\..\robo-trading\RoboTrading\packages\Microsoft.Database.Collections.Generic.1.9.2.0\lib\net40\Esent.Collections.dll</HintPath>
+      <HintPath>..\..\packages\Microsoft.Database.Collections.Generic.1.9.2.0\lib\net40\Esent.Collections.dll</HintPath>
     </Reference>
     <Reference Include="Esent.Interop">
-      <HintPath>..\..\..\robo-trading\RoboTrading\packages\ManagedEsent.1.9.2.0\lib\net40\Esent.Interop.dll</HintPath>
+      <HintPath>..\..\packages\ManagedEsent.1.9.2.0\lib\net40\Esent.Interop.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\..\robo-trading\RoboTrading\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -126,6 +131,8 @@
   <ItemGroup>
     <Compile Include="CandleFunctions.cs" />
     <Compile Include="ClassFunctions\ClassFunctions.cs" />
+    <Compile Include="DataStructures\AccountBalance.cs" />
+    <Compile Include="DataStructures\AccountPosition.cs" />
     <Compile Include="DataStructures\Candle.cs" />
     <Compile Include="DataStructures\CandleInterval.cs" />
     <Compile Include="DataStructures\ClassInfo.cs" />

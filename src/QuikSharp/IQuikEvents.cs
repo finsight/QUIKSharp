@@ -40,8 +40,8 @@ namespace QuikSharp {
     /// OnTransReply - ответ на транзакцию 
     /// </summary>
     public interface IQuikEvents : IQuikService {
-        event EventHandler OnAccountBalance;
-        event EventHandler OnAccountPosition;
+        event BalanceHandler OnAccountBalance;
+        event PositionHandler OnAccountPosition;
         /// <summary>
         /// Новая обезличенная сделка
         /// </summary>
