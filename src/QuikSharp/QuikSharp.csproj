@@ -100,14 +100,21 @@
     <DocumentationFile>..\..\bin\QuikSharp.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Esent.Collections">
-      <HintPath>..\..\..\robo-trading\RoboTrading\packages\Microsoft.Database.Collections.Generic.1.9.2.0\lib\net40\Esent.Collections.dll</HintPath>
+    <Reference Include="Esent.Collections, Version=1.9.3.2, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\packages\Microsoft.Database.Collections.Generic.1.9.3.2\lib\net40\Esent.Collections.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Esent.Interop">
-      <HintPath>..\..\..\robo-trading\RoboTrading\packages\ManagedEsent.1.9.2.0\lib\net40\Esent.Interop.dll</HintPath>
+    <Reference Include="Esent.Interop, Version=1.9.3.2, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\packages\ManagedEsent.1.9.3.2\lib\net40\Esent.Interop.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\..\robo-trading\RoboTrading\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Esent.Isam, Version=1.9.3.2, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\packages\Microsoft.Database.Isam.1.9.3.2\lib\net40\Esent.Isam.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
