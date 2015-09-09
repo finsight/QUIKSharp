@@ -9,16 +9,20 @@ namespace QuikSharp.Tests
     [TestFixture]
     public class CandleFunctionsTest
     {
+        
+
         [Test]
         public void GetCandlesTest()
         {
-            Quik quik = new Quik();
-            string graphicTag = "SBER2M";//В квике должен быть открыт график с этим (SBER2M) идентификатором.
+            CandleFunctions _cf = new CandleFunctions(Quik.DefaultPort);
 
-            List<Candle> allCandles = quik.Candles.GetAllCandles(graphicTag).Result;
+            //Quik quik = new Quik();
+            string graphicTag = "RIU5M1";//В квике должен быть открыт график с этим (SBER2M) идентификатором.
+
+            List<Candle> allCandles = _cf.GetAllCandles(graphicTag).Result;
             Console.WriteLine("All candles count: " + allCandles.Count);
             
-            List<Candle> partCandles = quik.Candles.GetCandles(graphicTag, 0, 100, 250).Result;
+            List<Candle> partCandles = _cf.GetCandles(graphicTag, 0, 100, 250).Result;
             Console.WriteLine("Part candles count:" + partCandles.Count);
         }
 
@@ -35,9 +39,9 @@ namespace QuikSharp.Tests
             isSubscribed = quik.Candles.IsSubscribed("TQBR", "SBER", CandleInterval.M1).Result;
             Assert.AreEqual(true, isSubscribed);
 
-            quik.Candles.Unsubscribe("TQBR", "SBER", CandleInterval.M1);
-            isSubscribed = quik.Candles.IsSubscribed("TQBR", "SBER", CandleInterval.M1).Result;
-            Assert.AreEqual(false, isSubscribed);
+            //quik.Candles.Unsubscribe("TQBR", "SBER", CandleInterval.M1);
+            //isSubscribed = quik.Candles.IsSubscribed("TQBR", "SBER", CandleInterval.M1).Result;
+            //Assert.AreEqual(false, isSubscribed);
 
             Thread.Sleep(120000);//must get at leat one candle as use minute timeframe
         }

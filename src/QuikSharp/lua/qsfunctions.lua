@@ -239,7 +239,13 @@ end
 function qsfunctions.getFuturesHolding(msg)
     local spl = split(msg.data, "|")
     local firmId, accId, secCode, posType = spl[1], spl[2], spl[3], spl[4]
-    msg.data = getFuturesHolding(firmId, accId, secCode, posType)
+	local result, err = getFuturesHolding(firmId, accId, secCode, posType*1)
+	if result then
+		msg.data = result
+	else
+		log("Futures holding returns nil", 3)
+		msg.data = nil
+	end
     return msg
 end
 
@@ -272,15 +278,19 @@ end
 
 --- Возвращаем все свечи по идентификатору графика. График должен быть открыт
 function qsfunctions.get_candles(msg)
+	log("Called get_candles" .. msg.data, 2)
 	local spl = split(msg.data, "|")
 	local tag = spl[1]
 	local line = tonumber(spl[2])
 	local first_candle = tonumber(spl[3])
 	local count = tonumber(spl[4])
 	if count == 0 then
-		count = getNumCandles(tag)
+		count = getNumCandles(tag) * 1
 	end
-	local t,_,_ = getCandlesByIndex(tag, line, first_candle, count)
+	log("Count: " .. count, 2)
+	local t,n,l = getCandlesByIndex(tag, line, first_candle, count)
+	log("Candles table size: " .. n, 2)
+	log("Label: " .. l, 2)
 	local candles = {}
 	for i = 0, count - 1 do
 		table.insert(candles, t[i])
