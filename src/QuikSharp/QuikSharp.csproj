@@ -101,14 +101,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Esent.Collections">
-      <HintPath>..\..\packages\Microsoft.Database.Collections.Generic.1.9.2.0\lib\net40\Esent.Collections.dll</HintPath>
+      <HintPath>..\..\..\robo-trading\RoboTrading\packages\Microsoft.Database.Collections.Generic.1.9.2.0\lib\net40\Esent.Collections.dll</HintPath>
     </Reference>
     <Reference Include="Esent.Interop">
-      <HintPath>..\..\packages\ManagedEsent.1.9.2.0\lib\net40\Esent.Interop.dll</HintPath>
+      <HintPath>..\..\..\robo-trading\RoboTrading\packages\ManagedEsent.1.9.2.0\lib\net40\Esent.Interop.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Newtonsoft.Json.6.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\..\robo-trading\RoboTrading\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -125,7 +124,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CandleFunctions.cs" />
     <Compile Include="ClassFunctions\ClassFunctions.cs" />
+    <Compile Include="DataStructures\Candle.cs" />
+    <Compile Include="DataStructures\CandleInterval.cs" />
     <Compile Include="DataStructures\ClassInfo.cs" />
     <Compile Include="DataStructures\FuturesClientHolding.cs" />
     <Compile Include="DataStructures\IWithLuaTimeStamp.cs" />
@@ -136,6 +138,7 @@
     <Compile Include="DataStructures\Flags.cs" />
     <Compile Include="DataStructures\AllTrade.cs" />
     <Compile Include="DataStructures\QuikDateTime.cs" />
+    <Compile Include="DataStructures\StopOrder.cs" />
     <Compile Include="DataStructures\Transaction\OrderTradeFlags.cs" />
     <Compile Include="DataStructures\Transaction\Trade.cs" />
     <Compile Include="DataStructures\Transaction\Order.cs" />
@@ -146,6 +149,7 @@
     <Compile Include="LuaException.cs" />
     <Compile Include="Misc.cs" />
     <Compile Include="NotificationType.cs" />
+    <Compile Include="OrderFunctions.cs" />
     <Compile Include="Serialization.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="OrderBookFunctions\OrderBookFunctions.cs" />
@@ -157,6 +161,7 @@
     <Compile Include="DataStructures\DepoLimitEx.cs" />
     <Compile Include="DataStructures\MoneyLimit.cs" />
     <Compile Include="DataStructures\MoneyLimitEx.cs" />
+    <Compile Include="StopOrderFunctions.cs" />
     <Compile Include="TradingFunctions\TradingFunctions.cs" />
     <Compile Include="DataStructures\Transaction\TransactionReply.cs" />
     <Compile Include="DataStructures\TransactionEnums.cs" />

@@ -131,8 +131,8 @@ namespace QuikSharp {
         /// заявка все равно будет исполнена по рыночной цене. Для других рынков при 
         /// выставлении рыночной заявки укажите price= 0.
         /// </summary>
-        [JsonConverter(typeof(ToStringConverter<double>))]
-        public double PRICE { get; set; }
+        [JsonConverter(typeof(ToStringConverter<decimal>))]
+        public decimal PRICE { get; set; }
 
         /// <summary>
         /// Направление заявки, обязательный параметр. Значения: «S» – продать, «B» – купить
@@ -162,7 +162,7 @@ namespace QuikSharp {
         /// <summary>
         /// Признак того, является ли заявка заявкой Маркет-Мейкера. Возможные значения: «YES» или «NO». Значение по умолчанию (если параметр отсутствует): «NO»
         /// </summary>
-        public YesOrNoDefault? MARKET_MAKER_ORDER { get; set; }
+        public YesOrNo? MARKET_MAKER_ORDER { get; set; }
 
         /// <summary>
         /// Условие исполнения заявки, необязательный параметр. Возможные значения:
@@ -172,28 +172,28 @@ namespace QuikSharp {
         /// <summary>
         /// Объем сделки РЕПО-М в рублях
         /// </summary>
-        [JsonConverter(typeof(ToStringConverter<double?>))]
-        public double? REPOVALUE { get; set; }
+        [JsonConverter(typeof(ToStringConverter<decimal?>))]
+        public decimal? REPOVALUE { get; set; }
         /// <summary>
         /// Начальное значение дисконта в заявке на сделку РЕПО-М
         /// </summary>
-        [JsonConverter(typeof(ToStringConverter<double?>))]
-        public double? START_DISCOUNT { get; set; }
+        [JsonConverter(typeof(ToStringConverter<decimal?>))]
+        public decimal? START_DISCOUNT { get; set; }
         /// <summary>
         /// Нижнее предельное значение дисконта в заявке на сделку РЕПО-М
         /// </summary>
-        [JsonConverter(typeof(ToStringConverter<double?>))]
-        public double? LOWER_DISCOUNT { get; set; }
+        [JsonConverter(typeof(ToStringConverter<decimal?>))]
+        public decimal? LOWER_DISCOUNT { get; set; }
         /// <summary>
         /// Верхнее предельное значение дисконта в заявке на сделку РЕПО-М
         /// </summary>
-        [JsonConverter(typeof(ToStringConverter<double?>))]
-        public double? UPPER_DISCOUNT { get; set; }
+        [JsonConverter(typeof(ToStringConverter<decimal?>))]
+        public decimal? UPPER_DISCOUNT { get; set; }
         /// <summary>
         /// Стоп-цена, за единицу инструмента. Используется только при «ACTION» = «NEW_STOP_ORDER»
         /// </summary>
-        [JsonConverter(typeof(ToStringConverter<double?>))]
-        public double? STOPPRICE { get; set; }
+        [JsonConverter(typeof(ToStringConverter<decimal?>))]
+        public decimal? STOPPRICE { get; set; }
         /// <summary>
         /// Тип стоп-заявки. Возможные значения:
         /// </summary>
@@ -213,8 +213,8 @@ namespace QuikSharp {
         /// <summary>
         /// Цена связанной лимитированной заявки. Используется только при «STOP_ORDER_KIND» = «WITH_LINKED_LIMIT_ORDER»
         /// </summary>
-        [JsonConverter(typeof(ToStringConverter<double?>))]
-        public double? LINKED_ORDER_PRICE { get; set; }
+        [JsonConverter(typeof(ToStringConverter<decimal?>))]
+        public decimal? LINKED_ORDER_PRICE { get; set; }
         /// <summary>
         /// Срок действия стоп-заявки. Возможные значения: «GTC» – до отмены, «TODAY» - до окончания текущей торговой сессии, Дата в формате «ГГММДД».
         /// </summary>
@@ -222,8 +222,8 @@ namespace QuikSharp {
         /// <summary>
         /// Цена условия «стоп-лимит» для заявки типа «Тэйк-профит и стоп-лимит»
         /// </summary>
-        [JsonConverter(typeof(ToStringConverter<double?>))]
-        public double? STOPPRICE2 { get; set; }
+        [JsonConverter(typeof(ToStringConverter<decimal?>))]
+        public decimal? STOPPRICE2 { get; set; }
         /// <summary>
         /// Признак исполнения заявки по рыночной цене при наступлении условия «стоп-лимит». Значения «YES» или «NO». Параметр заявок типа «Тэйк-профит и стоп-лимит»
         /// </summary>
@@ -269,8 +269,8 @@ namespace QuikSharp {
         /// <summary>
         /// Цена второй части РЕПО
         /// </summary>
-        [JsonConverter(typeof(ToStringConverter<double?>))]
-        public double? PRICE2 { get; set; }
+        [JsonConverter(typeof(ToStringConverter<decimal?>))]
+        public decimal? PRICE2 { get; set; }
         /// <summary>
         /// Срок РЕПО. Параметр сделок РЕПО-М
         /// </summary>
@@ -287,8 +287,8 @@ namespace QuikSharp {
         /// <summary>
         /// Ставка фиксированного возмещения, выплачиваемого в случае неисполнения второй части РЕПО, в процентах
         /// </summary>
-        [JsonConverter(typeof(ToStringConverter<double?>))]
-        public double? REFUNDRATE { get; set; }
+        [JsonConverter(typeof(ToStringConverter<decimal?>))]
+        public decimal? REFUNDRATE { get; set; }
         /// <summary>
         /// Текстовый комментарий, указанный в заявке - поручение (brokerref in Trades/Orders). 
         /// Используется при снятии группы заявок
@@ -320,8 +320,8 @@ namespace QuikSharp {
         /// <summary>
         /// Величина отступа от максимума (минимума) цены последней сделки. Используется при «STOP_ORDER_KIND» = «TAKE_PROFIT_STOP_ORDER» или «ACTIVATED_BY_ORDER_TAKE_PROFIT_STOP_ORDER»
         /// </summary>
-        [JsonConverter(typeof(ToStringConverter<double?>))]
-        public double? OFFSET { get; set; }
+        [JsonConverter(typeof(ToStringConverter<decimal?>))]
+        public decimal? OFFSET { get; set; }
         /// <summary>
         /// Единицы измерения отступа. Возможные значения:
         /// </summary>
@@ -329,8 +329,8 @@ namespace QuikSharp {
         /// <summary>
         /// Величина защитного спрэда. Используется при «STOP_ORDER_KIND» = «TAKE_PROFIT_STOP_ORDER» или ACTIVATED_BY_ORDER_TAKE_PROFIT_STOP_ORDER»
         /// </summary>
-        [JsonConverter(typeof(ToStringConverter<double?>))]
-        public double? SPREAD { get; set; }
+        [JsonConverter(typeof(ToStringConverter<decimal?>))]
+        public decimal? SPREAD { get; set; }
         /// <summary>
         /// Единицы измерения защитного спрэда. Используется при «STOP_ORDER_KIND» = «TAKE_PROFIT_STOP_ORDER» или «ACTIVATED_BY_ORDER_TAKE_PROFIT_STOP_ORDER»
         /// </summary>
@@ -371,8 +371,8 @@ namespace QuikSharp {
         /// <summary>
         /// Цена в первой заявке
         /// </summary>
-        [JsonConverter(typeof(ToStringConverter<double?>))]
-        public double? FIRST_ORDER_NEW_PRICE { get; set; }
+        [JsonConverter(typeof(ToStringConverter<decimal?>))]
+        public decimal? FIRST_ORDER_NEW_PRICE { get; set; }
         /// <summary>
         /// Номер второй заявки
         /// </summary>
@@ -386,8 +386,8 @@ namespace QuikSharp {
         /// <summary>
         /// Цена во второй заявке
         /// </summary>
-        [JsonConverter(typeof(ToStringConverter<double?>))]
-        public double? SECOND_ORDER_NEW_PRICE { get; set; }
+        [JsonConverter(typeof(ToStringConverter<decimal?>))]
+        public decimal? SECOND_ORDER_NEW_PRICE { get; set; }
         /// <summary>
         /// Признак снятия активных заявок по данному инструменту. Используется только при «ACTION» = «NEW_QUOTE». Возможные значения: «YES» или «NO»
         /// </summary>

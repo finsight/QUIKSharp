@@ -100,7 +100,7 @@ namespace QuikSharp {
 
         public async Task<bool> PrintDbgStr(string message) {
             await QuikService.Send<Message<string>>(
-                (new Message<string>(message, "PrintDbgStr ")));
+                (new Message<string>(message, "PrintDbgStr")));
             return true;
         }
     }

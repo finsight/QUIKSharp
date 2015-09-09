@@ -1,3 +1,7 @@
+#### 0.2.1 - May 1 2015
+* MARKET_MAKER_ORDER is nullable, because it is not supported by FORTS
+* 
+
 #### 0.2.0 - April 20 2015
 * Fixed race conditions both in Lua and on C# side
 #### 0.1.0 - December 21 2014

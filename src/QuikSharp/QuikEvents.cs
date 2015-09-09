@@ -150,10 +150,6 @@ namespace QuikSharp {
         public event StopHandler OnStop;
         internal void OnStopCall(int signal) { if (OnStop != null) OnStop(signal); }
 
-
-        public event EventHandler OnStopOrder;
-
-
         public event TradeHandler OnTrade;
 
         internal void OnTradeCall(Trade trade) {

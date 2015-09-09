@@ -53,6 +53,8 @@ namespace QuikSharp {
 
         internal QuikEvents Events { get; set; }
         internal IPersistentStorage Storage { get; set; }
+        internal CandleFunctions Candles { get; set; }
+        internal StopOrderFunctions StopOrders { get; set; }
 
 
         internal readonly string SessionId = DateTime.Now.ToString("yyMMddHHmmss");
@@ -412,6 +414,8 @@ namespace QuikSharp {
                         break;
 
                     case EventNames.OnStopOrder:
+                        StopOrder stopOrder = (message as Message<StopOrder>).Data;
+                        StopOrders.RaiseNewStopOrderEvent(stopOrder);
                         break;
 
                     case EventNames.OnTrade:
@@ -426,6 +430,11 @@ namespace QuikSharp {
                         var trReply = ((Message<TransactionReply>)message).Data;
                         trReply.LuaTimeStamp = message.CreatedTime;
                         Events.OnTransReplyCall(trReply);
+                        break;
+
+                    case EventNames.NewCandle:
+                        Candle candle = (message as Message<Candle>).Data;
+                        Candles.RaiseNewCandleEvent(candle);
                         break;
 
                     default:

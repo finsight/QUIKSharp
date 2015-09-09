@@ -45,7 +45,7 @@ namespace QuikSharp.DataStructures.Transaction {
         /// Цена
         /// </summary>
         [JsonProperty("price")]
-        public double Price { get; set; }
+        public decimal Price { get; set; }
         /// <summary>
         /// Количество в лотах
         /// </summary>
@@ -60,17 +60,17 @@ namespace QuikSharp.DataStructures.Transaction {
         /// Объем в денежных средствах
         /// </summary>
         [JsonProperty("value")]
-        public double Value { get; set; }
+        public decimal Value { get; set; }
         /// <summary>
         /// Накопленный купонный доход
         /// </summary>
         [JsonProperty("accruedint")]
-        public double AccruedInterest { get; set; }
+        public decimal AccruedInterest { get; set; }
         /// <summary>
         /// Доходность
         /// </summary>
         [JsonProperty("yield")]
-        public double Yield { get; set; }
+        public decimal Yield { get; set; }
         /// <summary>
         /// Идентификатор транзакции
         /// </summary>
@@ -85,7 +85,7 @@ namespace QuikSharp.DataStructures.Transaction {
         /// Цена выкупа
         /// </summary>
         [JsonProperty("price2")]
-        public double Price2 { get; set; }
+        public decimal Price2 { get; set; }
         /// <summary>
         /// Код расчетов
         /// </summary>
@@ -105,7 +105,7 @@ namespace QuikSharp.DataStructures.Transaction {
         /// Время активации
         /// </summary>
         [JsonProperty("activation_time")]
-        public double ActivationTime { get; set; }
+        public decimal ActivationTime { get; set; }
         /// <summary>
         /// Номер заявки в торговой системе
         /// </summary>
@@ -115,7 +115,7 @@ namespace QuikSharp.DataStructures.Transaction {
         /// Дата окончания срока действия заявки
         /// </summary>
         [JsonProperty("expiry")]
-        public double Expiry { get; set; }
+        public decimal Expiry { get; set; }
         /// <summary>
         /// Код бумаги заявки
         /// </summary>
@@ -150,27 +150,27 @@ namespace QuikSharp.DataStructures.Transaction {
         /// Срок РЕПО, в календарных днях
         /// </summary>
         [JsonProperty("repoterm")]
-        public double Repoterm { get; set; }
+        public decimal Repoterm { get; set; }
         /// <summary>
         /// Сумма РЕПО на текущую дату. Отображается с точностью 2 знака
         /// </summary>
         [JsonProperty("repovalue")]
-        public double Repovalue { get; set; }
+        public decimal Repovalue { get; set; }
         /// <summary>
         /// Объём сделки выкупа РЕПО. Отображается с точностью 2 знака
         /// </summary>
         [JsonProperty("repo2value")]
-        public double Repo2Value { get; set; }
+        public decimal Repo2Value { get; set; }
         /// <summary>
         /// Остаток суммы РЕПО за вычетом суммы привлеченных или предоставленных по сделке РЕПО денежных средств в неисполненной части заявки, по состоянию на текущую дату. Отображается с точностью 2 знака
         /// </summary>
         [JsonProperty("repo_value_balance")]
-        public double RepoValueBalance { get; set; }
+        public decimal RepoValueBalance { get; set; }
         /// <summary>
         /// Начальный дисконт, в %
         /// </summary>
         [JsonProperty("start_discount")]
-        public double StartDiscount { get; set; }
+        public decimal StartDiscount { get; set; }
         /// <summary>
         /// Причина отклонения заявки брокером
         /// </summary>
@@ -212,5 +212,10 @@ namespace QuikSharp.DataStructures.Transaction {
         [JsonProperty("passive_only_order")]
         public int PassiveOnlyOrder { get; set; }
 
+        /// <summary>
+        /// Тип операции - Buy или Sell
+        /// </summary>
+        [JsonIgnore]
+        public Operation Operation { get; set; }
     }
 }
