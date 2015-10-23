@@ -90,7 +90,7 @@ namespace QuikSharp
             }
         }
 
-        public async void KillStopOrder(StopOrder stopOrder)
+        public async Task<long> KillStopOrder(StopOrder stopOrder)
         {
             Transaction killStopOrderTransaction = new Transaction
             {
@@ -99,7 +99,7 @@ namespace QuikSharp
                 SECCODE = stopOrder.SecCode,
                 STOP_ORDER_KEY = stopOrder.OrderNum.ToString()
             };
-            await Quik.Trading.SendTransaction(killStopOrderTransaction);
+            return await Quik.Trading.SendTransaction(killStopOrderTransaction);
         }
     }
 }
