@@ -113,11 +113,10 @@ namespace QuikSharp {
         internal void OnOrderCall(Order order) {
             if (OnOrder != null) OnOrder(order);
             // invoke event specific for the transaction
-            string correlationId = order.Comment;
+            string correlationId = order.TransID.ToString();
 
             #region Totally untested code or handling manual transactions
             if (!QuikService.Storage.Contains(correlationId)) {
-                Debug.Assert(order.TransID == 0);
                 correlationId = "manual:" + order.OrderNum + ":" + correlationId;
                 var fakeTrans = new Transaction() {
                     Comment = correlationId,
@@ -134,8 +133,6 @@ namespace QuikSharp {
                 lock (tr)
                 {
                     tr.OnOrderCall(order);
-                    // persist transaction with added order
-                    QuikService.Storage.Set(order.Comment, tr);
                 }
             }
             Trace.Assert(tr != null, "Transaction must exist in persistent storage until it is completed and all order messages are recieved");
@@ -143,7 +140,7 @@ namespace QuikSharp {
 
 
         public event EventHandler OnParam;
-        
+
         public event QuoteHandler OnQuote;
         internal void OnQuoteCall(OrderBook orderBook) { if (OnQuote != null) OnQuote(orderBook); }
 
@@ -186,19 +183,23 @@ namespace QuikSharp {
         public event TransReplyHandler OnTransReply;
         internal void OnTransReplyCall(TransactionReply reply) {
             if (OnTransReply != null) OnTransReply(reply);
+
             // invoke event specific for the transaction
-            if (reply.Comment == null)//"Initialization user successful" transaction doesn't contain comment
+            if (string.IsNullOrEmpty(reply.Comment))//"Initialization user successful" transaction doesn't contain comment
                 return;
-            var tr = QuikService.Storage.Get<Transaction>(reply.Comment);
-            if (tr != null) {
+
+            if (QuikService.Storage.Contains(reply.Comment))
+            {
+                var tr = QuikService.Storage.Get<Transaction>(reply.Comment);
                 lock (tr)
                 {
                     tr.OnTransReplyCall(reply);
-                    // persist transaction with added reply
-                    QuikService.Storage.Set(reply.Comment, tr);
                 }
             }
-            Trace.Assert(tr != null, "Transaction must exist in persistent storage until it is completed and its reply is recieved");
+            else
+            {
+                Trace.Fail("Transaction must exist in persistent storage until it is completed and its reply is recieved");
+            }
         }
 
     }
