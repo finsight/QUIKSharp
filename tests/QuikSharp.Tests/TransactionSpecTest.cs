@@ -86,7 +86,7 @@ namespace QuikSharp.Tests {
             var j = t.ToJson();
             Console.WriteLine(j);
             var t2 = j.FromJson<TypeWithDateTimeDeSerializedAsString>();
-            Assert.AreEqual(t.AsString.Value.ToString("hhmmss"), t2.AsString);
+            Assert.AreEqual(t.AsString.Value.ToString("HHmmss"), t2.AsString);
             var t1 = j.FromJson<TypeWithDateTimeSerializedAsString>();
             Assert.AreEqual(t.AsString, t1.AsString);
         }

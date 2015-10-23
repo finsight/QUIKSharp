@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace QuikSharp
 {
-    static class ServiceManager {
+     static class ServiceManager {
         private static QuikService quikService;
         public static void StartServices() {
             quikService = QuikService.Create(Quik.DefaultPort);

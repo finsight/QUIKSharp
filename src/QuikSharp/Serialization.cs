@@ -157,7 +157,7 @@ namespace QuikSharp {
         public override void WriteJson(JsonWriter writer,
                                        object value,
                                        JsonSerializer serializer) {
-            var t = JToken.FromObject(((DateTime)value).ToString("hhmmss"));
+            var t = JToken.FromObject(((DateTime)value).ToString("HHmmss"));
             t.WriteTo(writer);
         }
     }

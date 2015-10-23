@@ -9,7 +9,8 @@ namespace QuikSharp
     /// </summary>
     public class CandleFunctions
     {
-        private QuikService QuikService { get; set; }
+
+        public QuikService QuikService { get; private set; }
 
         public delegate void CandleHandler(Candle candle);
         /// <summary>
@@ -22,10 +23,8 @@ namespace QuikSharp
                 NewCandle(candle);
         }
 
-        public CandleFunctions(int port)
-        {
-            QuikService = QuikService.Create(port);
-        }
+        public CandleFunctions(int port) { QuikService = QuikService.Create(port); }
+
 
         /// <summary>
         /// Функция предназначена для получения информации о свечках по идентификатору (заказ данных для построения графика плагин не осуществляет, поэтому для успешного доступа нужный график должен быть открыт). Возвращаются все доступные свечки.

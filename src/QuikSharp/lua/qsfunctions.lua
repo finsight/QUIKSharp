@@ -134,8 +134,6 @@ function qsfunctions.PrintDbgStr(msg)
     return msg
 end
 
-
-
 ---------------------
 -- Class functions --
 ---------------------
@@ -199,8 +197,6 @@ function qsfunctions.IsSubscribed_Level_II_Quotes(msg)
     return msg
 end
 
-
-
 -----------------------
 -- Trading functions --
 -----------------------
@@ -220,6 +216,37 @@ function qsfunctions.sendTransaction(msg)
         msg.data = true
         return msg
     end
+end
+
+--- Функция предназначена для получения значений всех параметров биржевой информации из Таблицы текущих значений параметров. 
+-- С помощью этой функции можно получить любое из значений Таблицы текущих значений параметров для заданных кодов класса и бумаги. 
+
+function qsfunctions.getParamEx(msg)
+    local spl = split(msg.data, "|")
+    local class_code, sec_code, param_name = spl[1], spl[2], spl[3]
+    msg.data = getParamEx(class_code, sec_code, param_name)
+    return msg
+end
+
+-- Функция предназначена для получения информации по бумажным лимитам. 
+function qsfunctions.getDepo(msg)
+    local spl = split(msg.data, "|")
+    local clientCode, firmId, secCode, account = spl[1], spl[2], spl[3], spl[4]
+    msg.data = getDepo(clientCode, firmId, secCode, account)
+    return msg
+end
+
+function qsfunctions.getFuturesHolding(msg)
+    local spl = split(msg.data, "|")
+    local firmId, accId, secCode, posType = spl[1], spl[2], spl[3], spl[4]
+	local result, err = getFuturesHolding(firmId, accId, secCode, posType*1)
+	if result then
+		msg.data = result
+	else
+		log("Futures holding returns nil", 3)
+		msg.data = nil
+	end
+    return msg
 end
 
 --------------------------
@@ -251,15 +278,19 @@ end
 
 --- Возвращаем все свечи по идентификатору графика. График должен быть открыт
 function qsfunctions.get_candles(msg)
+	log("Called get_candles" .. msg.data, 2)
 	local spl = split(msg.data, "|")
 	local tag = spl[1]
 	local line = tonumber(spl[2])
 	local first_candle = tonumber(spl[3])
 	local count = tonumber(spl[4])
 	if count == 0 then
-		count = getNumCandles(tag)
+		count = getNumCandles(tag) * 1
 	end
-	local t,_,_ = getCandlesByIndex(tag, line, first_candle, count)
+	log("Count: " .. count, 2)
+	local t,n,l = getCandlesByIndex(tag, line, first_candle, count)
+	log("Candles table size: " .. n, 2)
+	log("Label: " .. l, 2)
 	local candles = {}
 	for i = 0, count - 1 do
 		table.insert(candles, t[i])

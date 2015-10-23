@@ -143,8 +143,7 @@ namespace QuikSharp {
 
 
         public event EventHandler OnParam;
-
-
+        
         public event QuoteHandler OnQuote;
         internal void OnQuoteCall(OrderBook orderBook) { if (OnQuote != null) OnQuote(orderBook); }
 

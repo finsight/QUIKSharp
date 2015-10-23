@@ -76,7 +76,7 @@ namespace QuikSharp {
             // ************************************************************************************
 
 
-            string securityCode = "RIM5";
+            string securityCode = "RIZ5";
 
             // Do not spam console when used as a dependency and use Trace
             Trace.Listeners.Clear();
