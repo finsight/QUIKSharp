@@ -27,7 +27,7 @@ namespace QuikSharp {
             OrderBook = new OrderBookFunctions(port);
             Trading = new TradingFunctions(port);
             StopOrders = new StopOrderFunctions(port, this);
-            Orders = new OrderFunctions(this);
+            Orders = new OrderFunctions(port, this);
             Candles = new CandleFunctions(port);
             QuikService.Candles = Candles;
             QuikService.StopOrders = StopOrders;

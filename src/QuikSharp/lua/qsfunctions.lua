@@ -249,6 +249,16 @@ function qsfunctions.getFuturesHolding(msg)
     return msg
 end
 
+--- Возвращает заявку по её номеру ---
+--- На основе http://help.qlua.org/ch4_5_1_1.htm ---
+function qsfunctions.get_order_by_number(msg)
+	local spl = split(msg.data, "|")
+	local class_code = spl[1]
+	local order_id = tonumber(spl[2])
+	msg.data = getOrderByNumber(class_code, order_id)
+	return msg
+end
+
 --------------------------
 -- Stop order functions --
 --------------------------

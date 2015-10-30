@@ -114,6 +114,12 @@ namespace QuikSharp
         public decimal ConditionPrice2 { get; set; }
 
         /// <summary>
+        /// Номер заявки в торговой системе, зарегистрированной по наступлению условия стоп-цены.
+        /// </summary>
+        [JsonProperty("linkedorder")]
+        public long LinkedOrder { get; set; }
+
+        /// <summary>
         /// Набор битовых флагов.
         /// </summary>
         [JsonProperty("flags")]
