@@ -471,6 +471,15 @@ namespace QuikSharp {
             }
         }
 
+        /// <summary>
+        /// Устанавливает стартовое значение для CorrelactionId.
+        /// </summary>
+        /// <param name="startCorrelationId">Стартовое значение.</param>
+        internal void InitializeCorrelationId(int startCorrelationId)
+        {
+            _correlationId = startCorrelationId;
+        }
+
         internal string PrependWithSessionId(long id) {
             return SessionId + "." + id;
         }

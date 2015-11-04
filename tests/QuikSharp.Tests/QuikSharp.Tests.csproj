@@ -53,6 +53,7 @@
     <Compile Include="CandleFunctionsTest.cs" />
     <Compile Include="OrderBookFunctionsTest.cs" />
     <Compile Include="ClassFunctionsTest.cs" />
+    <Compile Include="OrderFunctionsTest.cs" />
     <Compile Include="Ping.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceFuncitonsTest.cs" />

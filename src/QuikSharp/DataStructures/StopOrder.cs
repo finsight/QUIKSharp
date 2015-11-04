@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using Newtonsoft.Json;
+using QuikSharp.DataStructures;
 
 namespace QuikSharp
 {
@@ -15,6 +16,12 @@ namespace QuikSharp
         /// </summary>
         [JsonProperty("order_num")]
         public long OrderNum { get; set; }
+
+        /// <summary>
+        /// Идентификатор транзакции.
+        /// </summary>
+        [JsonProperty("trans_id")]
+        public long TransId { get; set; }
 
         /// <summary>
         /// Торговый счет
@@ -107,6 +114,12 @@ namespace QuikSharp
         public decimal ConditionPrice2 { get; set; }
 
         /// <summary>
+        /// Номер заявки в торговой системе, зарегистрированной по наступлению условия стоп-цены.
+        /// </summary>
+        [JsonProperty("linkedorder")]
+        public long LinkedOrder { get; set; }
+
+        /// <summary>
         /// Набор битовых флагов.
         /// </summary>
         [JsonProperty("flags")]
@@ -125,7 +138,7 @@ namespace QuikSharp
         /// Состояние стоп-заявки.
         /// </summary>
         [JsonIgnore]
-        public StopOrderState State { get; set; }
+        public State State { get; set; }
 
         /// <summary>
         /// Стоп-заявка ожидает активации.
@@ -138,11 +151,11 @@ namespace QuikSharp
             //Based on: http://help.qlua.org/ch9_2.htm
 
             if((flags & 0x1) != 0)
-                State = StopOrderState.Active;
+                State = State.Active;
             else if ((flags & 0x2) != 0)
-                State = StopOrderState.Removed;
+                State = State.Canceled;
             else
-                State = StopOrderState.Triggered;
+                State = State.Completed;
 
             Operation = (flags & 0x4) != 0 ? Operation.Sell : Operation.Buy;
             IsWaitingActivation = (flags & 0x20) != 0;
@@ -217,26 +230,5 @@ namespace QuikSharp
     {
         Buy,
         Sell
-    }
-
-    /// <summary>
-    /// Состояние стоп-заявки
-    /// </summary>
-    public enum StopOrderState
-    {
-        /// <summary>
-        /// Активна
-        /// </summary>
-        Active,
-
-        /// <summary>
-        /// Исполнена
-        /// </summary>
-        Triggered,
-
-        /// <summary>
-        /// Снята
-        /// </summary>
-        Removed
     }
 }

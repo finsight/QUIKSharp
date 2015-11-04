@@ -200,7 +200,10 @@ namespace QuikSharp {
             // TODO Comments are useful to kill all orders with a single KILL_ALL_ORDERS
             // But see e.g. this http://www.quik.ru/forum/import/27073/27076/
 
-            transaction.CLIENT_CODE = QuikService.PrependWithSessionId(transaction.TRANS_ID.Value);
+            transaction.CLIENT_CODE = transaction.TRANS_ID.Value.ToString();
+
+            //this can be longer than 20 chars.
+            //transaction.CLIENT_CODE = QuikService.PrependWithSessionId(transaction.TRANS_ID.Value);
 
             try {
                 var response = await QuikService.Send<Message<bool>>(
