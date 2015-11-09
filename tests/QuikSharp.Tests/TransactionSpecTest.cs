@@ -165,5 +165,20 @@ namespace QuikSharp.Tests {
             Console.WriteLine("Error: " + t.ErrorMessage);
         }
 
+        [Test]
+        public void TransactionPriceWithoutTrailoringZeros()
+        {
+            // Проверка, что в цене отбрасываются незначащие нули, т.к. в противном случае возвращается ошибка:
+            // ошибка отправки транзакции Неправильно указана цена: "81890,000000"
+            // Сообщение об ошибке: Число не может содержать знак разделителя дробной части
+
+            var t1 = new Transaction { PRICE = 1.00000m };
+            var t2 = new Transaction { PRICE = 1.01000m };
+            string json1 = t1.ToJson();
+            string json2 = t2.ToJson();
+
+            Assert.IsTrue(json1.Contains("\"PRICE\":\"1\"}"));
+            Assert.IsTrue(json2.Contains("\"PRICE\":\"1,01\"}") || json2.Contains("\"PRICE\":\"1.01\"}"));
+        }
     }
 }

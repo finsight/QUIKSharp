@@ -131,7 +131,7 @@ namespace QuikSharp {
         /// заявка все равно будет исполнена по рыночной цене. Для других рынков при 
         /// выставлении рыночной заявки укажите price= 0.
         /// </summary>
-        [JsonConverter(typeof(ToStringConverter<decimal>))]
+        [JsonConverter(typeof(DecimalG29ToStringConverter))]
         public decimal PRICE { get; set; }
 
         /// <summary>
