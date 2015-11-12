@@ -51,7 +51,7 @@ namespace QuikSharp {
     /// 
     /// </summary>
     /// <param name="trade"></param>
-    public delegate void TradeHandler(Trade trade   );
+    public delegate void TradeHandler(Trade trade);
 
     internal class QuikEvents : IQuikEvents {
         public QuikEvents(QuikService service) { QuikService = service; }
@@ -130,8 +130,7 @@ namespace QuikSharp {
 
             var tr = QuikService.Storage.Get<Transaction>(correlationId);
             if (tr != null) {
-                lock (tr)
-                {
+                lock (tr) {
                     tr.OnOrderCall(order);
                 }
             }
@@ -154,6 +153,11 @@ namespace QuikSharp {
             // invoke event specific for the transaction
             string correlationId = trade.Comment;
 
+            // ignore unknown transactions
+            if (string.IsNullOrWhiteSpace(correlationId)) {
+                return;
+            }
+
             #region Totally untested code or handling manual transactions
             if (!QuikService.Storage.Contains(correlationId)) {
                 correlationId = "manual:" + trade.OrderNum + ":" + correlationId;
@@ -169,14 +173,15 @@ namespace QuikSharp {
 
             var tr = QuikService.Storage.Get<Transaction>(trade.Comment);
             if (tr != null) {
-                lock (tr)
-                {
+                lock (tr) {
                     tr.OnTradeCall(trade);
                     // persist transaction with added trade
                     QuikService.Storage.Set(trade.Comment, tr);
                 }
             }
-            Trace.Assert(tr != null, "Transaction must exist in persistent storage until it is completed and all trades messages are recieved");
+
+            // ignore unknown transactions
+            //Trace.Assert(tr != null, "Transaction must exist in persistent storage until it is completed and all trades messages are recieved");
         }
 
 
@@ -188,17 +193,14 @@ namespace QuikSharp {
             if (string.IsNullOrEmpty(reply.Comment))//"Initialization user successful" transaction doesn't contain comment
                 return;
 
-            if (QuikService.Storage.Contains(reply.Comment))
-            {
+            if (QuikService.Storage.Contains(reply.Comment)) {
                 var tr = QuikService.Storage.Get<Transaction>(reply.Comment);
-                lock (tr)
-                {
+                lock (tr) {
                     tr.OnTransReplyCall(reply);
                 }
-            }
-            else
-            {
-                Trace.Fail("Transaction must exist in persistent storage until it is completed and its reply is recieved");
+            } else {
+                // NB ignore unmatched transactions
+                //Trace.Fail("Transaction must exist in persistent storage until it is completed and its reply is recieved");
             }
         }
 
