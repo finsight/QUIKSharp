@@ -8,10 +8,15 @@ namespace QuikSharp
     /// </summary>
     public class OrderFunctions
     {
+        private QuikService QuikService { get; set; }
         private Quik Quik { get; set; }
 
-        public OrderFunctions(Quik quik)
+        /// <summary>
+        /// Конструктор.
+        /// </summary>
+        public OrderFunctions(int port, Quik quik)
         {
+            QuikService = QuikService.Create(port);
             Quik = quik;
         }
 
@@ -34,6 +39,10 @@ namespace QuikSharp
             return await Quik.Trading.SendTransaction(newOrderTransaction);
         }
 
+        /// <summary>
+        /// Отмена заявки.
+        /// </summary>
+        /// <param name="order">Информация по заявке, которую требуется отменить.</param>
         public async void KillOrder(Order order)
         {
             Transaction killOrderTransaction = new Transaction
@@ -41,9 +50,23 @@ namespace QuikSharp
                 ACTION = TransactionAction.KILL_ORDER,
                 CLASSCODE = order.ClassCode,
                 SECCODE = order.SecCode,
-                STOP_ORDER_KEY = order.OrderNum.ToString()
+                ORDER_KEY = order.OrderNum.ToString()
             };
             await Quik.Trading.SendTransaction(killOrderTransaction);
+        }
+
+        /// <summary>
+        /// Возвращает заявку из хранилища терминала по её номеру.
+        /// На основе: http://help.qlua.org/ch4_5_1_1.htm
+        /// </summary>
+        /// <param name="classCode">Класс инструмента.</param>
+        /// <param name="orderId">Номер заявки.</param>
+        /// <returns></returns>
+        public async Task<Order> GetOrder(string classCode, long orderId)
+        {
+            var message = new Message<string>(classCode + "|" + orderId, "get_order_by_number");
+            Message<Order> response = await QuikService.Send<Message<Order>>(message);
+            return response.Data;
         }
     }
 }

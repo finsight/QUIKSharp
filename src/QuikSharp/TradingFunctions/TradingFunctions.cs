@@ -1,6 +1,7 @@
 ﻿// Copyright (C) 2015 Victor Baybekov
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using QuikSharp.DataStructures;
@@ -10,7 +11,6 @@ namespace QuikSharp {
     /// <summary>
     /// Функции взаимодействия скрипта Lua и Рабочего места QUIK
     /// getDepo - функция для получения информации по бумажным лимитам 
-    /// getDepoEx - функция для получения информации по бумажным лимитам указанного типа 
     /// getMoney - функция для получения информации по денежным лимитам 
     /// getMoneyEx - функция для получения информации по денежным лимитам указанного типа 
     /// getFuturesLimit - функция для получения информации по фьючерсным лимитам 
@@ -32,9 +32,16 @@ namespace QuikSharp {
         Task<DepoLimit> GetDepo(string clientCode, string firmId, string secCode, string account);
 
         /// <summary>
-        /// Функция для получения информации по бумажным лимитам указанного типа
+        /// Возвращает список записей из таблицы 'Лимиты по бумагам'.
         /// </summary>
-        Task<DepoLimitEx> GetDepoEx(string firmId, string clientCode, string secCode, string accID, int limitKind);
+        Task<List<DepoLimitEx>> GetDepoLimits();
+
+        /// <summary>
+        /// Возвращает список записей из таблицы 'Лимиты по бумагам', отфильтрованных по коду инструмента.
+        /// </summary>
+        /// <param name="secCode">Код инструментаю</param>
+        /// <returns></returns>
+        Task<List<DepoLimitEx>> GetDepoLimits(string secCode);
 
         /// <summary>
         /// Функция для получения информации по денежным лимитам
@@ -151,8 +158,27 @@ namespace QuikSharp {
                     (new Message<string>(clientCode + "|" + firmId + "|" + secCode + "|" + account, "getDepo")));
             return response.Data;
         }
-        
-        public Task<DepoLimitEx> GetDepoEx(string firmId, string clientCode, string secCode, string accID, int limitKind) { throw new NotImplementedException(); }
+
+        /// <summary>
+        /// Возвращает список всех записей из таблицы 'Лимиты по бумагам'.
+        /// </summary>
+        public async Task<List<DepoLimitEx>> GetDepoLimits()
+        {
+            var message = new Message<string>("", "get_depo_limits");
+            Message<List<DepoLimitEx>> response = await QuikService.Send<Message<List<DepoLimitEx>>>(message);
+            return response.Data;
+        }
+
+        /// <summary>
+        /// Возвращает список записей из таблицы 'Лимиты по бумагам', отфильтрованных по коду инструмента.
+        /// </summary>
+        public async Task<List<DepoLimitEx>> GetDepoLimits(string secCode)
+        {
+            var message = new Message<string>(secCode, "get_depo_limits");
+            Message<List<DepoLimitEx>> response = await QuikService.Send<Message<List<DepoLimitEx>>>(message);
+            return response.Data;
+        }
+
         public Task<MoneyLimit> GetMoney(string clientCode, string firmId, string tag, string currCode) { throw new NotImplementedException(); }
         public Task<MoneyLimitEx> GetMoneyEx(string firmId, string clientCode, string tag, string currCode, int limitKind) { throw new NotImplementedException(); }
       
@@ -200,7 +226,10 @@ namespace QuikSharp {
             // TODO Comments are useful to kill all orders with a single KILL_ALL_ORDERS
             // But see e.g. this http://www.quik.ru/forum/import/27073/27076/
 
-            transaction.CLIENT_CODE = QuikService.PrependWithSessionId(transaction.TRANS_ID.Value);
+            transaction.CLIENT_CODE = transaction.TRANS_ID.Value.ToString();
+
+            //this can be longer than 20 chars.
+            //transaction.CLIENT_CODE = QuikService.PrependWithSessionId(transaction.TRANS_ID.Value);
 
             try {
                 var response = await QuikService.Send<Message<bool>>(

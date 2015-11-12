@@ -44,6 +44,12 @@ namespace QuikSharp {
         Task<bool> Message(string message, NotificationType iconType);
 
         Task<bool> PrintDbgStr(string message);
+
+        /// <summary>
+        /// Устанавливает стартовое значение для CorrelactionId.
+        /// </summary>
+        /// <param name="startCorrelationId">Стартовое значение.</param>
+        void InitializeCorrelationId(int startCorrelationId);
     }
 
     /// <summary>
@@ -102,6 +108,11 @@ namespace QuikSharp {
             await QuikService.Send<Message<string>>(
                 (new Message<string>(message, "PrintDbgStr")));
             return true;
+        }
+
+        public void InitializeCorrelationId(int startCorrelationId)
+        {
+            QuikService.InitializeCorrelationId(startCorrelationId);
         }
     }
 }

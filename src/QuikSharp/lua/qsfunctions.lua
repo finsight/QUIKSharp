@@ -249,6 +249,32 @@ function qsfunctions.getFuturesHolding(msg)
     return msg
 end
 
+--- Возвращает заявку по её номеру ---
+--- На основе http://help.qlua.org/ch4_5_1_1.htm ---
+function qsfunctions.get_order_by_number(msg)
+	local spl = split(msg.data, "|")
+	local class_code = spl[1]
+	local order_id = tonumber(spl[2])
+	msg.data = getOrderByNumber(class_code, order_id)
+	return msg
+end
+
+--- Возвращает список записей из таблицы 'Лимиты по бумагам'
+--- На основе http://help.qlua.org/ch4_6_11.htm и http://help.qlua.org/ch4_5_3.htm
+function qsfunctions.get_depo_limits(msg)
+	local sec_code = msg.data
+	local count = getNumberOf("depo_limits")
+	local depo_limits = {}
+	for i = 0, count - 1 do
+		local depo_limit = getItem("depo_limits", i)
+		if msg.data == "" or depo_limit.sec_code == sec_code then
+			table.insert(depo_limits, depo_limit)
+		end
+	end
+	msg.data = depo_limits
+	return msg
+end
+
 --------------------------
 -- Stop order functions --
 --------------------------

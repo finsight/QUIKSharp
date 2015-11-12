@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using NUnit.Framework;
+using QuikSharp.DataStructures;
 
 namespace QuikSharp.Tests {
     [TestFixture]
-    public class TradingFunctionsTest {
-        public TradingFunctionsTest() { }
+    public class TradingFunctionsTest
+    {
 
         private string _orderBookSample =
             @"
@@ -24,10 +24,29 @@ namespace QuikSharp.Tests {
 ";
 
         [Test]
-        public void CouldDeserializeOrderBook() {
+        public void CouldDeserializeOrderBook()
+        {
             var ob = _orderBookSample.FromJson<OrderBook>();
             Console.WriteLine("Order book: " + ob.ToJson());
         }
 
+        [Test]
+        public void GetDepoLimitsTest()
+        {
+            Quik quik = new Quik();
+
+            //Получаем информацию по всем лимитам со всех доступных счетов.
+            List<DepoLimitEx> depoLimits = quik.Trading.GetDepoLimits().Result;
+            Console.WriteLine(depoLimits.Count);
+
+            //Получаем информацию по лимитам инструмента "Сбербанк"
+            depoLimits = quik.Trading.GetDepoLimits("SBER").Result;
+            Console.WriteLine(depoLimits.Count);
+
+            DepoLimitEx depoLimit = depoLimits.SingleOrDefault(_ => _.LimitKind == LimitKind.T2);
+            if (depoLimit != null)
+                Console.WriteLine("Открыта позиция по сбербанку.");
+
+        }
     }
 }

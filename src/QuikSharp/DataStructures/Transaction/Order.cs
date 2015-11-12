@@ -217,5 +217,26 @@ namespace QuikSharp.DataStructures.Transaction {
         /// </summary>
         [JsonIgnore]
         public Operation Operation { get; set; }
+
+        /// <summary>
+        /// Состояние заявки.
+        /// </summary>
+        [JsonIgnore]
+        public State State
+        {
+            get 
+            {
+                if (Flags.HasFlag(OrderTradeFlags.Active))
+                {
+                    return State.Active;
+                }
+                else
+                {
+                    return Flags.HasFlag(OrderTradeFlags.Canceled)
+                        ? State.Canceled
+                        : State.Completed;
+                }
+            }
+        }
     }
 }
