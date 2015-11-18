@@ -43,7 +43,7 @@ namespace QuikSharp
         /// Отмена заявки.
         /// </summary>
         /// <param name="order">Информация по заявке, которую требуется отменить.</param>
-        public async void KillOrder(Order order)
+        public async Task<long> KillOrder(Order order)
         {
             Transaction killOrderTransaction = new Transaction
             {
@@ -52,7 +52,7 @@ namespace QuikSharp
                 SECCODE = order.SecCode,
                 ORDER_KEY = order.OrderNum.ToString()
             };
-            await Quik.Trading.SendTransaction(killOrderTransaction);
+            return await Quik.Trading.SendTransaction(killOrderTransaction);
         }
 
         /// <summary>
