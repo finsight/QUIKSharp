@@ -17,11 +17,6 @@ namespace QuikSharp.DataStructures.Transaction {
         [JsonProperty("order_num")]
         public long OrderNum { get; set; }
         /// <summary>
-        /// Набор битовых флагов
-        /// </summary>
-        [JsonProperty("flags")]
-        public OrderTradeFlags Flags { get; set; }
-        /// <summary>
         /// Поручение/комментарий, обычно: код клиента/номер поручения
         /// </summary>
         [JsonProperty("brokerref")]
@@ -222,21 +217,33 @@ namespace QuikSharp.DataStructures.Transaction {
         /// Состояние заявки.
         /// </summary>
         [JsonIgnore]
-        public State State
+        public State State { get; private set; }
+
+        private OrderTradeFlags _flags;
+        /// <summary>
+        /// Набор битовых флагов
+        /// http://help.qlua.org/ch9_1.htm
+        /// </summary>
+        [JsonProperty("flags")]
+        public OrderTradeFlags Flags
         {
-            get 
+            get { return _flags; }
+            set
             {
-                if (Flags.HasFlag(OrderTradeFlags.Active))
-                {
-                    return State.Active;
-                }
-                else
-                {
-                    return Flags.HasFlag(OrderTradeFlags.Canceled)
-                        ? State.Canceled
-                        : State.Completed;
-                }
+                _flags = value;
+                ParseFlags();
             }
+        }
+
+        private void ParseFlags()
+        {
+            Operation = Flags.HasFlag(OrderTradeFlags.IsSell) ? Operation.Sell : Operation.Buy;
+
+            State = Flags.HasFlag(OrderTradeFlags.Active)
+                ? State.Active
+                : (Flags.HasFlag(OrderTradeFlags.Canceled)
+                    ? State.Canceled
+                    : State.Completed);
         }
     }
 }
