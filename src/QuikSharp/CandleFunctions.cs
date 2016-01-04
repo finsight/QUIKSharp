@@ -33,7 +33,7 @@ namespace QuikSharp
         /// <returns></returns>
         public async Task<List<Candle>> GetAllCandles(string graphicTag)
         {
-            return GetCandles(graphicTag, 0, 0, 0).Result;
+            return await GetCandles(graphicTag, 0, 0, 0);
         }
 
         /// <summary>
