@@ -57,7 +57,9 @@ namespace QuikSharp {
                 if (v != null) {
                     return (T)v;
                 }
-                v = EsentDic[key].FromBlob<T>();
+                PersistentBlob blobValue;
+                if (!EsentDic.TryGetValue(key, out blobValue)) return default(T);
+                v = blobValue.FromBlob<T>();
                 Cache[key] = v;
                 return (T)v;
             }
