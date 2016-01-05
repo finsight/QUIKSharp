@@ -51,6 +51,34 @@ namespace QuikSharp
             return response.Data;
         }
 
+        /// <summary>
+        /// Функция возвращает список свечек указанного инструмента заданного интервала.
+        /// </summary>
+        /// <param name="classCode">Класс инструмента.</param>
+        /// <param name="securityCode">Код инструмента.</param>
+        /// <param name="interval">Интервал свечей.</param>
+        /// <returns>Список свечей.</returns>
+        public async Task<List<Candle>> GetAllCandles(string classCode, string securityCode, CandleInterval interval)
+        {
+            //Параметр count == 0 говорт о том, что возвращаются все доступные свечи
+            return await GetLastCandles(classCode, securityCode, interval, 0);
+        }
+
+        /// <summary>
+        /// Возвращает заданное количество свечек указанного инструмента и интервала с конца.
+        /// </summary>
+        /// <param name="classCode">Класс инструмента.</param>
+        /// <param name="securityCode">Код инструмента.</param>
+        /// <param name="interval">Интервал свечей.</param>
+        /// <param name="count">Количество возвращаемых свечей с конца.</param>
+        /// <returns>Список свечей.</returns>
+        public async Task<List<Candle>> GetLastCandles(string classCode, string securityCode, CandleInterval interval, int count)
+        {
+            var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval + "|" + count, "get_candles_from_data_source");
+            Message<List<Candle>> response = await QuikService.Send<Message<List<Candle>>>(message);
+            return response.Data;
+        }
+
         public async void Subscribe(string classCode, string securityCode, CandleInterval interval)
         {
             var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "subscribe_to_candles");            
