@@ -33,7 +33,7 @@ namespace QuikSharp
         /// <returns></returns>
         public async Task<List<Candle>> GetAllCandles(string graphicTag)
         {
-            return GetCandles(graphicTag, 0, 0, 0).Result;
+            return await GetCandles(graphicTag, 0, 0, 0);
         }
 
         /// <summary>
@@ -47,6 +47,34 @@ namespace QuikSharp
         public async Task<List<Candle>> GetCandles(string graphicTag, int line, int first, int count)
         {
             var message = new Message<string>(graphicTag + "|" + line + "|" + first + "|" + count, "get_candles");
+            Message<List<Candle>> response = await QuikService.Send<Message<List<Candle>>>(message);
+            return response.Data;
+        }
+
+        /// <summary>
+        /// Функция возвращает список свечек указанного инструмента заданного интервала.
+        /// </summary>
+        /// <param name="classCode">Класс инструмента.</param>
+        /// <param name="securityCode">Код инструмента.</param>
+        /// <param name="interval">Интервал свечей.</param>
+        /// <returns>Список свечей.</returns>
+        public async Task<List<Candle>> GetAllCandles(string classCode, string securityCode, CandleInterval interval)
+        {
+            //Параметр count == 0 говорт о том, что возвращаются все доступные свечи
+            return await GetLastCandles(classCode, securityCode, interval, 0);
+        }
+
+        /// <summary>
+        /// Возвращает заданное количество свечек указанного инструмента и интервала с конца.
+        /// </summary>
+        /// <param name="classCode">Класс инструмента.</param>
+        /// <param name="securityCode">Код инструмента.</param>
+        /// <param name="interval">Интервал свечей.</param>
+        /// <param name="count">Количество возвращаемых свечей с конца.</param>
+        /// <returns>Список свечей.</returns>
+        public async Task<List<Candle>> GetLastCandles(string classCode, string securityCode, CandleInterval interval, int count)
+        {
+            var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval + "|" + count, "get_candles_from_data_source");
             Message<List<Candle>> response = await QuikService.Send<Message<List<Candle>>>(message);
             return response.Data;
         }

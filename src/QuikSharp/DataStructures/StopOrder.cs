@@ -119,13 +119,19 @@ namespace QuikSharp
         [JsonProperty("linkedorder")]
         public long LinkedOrder { get; set; }
 
+        private int _flags;
         /// <summary>
         /// Набор битовых флагов.
         /// </summary>
         [JsonProperty("flags")]
         public int Flags
         {
-            set { ParseFlags(value); }
+            get { return _flags; }
+            set
+            {
+                _flags = value;
+                ParseFlags(value);
+            }
         }
 
         /// <summary>

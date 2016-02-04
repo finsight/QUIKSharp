@@ -11,25 +11,25 @@ namespace QuikSharp.DataStructures
         /// Минимальная цена сделки
         /// </summary>
         [JsonProperty("low")]
-        public float Low { get; set; }
+        public decimal Low { get; set; }
 
         /// <summary>
         /// Цена закрытия
         /// </summary>
         [JsonProperty("close")]
-        public float Close { get; set; }
+        public decimal Close { get; set; }
 
         /// <summary>
         /// Максимальная цена сделки
         /// </summary>
         [JsonProperty("high")]
-        public float High{get; set; }
+        public decimal High {get; set; }
 
         /// <summary>
         /// Цена открытия
         /// </summary>
         [JsonProperty("open")]
-        public float Open { get; set; }
+        public decimal Open { get; set; }
 
         /// <summary>
         /// Объем последней сделки
@@ -53,13 +53,13 @@ namespace QuikSharp.DataStructures
         /// Код инструмента.
         /// </summary>
         [JsonProperty("sec")]
-        public string Sec { get; set; }
+        public string SecCode { get; set; }
 
         /// <summary>
         /// Код класса.
         /// </summary>
         [JsonProperty("class")]
-        public string Class { get; set; }
+        public string ClassCode { get; set; }
 
         /// <summary>
         /// Интервал подписки.
@@ -68,5 +68,10 @@ namespace QuikSharp.DataStructures
         public CandleInterval Interval { get; set; }
 
         #endregion
+
+        public override string ToString()
+        {
+            return $"Open: {Open}, Close: {Close}, High: {High}, Low: {Low}, Volume: {Volume}";
+        }
     }
 }

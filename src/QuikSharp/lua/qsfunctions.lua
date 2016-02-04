@@ -325,25 +325,72 @@ function qsfunctions.get_candles(msg)
 	return msg
 end
 
+--- Возвращаем все свечи по заданному инструменту и интервалу
+function qsfunctions.get_candles_from_data_source(msg)
+	local ds, is_error = create_data_source(msg)
+	if not is_error then
+		local function SetLoaded()
+			loaded = true
+		end
+
+		--- датасорс изначально приходит пустой, нужно некоторое время подождать пока он заполниться данными
+		--- так как время заполнения данными не фиксировано, то за отчет береться первый Update Callback
+		ds:SetUpdateCallback(SetLoaded)
+		repeat sleep(1) until loaded 
+
+		local count = tonumber(split(msg.data, "|")[4]) --- возвращаем последние count свечей. Если равен 0, то возвращаем все доступные свечи.
+		local class, sec, interval = get_candles_param(msg)
+		local candles = {}
+		local start_i = count == 0 and 1 or math.max(1, ds:Size() - count + 1)
+		for i = start_i, ds:Size() do
+			local candle = fetch_candle(ds, i)
+			candle.sec = sec
+			candle.class = class
+			candle.interval = interval
+			table.insert(candles, candle)
+		end
+		ds:Close()
+		msg.data = candles
+	end
+	return msg
+end
+
+function create_data_source(msg)
+	local class, sec, interval = get_candles_param(msg)
+	local ds, error_descr = CreateDataSource(class, sec, interval)
+	local is_error = false
+	if(error_descr ~= nil) then
+		msg.cmd = "lua_create_data_source_error"
+		msg.lua_error = error_descr
+		is_error = true
+	elseif ds == nil then
+		msg.cmd = "lua_create_data_source_error"
+		msg.lua_error = "Can't create data source for " .. class .. ", " .. sec .. ", " .. tostring(interval)
+		is_error = true
+	end
+	return ds, is_error
+end
+
+function fetch_candle(data_source, index)
+	local candle = {}
+	candle.low   = data_source:L(index)
+	candle.close = data_source:C(index)
+	candle.high = data_source:H(index)
+	candle.open = data_source:O(index)
+	candle.volume = data_source:V(index)
+	candle.datetime = data_source:T(index)
+	return candle
+end
+
 --- Словарь открытых подписок (datasources) на свечи
 data_sources = {}
 last_indexes = {}
 
 --- Подписаться на получения свечей по заданному инструмент и интервалу
 function qsfunctions.subscribe_to_candles(msg)
-	local class, sec, interval = get_candles_param(msg)
-	local ds, error_descr = CreateDataSource(class, sec, interval)
-
-	if(error_descr ~= nil) then
-		msg.cmd = "lua_create_data_source_error"
-		msg.lua_error = error_descr
-		return msg
-	end
-	
-	if ds == nil then
-		msg.cmd = "lua_create_data_source_error"
-		msg.lua_error = "Can't create data source for " .. class .. ", " .. sec .. ", " .. tostring(interval)
-	else
+	local ds, is_error = create_data_source(msg)
+	if not is_error then
+		local class, sec, interval = get_candles_param(msg)
 		local key = get_key(class, sec, interval)
 		data_sources[key] = ds
 		last_indexes[key] = ds:Size()
@@ -360,14 +407,7 @@ function data_source_callback(index, class, sec, interval)
 	if index ~= last_indexes[key] then
 		last_indexes[key] = index
 
-		local candle = {}
-		candle.low   = data_sources[key]:L(index - 1)
-		candle.close = data_sources[key]:C(index - 1)
-		candle.high = data_sources[key]:H(index - 1)
-		candle.open = data_sources[key]:O(index - 1)
-		candle.volume = data_sources[key]:V(index - 1)
-		candle.datetime = data_sources[key]:T(index - 1)
-
+		local candle = fetch_candle(data_sources[key], index - 1)
 		candle.sec = sec
 		candle.class = class
 		candle.interval = interval

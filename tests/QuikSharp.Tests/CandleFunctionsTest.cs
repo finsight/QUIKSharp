@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using NUnit.Framework;
 using QuikSharp.DataStructures;
@@ -9,8 +10,6 @@ namespace QuikSharp.Tests
     [TestFixture]
     public class CandleFunctionsTest
     {
-        
-
         [Test]
         public void GetCandlesTest()
         {
@@ -24,6 +23,34 @@ namespace QuikSharp.Tests
             
             List<Candle> partCandles = _cf.GetCandles(graphicTag, 0, 100, 250).Result;
             Console.WriteLine("Part candles count:" + partCandles.Count);
+        }
+
+        [Test]
+        public void GetAllCandlesTest()
+        {
+            Quik quik = new Quik();
+
+            //Получаем месячные свечки по инструменту "Северсталь"
+            List<Candle> candles = quik.Candles.GetAllCandles("TQBR", "CHMF", CandleInterval.MN).Result;
+            Trace.WriteLine("Candles count: " + candles.Count);
+        }
+
+        [Test]
+        public void GetLastCandlesTest()
+        {
+            Quik quik = new Quik();
+
+            int Days = 7;
+            List<Candle> candles = quik.Candles.GetLastCandles("TQBR", "SBER", CandleInterval.D1, Days).Result;
+            Assert.AreEqual(Days, candles.Count);
+
+            Days = 77;
+            candles = quik.Candles.GetLastCandles("TQBR", "SBER", CandleInterval.D1, Days).Result;
+            Assert.AreEqual(Days, candles.Count);
+
+            Days = 1;
+            candles = quik.Candles.GetLastCandles("TQBR", "SBER", CandleInterval.D1, Days).Result;
+            Assert.AreEqual(Days, candles.Count);
         }
 
         [Test]
