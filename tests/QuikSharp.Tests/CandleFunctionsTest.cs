@@ -75,9 +75,9 @@ namespace QuikSharp.Tests
 
         private void OnNewCandle(Candle candle)
         {
-            if (candle.Sec == "SBER" && candle.Class == "TQBR" && candle.Interval == CandleInterval.M1)
+            if (candle.SecCode == "SBER" && candle.ClassCode == "TQBR" && candle.Interval == CandleInterval.M1)
             {
-                Console.WriteLine("Sec:{0}, Open:{1}, Close:{2}, Volume:{3}", candle.Sec, candle.Open, candle.Close, candle.Volume);
+                Console.WriteLine("Sec:{0}, Open:{1}, Close:{2}, Volume:{3}", candle.SecCode, candle.Open, candle.Close, candle.Volume);
             }
         }
     }
