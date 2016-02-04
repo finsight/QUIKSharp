@@ -329,14 +329,8 @@ end
 function qsfunctions.get_candles_from_data_source(msg)
 	local ds, is_error = create_data_source(msg)
 	if not is_error then
-		local function SetLoaded()
-			loaded = true
-		end
-
 		--- датасорс изначально приходит пустой, нужно некоторое время подождать пока он заполниться данными
-		--- так как время заполнения данными не фиксировано, то за отчет береться первый Update Callback
-		ds:SetUpdateCallback(SetLoaded)
-		repeat sleep(1) until loaded 
+		repeat sleep(1) until ds:Size() > 0
 
 		local count = tonumber(split(msg.data, "|")[4]) --- возвращаем последние count свечей. Если равен 0, то возвращаем все доступные свечи.
 		local class, sec, interval = get_candles_param(msg)
