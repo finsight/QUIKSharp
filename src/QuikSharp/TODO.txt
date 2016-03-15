@@ -1,0 +1,7 @@
+﻿* decimal vs double everywhere
+* order could come without transaction - manual trade from Quik, create an empty transaction
+for the given ID;
+* for the same reason - manual transactions - we could only group related transactions
+by the first one. E.g. if 2 manual trades were done with the same comment, there is just no
+way to match trades
+* trades could be matched to orders without transactions, rethink how to do it

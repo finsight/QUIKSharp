@@ -1,0 +1,73 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuikSharp", "src\QuikSharp\QuikSharp.csproj", "{48081C21-DFBA-4CBB-88AF-0BD9F606F424}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "project", "project", "{8E6032D5-4061-44AD-8151-7F70FE09880A}"
+	ProjectSection(SolutionItems) = preProject
+		build.fsx = build.fsx
+		LICENSE.txt = LICENSE.txt
+		NuGet\QuikSharp.nuspec = NuGet\QuikSharp.nuspec
+		README.md = README.md
+		RELEASE_NOTES.md = RELEASE_NOTES.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{9C0672CC-6182-4469-B5DF-B92265713169}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuikSharp.Tests", "tests\QuikSharp.Tests\QuikSharp.Tests.csproj", "{E8381C47-9297-4BD3-B384-CD366037F587}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Profiler", "tests\Profiler\Profiler.csproj", "{65866E9F-302F-45BE-9BB0-77B3057916CE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{48081C21-DFBA-4CBB-88AF-0BD9F606F424}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{48081C21-DFBA-4CBB-88AF-0BD9F606F424}.Debug|Any CPU.Build.0 = Debug|x86
+		{48081C21-DFBA-4CBB-88AF-0BD9F606F424}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{48081C21-DFBA-4CBB-88AF-0BD9F606F424}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{48081C21-DFBA-4CBB-88AF-0BD9F606F424}.Debug|x86.ActiveCfg = Debug|x86
+		{48081C21-DFBA-4CBB-88AF-0BD9F606F424}.Debug|x86.Build.0 = Debug|x86
+		{48081C21-DFBA-4CBB-88AF-0BD9F606F424}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48081C21-DFBA-4CBB-88AF-0BD9F606F424}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48081C21-DFBA-4CBB-88AF-0BD9F606F424}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{48081C21-DFBA-4CBB-88AF-0BD9F606F424}.Release|Mixed Platforms.Build.0 = Release|x86
+		{48081C21-DFBA-4CBB-88AF-0BD9F606F424}.Release|x86.ActiveCfg = Release|x86
+		{48081C21-DFBA-4CBB-88AF-0BD9F606F424}.Release|x86.Build.0 = Release|x86
+		{E8381C47-9297-4BD3-B384-CD366037F587}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8381C47-9297-4BD3-B384-CD366037F587}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8381C47-9297-4BD3-B384-CD366037F587}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{E8381C47-9297-4BD3-B384-CD366037F587}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{E8381C47-9297-4BD3-B384-CD366037F587}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E8381C47-9297-4BD3-B384-CD366037F587}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8381C47-9297-4BD3-B384-CD366037F587}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8381C47-9297-4BD3-B384-CD366037F587}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{E8381C47-9297-4BD3-B384-CD366037F587}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{E8381C47-9297-4BD3-B384-CD366037F587}.Release|x86.ActiveCfg = Release|Any CPU
+		{65866E9F-302F-45BE-9BB0-77B3057916CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65866E9F-302F-45BE-9BB0-77B3057916CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65866E9F-302F-45BE-9BB0-77B3057916CE}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{65866E9F-302F-45BE-9BB0-77B3057916CE}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{65866E9F-302F-45BE-9BB0-77B3057916CE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{65866E9F-302F-45BE-9BB0-77B3057916CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65866E9F-302F-45BE-9BB0-77B3057916CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65866E9F-302F-45BE-9BB0-77B3057916CE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{65866E9F-302F-45BE-9BB0-77B3057916CE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{65866E9F-302F-45BE-9BB0-77B3057916CE}.Release|x86.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E8381C47-9297-4BD3-B384-CD366037F587} = {9C0672CC-6182-4469-B5DF-B92265713169}
+		{65866E9F-302F-45BE-9BB0-77B3057916CE} = {9C0672CC-6182-4469-B5DF-B92265713169}
+	EndGlobalSection
+EndGlobal
