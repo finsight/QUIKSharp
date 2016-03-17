@@ -17,14 +17,6 @@ namespace QuikSharp.DataStructures.Transaction {
         [JsonProperty("order_num")]
         public long OrderNum { get; set; }
         /// <summary>
-<<<<<<< HEAD
-        /// Набор битовых флагов
-        /// </summary>
-        [JsonProperty("flags")]
-        public OrderTradeFlags Flags { get; set; }
-        /// <summary>
-=======
->>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
         /// Поручение/комментарий, обычно: код клиента/номер поручения
         /// </summary>
         [JsonProperty("brokerref")]
@@ -220,8 +212,6 @@ namespace QuikSharp.DataStructures.Transaction {
         /// </summary>
         [JsonIgnore]
         public Operation Operation { get; set; }
-<<<<<<< HEAD
-=======
 
         /// <summary>
         /// Состояние заявки.
@@ -255,6 +245,5 @@ namespace QuikSharp.DataStructures.Transaction {
                     ? State.Canceled
                     : State.Completed);
         }
->>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
     }
 }

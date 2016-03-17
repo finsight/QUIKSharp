@@ -69,11 +69,7 @@ namespace QuikSharp {
         event EventHandler OnNegDeal;
         event EventHandler OnNegTrade;
         event OrderHandler OnOrder;
-<<<<<<< HEAD
         event ParamHandler OnParam;
-=======
-        event EventHandler OnParam;
->>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
         event QuoteHandler OnQuote;
         /// <summary>
         /// Функция вызывается терминалом QUIK при остановке скрипта из диалога управления. 

@@ -33,11 +33,7 @@ namespace QuikSharp
         /// <returns></returns>
         public async Task<List<Candle>> GetAllCandles(string graphicTag)
         {
-<<<<<<< HEAD
-            return GetCandles(graphicTag, 0, 0, 0).Result;
-=======
             return await GetCandles(graphicTag, 0, 0, 0);
->>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
         }
 
         /// <summary>
@@ -55,11 +51,6 @@ namespace QuikSharp
             return response.Data;
         }
 
-<<<<<<< HEAD
-        public async Task<List<Candle>> Subscribe(string classCode, string securityCode, CandleInterval interval)
-        {
-            var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "subscribe_to_candles");            
-=======
         /// <summary>
         /// Функция возвращает список свечек указанного инструмента заданного интервала.
         /// </summary>
@@ -84,20 +75,17 @@ namespace QuikSharp
         public async Task<List<Candle>> GetLastCandles(string classCode, string securityCode, CandleInterval interval, int count)
         {
             var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval + "|" + count, "get_candles_from_data_source");
->>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
             Message<List<Candle>> response = await QuikService.Send<Message<List<Candle>>>(message);
             return response.Data;
         }
 
-<<<<<<< HEAD
-=======
-        public async void Subscribe(string classCode, string securityCode, CandleInterval interval)
+        public async Task<List<Candle>> Subscribe(string classCode, string securityCode, CandleInterval interval)
         {
-            var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "subscribe_to_candles");            
-            await QuikService.Send<Message<string>>(message);
+            var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "subscribe_to_candles");
+            Message<List<Candle>> response = await QuikService.Send<Message<List<Candle>>>(message);
+            return response.Data;
         }
 
->>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
         public async void Unsubscribe(string classCode, string securityCode, CandleInterval interval)
         {
             var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "unsubscribe_from_candles");            

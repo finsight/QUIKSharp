@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-<<<<<<< HEAD
-=======
 using System.Diagnostics;
->>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
 using System.Threading;
 using NUnit.Framework;
 using QuikSharp.DataStructures;
@@ -13,11 +10,6 @@ namespace QuikSharp.Tests
     [TestFixture]
     public class CandleFunctionsTest
     {
-<<<<<<< HEAD
-        
-
-=======
->>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
         [Test]
         public void GetCandlesTest()
         {
@@ -34,8 +26,6 @@ namespace QuikSharp.Tests
         }
 
         [Test]
-<<<<<<< HEAD
-=======
         public void GetAllCandlesTest()
         {
             Quik quik = new Quik();
@@ -64,7 +54,6 @@ namespace QuikSharp.Tests
         }
 
         [Test]
->>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
         public void CandlesSubscriptionTest()
         {
             Quik quik = new Quik();
@@ -86,15 +75,9 @@ namespace QuikSharp.Tests
 
         private void OnNewCandle(Candle candle)
         {
-<<<<<<< HEAD
-            if (candle.Sec == "SBER" && candle.Class == "TQBR" && candle.Interval == CandleInterval.M1)
-            {
-                Console.WriteLine("Sec:{0}, Open:{1}, Close:{2}, Volume:{3}", candle.Sec, candle.Open, candle.Close, candle.Volume);
-=======
             if (candle.SecCode == "SBER" && candle.ClassCode == "TQBR" && candle.Interval == CandleInterval.M1)
             {
                 Console.WriteLine("Sec:{0}, Open:{1}, Close:{2}, Volume:{3}", candle.SecCode, candle.Open, candle.Close, candle.Volume);
->>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
             }
         }
     }

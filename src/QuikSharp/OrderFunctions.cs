@@ -1,8 +1,5 @@
 ﻿using System.Threading.Tasks;
-<<<<<<< HEAD
 using System.Collections.Generic;
-=======
->>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
 using QuikSharp.DataStructures.Transaction;
 
 namespace QuikSharp
@@ -15,12 +12,9 @@ namespace QuikSharp
         private QuikService QuikService { get; set; }
         private Quik Quik { get; set; }
 
-<<<<<<< HEAD
-=======
         /// <summary>
         /// Конструктор.
         /// </summary>
->>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
         public OrderFunctions(int port, Quik quik)
         {
             QuikService = QuikService.Create(port);
@@ -46,15 +40,11 @@ namespace QuikSharp
             return await Quik.Trading.SendTransaction(newOrderTransaction);
         }
 
-<<<<<<< HEAD
-        public async void KillOrder(Order order)
-=======
         /// <summary>
         /// Отмена заявки.
         /// </summary>
         /// <param name="order">Информация по заявке, которую требуется отменить.</param>
         public async Task<long> KillOrder(Order order)
->>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
         {
             Transaction killOrderTransaction = new Transaction
             {
@@ -63,8 +53,21 @@ namespace QuikSharp
                 SECCODE = order.SecCode,
                 ORDER_KEY = order.OrderNum.ToString()
             };
-<<<<<<< HEAD
-            await Quik.Trading.SendTransaction(killOrderTransaction);
+            return await Quik.Trading.SendTransaction(killOrderTransaction);
+        }
+
+        /// <summary>
+        /// Возвращает заявку из хранилища терминала по её номеру.
+        /// На основе: http://help.qlua.org/ch4_5_1_1.htm
+        /// </summary>
+        /// <param name="classCode">Класс инструмента.</param>
+        /// <param name="orderId">Номер заявки.</param>
+        /// <returns></returns>
+        public async Task<Order> GetOrder(string classCode, long orderId)
+        {
+            var message = new Message<string>(classCode + "|" + orderId, "get_order_by_number");
+            Message<Order> response = await QuikService.Send<Message<Order>>(message);
+            return response.Data;
         }
 
         /// <summary>
@@ -108,24 +111,5 @@ namespace QuikSharp
             return response.Data;
         }
 
-
-=======
-            return await Quik.Trading.SendTransaction(killOrderTransaction);
-        }
-
-        /// <summary>
-        /// Возвращает заявку из хранилища терминала по её номеру.
-        /// На основе: http://help.qlua.org/ch4_5_1_1.htm
-        /// </summary>
-        /// <param name="classCode">Класс инструмента.</param>
-        /// <param name="orderId">Номер заявки.</param>
-        /// <returns></returns>
-        public async Task<Order> GetOrder(string classCode, long orderId)
-        {
-            var message = new Message<string>(classCode + "|" + orderId, "get_order_by_number");
-            Message<Order> response = await QuikService.Send<Message<Order>>(message);
-            return response.Data;
-        }
->>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
     }
 }

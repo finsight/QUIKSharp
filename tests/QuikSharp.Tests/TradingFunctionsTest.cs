@@ -1,15 +1,4 @@
 ﻿using System;
-<<<<<<< HEAD
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using NUnit.Framework;
-
-namespace QuikSharp.Tests {
-    [TestFixture]
-    public class TradingFunctionsTest {
-        public TradingFunctionsTest() { }
-=======
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
@@ -19,7 +8,6 @@ namespace QuikSharp.Tests {
     [TestFixture]
     public class TradingFunctionsTest
     {
->>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
 
         private string _orderBookSample =
             @"
@@ -36,18 +24,12 @@ namespace QuikSharp.Tests {
 ";
 
         [Test]
-<<<<<<< HEAD
-        public void CouldDeserializeOrderBook() {
-=======
         public void CouldDeserializeOrderBook()
         {
->>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
             var ob = _orderBookSample.FromJson<OrderBook>();
             Console.WriteLine("Order book: " + ob.ToJson());
         }
 
-<<<<<<< HEAD
-=======
         [Test]
         public void GetDepoLimitsTest()
         {
@@ -66,6 +48,5 @@ namespace QuikSharp.Tests {
                 Console.WriteLine("Открыта позиция по сбербанку.");
 
         }
->>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
     }
 }

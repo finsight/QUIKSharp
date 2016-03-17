@@ -250,16 +250,9 @@ namespace QuikSharp {
 
                                 // ReSharper disable once UnusedVariable
                                 var doNotAwaitMe = Task.Factory.StartNew(r => {
-<<<<<<< HEAD
-                                    //var r = callback;
-                                    //Trace.WriteLine("callback:" + callback);
-                                    try
-                                    {
-=======
                                     //var r = response;
                                     //Trace.WriteLine("Response:" + response);
                                     try {
->>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
 
                                         var message = (r as string).FromJson(this);
                                         Trace.Assert(!(message.Id.HasValue && message.Id > 0));
@@ -406,11 +399,9 @@ namespace QuikSharp {
                         break;
 
                     case EventNames.OnParam:
-<<<<<<< HEAD
-                        Trace.Assert(message is Message<string>);
-                        Events.OnParamCall(((Message<string>)message).Data);
-=======
->>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
+                        Trace.Assert(message is Message<Param>);
+                        var data = ((Message<Param>)message).Data;
+                        Events.OnParamCall(data);
                         break;
 
                     case EventNames.OnQuote:
@@ -483,8 +474,6 @@ namespace QuikSharp {
             }
         }
 
-<<<<<<< HEAD
-=======
         /// <summary>
         /// Устанавливает стартовое значение для CorrelactionId.
         /// </summary>
@@ -494,7 +483,6 @@ namespace QuikSharp {
             _correlationId = startCorrelationId;
         }
 
->>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
         internal string PrependWithSessionId(long id) {
             return SessionId + "." + id;
         }

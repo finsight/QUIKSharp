@@ -165,8 +165,6 @@ namespace QuikSharp.Tests {
             Console.WriteLine("Error: " + t.ErrorMessage);
         }
 
-<<<<<<< HEAD
-=======
         [Test]
         public void TransactionPriceWithoutTrailoringZeros()
         {
@@ -182,6 +180,5 @@ namespace QuikSharp.Tests {
             Assert.IsTrue(json1.Contains("\"PRICE\":\"1\"}"));
             Assert.IsTrue(json2.Contains("\"PRICE\":\"1,01\"}") || json2.Contains("\"PRICE\":\"1.01\"}"));
         }
->>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
     }
 }

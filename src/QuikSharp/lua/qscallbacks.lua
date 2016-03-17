@@ -74,11 +74,7 @@ function OnInit(script_path)
     log("Hello, QuikSharp! Running inside Quik from the path: "..getScriptPath(), 1)
 end
 
-<<<<<<< HEAD
 --- Функция вызывается терминалом QUIK при изменении в таблице заявок.
-=======
---- Функция вызывается терминалом QUIK при получении сделки.
->>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
 function OnOrder(order)
     local msg = {}
     msg.t = timemsec()
@@ -153,8 +149,6 @@ function OnStopOrder(stop_order)
     sendCallback(msg)
 end
 
-<<<<<<< HEAD
---- Функция вызывается терминалом QUIK при изменении текущих параметров.
 function OnParam(class_code, sec_code)
     local msg = {}
     msg.cmd = "OnParam"
@@ -185,6 +179,4 @@ function OnConnected()
 end
 
 
-=======
->>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
 return qscallbacks
