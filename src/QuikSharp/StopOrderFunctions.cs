@@ -47,7 +47,11 @@ namespace QuikSharp
             return response.Data;
         }
 
+<<<<<<< HEAD
+        public async void CreateStopOrder(StopOrder stopOrder)
+=======
         public async Task<long> CreateStopOrder(StopOrder stopOrder)
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
         {
             Transaction newStopOrderTransaction = new Transaction
             {
@@ -74,7 +78,11 @@ namespace QuikSharp
             //["EXECUTION_CONDITION"] = "FILL_OR_KILL",
     
 
+<<<<<<< HEAD
+            await Quik.Trading.SendTransaction(newStopOrderTransaction);
+=======
             return await Quik.Trading.SendTransaction(newStopOrderTransaction);
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
         }
 
         private StopOrderKind ConvertStopOrderType(StopOrderType stopOrderType)
@@ -90,7 +98,11 @@ namespace QuikSharp
             }
         }
 
+<<<<<<< HEAD
+        public async void KillStopOrder(StopOrder stopOrder)
+=======
         public async Task<long> KillStopOrder(StopOrder stopOrder)
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
         {
             Transaction killStopOrderTransaction = new Transaction
             {
@@ -99,7 +111,11 @@ namespace QuikSharp
                 SECCODE = stopOrder.SecCode,
                 STOP_ORDER_KEY = stopOrder.OrderNum.ToString()
             };
+<<<<<<< HEAD
+            await Quik.Trading.SendTransaction(killStopOrderTransaction);
+=======
             return await Quik.Trading.SendTransaction(killStopOrderTransaction);
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
         }
     }
 }

@@ -45,13 +45,30 @@ namespace QuikSharp {
         public static IDictionary<string, PersistentBlob> Storage { get { return EsentDic; } }
 
         public void Set<T>(string key, T value) {
+<<<<<<< HEAD
+            lock (syncRoot)
+            {
+=======
             lock (syncRoot) {
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
                 Cache[key] = value;
                 EsentDic[key] = value.ToBlob();
             }
         }
 
         public T Get<T>(string key) {
+<<<<<<< HEAD
+            lock (syncRoot)
+            {
+                var v = Cache[key];
+                if (v != null)
+                {
+                    return (T) v;
+                }
+                v = EsentDic[key].FromBlob<T>();
+                Cache[key] = v;
+                return (T) v;
+=======
             lock (syncRoot) {
                 var v = Cache[key];
                 if (v != null) {
@@ -62,15 +79,27 @@ namespace QuikSharp {
                 v = blobValue.FromBlob<T>();
                 Cache[key] = v;
                 return (T)v;
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
             }
         }
 
         public bool Contains(string key) {
+<<<<<<< HEAD
+            lock (syncRoot)
+            {
+                if (Cache.Contains(key))
+                {
+                    return true;
+                }
+                if (EsentDic.ContainsKey(key))
+                {
+=======
             lock (syncRoot) {
                 if (Cache.Contains(key)) {
                     return true;
                 }
                 if (EsentDic.ContainsKey(key)) {
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
                     return true;
                 }
                 return false;
@@ -78,7 +107,12 @@ namespace QuikSharp {
         }
 
         public bool Remove(string key) {
+<<<<<<< HEAD
+            lock (syncRoot)
+            {
+=======
             lock (syncRoot) {
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
                 Cache.Remove(key);
                 var s = EsentDic.Remove(key);
                 return s;
@@ -87,6 +121,10 @@ namespace QuikSharp {
     }
 
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
     /// <summary>
     /// Thread-unsafe
     /// </summary>

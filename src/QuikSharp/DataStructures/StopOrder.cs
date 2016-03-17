@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections;
 using Newtonsoft.Json;
+<<<<<<< HEAD
+=======
 using QuikSharp.DataStructures;
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
 
 namespace QuikSharp
 {
@@ -18,12 +21,15 @@ namespace QuikSharp
         public long OrderNum { get; set; }
 
         /// <summary>
+<<<<<<< HEAD
+=======
         /// Идентификатор транзакции.
         /// </summary>
         [JsonProperty("trans_id")]
         public long TransId { get; set; }
 
         /// <summary>
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
         /// Торговый счет
         /// </summary>
         [JsonProperty("account")]
@@ -114,6 +120,8 @@ namespace QuikSharp
         public decimal ConditionPrice2 { get; set; }
 
         /// <summary>
+<<<<<<< HEAD
+=======
         /// Номер заявки в торговой системе, зарегистрированной по наступлению условия стоп-цены.
         /// </summary>
         [JsonProperty("linkedorder")]
@@ -121,17 +129,22 @@ namespace QuikSharp
 
         private int _flags;
         /// <summary>
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
         /// Набор битовых флагов.
         /// </summary>
         [JsonProperty("flags")]
         public int Flags
         {
+<<<<<<< HEAD
+            set { ParseFlags(value); }
+=======
             get { return _flags; }
             set
             {
                 _flags = value;
                 ParseFlags(value);
             }
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
         }
 
         /// <summary>
@@ -144,7 +157,11 @@ namespace QuikSharp
         /// Состояние стоп-заявки.
         /// </summary>
         [JsonIgnore]
+<<<<<<< HEAD
+        public StopOrderState State { get; set; }
+=======
         public State State { get; set; }
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
 
         /// <summary>
         /// Стоп-заявка ожидает активации.
@@ -157,11 +174,19 @@ namespace QuikSharp
             //Based on: http://help.qlua.org/ch9_2.htm
 
             if((flags & 0x1) != 0)
+<<<<<<< HEAD
+                State = StopOrderState.Active;
+            else if ((flags & 0x2) != 0)
+                State = StopOrderState.Removed;
+            else
+                State = StopOrderState.Triggered;
+=======
                 State = State.Active;
             else if ((flags & 0x2) != 0)
                 State = State.Canceled;
             else
                 State = State.Completed;
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
 
             Operation = (flags & 0x4) != 0 ? Operation.Sell : Operation.Buy;
             IsWaitingActivation = (flags & 0x20) != 0;
@@ -237,4 +262,28 @@ namespace QuikSharp
         Buy,
         Sell
     }
+<<<<<<< HEAD
+
+    /// <summary>
+    /// Состояние стоп-заявки
+    /// </summary>
+    public enum StopOrderState
+    {
+        /// <summary>
+        /// Активна
+        /// </summary>
+        Active,
+
+        /// <summary>
+        /// Исполнена
+        /// </summary>
+        Triggered,
+
+        /// <summary>
+        /// Снята
+        /// </summary>
+        Removed
+    }
+=======
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
 }

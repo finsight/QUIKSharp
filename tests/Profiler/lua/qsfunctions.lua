@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+--~ Copyright Ⓒ 2015 Victor Baybekov
+=======
 --~ Copyright Ⓒ 2014 Victor Baybekov
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
 
 package.path = package.path .. ";" .. ".\\?.lua;" .. ".\\?.luac"
 package.cpath = package.cpath .. ";" .. '.\\clibs\\?.dll'
@@ -25,10 +29,18 @@ function qsfunctions.dispatch_and_process(msg)
 end
 
 
+<<<<<<< HEAD
+---------------------
+-- Debug functions --
+---------------------
+
+--- Returns Pong to Ping
+=======
 ------------------------------
 -- Debug functions
 ------------------------------
 --- Echoes its message
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
 -- @param msg message table
 -- @return same msg table
 function qsfunctions.ping(msg)
@@ -43,20 +55,44 @@ function qsfunctions.ping(msg)
     end
 end
 
+<<<<<<< HEAD
+--- Echoes its message
+function qsfunctions.echo(msg)
+    return msg
+end
+
+--- Test error handling
+function qsfunctions.divide_string_by_zero(msg)
+    msg.data = "asd" / 0
+    return msg
+end
+
+--- Is running inside quik
+=======
 --- Test error handling
 function qsfunctions.divide_string_by_zero(msg)
     msg.data = "asd" / 1
     return msg
 end
 
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
 function qsfunctions.is_quik(msg)
     if getScriptPath then msg.data = 1 else msg.data = 0 end
     return msg
 end
 
+<<<<<<< HEAD
+
+
+-----------------------
+-- Service functions --
+-----------------------
+
+=======
 ------------------------------
 -- Service functions
 ------------------------------
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
 --- Функция предназначена для определения состояния подключения клиентского места к
 -- серверу. Возвращает «1», если клиентское место подключено и «0», если не подключено.
 function qsfunctions.isConnected(msg)
@@ -66,7 +102,10 @@ function qsfunctions.isConnected(msg)
     return msg
 end
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
 --- Функция возвращает путь, по которому находится файл info.exe, исполняющий данный
 -- скрипт, без завершающего обратного слэша («\»). Например, C:\QuikFront.
 function qsfunctions.getWorkingFolder(msg)
@@ -127,9 +166,16 @@ end
 
 
 
+<<<<<<< HEAD
+---------------------
+-- Class functions --
+---------------------
+
+=======
 ------------------------------
 -- Class functions
 ------------------------------
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
 --- Функция предназначена для получения списка кодов классов, переданных с сервера в ходе сеанса связи.
 function qsfunctions.getClassesList(msg)
     msg.data = getClassesList()
@@ -140,7 +186,11 @@ end
 --- Функция предназначена для получения информации о классе.
 function qsfunctions.getClassInfo(msg)
     msg.data = getClassInfo(msg.data)
+<<<<<<< HEAD
+--    if msg.data then log(msg.data.name) else log("getClassInfo  returned nil") end
+=======
     if msg.data then log(msg.data.name) else log("getClassInfo  returned nil") end
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
     return msg
 end
 
@@ -151,7 +201,70 @@ function qsfunctions.getClassSecurities(msg)
     return msg
 end
 
+<<<<<<< HEAD
+--- Функция позволяет узнать, заказан ли с сервера стакан по указанному классу и бумаге.
+function qsfunctions.getSecurityInfo(msg)
+    local spl = split(msg.data, "|")
+    local class_code, sec_code = spl[1], spl[2]
+    msg.data = getSecurityInfo(class_code, sec_code)
+    return msg
+end
 
 
+
+---------------------------------------------------------------------
+-- Order Book functions (Функции для работы со стаканом котировок) --
+---------------------------------------------------------------------
+
+--- Функция заказывает на сервер получение стакана по указанному классу и бумаге.
+function qsfunctions.Subscribe_Level_II_Quotes(msg)
+    local spl = split(msg.data, "|")
+    local class_code, sec_code = spl[1], spl[2]
+    msg.data = Subscribe_Level_II_Quotes(class_code, sec_code)
+    return msg
+end
+
+--- Функция отменяет заказ на получение с сервера стакана по указанному классу и бумаге.
+function qsfunctions.Unsubscribe_Level_II_Quotes(msg)
+    local spl = split(msg.data, "|")
+    local class_code, sec_code = spl[1], spl[2]
+    msg.data = Unsubscribe_Level_II_Quotes(class_code, sec_code)
+    return msg
+end
+
+--- Функция позволяет узнать, заказан ли с сервера стакан по указанному классу и бумаге.
+function qsfunctions.IsSubscribed_Level_II_Quotes(msg)
+    local spl = split(msg.data, "|")
+    local class_code, sec_code = spl[1], spl[2]
+    msg.data = IsSubscribed_Level_II_Quotes(class_code, sec_code)
+    return msg
+end
+
+
+
+-----------------------
+-- Trading functions --
+-----------------------
+
+--- отправляет транзакцию на сервер и возвращает пустое сообщение, которое
+-- будет проигноировано. Вместо него, отправитель будет ждать события
+-- OnTransReply, из которого по TRANS_ID он получит результат отправленной транзакции
+function qsfunctions.sendTransaction(msg)
+    local res = sendTransaction(msg.data)
+    if res~="" then
+        -- error handling
+        msg.cmd = "lua_transaction_error"
+        msg.lua_error = res
+        return msg
+    else
+        -- transaction sent
+        msg.data = true
+        return msg
+    end
+end
+=======
+
+
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
 
 return qsfunctions

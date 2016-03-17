@@ -1,4 +1,8 @@
 ﻿using System.Threading.Tasks;
+<<<<<<< HEAD
+using System.Collections.Generic;
+=======
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
 using QuikSharp.DataStructures.Transaction;
 
 namespace QuikSharp
@@ -11,9 +15,12 @@ namespace QuikSharp
         private QuikService QuikService { get; set; }
         private Quik Quik { get; set; }
 
+<<<<<<< HEAD
+=======
         /// <summary>
         /// Конструктор.
         /// </summary>
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
         public OrderFunctions(int port, Quik quik)
         {
             QuikService = QuikService.Create(port);
@@ -39,11 +46,15 @@ namespace QuikSharp
             return await Quik.Trading.SendTransaction(newOrderTransaction);
         }
 
+<<<<<<< HEAD
+        public async void KillOrder(Order order)
+=======
         /// <summary>
         /// Отмена заявки.
         /// </summary>
         /// <param name="order">Информация по заявке, которую требуется отменить.</param>
         public async Task<long> KillOrder(Order order)
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
         {
             Transaction killOrderTransaction = new Transaction
             {
@@ -52,6 +63,53 @@ namespace QuikSharp
                 SECCODE = order.SecCode,
                 ORDER_KEY = order.OrderNum.ToString()
             };
+<<<<<<< HEAD
+            await Quik.Trading.SendTransaction(killOrderTransaction);
+        }
+
+        /// <summary>
+        /// Возвращает список всех заявок.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<Order>> GetOrders()
+        {
+            var message = new Message<string>("", "get_orders");
+            Message<List<Order>> response = await QuikService.Send<Message<List<Order>>>(message);
+            return response.Data;
+        }
+
+        /// <summary>
+        /// Возвращает список заявок для заданного инструмента.
+        /// </summary>
+        public async Task<List<Order>> GetOrders(string classCode, string securityCode)
+        {
+            var message = new Message<string>(classCode + "|" + securityCode, "get_orders");
+            Message<List<Order>> response = await QuikService.Send<Message<List<Order>>>(message);
+            return response.Data;
+        }
+
+        /// <summary>
+        /// Возвращает заявку для заданного инструмента по ID.
+        /// </summary>
+        public async Task<Order> GetOrder_by_transID(string classCode, string securityCode, long trans_id)
+        {
+            var message = new Message<string>(classCode + "|" + securityCode + "|" + trans_id, "getOrder_by_ID");
+            Message<Order> response = await QuikService.Send<Message<Order>>(message);
+            return response.Data;
+        }
+
+        /// <summary>
+        /// Возвращает заявку по номеру.
+        /// </summary>
+        public async Task<Order> GetOrder_by_Number(long order_num)
+        {
+            var message = new Message<string>(order_num.ToString(), "getOrder_by_Number");
+            Message<Order> response = await QuikService.Send<Message<Order>>(message);
+            return response.Data;
+        }
+
+
+=======
             return await Quik.Trading.SendTransaction(killOrderTransaction);
         }
 
@@ -68,5 +126,6 @@ namespace QuikSharp
             Message<Order> response = await QuikService.Send<Message<Order>>(message);
             return response.Data;
         }
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
     }
 }

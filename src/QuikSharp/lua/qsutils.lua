@@ -230,7 +230,11 @@ function sendCallback(msg_table)
             missed_values_file_name = script_path .. "/logs/MissedCallbacks."..os.time()..".log"
             missed_values_file = io.open(missed_values_file_name, "a")
         end
+<<<<<<< HEAD
+--        missed_values_file:write(callback_string..'\n') // мое временное отключение потерянных колбэков
+=======
         missed_values_file:write(callback_string..'\n')
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
         return nil, "Message added to the response queue"
     end
 end

@@ -133,6 +133,8 @@ namespace QuikSharp {
     }
 
     /// <summary>
+<<<<<<< HEAD
+=======
     /// Serialize Decimal to string without trailing zeros
     /// </summary>
     public class DecimalG29ToStringConverter : JsonConverter
@@ -159,6 +161,7 @@ namespace QuikSharp {
     }
 
     /// <summary>
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
     /// Convert DateTime to HHMMSS
     /// </summary>
     // ReSharper disable once InconsistentNaming
@@ -234,7 +237,13 @@ namespace QuikSharp {
                         case EventNames.OnCleanUp:
                         case EventNames.OnClose:
                         case EventNames.OnConnected:
+<<<<<<< HEAD
+                            return new Message<string>();
                         case EventNames.OnDisconnected:
+                            return new Message<string>();
+=======
+                        case EventNames.OnDisconnected:
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
                         case EventNames.OnInit:
                         case EventNames.OnStop:
                             return new Message<string>();
@@ -267,7 +276,11 @@ namespace QuikSharp {
                             };
 
                         case EventNames.OnParam:
+<<<<<<< HEAD
+                            return new Message<string>();
+=======
                             break;
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
 
                         case EventNames.OnQuote:
                             return new Message<OrderBook> {

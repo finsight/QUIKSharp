@@ -179,9 +179,14 @@ Target "All" DoNothing
  // ==> "RunTests"
   ==> "All"
 
+<<<<<<< HEAD
+"All" 
+  ==> "NuGet"
+=======
 //"AssemblyInfo"
 //  ==> 
 "NuGet"
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
   ==> "CleanDocs"
   ==> "GenerateDocs"
   ==> "ReleaseDocs"

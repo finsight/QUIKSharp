@@ -35,6 +35,24 @@ namespace QuikSharp {
         /// Функция предназначена для получения списка кодов бумаг для списка классов, заданного списком кодов.
         /// </summary>
         Task<string[]> GetClassSecurities(string classID);
+<<<<<<< HEAD
+
+        /// <summary>
+        /// Функция предназначена для определения класса по коду инструмента из заданного списка классов.
+        /// </summary>
+        Task<string> GetSecurityClass(string classesList, string secCode);
+
+        /// <summary>
+        /// Функция возвращает код клиента.
+        /// </summary>
+        Task<string> GetClientCode();
+
+        /// <summary>
+        /// Функция возвращает таблицу с описанием торгового счета для запрашиваемого кода класса.
+        /// </summary>
+        Task<string> GetTradeAccount(string classCode);
+=======
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
     }
 
     /// <summary>
@@ -77,5 +95,29 @@ namespace QuikSharp {
                 ? new string[0]
                 : response.Data.TrimEnd(',').Split(new[] { "," }, StringSplitOptions.None);
         }
+<<<<<<< HEAD
+
+        public async Task<string> GetSecurityClass(string classesList, string secCode)
+        {
+            var response = await QuikService.Send<Message<string>>(
+                (new Message<string>(classesList + "|" + secCode, "getSecurityClass")));
+            return response.Data;
+        }
+
+        public async Task<string> GetClientCode()
+        {
+            var response = await QuikService.Send<Message<string>>(
+                (new Message<string>("", "getClientCode")));
+            return response.Data;
+        }
+
+        public async Task<string> GetTradeAccount(string classCode)
+        {
+            var response = await QuikService.Send<Message<string>>(
+                (new Message<string>(classCode, "getTradeAccount")));
+            return response.Data;
+        }
+=======
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
     }
 }

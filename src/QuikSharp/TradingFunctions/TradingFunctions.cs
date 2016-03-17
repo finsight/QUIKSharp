@@ -1,16 +1,27 @@
 ﻿// Copyright (C) 2015 Victor Baybekov
 
 using System;
+<<<<<<< HEAD
+using System.Diagnostics;
+using System.Threading.Tasks;
+using QuikSharp.DataStructures;
+using System.Collections.Generic;
+=======
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using QuikSharp.DataStructures;
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
 
 namespace QuikSharp {
 
     /// <summary>
     /// Функции взаимодействия скрипта Lua и Рабочего места QUIK
     /// getDepo - функция для получения информации по бумажным лимитам 
+<<<<<<< HEAD
+    /// getDepoEx - функция для получения информации по бумажным лимитам указанного типа 
+=======
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
     /// getMoney - функция для получения информации по денежным лимитам 
     /// getMoneyEx - функция для получения информации по денежным лимитам указанного типа 
     /// getFuturesLimit - функция для получения информации по фьючерсным лимитам 
@@ -32,6 +43,11 @@ namespace QuikSharp {
         Task<DepoLimit> GetDepo(string clientCode, string firmId, string secCode, string account);
 
         /// <summary>
+<<<<<<< HEAD
+        /// Функция для получения информации по бумажным лимитам указанного типа
+        /// </summary>
+        Task<DepoLimitEx> GetDepoEx(string firmId, string clientCode, string secCode, string accID, int limitKind);
+=======
         /// Возвращает список записей из таблицы 'Лимиты по бумагам'.
         /// </summary>
         Task<List<DepoLimitEx>> GetDepoLimits();
@@ -42,6 +58,7 @@ namespace QuikSharp {
         /// <param name="secCode">Код инструментаю</param>
         /// <returns></returns>
         Task<List<DepoLimitEx>> GetDepoLimits(string secCode);
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
 
         /// <summary>
         /// Функция для получения информации по денежным лимитам
@@ -70,6 +87,29 @@ namespace QuikSharp {
         /// <returns></returns>
         Task<ParamTable> GetParamEx(string classCode, string secCode, string paramName);
 
+<<<<<<< HEAD
+        /// <summary>
+        /// функция для получения таблицы сделок по заданному инструменту
+        /// </summary>
+        Task<List<Trade>> GetTrades();
+
+        /// <summary>
+        /// функция для получения таблицы сделок по заданному инструменту
+        /// </summary>
+        /// <param name="classCode"></param>
+        /// <param name="secCode"></param>
+        /// <returns></returns>
+        Task<List<Trade>> GetTrades(string classCode, string secCode);
+
+        /// <summary>
+        /// функция для получения таблицы сделок номеру заявки
+        /// </summary>
+        /// <param name="order_num"></param>
+        /// <returns></returns>
+        Task<List<Trade>> GetTrades_by_OdrerNumber(long order_num);
+
+=======
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
         ///// <summary>
         /////  функция для получения информации по инструменту
         ///// </summary>
@@ -158,6 +198,15 @@ namespace QuikSharp {
                     (new Message<string>(clientCode + "|" + firmId + "|" + secCode + "|" + account, "getDepo")));
             return response.Data;
         }
+<<<<<<< HEAD
+        
+        public async Task<DepoLimitEx> GetDepoEx(string firmId, string clientCode, string secCode, string accID, int limitKind)
+        {
+            var response = await QuikService.Send<Message<DepoLimitEx>>(
+                    (new Message<string>(firmId + "|" + clientCode + "|" + secCode + "|" + accID + "|" + limitKind, "getDepoEx")));
+            return response.Data;
+        }
+=======
 
         /// <summary>
         /// Возвращает список всех записей из таблицы 'Лимиты по бумагам'.
@@ -179,6 +228,7 @@ namespace QuikSharp {
             return response.Data;
         }
 
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
         public Task<MoneyLimit> GetMoney(string clientCode, string firmId, string tag, string currCode) { throw new NotImplementedException(); }
         public Task<MoneyLimitEx> GetMoneyEx(string firmId, string clientCode, string tag, string currCode, int limitKind) { throw new NotImplementedException(); }
       
@@ -198,6 +248,30 @@ namespace QuikSharp {
             return response.Data;
         }
 
+<<<<<<< HEAD
+        public async Task<List<Trade>> GetTrades()
+        {
+            var response = await QuikService.Send<Message<List<Trade>>>(
+                    (new Message<string>("", "get_trades")));
+            return response.Data;
+        }
+
+        public async Task<List<Trade>> GetTrades(string classCode, string secCode)
+        {
+            var response = await QuikService.Send<Message<List<Trade>>>(
+                    (new Message<string>(classCode + "|" + secCode, "get_trades")));
+            return response.Data;
+        }
+
+        public async Task<List<Trade>> GetTrades_by_OdrerNumber(long order_num)
+        {
+            var response = await QuikService.Send<Message<List<Trade>>>(
+                    (new Message<string>(order_num.ToString(), "get_Trades_by_OrderNumber")));
+            return response.Data;
+        }
+
+=======
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
 
 
 
@@ -226,10 +300,14 @@ namespace QuikSharp {
             // TODO Comments are useful to kill all orders with a single KILL_ALL_ORDERS
             // But see e.g. this http://www.quik.ru/forum/import/27073/27076/
 
+<<<<<<< HEAD
+            transaction.CLIENT_CODE = QuikService.PrependWithSessionId(transaction.TRANS_ID.Value);
+=======
             transaction.CLIENT_CODE = transaction.TRANS_ID.Value.ToString();
 
             //this can be longer than 20 chars.
             //transaction.CLIENT_CODE = QuikService.PrependWithSessionId(transaction.TRANS_ID.Value);
+>>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
 
             try {
                 var response = await QuikService.Send<Message<bool>>(
