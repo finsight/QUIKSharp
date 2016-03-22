@@ -76,7 +76,6 @@ function qsfunctions.isConnected(msg)
     return msg
 end
 
-<<<<<<< HEAD
 --- Функция возвращает путь по которому находтся файл info.exe, исполняющий данный скрипт,
 -- без завершающего обратного слэша ("\"). Например, C:\QuikFront.
 function qsfunctions.getWorkingFolder(msg)

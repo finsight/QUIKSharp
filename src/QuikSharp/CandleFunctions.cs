@@ -79,12 +79,18 @@ namespace QuikSharp
             return response.Data;
         }
 
-        public async Task<List<Candle>> Subscribe(string classCode, string securityCode, CandleInterval interval)
+        public async void Subscribe(string classCode, string securityCode, CandleInterval interval)
         {
             var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "subscribe_to_candles");
-            Message<List<Candle>> response = await QuikService.Send<Message<List<Candle>>>(message);
-            return response.Data;
+            await QuikService.Send<Message<string>>(message);
         }
+
+        //public async Task<List<Candle>> Subscribe(string classCode, string securityCode, CandleInterval interval)
+        //{
+        //    var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "subscribe_to_candles");
+        //    Message<List<Candle>> response = await QuikService.Send<Message<List<Candle>>>(message);
+        //    return response.Data;
+        //}
 
         public async void Unsubscribe(string classCode, string securityCode, CandleInterval interval)
         {
