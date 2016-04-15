@@ -354,11 +354,11 @@ function create_data_source(msg)
 	local ds, error_descr = CreateDataSource(class, sec, interval)
 	local is_error = false
 	if(error_descr ~= nil) then
-		msg.cmd = "lua_create_data_source_error"
+		msg.cmd = "lua_error"
 		msg.lua_error = error_descr
 		is_error = true
 	elseif ds == nil then
-		msg.cmd = "lua_create_data_source_error"
+		msg.cmd = "lua_error"
 		msg.lua_error = "Can't create data source for " .. class .. ", " .. sec .. ", " .. tostring(interval)
 		is_error = true
 	end
