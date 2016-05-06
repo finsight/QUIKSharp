@@ -37,8 +37,18 @@ function OnError(message)
 end
 
 
+--- 2.2.1. Функция вызывается терминалом QUIK при получении описания новой фирмы от сервера
+function OnFirm(firm)
+    if is_connected then
+		local msg = {}
+        msg.t = timemsec()
+        msg.cmd = "OnFirm"
+        msg.data = firm
+        sendCallback(msg)
+	end
+end
 
---- Функция вызывается терминалом QUIK при получении обезличенной сделки.
+--- 2.2.2. Функция вызывается терминалом QUIK при получении обезличенной сделки.
 function OnAllTrade(alltrade)
     if is_connected then
         local msg = {}
@@ -74,7 +84,7 @@ function OnInit(script_path)
     log("Hello, QuikSharp! Running inside Quik from the path: "..getScriptPath(), 1)
 end
 
---- Функция вызывается терминалом QUIK при получении сделки.
+--- 2.2.4. Функция вызывается терминалом QUIK при получении новой заявки или при изменении параметров существующей заявки.
 function OnOrder(order)
     local msg = {}
     msg.t = timemsec()
@@ -82,6 +92,17 @@ function OnOrder(order)
     msg.data = order
     msg.cmd = "OnOrder"
     sendCallback(msg)
+end
+
+--- 2.2.5. Функция вызывается терминалом QUIK при получении изменений текущей позиции по счету.
+function OnAccountBalance(accBalance)
+	if is_connected then
+		local msg = {}
+		msg.t = timemsec()
+		msg.data = accBalance
+		msg.cmd = "OnAccountBalance"
+		sendCallback(msg)
+	end
 end
 
 --- Функция вызывается терминалом QUIK при получении изменения стакана котировок.
@@ -121,7 +142,7 @@ function OnStop(s)
     return 1000
 end
 
---- Функция вызывается терминалом QUIK при получении сделки.
+--- 2.2.3. Функция вызывается терминалом QUIK при получении сделки.
 function OnTrade(trade)
     local msg = {}
     msg.t = timemsec()
@@ -131,7 +152,7 @@ function OnTrade(trade)
     sendCallback(msg)
 end
 
---- Функция вызывается терминалом QUIK при получении ответа на транзакцию пользователя.
+--- 2.2.17. Функция вызывается терминалом QUIK при получении ответа на транзакцию пользователя.
 function OnTransReply(trans_reply)
     local msg = {}
     msg.t = timemsec()
@@ -141,12 +162,24 @@ function OnTransReply(trans_reply)
     sendCallback(msg)
 end
 
+--- 2.2.16. Функция вызывается терминалом QUIK при получении новой стоп-заявки или при изменении параметров существующей стоп-заявки.
 function OnStopOrder(stop_order)
 	local msg = {}
     msg.t = timemsec()
     msg.data = stop_order
     msg.cmd = "OnStopOrder"
     sendCallback(msg)
+end
+
+--- 2.2.18. Функция вызывается терминалом QUIK при изменении текущих параметров.
+function OnParam(class_code, sec_code)
+	if is_connected then
+		local msg = {}
+		msg.t = timemsec()
+		msg.data = class_code.."~"..sec_code
+		msg.cmd = "OnParam"
+		sendCallback(msg)
+	end
 end
 
 return qscallbacks
