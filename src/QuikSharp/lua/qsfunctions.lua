@@ -218,14 +218,6 @@ function qsfunctions.sendTransaction(msg)
     end
 end
 
---- Функция возвращает количество строк в указанной таблице
-function qsfunctions.getNumberOf(msg)
-    local tableName = msg.data
-	local count = getNumberOf(tableName)
-    msg.data = count
-    return msg
-end
-
 --- Функция предназначена для получения значений всех параметров биржевой информации из Таблицы текущих значений параметров. 
 -- С помощью этой функции можно получить любое из значений Таблицы текущих значений параметров для заданных кодов класса и бумаги. 
 
@@ -244,39 +236,6 @@ function qsfunctions.getDepo(msg)
     return msg
 end
 
--- Функция для отображения текущего состояния срочного счета ФОРТС
-function qsfunctions.getFuturesLimit(msg)
-    local spl = split(msg.data, "|")
-    local firmId = spl[1]
-    local count = getNumberOf("futures_client_limits")
-	local fut_limits = {}
-	for i = 0, count - 1 do
-		local fut_limit = getItem("futures_client_limits", i)
-		if msg.data == "" or fut_limit.firmid == firmId then
-			table.insert(fut_limits, fut_limit)
-		end
-	end
-	msg.data = fut_limits
-	return msg
-end
-
--- Функция для отображения текущей позиции на срочном рынке
-function qsfunctions.getAllFuturesHolding(msg)
-    local spl = split(msg.data, "|")
-    local firmId = spl[1]
-    local count = getNumberOf("futures_client_holding")
-	local fut_holdings = {}
-	for i = 0, count - 1 do
-		local fut_holding = getItem("futures_client_holding", i)
-		if msg.data == "" or fut_holding.firmid == firmId then
-			table.insert(fut_holdings, fut_holding)
-		end
-	end
-	msg.data = fut_holdings
-	return msg
-end
-
--- Функция для отображения текущей позиции на срочном рынке
 function qsfunctions.getFuturesHolding(msg)
     local spl = split(msg.data, "|")
     local firmId, accId, secCode, posType = spl[1], spl[2], spl[3], spl[4]
@@ -370,10 +329,8 @@ end
 function qsfunctions.get_candles_from_data_source(msg)
 	local ds, is_error = create_data_source(msg)
 	if not is_error then
-		--- датасорс изначально приходит пустой, нужно некоторое время подождать пока он заполнится данными
-		repeat sleep(10) until ds:Size() > 0
-		--- есть надежда, что если ещё немного подождать, то придет больше свечей
-		sleep(100)
+		--- датасорс изначально приходит пустой, нужно некоторое время подождать пока он заполниться данными
+		repeat sleep(1) until ds:Size() > 0
 
 		local count = tonumber(split(msg.data, "|")[4]) --- возвращаем последние count свечей. Если равен 0, то возвращаем все доступные свечи.
 		local class, sec, interval = get_candles_param(msg)
