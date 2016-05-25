@@ -94,6 +94,12 @@ namespace QuikSharp.DataStructures {
         [JsonProperty("period")]
         public int Period { get; set; }
 
+        /// <summary>
+        /// Открытый интерес 
+        /// </summary>
+        [JsonProperty("open_interest ")]
+        public double OpenInterest { get; set; }
+
         public long LuaTimeStamp { get; set; }
     }
 }
