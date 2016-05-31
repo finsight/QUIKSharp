@@ -48,6 +48,10 @@ namespace QuikSharp {
         /// Размер лота
         /// </summary>
         public int lot_size { get; set; }
+        /// <summary>
+        /// Размер лота
+        /// </summary>
+        public string isin_code { get; set; }
         // ReSharper restore InconsistentNaming
     }
 }
