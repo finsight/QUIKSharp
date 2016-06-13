@@ -3,7 +3,7 @@ using System.Collections;
 using Newtonsoft.Json;
 using QuikSharp.DataStructures;
 
-namespace QuikSharp
+namespace QuikSharp.DataStructures
 {
     /// <summary>
     /// Стоп-заявка

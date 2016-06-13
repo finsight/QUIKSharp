@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using QuikSharp.DataStructures;
+using QuikSharp.DataStructures.Transaction;
 
 namespace QuikSharp {
 

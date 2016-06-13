@@ -40,8 +40,8 @@ namespace QuikSharp {
     /// OnTransReply - ответ на транзакцию 
     /// </summary>
     public interface IQuikEvents : IQuikService {
-        event EventHandler OnAccountBalance;
-        event EventHandler OnAccountPosition;
+        //event EventHandler OnAccountBalance;
+        //event EventHandler OnAccountPosition;
         /// <summary>
         /// Новая обезличенная сделка
         /// </summary>
@@ -52,24 +52,24 @@ namespace QuikSharp {
         /// </summary>
         event VoidHandler OnClose;
         event VoidHandler OnConnected;
-        event EventHandler OnDepoLimit;
-        event EventHandler OnDepoLimitDelete;
+        //event EventHandler OnDepoLimit;
+        //event EventHandler OnDepoLimitDelete;
         event VoidHandler OnDisconnected;
-        event EventHandler OnFirm;
-        event EventHandler OnFuturesClientHolding;
-        event EventHandler OnFuturesLimitChange;
-        event EventHandler OnFuturesLimitDelete;
+        //event EventHandler OnFirm;
+        //event EventHandler OnFuturesClientHolding;
+        //event EventHandler OnFuturesLimitChange;
+        //event EventHandler OnFuturesLimitDelete;
         /// <summary>
         /// Функция вызывается терминалом QUIK перед вызовом функции main(). В качестве параметра принимает значение полного пути к запускаемому скрипту. 
         /// Примечание: В данной функции пользователь имеет возможность инициализировать все необходимые переменные и библиотеки перед запуском основного потока main()
         /// </summary>
         event InitHandler OnInit;
-        event EventHandler OnMoneyLimit;
-        event EventHandler OnMoneyLimitDelete;
-        event EventHandler OnNegDeal;
-        event EventHandler OnNegTrade;
+        //event EventHandler OnMoneyLimit;
+        //event EventHandler OnMoneyLimitDelete;
+        //event EventHandler OnNegDeal;
+        //event EventHandler OnNegTrade;
         event OrderHandler OnOrder;
-        event EventHandler OnParam;
+        //event EventHandler OnParam;
         event QuoteHandler OnQuote;
         /// <summary>
         /// Функция вызывается терминалом QUIK при остановке скрипта из диалога управления. 

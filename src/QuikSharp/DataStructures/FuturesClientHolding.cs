@@ -27,8 +27,7 @@ namespace QuikSharp.DataStructures
         /// «Основной счет»;
         /// «Клиентские и дополнительные счета»;
         /// «Все счета торг. членов»;
-        /// <пусто>
-        /// /// </summary>
+        /// </summary>
         [JsonProperty("type")]
         public string type { get; set; }
         /// <summary>

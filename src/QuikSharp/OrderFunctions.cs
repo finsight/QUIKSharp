@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using QuikSharp.DataStructures.Transaction;
+using QuikSharp.DataStructures;
 
 namespace QuikSharp
 {

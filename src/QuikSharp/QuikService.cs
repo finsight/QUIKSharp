@@ -288,7 +288,6 @@ namespace QuikSharp {
         }
 
         private void EnsureConnectedClient() {
-            var entered = false;
             try {
                 Monitor.Enter(_syncRoot);
                 if (_responseClient != null && _responseClient.Connected && _responseClient.Client.IsConnectedNow()) {

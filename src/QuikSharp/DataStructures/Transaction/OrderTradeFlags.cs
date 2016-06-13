@@ -2,7 +2,8 @@
 
 using System;
 
-namespace QuikSharp {
+namespace QuikSharp.DataStructures.Transaction
+{
     /// <summary>
     /// Флаги для таблиц Заявки, Заявки на внебиржевые сделки, Сделки, Сделки для исполнения
     /// </summary>
