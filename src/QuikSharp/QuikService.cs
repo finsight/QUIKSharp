@@ -183,7 +183,7 @@ namespace QuikSharp {
                             var stream = new NetworkStream(_responseClient.Client);
                             var reader = new StreamReader(stream, Encoding.GetEncoding(1251)); //true
                             while (!_cts.IsCancellationRequested) {
-                                var response = await reader.ReadLineAsync();
+                                var response = await reader.ReadLineAsync().ConfigureAwait (false);
                                 if (response == null) {
                                     throw new IOException("Lua returned an empty response or closed the connection");
                                 }
@@ -251,7 +251,7 @@ namespace QuikSharp {
                             var stream = new NetworkStream(_callbackClient.Client);
                             var reader = new StreamReader(stream, Encoding.GetEncoding(1251)); //true
                             while (!_cts.IsCancellationRequested) {
-                                var callback = await reader.ReadLineAsync();
+                                var callback = await reader.ReadLineAsync().ConfigureAwait (false);
                                 if (callback == null) {
                                     throw new IOException("Lua returned an empty response or closed the connection");
                                 }
@@ -511,7 +511,7 @@ namespace QuikSharp {
             Responses[request.Id.Value] = kvp;
             // add to queue after responses dictionary
             EnvelopeQueue.Add(request);
-            var response = await tcs.Task;
+            var response = await tcs.Task.ConfigureAwait (false);
             return (response as TResponse);
         }
 

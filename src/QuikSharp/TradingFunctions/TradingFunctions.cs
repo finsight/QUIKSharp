@@ -156,7 +156,7 @@ namespace QuikSharp {
         public async Task<DepoLimit> GetDepo(string clientCode, string firmId, string secCode, string account) 
         {
             var response = await QuikService.Send<Message<DepoLimit>>(
-                    (new Message<string>(clientCode + "|" + firmId + "|" + secCode + "|" + account, "getDepo")));
+                    (new Message<string>(clientCode + "|" + firmId + "|" + secCode + "|" + account, "getDepo"))).ConfigureAwait (false);
             return response.Data;
         }
 
@@ -166,7 +166,7 @@ namespace QuikSharp {
         public async Task<List<DepoLimitEx>> GetDepoLimits()
         {
             var message = new Message<string>("", "get_depo_limits");
-            Message<List<DepoLimitEx>> response = await QuikService.Send<Message<List<DepoLimitEx>>>(message);
+            Message<List<DepoLimitEx>> response = await QuikService.Send<Message<List<DepoLimitEx>>>(message).ConfigureAwait (false);
             return response.Data;
         }
 
@@ -176,7 +176,7 @@ namespace QuikSharp {
         public async Task<List<DepoLimitEx>> GetDepoLimits(string secCode)
         {
             var message = new Message<string>(secCode, "get_depo_limits");
-            Message<List<DepoLimitEx>> response = await QuikService.Send<Message<List<DepoLimitEx>>>(message);
+            Message<List<DepoLimitEx>> response = await QuikService.Send<Message<List<DepoLimitEx>>>(message).ConfigureAwait (false);
             return response.Data;
         }
 
@@ -187,14 +187,14 @@ namespace QuikSharp {
         public async Task<ParamTable> GetParamEx(string classCode, string secCode, string paramName) 
         {
             var response = await QuikService.Send<Message<ParamTable>>(
-                    (new Message<string>(classCode + "|" + secCode + "|" + paramName, "getParamEx")));
+                    (new Message<string>(classCode + "|" + secCode + "|" + paramName, "getParamEx"))).ConfigureAwait (false);
                 return response.Data;            
         }
 
         public async Task<FuturesClientHolding> GetFuturesHolding(string firmId, string accId, string secCode, int posType)
         {
             var response = await QuikService.Send<Message<FuturesClientHolding>>(
-                    (new Message<string>(firmId + "|" + accId + "|" + secCode + "|" + posType, "getFuturesHolding")));
+                    (new Message<string>(firmId + "|" + accId + "|" + secCode + "|" + posType, "getFuturesHolding"))).ConfigureAwait (false);
             
             return response.Data;
         }
@@ -234,7 +234,7 @@ namespace QuikSharp {
 
             try {
                 var response = await QuikService.Send<Message<bool>>(
-                (new Message<Transaction>(transaction, "sendTransaction")));
+                (new Message<Transaction>(transaction, "sendTransaction"))).ConfigureAwait (false);
                 Trace.Assert(response.Data);
 
                 // store transaction

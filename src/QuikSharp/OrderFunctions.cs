@@ -37,7 +37,7 @@ namespace QuikSharp
                 OPERATION = order.Operation == Operation.Buy ? TransactionOperation.B : TransactionOperation.S,
                 PRICE = order.Price
             };
-            return await Quik.Trading.SendTransaction(newOrderTransaction);
+            return await Quik.Trading.SendTransaction(newOrderTransaction).ConfigureAwait (false);
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace QuikSharp
                 SECCODE = order.SecCode,
                 ORDER_KEY = order.OrderNum.ToString()
             };
-            return await Quik.Trading.SendTransaction(killOrderTransaction);
+            return await Quik.Trading.SendTransaction(killOrderTransaction).ConfigureAwait (false);
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace QuikSharp
         public async Task<Order> GetOrder(string classCode, long orderId)
         {
             var message = new Message<string>(classCode + "|" + orderId, "get_order_by_number");
-            Message<Order> response = await QuikService.Send<Message<Order>>(message);
+            Message<Order> response = await QuikService.Send<Message<Order>>(message).ConfigureAwait (false);
             return response.Data;
         }
     }
