@@ -58,8 +58,8 @@ namespace QuikSharp {
         public QuikService QuikService { get; private set; }
 
 
-		//public event EventHandler OnAccountBalance;
-		//public event EventHandler OnAccountPosition;
+		public event EventHandler OnAccountBalance;
+		public event EventHandler OnAccountPosition;
 
 		/// <summary>
 		/// Функция вызывается терминалом QUIK при получении обезличенной сделки.
@@ -84,8 +84,8 @@ namespace QuikSharp {
         internal void OnConnectedCall() { if (OnConnected != null) OnConnected(); }
 
 
-        //public event EventHandler OnDepoLimit;
-        //public event EventHandler OnDepoLimitDelete;
+        public event EventHandler OnDepoLimit;
+        public event EventHandler OnDepoLimitDelete;
 
 
         public event VoidHandler OnDisconnected;
@@ -94,10 +94,10 @@ namespace QuikSharp {
         }
 
 
-		//public event EventHandler OnFirm;
-		//public event EventHandler OnFuturesClientHolding;
-		//public event EventHandler OnFuturesLimitChange;
-		//public event EventHandler OnFuturesLimitDelete;
+		public event EventHandler OnFirm;
+		public event EventHandler OnFuturesClientHolding;
+		public event EventHandler OnFuturesLimitChange;
+		public event EventHandler OnFuturesLimitDelete;
 
 		/// <summary>
 		/// Функция вызывается терминалом QUIK перед вызовом функции main().
@@ -109,10 +109,10 @@ namespace QuikSharp {
         }
 
 
-		//public event EventHandler OnMoneyLimit;
-		//public event EventHandler OnMoneyLimitDelete;
-		//public event EventHandler OnNegDeal;
-		//public event EventHandler OnNegTrade;
+		public event EventHandler OnMoneyLimit;
+		public event EventHandler OnMoneyLimitDelete;
+		public event EventHandler OnNegDeal;
+		public event EventHandler OnNegTrade;
 
 
 		/// <summary>
@@ -147,7 +147,7 @@ namespace QuikSharp {
         }
 
 
-		//public event EventHandler OnParam;
+		public event EventHandler OnParam;
 
 
 		/// <summary>

@@ -59,21 +59,33 @@ namespace QuikSharp.Tests
             Quik quik = new Quik();
             quik.Candles.NewCandle += OnNewCandle;
 
+			// На всякий случай вначале нужно отписатся (иначе может вылететь Assert)
+			// TODO: Вообще у библиотеки огромная проблема - Lua скрипт не отписывается от того к чему он подписался при отключении клиента.
+			// В результате при следующем подключении клиент начинает получать сразу кучу CallBack'ов, на которые он не подписывался в текущей сессии.
+			// По большому счету сейчас клиент должен сам заботаться о том, что бы гарантированно отписываться от всего к чему подписался при выходе.
             bool isSubscribed = quik.Candles.IsSubscribed("TQBR", "SBER", CandleInterval.M1).Result;
-            Assert.AreEqual(false, isSubscribed);
+			if (isSubscribed)
+				quik.Candles.Unsubscribe ("TQBR", "SBER", CandleInterval.M1).Wait ();
 
-            quik.Candles.Subscribe("TQBR", "SBER", CandleInterval.M1);
+			// Проверяем что мы действительно отписались
+			isSubscribed = quik.Candles.IsSubscribed ("TQBR", "SBER", CandleInterval.M1).Result;
+			Assert.AreEqual(false, isSubscribed);
+
+            quik.Candles.Subscribe("TQBR", "SBER", CandleInterval.M1).Wait ();
             isSubscribed = quik.Candles.IsSubscribed("TQBR", "SBER", CandleInterval.M1).Result;
             Assert.AreEqual(true, isSubscribed);
 
-            //quik.Candles.Unsubscribe("TQBR", "SBER", CandleInterval.M1);
-            //isSubscribed = quik.Candles.IsSubscribed("TQBR", "SBER", CandleInterval.M1).Result;
-            //Assert.AreEqual(false, isSubscribed);
+			// Раскомментарить если необходимо получать данные в функции OnNewCandle 2 минуты. В течении этих двух минут должна прийти еще одна свечка
+			//Thread.Sleep(120000);//must get at leat one candle as use minute timeframe
 
-            Thread.Sleep(120000);//must get at leat one candle as use minute timeframe
-        }
+			quik.Candles.Unsubscribe("TQBR", "SBER", CandleInterval.M1).Wait ();
+			isSubscribed = quik.Candles.IsSubscribed("TQBR", "SBER", CandleInterval.M1).Result;
+			Assert.AreEqual(false, isSubscribed);
 
-        private void OnNewCandle(Candle candle)
+
+		}
+
+		private void OnNewCandle(Candle candle)
         {
             if (candle.SecCode == "SBER" && candle.ClassCode == "TQBR" && candle.Interval == CandleInterval.M1)
             {
