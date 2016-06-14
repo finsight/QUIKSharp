@@ -2,7 +2,8 @@
 
 using Newtonsoft.Json;
 
-namespace QuikSharp {
+namespace QuikSharp.DataStructures
+{
 
 
     /// <summary>

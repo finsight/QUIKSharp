@@ -79,13 +79,15 @@ namespace QuikSharp
             return response.Data;
         }
 
-        public async void Subscribe(string classCode, string securityCode, CandleInterval interval)
+		// В ассинхронных фукнциях нельзя возвращать void, вместо этого нужно возвращать Task. Иначе нельзя будет ожидать фукнцию и ловить исключения
+        public async Task Subscribe(string classCode, string securityCode, CandleInterval interval)
         {
             var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "subscribe_to_candles");            
             await QuikService.Send<Message<string>>(message);
         }
 
-        public async void Unsubscribe(string classCode, string securityCode, CandleInterval interval)
+		// В ассинхронных фукнциях нельзя возвращать void, вместо этого нужно возвращать Task. Иначе нельзя будет ожидать фукнцию и ловить исключения
+		public async Task Unsubscribe(string classCode, string securityCode, CandleInterval interval)
         {
             var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "unsubscribe_from_candles");            
             await QuikService.Send<Message<string>>(message);     

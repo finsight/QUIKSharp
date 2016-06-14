@@ -6,7 +6,8 @@ using System.Diagnostics;
 using Newtonsoft.Json;
 using QuikSharp.DataStructures.Transaction;
 
-namespace QuikSharp {
+namespace QuikSharp.DataStructures.Transaction
+{
 
 
     // Эта струкутра по сути является "таблицей для иерархии" (TPH) и очень неудобна

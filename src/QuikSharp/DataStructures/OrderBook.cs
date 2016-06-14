@@ -4,7 +4,8 @@ using System;
 using Newtonsoft.Json;
 using QuikSharp.DataStructures;
 
-namespace QuikSharp {
+namespace QuikSharp.DataStructures
+{
     /// <summary>
     /// Стакан
     /// </summary>
