@@ -107,53 +107,62 @@ namespace QuikSharp {
             Task.Factory.StartNew(() => {
                 try {
                     // Enter the listening loop. 
-                    while (IsStarted) {
-                        Trace.WriteLine("Connecting on request channel... ");
+                    while (!_cts.IsCancellationRequested) {		// ќбращение к потоко-небезопастному свойству IsStarted - не хорошо... “ам токен завершени€ зачем передаетс€ ?!?
+                        Trace.WriteLine("Connecting on request/response channel... ");
                         EnsureConnectedClient();
                         // here we have a connected TCP client
-                        Trace.WriteLine("Request channel connected");
+                        Trace.WriteLine("Request/response channel connected");
                         try {
                             var stream = new NetworkStream(_responseClient.Client);
                             var writer = new StreamWriter(stream);
-                            while (IsStarted) {
+                            while (!_cts.IsCancellationRequested) {
                                 IMessage message = null;
-                                try {
-                                    // BLOCKING
-                                    message = EnvelopeQueue.Take(_cts.Token);
-                                    var request = message.ToJson();
-                                    //Trace.WriteLine("Request: " + request);
-                                    // scenario: Quik is restarted or script is stopped
-                                    // then writer must throw and we will add a message back
-                                    // then we will iterate over messages and cancel expired ones
-                                    if (!message.ValidUntil.HasValue || message.ValidUntil >= DateTime.UtcNow) {
-                                        writer.WriteLine(request);
-                                        writer.Flush();
-                                    } else {
-                                        Trace.Assert(message.Id.HasValue, "All requests must have correlation id");
-                                        Responses[message.Id.Value].Key.SetException(
-                                            new TimeoutException("ValidUntilUTC is less than current time"));
-                                        KeyValuePair<TaskCompletionSource<IMessage>, Type> tcs; // <IMessage>
-                                        Responses.TryRemove(message.Id.Value, out tcs);
-                                    }
-                                } catch (IOException) {
-                                    // this catch is for unexpected and unchecked connection termination
-                                    // add back, there was an error while writing
-                                    if (message != null) { EnvelopeQueue.Add(message); }
-                                    break;
-                                }
+								try
+								{
+									// BLOCKING
+									message = EnvelopeQueue.Take (_cts.Token);
+									var request = message.ToJson ();
+									//Trace.WriteLine("Request: " + request);
+									// scenario: Quik is restarted or script is stopped
+									// then writer must throw and we will add a message back
+									// then we will iterate over messages and cancel expired ones
+									if (!message.ValidUntil.HasValue || message.ValidUntil >= DateTime.UtcNow)
+									{
+										writer.WriteLine (request);
+										writer.Flush ();
+									}
+									else
+									{
+										Trace.Assert (message.Id.HasValue, "All requests must have correlation id");
+										Responses [message.Id.Value].Key.SetException (
+											new TimeoutException ("ValidUntilUTC is less than current time"));
+										KeyValuePair<TaskCompletionSource<IMessage>, Type> tcs; // <IMessage>
+										Responses.TryRemove (message.Id.Value, out tcs);
+									}
+								}
+								catch (OperationCanceledException) { }  // ћы получим такое исключение при отмене операции. ¬се нормально - исключение логировать не нужно!
+								catch (IOException)
+								{
+									// this catch is for unexpected and unchecked connection termination
+									// add back, there was an error while writing
+									if (message != null)
+									{ EnvelopeQueue.Add (message); }
+									break;
+								}
                             }
                         } catch (IOException e) {
-                            Trace.WriteLine(e.Message);
+                            Trace.WriteLine(e.ToString ());
                         }
                     }
                 } catch (Exception e) {
-                    Trace.WriteLine(e);
+                    Trace.WriteLine(e.ToString ());
                 } finally {
                     try {
                         Monitor.Enter(_syncRoot);
                         if (_responseClient != null) {
                             _responseClient.Client.Shutdown(SocketShutdown.Both);
                             _responseClient.Close();
+							_responseClient = null;		// ” нас два потока работают с одним сокетом, но только один из них должен его закрыть !
                         }
                     } finally {
                         Monitor.Exit(_syncRoot);
@@ -164,15 +173,16 @@ namespace QuikSharp {
             // Response Task
             Task.Factory.StartNew(async () => {
                 try {
-                    while (IsStarted) {
-                        Trace.WriteLine("Connecting on response channel... ");
+                    while (!_cts.IsCancellationRequested) {
+                       
+						// ѕоток Response использует тот же сокет, что и поток request
                         EnsureConnectedClient();
                         // here we have a connected TCP client
-                        Trace.WriteLine("Response channel connected");
+                       
                         try {
                             var stream = new NetworkStream(_responseClient.Client);
                             var reader = new StreamReader(stream, Encoding.GetEncoding(1251)); //true
-                            while (IsStarted) {
+                            while (!_cts.IsCancellationRequested) {
                                 var response = await reader.ReadLineAsync();
                                 if (response == null) {
                                     throw new IOException("Lua returned an empty response or closed the connection");
@@ -208,18 +218,20 @@ namespace QuikSharp {
 
                             }
                         } catch (IOException e) {
-                            Trace.WriteLine(e.Message);
+                            Trace.WriteLine(e.ToString ());
                         }
                     }
                 } catch (Exception e) {
-                    Trace.WriteLine(e);
+                    Trace.WriteLine(e.ToString ());
                 } finally {
                     try {
                         Monitor.Enter(_syncRoot);
                         if (_responseClient != null) {
                             _responseClient.Client.Shutdown(SocketShutdown.Both);
                             _responseClient.Close();
-                        }
+							_responseClient = null;		// ” нас два потока работают с одним сокетом, но только один из них должен его закрыть !
+
+						}
                     } finally {
                         Monitor.Exit(_syncRoot);
                     }
@@ -230,7 +242,7 @@ namespace QuikSharp {
             // Callback Task
             Task.Factory.StartNew(async () => {
                 try {
-                    while (IsStarted) {
+                    while (!_cts.IsCancellationRequested) {
                         Trace.WriteLine("Connecting on callback channel... ");
                         EnsureConnectedClient();
                         // here we have a connected TCP client
@@ -238,7 +250,7 @@ namespace QuikSharp {
                         try {
                             var stream = new NetworkStream(_callbackClient.Client);
                             var reader = new StreamReader(stream, Encoding.GetEncoding(1251)); //true
-                            while (IsStarted) {
+                            while (!_cts.IsCancellationRequested) {
                                 var callback = await reader.ReadLineAsync();
                                 if (callback == null) {
                                     throw new IOException("Lua returned an empty response or closed the connection");
@@ -266,18 +278,20 @@ namespace QuikSharp {
 
                             }
                         } catch (IOException e) {
-                            Trace.WriteLine(e.Message);
+                            Trace.WriteLine(e.ToString ());
                         }
                     }
                 } catch (Exception e) {
-                    Trace.WriteLine(e);
+                    Trace.WriteLine(e.ToString ());
                 } finally {
                     try {
                         Monitor.Enter(_syncRoot);
                         if (_callbackClient != null) {
                             _callbackClient.Client.Shutdown(SocketShutdown.Both);
                             _callbackClient.Close();
-                        }
+							_callbackClient = null;
+
+						}
                     } finally {
                         Monitor.Exit(_syncRoot);
                     }

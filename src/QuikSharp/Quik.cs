@@ -33,6 +33,12 @@ namespace QuikSharp {
             QuikService.StopOrders = StopOrders;
         }
 
+		// Если запуск "сервиса" (потоков работы с Lua) происходит в конструкторе Quik, то возможности остановить "сервис" нет возможности.
+		// QuikService объявлен как private.
+		public void StopService ()
+		{
+			QuikService.Stop ();
+		}
 
         private QuikService QuikService { get; set; }
 
