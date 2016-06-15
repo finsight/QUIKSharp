@@ -1,4 +1,4 @@
-// Copyright (C) 2015 Victor Baybekov
+п»ї// Copyright (C) 2015 Victor Baybekov
 
 using System;
 using System.Collections.Concurrent;
@@ -108,7 +108,7 @@ namespace QuikSharp {
             Task.Factory.StartNew(() => {
                 try {
                     // Enter the listening loop. 
-                    while (!_cts.IsCancellationRequested) {		// Обращение к потоко-небезопастному свойству IsStarted - не хорошо... Там токен завершения зачем передается ?!?
+                    while (!_cts.IsCancellationRequested) {		// РћР±СЂР°С‰РµРЅРёРµ Рє РїРѕС‚РѕРєРѕ-РЅРµР±РµР·РѕРїР°СЃС‚РЅРѕРјСѓ СЃРІРѕР№СЃС‚РІСѓ IsStarted - РЅРµ С…РѕСЂРѕС€Рѕ... РўР°Рј С‚РѕРєРµРЅ Р·Р°РІРµСЂС€РµРЅРёСЏ Р·Р°С‡РµРј РїРµСЂРµРґР°РµС‚СЃСЏ ?!?
                         Trace.WriteLine("Connecting on request/response channel... ");
                         EnsureConnectedClient();
                         // here we have a connected TCP client
@@ -141,7 +141,7 @@ namespace QuikSharp {
 										Responses.TryRemove (message.Id.Value, out tcs);
 									}
 								}
-								catch (OperationCanceledException) { }  // Мы получим такое исключение при отмене операции. Все нормально - исключение логировать не нужно!
+								catch (OperationCanceledException) { }  // РњС‹ РїРѕР»СѓС‡РёРј С‚Р°РєРѕРµ РёСЃРєР»СЋС‡РµРЅРёРµ РїСЂРё РѕС‚РјРµРЅРµ РѕРїРµСЂР°С†РёРё. Р’СЃРµ РЅРѕСЂРјР°Р»СЊРЅРѕ - РёСЃРєР»СЋС‡РµРЅРёРµ Р»РѕРіРёСЂРѕРІР°С‚СЊ РЅРµ РЅСѓР¶РЅРѕ!
 								catch (IOException)
 								{
 									// this catch is for unexpected and unchecked connection termination
@@ -163,7 +163,7 @@ namespace QuikSharp {
                         if (_responseClient != null) {
                             _responseClient.Client.Shutdown(SocketShutdown.Both);
                             _responseClient.Close();
-							_responseClient = null;     // У нас два потока работают с одним сокетом, но только один из них должен его закрыть !
+							_responseClient = null;     // РЈ РЅР°СЃ РґРІР° РїРѕС‚РѕРєР° СЂР°Р±РѕС‚Р°СЋС‚ СЃ РѕРґРЅРёРј СЃРѕРєРµС‚РѕРј, РЅРѕ С‚РѕР»СЊРєРѕ РѕРґРёРЅ РёР· РЅРёС… РґРѕР»Р¶РµРЅ РµРіРѕ Р·Р°РєСЂС‹С‚СЊ !
 							Trace.WriteLine ("Response channel disconnected");
 						}
                     } finally {
@@ -177,7 +177,7 @@ namespace QuikSharp {
                 try {
                     while (!_cts.IsCancellationRequested) {
                        
-						// Поток Response использует тот же сокет, что и поток request
+						// РџРѕС‚РѕРє Response РёСЃРїРѕР»СЊР·СѓРµС‚ С‚РѕС‚ Р¶Рµ СЃРѕРєРµС‚, С‡С‚Рѕ Рё РїРѕС‚РѕРє request
                         EnsureConnectedClient();
 						// here we have a connected TCP client
 
@@ -188,7 +188,7 @@ namespace QuikSharp {
 							while (!_cts.IsCancellationRequested)
 							{
 
-								// Запускаем ReadLineAsync с CancellationToken. Подсмотрел тут https://habrahabr.ru/post/238377/
+								// Р—Р°РїСѓСЃРєР°РµРј ReadLineAsync СЃ CancellationToken. РџРѕРґСЃРјРѕС‚СЂРµР» С‚СѓС‚ https://habrahabr.ru/post/238377/
 								var taskRead = reader.ReadLineAsync ()
 									.ContinueWith (
 										t => t.GetAwaiter ().GetResult (),
@@ -197,8 +197,6 @@ namespace QuikSharp {
 										TaskScheduler.Default
 									);
 								var response = await taskRead.ConfigureAwait (false);
-
-
 								if (response == null)
 								{
 									throw new IOException ("Lua returned an empty response or closed the connection");
@@ -242,7 +240,7 @@ namespace QuikSharp {
 
 							}
 						}
-						catch (TaskCanceledException) { }     // Это исключение возникнет при отмене ReadLineAsync через Cancellation Token
+						catch (TaskCanceledException) { }     // Р­С‚Рѕ РёСЃРєР»СЋС‡РµРЅРёРµ РІРѕР·РЅРёРєРЅРµС‚ РїСЂРё РѕС‚РјРµРЅРµ ReadLineAsync С‡РµСЂРµР· Cancellation Token
 						catch (IOException e) {
 							Trace.TraceError (e.ToString ());
                         }
@@ -255,7 +253,7 @@ namespace QuikSharp {
                         if (_responseClient != null) {
                             _responseClient.Client.Shutdown(SocketShutdown.Both);
                             _responseClient.Close();
-							_responseClient = null;     // У нас два потока работают с одним сокетом, но только один из них должен его закрыть !
+							_responseClient = null;     // РЈ РЅР°СЃ РґРІР° РїРѕС‚РѕРєР° СЂР°Р±РѕС‚Р°СЋС‚ СЃ РѕРґРЅРёРј СЃРѕРєРµС‚РѕРј, РЅРѕ С‚РѕР»СЊРєРѕ РѕРґРёРЅ РёР· РЅРёС… РґРѕР»Р¶РµРЅ РµРіРѕ Р·Р°РєСЂС‹С‚СЊ !
 							Trace.WriteLine ("Response channel disconnected");
 						}
                     } finally {
@@ -271,7 +269,7 @@ namespace QuikSharp {
                     while (!_cts.IsCancellationRequested) {
                         Trace.WriteLine("Connecting on callback channel... ");
                         EnsureConnectedClient();
-						this.Events.OnConnectedToQuikCall ();		// Оповещаем клиента что произошло подключение к Quik'у
+						this.Events.OnConnectedToQuikCall ();		// РћРїРѕРІРµС‰Р°РµРј РєР»РёРµРЅС‚Р° С‡С‚Рѕ РїСЂРѕРёР·РѕС€Р»Рѕ РїРѕРґРєР»СЋС‡РµРЅРёРµ Рє Quik'Сѓ
                         // here we have a connected TCP client
                         Trace.WriteLine("Callback channel connected");
 						try
@@ -281,7 +279,7 @@ namespace QuikSharp {
 							while (!_cts.IsCancellationRequested)
 							{
 
-								// Запускаем ReadLineAsync с CancellationToken. Подсмотрел тут https://habrahabr.ru/post/238377/
+								// Р—Р°РїСѓСЃРєР°РµРј ReadLineAsync СЃ CancellationToken. РџРѕРґСЃРјРѕС‚СЂРµР» С‚СѓС‚ https://habrahabr.ru/post/238377/
 								var taskRead = reader.ReadLineAsync ()
 									.ContinueWith (
 										t => t.GetAwaiter ().GetResult (),
@@ -321,7 +319,7 @@ namespace QuikSharp {
 
 							}
 						}
-						catch (TaskCanceledException) { }     // Это исключение возникнет при отмене ReadLineAsync через Cancellation Token
+						catch (TaskCanceledException) { }     // Р­С‚Рѕ РёСЃРєР»СЋС‡РµРЅРёРµ РІРѕР·РЅРёРєРЅРµС‚ РїСЂРё РѕС‚РјРµРЅРµ ReadLineAsync С‡РµСЂРµР· Cancellation Token
 						catch (IOException e)
 						{
 							Trace.TraceError (e.ToString ());
@@ -433,8 +431,8 @@ namespace QuikSharp {
                     case EventNames.OnFuturesLimitDelete:
                         break;
                     case EventNames.OnInit:
-                        // Этот callback никогда не будет вызван так как на момент получения вызова OnInit в lua скрипте
-						// соединение с библиотекой QuikSharp не будет еще установлено. То есть этот callback не имеет смысла.
+                        // Р­С‚РѕС‚ callback РЅРёРєРѕРіРґР° РЅРµ Р±СѓРґРµС‚ РІС‹Р·РІР°РЅ С‚Р°Рє РєР°Рє РЅР° РјРѕРјРµРЅС‚ РїРѕР»СѓС‡РµРЅРёСЏ РІС‹Р·РѕРІР° OnInit РІ lua СЃРєСЂРёРїС‚Рµ
+						// СЃРѕРµРґРёРЅРµРЅРёРµ СЃ Р±РёР±Р»РёРѕС‚РµРєРѕР№ QuikSharp РЅРµ Р±СѓРґРµС‚ РµС‰Рµ СѓСЃС‚Р°РЅРѕРІР»РµРЅРѕ. РўРѕ РµСЃС‚СЊ СЌС‚РѕС‚ callback РЅРµ РёРјРµРµС‚ СЃРјС‹СЃР»Р°.
                         break;
                     case EventNames.OnMoneyLimit:
                         break;
@@ -516,7 +514,7 @@ namespace QuikSharp {
                 // 2^31 = 2147483648
                 // with 1 000 000 messages per second it will take more than
                 // 35 hours to overflow => safe for use as TRANS_ID in SendTransaction
-                // very weird stuff: Уникальный идентификационный номер заявки, значение от 1 до 2 294 967 294 
+                // very weird stuff: РЈРЅРёРєР°Р»СЊРЅС‹Р№ РёРґРµРЅС‚РёС„РёРєР°С†РёРѕРЅРЅС‹Р№ РЅРѕРјРµСЂ Р·Р°СЏРІРєРё, Р·РЅР°С‡РµРЅРёРµ РѕС‚ 1 РґРѕ 2 294 967 294 
                 if (newId > 0) {
                     return newId;
                 }
@@ -526,9 +524,9 @@ namespace QuikSharp {
         }
 
         /// <summary>
-        /// Устанавливает стартовое значение для CorrelactionId.
+        /// РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ СЃС‚Р°СЂС‚РѕРІРѕРµ Р·РЅР°С‡РµРЅРёРµ РґР»СЏ CorrelactionId.
         /// </summary>
-        /// <param name="startCorrelationId">Стартовое значение.</param>
+        /// <param name="startCorrelationId">РЎС‚Р°СЂС‚РѕРІРѕРµ Р·РЅР°С‡РµРЅРёРµ.</param>
         internal void InitializeCorrelationId(int startCorrelationId)
         {
             _correlationId = startCorrelationId;
