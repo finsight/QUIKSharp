@@ -13,13 +13,6 @@ namespace QuikSharp {
     public delegate void VoidHandler();
 
     /// <summary>
-    /// Обработчик события OnInit
-    /// </summary>
-    /// <param name="path">Расположение скрипта QuikSharp.lua</param>
-    /// <param name="port">Порт обмена данными</param>
-    public delegate void InitHandler(string path, int port);
-
-    /// <summary>
     /// 
     /// </summary>
     /// <param name="orderbook"></param>

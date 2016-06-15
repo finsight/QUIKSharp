@@ -21,11 +21,12 @@ namespace QuikSharp {
         private static Dictionary<int, QuikService> _services =
             new Dictionary<int, QuikService>();
         private static readonly object StaticSync = new object();
+		private volatile bool _isConnected = false;        // Флаг показывает подключены ли мы к Quik'у или нет. Используем volatile потому что доступ из нескольких потоков
 
-        /// <summary>
-        /// For each port only one instance of QuikService
-        /// </summary>
-        public static QuikService Create(int port) {
+		/// <summary>
+		/// For each port only one instance of QuikService
+		/// </summary>
+		public static QuikService Create(int port) {
             lock (StaticSync) {
                 QuikService service;
                 if (_services.ContainsKey(port)) {
@@ -269,9 +270,11 @@ namespace QuikSharp {
                     while (!_cts.IsCancellationRequested) {
                         Trace.WriteLine("Connecting on callback channel... ");
                         EnsureConnectedClient();
-						this.Events.OnConnectedToQuikCall ();		// Оповещаем клиента что произошло подключение к Quik'у
-                        // here we have a connected TCP client
-                        Trace.WriteLine("Callback channel connected");
+						this.Events.OnConnectedToQuikCall ();       // Оповещаем клиента что произошло подключение к Quik'у
+						_isConnected = true;                        // Я использую флаг, а не обращаюсь к методу _callbackClient.Client.Connected - потому что он потоко-небезопасен.
+
+						// here we have a connected TCP client
+						Trace.WriteLine("Callback channel connected");
 						try
 						{
 							var stream = new NetworkStream (_callbackClient.Client);
@@ -340,7 +343,8 @@ namespace QuikSharp {
                     } finally {
                         Monitor.Exit(_syncRoot);
 						this.Events.OnDisconnectedFromQuikCall ();
-                    }
+						_isConnected = false;
+					}
                 }
             }, _cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
 
@@ -538,6 +542,11 @@ namespace QuikSharp {
 
         internal async Task<TResponse> Send<TResponse>(IMessage request, int timeout = 0)
             where TResponse : class, IMessage, new() {
+
+			// Если мы не подключились к Quik'у продолжение данной функции приведет к полной блокировке в GetNewUniqueId на StaticSync
+			if (!_isConnected)
+				throw new InvalidOperationException ("Please start QUIK first and run the lua script");
+
             var tcs = new TaskCompletionSource<IMessage>();
             if (timeout > 0) {
                 var ct = new CancellationTokenSource(timeout);
