@@ -151,19 +151,20 @@ namespace QuikSharp {
 								}
                             }
                         } catch (IOException e) {
-                            Trace.WriteLine(e.ToString ());
+                            Trace.TraceError (e.ToString ());
                         }
                     }
                 } catch (Exception e) {
-                    Trace.WriteLine(e.ToString ());
+					Trace.TraceError  (e.ToString ());
                 } finally {
                     try {
                         Monitor.Enter(_syncRoot);
                         if (_responseClient != null) {
                             _responseClient.Client.Shutdown(SocketShutdown.Both);
                             _responseClient.Close();
-							_responseClient = null;		// ” нас два потока работают с одним сокетом, но только один из них должен его закрыть !
-                        }
+							_responseClient = null;     // ” нас два потока работают с одним сокетом, но только один из них должен его закрыть !
+							Trace.WriteLine ("Response channel disconnected");
+						}
                     } finally {
                         Monitor.Exit(_syncRoot);
                     }
@@ -177,60 +178,84 @@ namespace QuikSharp {
                        
 						// ѕоток Response использует тот же сокет, что и поток request
                         EnsureConnectedClient();
-                        // here we have a connected TCP client
-                       
-                        try {
-                            var stream = new NetworkStream(_responseClient.Client);
-                            var reader = new StreamReader(stream, Encoding.GetEncoding(1251)); //true
-                            while (!_cts.IsCancellationRequested) {
-                                var response = await reader.ReadLineAsync().ConfigureAwait (false);
-                                if (response == null) {
-                                    throw new IOException("Lua returned an empty response or closed the connection");
-                                }
+						// here we have a connected TCP client
 
-                                // No IO exceptions possible for response, move its processing
-                                // to the threadpool and wait for the next mesaage
-                                // A new task here gives c.30% boost for full TransactionSpec echo
+						try
+						{
+							var stream = new NetworkStream (_responseClient.Client);
+							var reader = new StreamReader (stream, Encoding.GetEncoding (1251)); //true
+							while (!_cts.IsCancellationRequested)
+							{
 
-                                // ReSharper disable once UnusedVariable
-                                var doNotAwaitMe = Task.Factory.StartNew(r => {
-                                    //var r = response;
-                                    //Trace.WriteLine("Response:" + response);
-                                    try {
+								// «апускаем ReadLineAsync с CancellationToken. ѕодсмотрел тут https://habrahabr.ru/post/238377/
+								var taskRead = reader.ReadLineAsync ()
+									.ContinueWith (
+										t => t.GetAwaiter ().GetResult (),
+										_cts.Token,
+										TaskContinuationOptions.ExecuteSynchronously,
+										TaskScheduler.Default
+									);
+								var response = await taskRead.ConfigureAwait (false);
 
-                                        var message = (r as string).FromJson(this);
-                                        Trace.Assert(message.Id.HasValue && message.Id > 0);
-                                        // it is a response message
-                                        if (!Responses.ContainsKey(message.Id.Value)) throw new ApplicationException("Unexpected correlation ID");
-                                        KeyValuePair<TaskCompletionSource<IMessage>, Type> tcs;
-                                        Responses.TryRemove(message.Id.Value, out tcs);
-                                        if (!message.ValidUntil.HasValue || message.ValidUntil >= DateTime.UtcNow) {
-                                            tcs.Key.SetResult(message);
-                                        } else {
-                                            tcs.Key.SetException(
-                                                new TimeoutException("ValidUntilUTC is less than current time"));
-                                        }
 
-                                    } catch (LuaException) {
-                                        //Trace.WriteLine("Caught Lua exception");
-                                    }
-                                }, response, TaskCreationOptions.PreferFairness);
+								if (response == null)
+								{
+									throw new IOException ("Lua returned an empty response or closed the connection");
+								}
 
-                            }
-                        } catch (IOException e) {
-                            Trace.WriteLine(e.ToString ());
+								// No IO exceptions possible for response, move its processing
+								// to the threadpool and wait for the next mesaage
+								// A new task here gives c.30% boost for full TransactionSpec echo
+
+								// ReSharper disable once UnusedVariable
+								var doNotAwaitMe = Task.Factory.StartNew (r =>
+								{
+									//var r = response;
+									//Trace.WriteLine("Response:" + response);
+									try
+									{
+
+										var message = (r as string).FromJson (this);
+										Trace.Assert (message.Id.HasValue && message.Id > 0);
+										// it is a response message
+										if (!Responses.ContainsKey (message.Id.Value))
+											throw new ApplicationException ("Unexpected correlation ID");
+										KeyValuePair<TaskCompletionSource<IMessage>, Type> tcs;
+										Responses.TryRemove (message.Id.Value, out tcs);
+										if (!message.ValidUntil.HasValue || message.ValidUntil >= DateTime.UtcNow)
+										{
+											tcs.Key.SetResult (message);
+										}
+										else
+										{
+											tcs.Key.SetException (
+												new TimeoutException ("ValidUntilUTC is less than current time"));
+										}
+
+									}
+									catch (LuaException)
+									{
+										Trace.TraceError ("Caught Lua exception");
+									}
+								}, response, TaskCreationOptions.PreferFairness);
+
+							}
+						}
+						catch (TaskCanceledException) { }     // Ёто исключение возникнет при отмене ReadLineAsync через Cancellation Token
+						catch (IOException e) {
+							Trace.TraceError (e.ToString ());
                         }
                     }
                 } catch (Exception e) {
-                    Trace.WriteLine(e.ToString ());
+					Trace.TraceError (e.ToString ());
                 } finally {
                     try {
                         Monitor.Enter(_syncRoot);
                         if (_responseClient != null) {
                             _responseClient.Client.Shutdown(SocketShutdown.Both);
                             _responseClient.Close();
-							_responseClient = null;		// ” нас два потока работают с одним сокетом, но только один из них должен его закрыть !
-
+							_responseClient = null;     // ” нас два потока работают с одним сокетом, но только один из них должен его закрыть !
+							Trace.WriteLine ("Response channel disconnected");
 						}
                     } finally {
                         Monitor.Exit(_syncRoot);
@@ -247,42 +272,61 @@ namespace QuikSharp {
                         EnsureConnectedClient();
                         // here we have a connected TCP client
                         Trace.WriteLine("Callback channel connected");
-                        try {
-                            var stream = new NetworkStream(_callbackClient.Client);
-                            var reader = new StreamReader(stream, Encoding.GetEncoding(1251)); //true
-                            while (!_cts.IsCancellationRequested) {
-                                var callback = await reader.ReadLineAsync().ConfigureAwait (false);
-                                if (callback == null) {
-                                    throw new IOException("Lua returned an empty response or closed the connection");
-                                }
+						try
+						{
+							var stream = new NetworkStream (_callbackClient.Client);
+							var reader = new StreamReader (stream, Encoding.GetEncoding (1251)); //true
+							while (!_cts.IsCancellationRequested)
+							{
 
-                                // No IO exceptions possible for response, move its processing
-                                // to the threadpool and wait for the next mesaage
-                                // A new task here gives c.30% boost for full TransactionSpec echo
+								// «апускаем ReadLineAsync с CancellationToken. ѕодсмотрел тут https://habrahabr.ru/post/238377/
+								var taskRead = reader.ReadLineAsync ()
+									.ContinueWith (
+										t => t.GetAwaiter ().GetResult (),
+										_cts.Token,
+										TaskContinuationOptions.ExecuteSynchronously,
+										TaskScheduler.Default
+									);
+								var callback = await taskRead.ConfigureAwait (false);
+								if (callback == null)
+								{
+									throw new IOException ("Lua returned an empty response or closed the connection");
+								}
 
-                                // ReSharper disable once UnusedVariable
-                                var doNotAwaitMe = Task.Factory.StartNew(r => {
-                                    //var r = response;
-                                    //Trace.WriteLine("Response:" + response);
-                                    try {
+								// No IO exceptions possible for response, move its processing
+								// to the threadpool and wait for the next mesaage
+								// A new task here gives c.30% boost for full TransactionSpec echo
 
-                                        var message = (r as string).FromJson(this);
-                                        Trace.Assert(!(message.Id.HasValue && message.Id > 0));
-                                        // it is a callback message
-                                        ProcessCallbackMessage(message);
+								// ReSharper disable once UnusedVariable
+								var doNotAwaitMe = Task.Factory.StartNew (r =>
+								{
+									//var r = response;
+									//Trace.WriteLine("Response:" + response);
+									try
+									{
 
-                                    } catch (LuaException) {
-                                        //Trace.WriteLine("Caught Lua exception");
-                                    }
-                                }, callback, TaskCreationOptions.PreferFairness);
+										var message = (r as string).FromJson (this);
+										Trace.Assert (!(message.Id.HasValue && message.Id > 0));
+										// it is a callback message
+										ProcessCallbackMessage (message);
 
-                            }
-                        } catch (IOException e) {
-                            Trace.WriteLine(e.ToString ());
-                        }
+									}
+									catch (LuaException)
+									{
+										Trace.TraceError ("Caught Lua exception");
+									}
+								}, callback, TaskCreationOptions.PreferFairness);
+
+							}
+						}
+						catch (TaskCanceledException) { }     // Ёто исключение возникнет при отмене ReadLineAsync через Cancellation Token
+						catch (IOException e)
+						{
+							Trace.TraceError (e.ToString ());
+						}
                     }
                 } catch (Exception e) {
-                    Trace.WriteLine(e.ToString ());
+					Trace.TraceError (e.ToString ());
                 } finally {
                     try {
                         Monitor.Enter(_syncRoot);
@@ -290,6 +334,7 @@ namespace QuikSharp {
                             _callbackClient.Client.Shutdown(SocketShutdown.Both);
                             _callbackClient.Close();
 							_callbackClient = null;
+							Trace.WriteLine ("Callback channel disconnected");
 
 						}
                     } finally {
@@ -304,9 +349,7 @@ namespace QuikSharp {
         private void EnsureConnectedClient() {
             try {
                 Monitor.Enter(_syncRoot);
-                if (_responseClient != null && _responseClient.Connected && _responseClient.Client.IsConnectedNow()) {
-                    // reuse alive client
-                } else {
+               
                     if (!(_responseClient != null && _responseClient.Connected && _responseClient.Client.IsConnectedNow())) {
                         var connected = false;
                         while (!connected) {
@@ -321,12 +364,8 @@ namespace QuikSharp {
                                 //Trace.WriteLine("Trying to connect...");
                             }
                         }
-                    }
                 }
 
-                if (_callbackClient != null && _callbackClient.Connected && _callbackClient.Client.IsConnectedNow()) {
-                    // reuse alive client
-                } else {
                     if (!(_callbackClient != null && _callbackClient.Connected && _callbackClient.Client.IsConnectedNow())) {
                         var connected = false;
                         while (!connected) {
@@ -342,7 +381,6 @@ namespace QuikSharp {
                             }
                         }
                     }
-                }
             } finally { Monitor.Exit(_syncRoot); }
         }
 
