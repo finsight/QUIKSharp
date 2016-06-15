@@ -40,7 +40,18 @@ namespace QuikSharp {
     /// OnTransReply - ответ на транзакцию 
     /// </summary>
     public interface IQuikEvents : IQuikService {
-        event EventHandler OnAccountBalance;
+
+		/// <summary>
+		/// Событие вызывается когда библиотека QuikSharp успешно подключилась к Quik'у
+		/// </summary>
+		event Action OnConnectedToQuik;
+
+		/// <summary>
+		/// Событие вызывается когда библиотека QuikSharp была отключена от Quik'а
+		/// </summary>
+		event Action OnDisconnectedFromQuik;
+
+		event EventHandler OnAccountBalance;
         event EventHandler OnAccountPosition;
         /// <summary>
         /// Новая обезличенная сделка
@@ -59,11 +70,6 @@ namespace QuikSharp {
         event EventHandler OnFuturesClientHolding;
         event EventHandler OnFuturesLimitChange;
         event EventHandler OnFuturesLimitDelete;
-        /// <summary>
-        /// Функция вызывается терминалом QUIK перед вызовом функции main(). В качестве параметра принимает значение полного пути к запускаемому скрипту. 
-        /// Примечание: В данной функции пользователь имеет возможность инициализировать все необходимые переменные и библиотеки перед запуском основного потока main()
-        /// </summary>
-        event InitHandler OnInit;
         event EventHandler OnMoneyLimit;
         event EventHandler OnMoneyLimitDelete;
         event EventHandler OnNegDeal;

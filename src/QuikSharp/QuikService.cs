@@ -21,6 +21,7 @@ namespace QuikSharp {
         private static Dictionary<int, QuikService> _services =
             new Dictionary<int, QuikService>();
         private static readonly object StaticSync = new object();
+
         /// <summary>
         /// For each port only one instance of QuikService
         /// </summary>
@@ -33,7 +34,7 @@ namespace QuikSharp {
                 } else {
                     service = new QuikService(port);
                     _services.Add(port, service);
-                }
+				}
                 return service;
             }
         }
@@ -94,11 +95,11 @@ namespace QuikSharp {
             _cts.Cancel();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <exception cref="ApplicationException">Response message id does not exists in results dictionary</exception>
-        public void Start() {
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <exception cref="ApplicationException">Response message id does not exists in results dictionary</exception>
+		public void Start() {
             if (IsStarted) return;
             IsStarted = true;
             _cts = new CancellationTokenSource();
@@ -270,6 +271,7 @@ namespace QuikSharp {
                     while (!_cts.IsCancellationRequested) {
                         Trace.WriteLine("Connecting on callback channel... ");
                         EnsureConnectedClient();
+						this.Events.OnConnectedToQuikCall ();		// Оповещаем клиента что произошло подключение к Quik'у
                         // here we have a connected TCP client
                         Trace.WriteLine("Callback channel connected");
 						try
@@ -339,6 +341,7 @@ namespace QuikSharp {
 						}
                     } finally {
                         Monitor.Exit(_syncRoot);
+						this.Events.OnDisconnectedFromQuikCall ();
                     }
                 }
             }, _cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
@@ -430,8 +433,8 @@ namespace QuikSharp {
                     case EventNames.OnFuturesLimitDelete:
                         break;
                     case EventNames.OnInit:
-                        Trace.Assert(message is Message<string>);
-                        Events.OnInitCall(((Message<string>)message).Data, _callbackPort);
+                        // Этот callback никогда не будет вызван так как на момент получения вызова OnInit в lua скрипте
+						// соединение с библиотекой QuikSharp не будет еще установлено. То есть этот callback не имеет смысла.
                         break;
                     case EventNames.OnMoneyLimit:
                         break;
