@@ -21,7 +21,7 @@ namespace QuikSharp {
         private static Dictionary<int, QuikService> _services =
             new Dictionary<int, QuikService>();
         private static readonly object StaticSync = new object();
-		private volatile bool _isConnected = false;        // Флаг показывает подключены ли мы к Quik'у или нет. Используем volatile потому что доступ из нескольких потоков
+		private ManualResetEvent _сonnectEvent = new ManualResetEvent (false);    // Событие будет установлено после того как произойдет подключение
 
 		/// <summary>
 		/// For each port only one instance of QuikService
@@ -271,7 +271,7 @@ namespace QuikSharp {
                         Trace.WriteLine("Connecting on callback channel... ");
                         EnsureConnectedClient();
 						this.Events.OnConnectedToQuikCall ();       // Оповещаем клиента что произошло подключение к Quik'у
-						_isConnected = true;                        // Я использую флаг, а не обращаюсь к методу _callbackClient.Client.Connected - потому что он потоко-небезопасен.
+						_сonnectEvent.Set ();
 
 						// here we have a connected TCP client
 						Trace.WriteLine("Callback channel connected");
@@ -343,7 +343,7 @@ namespace QuikSharp {
                     } finally {
                         Monitor.Exit(_syncRoot);
 						this.Events.OnDisconnectedFromQuikCall ();
-						_isConnected = false;
+						_сonnectEvent.Reset ();
 					}
                 }
             }, _cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
@@ -544,7 +544,9 @@ namespace QuikSharp {
             where TResponse : class, IMessage, new() {
 
 			// Если мы не подключились к Quik'у продолжение данной функции приведет к полной блокировке в GetNewUniqueId на StaticSync
-			if (!_isConnected)
+			// Если в течении секунды подключение не произошло - вылетит исключение. 
+			// Ожидание 1 секунду нужно, что бы исключение не получали вызовы функций QuikSharp'а, которые вызываются сразу же после создание объекта Quik'a.
+			if (!_сonnectEvent.WaitOne (1000))
 				throw new InvalidOperationException ("Please start QUIK first and run the lua script");
 
             var tcs = new TaskCompletionSource<IMessage>();
