@@ -70,6 +70,12 @@ namespace QuikSharp {
         event EventHandler OnFuturesClientHolding;
         event EventHandler OnFuturesLimitChange;
         event EventHandler OnFuturesLimitDelete;
+
+		/// <summary>
+		/// Depricated
+		/// </summary>
+        event InitHandler OnInit;
+
         event EventHandler OnMoneyLimit;
         event EventHandler OnMoneyLimitDelete;
         event EventHandler OnNegDeal;

@@ -13,6 +13,13 @@ namespace QuikSharp {
     public delegate void VoidHandler();
 
     /// <summary>
+    /// Обработчик события OnInit
+    /// </summary>
+    /// <param name="path">Расположение скрипта QuikSharp.lua</param>
+    /// <param name="port">Порт обмена данными</param>
+    public delegate void InitHandler(string path, int port);
+
+    /// <summary>
     /// 
     /// </summary>
     /// <param name="orderbook"></param>
@@ -68,6 +75,18 @@ namespace QuikSharp {
 		{
 			if (OnDisconnectedFromQuik != null)
 				OnDisconnectedFromQuik ();
+		}
+
+		public event InitHandler OnInit
+		{
+			add
+			{
+				throw new NotImplementedException ("Подписка на данный метод бессымслена. В скрипте lua будет вызван данный callback когда еще нет подключения к QuikSharp библиотеке. Используйте callback OnConnectedToQuikCall если необходимо.");
+			}
+			remove
+			{
+
+			}
 		}
 
 		public event EventHandler OnAccountBalance;
