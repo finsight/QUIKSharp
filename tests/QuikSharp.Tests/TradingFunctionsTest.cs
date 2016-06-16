@@ -31,15 +31,6 @@ namespace QuikSharp.Tests {
         }
 
 		[Test]
-		public void GetDepoTest ()
-		{
-			Quik quik = new Quik ();
-
-			// Получаем информацию по всем лимитам со всех доступных счетов.
-			//List<DepoLimit> depoLimits = quik.Trading.GetDepo ().Result;
-		}		
-		
-		[Test]
         public void GetDepoLimitsTest()
         {
             Quik quik = new Quik();
@@ -47,7 +38,25 @@ namespace QuikSharp.Tests {
             // Получаем информацию по всем лимитам со всех доступных счетов.
             List<DepoLimitEx> depoLimits = quik.Trading.GetDepoLimits().Result;
             Console.WriteLine ($"Все лимиты со всех доступных счетов {depoLimits.Count}");
+			if (depoLimits.Count > 0)
+				PrintDepoLimits (depoLimits);
 
+			// Получаем информацию по лимитам инструмента "Сбербанк"
+			depoLimits = quik.Trading.GetDepoLimits("SBER").Result;
+            Console.WriteLine($"Лимиты инструмента сбербанк {depoLimits.Count}");
+			if (depoLimits.Count > 0)
+				PrintDepoLimits (depoLimits);
+
+			// Если информация по бумаге есть в таблице, это не значит что открыта позиция. Нужно проверять еще CurrentBalance
+			DepoLimitEx depoLimit = depoLimits.SingleOrDefault(_ => _.LimitKind == LimitKind.T2 && _.CurrentBalance > 0);
+            if (depoLimit != null)
+                Console.WriteLine("Открыта позиция по сбербанку.");
+
+        }
+
+		private void PrintDepoLimits (List<DepoLimitEx> depoLimits)
+		{
+			Console.WriteLine ($"Количество стро: {depoLimits.Count}");
 			foreach (var depo in depoLimits)
 			{
 				Console.WriteLine ($"Код бумаги: {depo.SecCode}");
@@ -67,15 +76,6 @@ namespace QuikSharp.Tests {
 				Console.WriteLine ($"Тип лимита бумаги (Т0, Т1 или Т2): {depo.LimitKind}");
 				Console.WriteLine ("------------------------------------------------------------------------");
 			}
-
-            // Получаем информацию по лимитам инструмента "Сбербанк"
-            depoLimits = quik.Trading.GetDepoLimits("SBER").Result;
-            Console.WriteLine($"Лимиты инструмента сбербанк {depoLimits.Count}");
-
-            DepoLimitEx depoLimit = depoLimits.SingleOrDefault(_ => _.LimitKind == LimitKind.T2);
-            if (depoLimit != null)
-                Console.WriteLine("Открыта позиция по сбербанку.");
-
-        }
-    }
+		}
+	}
 }
