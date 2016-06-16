@@ -49,26 +49,52 @@ namespace QuikSharp.Tests
 
                 var count = 10000;
 
-                //var array = new Task<string>[count];
-                //for (int i = 0; i < array.Length; i++) {
-                //    array[i] = _df.Ping();
-                //}
-                //for (int i = 0; i < array.Length; i++) {
-                //    var pong = array[i].Result;
-                //    array[i] = null;
-                //    Trace.Assert(pong == "Pong");
-                //}
+				//var array = new Task<string>[count];
+				//for (int i = 0; i < array.Length; i++) {
+				//    array[i] = _df.Ping();
+				//}
+				//for (int i = 0; i < array.Length; i++) {
+				//    var pong = array[i].Result;
+				//    array[i] = null;
+				//    Trace.Assert(pong == "Pong");
+				//}
 
-                for (var i = 0; i < count; i++) {
-                    var pong = _df.Ping().Result;
-                    Trace.Assert(pong == "Pong");
-                }
-                sw.Stop();
+				/* for (var i = 0; i < count; i++) {
+					 var pong = _df.Ping().Result;
+					 Trace.Assert(pong == "Pong");
+				 }*/
+
+				for (var i = 0; i < count; i++)
+					_df.Ping ().Wait ();
+
+				sw.Stop();
                 Console.WriteLine("MultiPing takes msecs: " + sw.ElapsedMilliseconds);
             }
         }
 
-        [Test]
+		[Test]
+		public async void MultiPingFast2 ()
+		{
+			var sw = new Stopwatch ();
+			Console.WriteLine ("Started");
+			for (int round = 0; round < 10; round++)
+			{
+				sw.Reset ();
+				sw.Start ();
+
+				var count = 10000;
+				var array = new Task<string> [count];
+				for (int i = 0; i < array.Length; i++)
+					array [i] = _df.Ping ();
+
+				// Чудесным образом данная конструкция работает чуточку быстрей (на 10% где то) чем _df.Ping ().Wait (); в функции MultiPing
+				await Task.WhenAll (array);
+				sw.Stop ();
+				Console.WriteLine ("MultiPing takes msecs: " + sw.ElapsedMilliseconds);
+			}
+		}
+
+		[Test]
         public void MultiPingFast() {
 
             // Multiplexing in action
