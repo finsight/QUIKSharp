@@ -33,7 +33,7 @@ namespace QuikSharp
         /// <returns></returns>
         public async Task<List<Candle>> GetAllCandles(string graphicTag)
         {
-            return await GetCandles(graphicTag, 0, 0, 0);
+            return await GetCandles(graphicTag, 0, 0, 0).ConfigureAwait (false);
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace QuikSharp
         public async Task<List<Candle>> GetCandles(string graphicTag, int line, int first, int count)
         {
             var message = new Message<string>(graphicTag + "|" + line + "|" + first + "|" + count, "get_candles");
-            Message<List<Candle>> response = await QuikService.Send<Message<List<Candle>>>(message);
+            Message<List<Candle>> response = await QuikService.Send<Message<List<Candle>>>(message).ConfigureAwait (false);
             return response.Data;
         }
 
@@ -61,7 +61,7 @@ namespace QuikSharp
         public async Task<List<Candle>> GetAllCandles(string classCode, string securityCode, CandleInterval interval)
         {
             //Параметр count == 0 говорт о том, что возвращаются все доступные свечи
-            return await GetLastCandles(classCode, securityCode, interval, 0);
+            return await GetLastCandles(classCode, securityCode, interval, 0).ConfigureAwait (false);
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace QuikSharp
         public async Task<List<Candle>> GetLastCandles(string classCode, string securityCode, CandleInterval interval, int count)
         {
             var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval + "|" + count, "get_candles_from_data_source");
-            Message<List<Candle>> response = await QuikService.Send<Message<List<Candle>>>(message);
+            Message<List<Candle>> response = await QuikService.Send<Message<List<Candle>>>(message).ConfigureAwait (false);
             return response.Data;
         }
 
@@ -83,20 +83,20 @@ namespace QuikSharp
         public async Task Subscribe(string classCode, string securityCode, CandleInterval interval)
         {
             var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "subscribe_to_candles");            
-            await QuikService.Send<Message<string>>(message);
+            await QuikService.Send<Message<string>>(message).ConfigureAwait (false);
         }
 
 		// В ассинхронных фукнциях нельзя возвращать void, вместо этого нужно возвращать Task. Иначе нельзя будет ожидать фукнцию и ловить исключения
 		public async Task Unsubscribe(string classCode, string securityCode, CandleInterval interval)
         {
             var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "unsubscribe_from_candles");            
-            await QuikService.Send<Message<string>>(message);     
+            await QuikService.Send<Message<string>>(message).ConfigureAwait (false);     
         }
 
         public async Task<bool> IsSubscribed(string classCode, string securityCode, CandleInterval interval)
         {
             var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "is_subscribed");
-            Message<bool> response = await QuikService.Send<Message<bool>>(message);
+            Message<bool> response = await QuikService.Send<Message<bool>>(message).ConfigureAwait (false);
             return response.Data;
         }
     }

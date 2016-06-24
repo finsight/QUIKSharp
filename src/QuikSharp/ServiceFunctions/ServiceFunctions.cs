@@ -62,25 +62,25 @@ namespace QuikSharp {
 
         public async Task<string> GetWorkingFolder() {
             var response = await QuikService.Send<Message<string>>(
-                (new Message<string>("", "getWorkingFolder")));
+                (new Message<string>("", "getWorkingFolder"))).ConfigureAwait (false);
             return response.Data;
         }
 
         public async Task<bool> IsConnected() {
             var response = await QuikService.Send<Message<string>>(
-                (new Message<string>("", "isConnected")));
+                (new Message<string>("", "isConnected"))).ConfigureAwait (false);
             return response.Data == "1";
         }
 
         public async Task<string> GetScriptPath() {
             var response = await QuikService.Send<Message<string>>(
-                (new Message<string>("", "getScriptPath")));
+                (new Message<string>("", "getScriptPath"))).ConfigureAwait (false);
             return response.Data;
         }
 
         public async Task<string> GetInfoParam(InfoParams param) {
             var response = await QuikService.Send<Message<string>>(
-                (new Message<string>(param.ToString(), "getInfoParam")));
+                (new Message<string>(param.ToString(), "getInfoParam"))).ConfigureAwait (false);
             return response.Data;
         }
 
@@ -88,15 +88,15 @@ namespace QuikSharp {
             switch (iconType) {
                 case NotificationType.Info:
                     await QuikService.Send<Message<string>>(
-                        (new Message<string>(message, "message")));
+                        (new Message<string>(message, "message"))).ConfigureAwait (false);
                     break;
                 case NotificationType.Warning:
                     await QuikService.Send<Message<string>>(
-                        (new Message<string>(message, "warning_message")));
+                        (new Message<string>(message, "warning_message"))).ConfigureAwait (false);
                     break;
                 case NotificationType.Error:
                     await QuikService.Send<Message<string>>(
-                        (new Message<string>(message, "error_message")));
+                        (new Message<string>(message, "error_message"))).ConfigureAwait (false);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("iconType");
@@ -106,7 +106,7 @@ namespace QuikSharp {
 
         public async Task<bool> PrintDbgStr(string message) {
             await QuikService.Send<Message<string>>(
-                (new Message<string>(message, "PrintDbgStr")));
+                (new Message<string>(message, "PrintDbgStr"))).ConfigureAwait (false);
             return true;
         }
 

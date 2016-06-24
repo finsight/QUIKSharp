@@ -57,6 +57,37 @@ namespace QuikSharp {
         public QuikEvents(QuikService service) { QuikService = service; }
         public QuikService QuikService { get; private set; }
 
+		/// <summary>
+		/// Событие вызывается когда библиотека QuikSharp успешно подключилась к Quik'у
+		/// </summary>
+		public event Action OnConnectedToQuik;
+		internal void OnConnectedToQuikCall ()
+		{
+			if (OnConnectedToQuik != null)
+				OnConnectedToQuik ();
+		}
+
+		/// <summary>
+		/// Событие вызывается когда библиотека QuikSharp была отключена от Quik'а
+		/// </summary>
+		public event Action OnDisconnectedFromQuik;
+		internal void OnDisconnectedFromQuikCall ()
+		{
+			if (OnDisconnectedFromQuik != null)
+				OnDisconnectedFromQuik ();
+		}
+
+		public event InitHandler OnInit
+		{
+			add
+			{
+				throw new NotImplementedException ("Подписка на данный метод бессымслена. В скрипте lua будет вызван данный callback когда еще нет подключения к QuikSharp библиотеке. Используйте callback OnConnectedToQuikCall если необходимо.");
+			}
+			remove
+			{
+
+			}
+		}
 
 		public event EventHandler OnAccountBalance;
 		public event EventHandler OnAccountPosition;
@@ -98,17 +129,6 @@ namespace QuikSharp {
 		public event EventHandler OnFuturesClientHolding;
 		public event EventHandler OnFuturesLimitChange;
 		public event EventHandler OnFuturesLimitDelete;
-
-		/// <summary>
-		/// Функция вызывается терминалом QUIK перед вызовом функции main().
-		/// В качестве параметра принимает значение полного пути к запускаемому скрипту.
-		/// </summary>
-		public event InitHandler OnInit;
-        internal void OnInitCall(string path, int port) {
-            if (OnInit != null) OnInit(path, port);
-        }
-
-
 		public event EventHandler OnMoneyLimit;
 		public event EventHandler OnMoneyLimitDelete;
 		public event EventHandler OnNegDeal;

@@ -53,30 +53,30 @@ namespace QuikSharp {
         public QuikService QuikService { get; private set; }
 
         public async Task<bool> Subscribe(ISecurity security) {
-            return await Subscribe(security.ClassCode , security.SecCode);
+            return await Subscribe(security.ClassCode , security.SecCode).ConfigureAwait (false);
         }
 
         public async Task<bool> Subscribe(string class_code, string sec_code) {
             var response = await QuikService.Send<Message<bool>>(
-                (new Message<string>(class_code + "|" + sec_code, "Subscribe_Level_II_Quotes")));
+                (new Message<string>(class_code + "|" + sec_code, "Subscribe_Level_II_Quotes"))).ConfigureAwait (false);
             return response.Data;
         }
 
         public async Task<bool> Unsubscribe(ISecurity security) {
-            return await Unsubscribe(security.ClassCode, security.SecCode);
+            return await Unsubscribe(security.ClassCode, security.SecCode).ConfigureAwait (false);
         }
         public async Task<bool> Unsubscribe(string class_code, string sec_code) {
             var response = await QuikService.Send<Message<bool>>(
-                (new Message<string>(class_code + "|" + sec_code, "Unsubscribe_Level_II_Quotes")));
+                (new Message<string>(class_code + "|" + sec_code, "Unsubscribe_Level_II_Quotes"))).ConfigureAwait (false);
             return response.Data;
         }
 
         public async Task<bool> IsSubscribed(ISecurity security) {
-            return await IsSubscribed(security.ClassCode, security.SecCode);
+            return await IsSubscribed(security.ClassCode, security.SecCode).ConfigureAwait (false);
         }
         public async Task<bool> IsSubscribed(string class_code, string sec_code) {
             var response = await QuikService.Send<Message<bool>>(
-                (new Message<string>(class_code + "|" + sec_code, "IsSubscribed_Level_II_Quotes")));
+                (new Message<string>(class_code + "|" + sec_code, "IsSubscribed_Level_II_Quotes"))).ConfigureAwait (false);
             return response.Data;
         }
     }
