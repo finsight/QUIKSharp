@@ -3,7 +3,8 @@
 using Newtonsoft.Json;
 using QuikSharp.DataStructures;
 
-namespace QuikSharp {
+namespace QuikSharp.DataStructures.Transaction
+{
     /// <summary>
     /// Описание параметров Таблицы сделок 
     /// </summary>

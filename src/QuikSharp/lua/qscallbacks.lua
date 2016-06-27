@@ -37,6 +37,27 @@ function OnError(message)
 end
 
 
+--- Функция вызывается терминалом QUIK при установлении связи с сервером QUIK.
+function OnConnected()
+    if is_connected then
+        local msg = {}
+        msg.t = timemsec()
+        msg.cmd = "OnConnected"
+        msg.data = ""
+        sendCallback(msg)
+    end
+end
+
+--- Функция вызывается терминалом QUIK при установлении связи с сервером QUIK.
+function OnDisconnected()
+    if is_connected then
+        local msg = {}
+        msg.t = timemsec()
+        msg.cmd = "OnDisconnected"
+        msg.data = ""
+        sendCallback(msg)
+    end
+end
 
 --- Функция вызывается терминалом QUIK при получении обезличенной сделки.
 function OnAllTrade(alltrade)

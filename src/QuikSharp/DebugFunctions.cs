@@ -20,7 +20,7 @@ namespace QuikSharp {
 
         public async Task<string> Ping() {
             // could have used StringMessage directly. This is an example of how to define DTOs for custom commands
-            var response = await QuikService.Send<PingResponse>((new PingRequest()));
+            var response = await QuikService.Send<PingResponse>((new PingRequest())).ConfigureAwait (false);
             Trace.Assert(response.Data == "Pong");
             return response.Data;
         }
@@ -34,7 +34,7 @@ namespace QuikSharp {
         public async Task<T> Echo<T>(T msg) {
             // could have used StringMessage directly. This is an example of how to define DTOs for custom commands
             var response = await QuikService.Send<Message<T>>(
-                (new Message<T>(msg, "echo")));
+                (new Message<T>(msg, "echo"))).ConfigureAwait (false);
             return response.Data;
         }
 
@@ -44,7 +44,7 @@ namespace QuikSharp {
         /// <returns></returns>
         public async Task<string> DivideStringByZero() {
             var response = await QuikService.Send<Message<string>>(
-                (new Message<string>("", "divide_string_by_zero")));
+                (new Message<string>("", "divide_string_by_zero"))).ConfigureAwait (false);
             return response.Data;
         }
 
@@ -53,7 +53,7 @@ namespace QuikSharp {
         /// </summary>
         public async Task<bool> IsQuik() {
             var response = await QuikService.Send<Message<string>>(
-                (new Message<string>("", "is_quik")));
+                (new Message<string>("", "is_quik"))).ConfigureAwait (false);
             return response.Data == "1";
         }
 

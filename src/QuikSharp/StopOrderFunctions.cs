@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using QuikSharp.DataStructures;
+using QuikSharp.DataStructures.Transaction;
 
 namespace QuikSharp
 {
@@ -33,7 +35,7 @@ namespace QuikSharp
         public async Task<List<StopOrder>> GetStopOrders()
         {
             var message = new Message<string>("", "get_stop_orders");
-            Message<List<StopOrder>> response = await QuikService.Send<Message<List<StopOrder>>>(message);
+            Message<List<StopOrder>> response = await QuikService.Send<Message<List<StopOrder>>>(message).ConfigureAwait (false);
             return response.Data;			
         }
 
@@ -43,7 +45,7 @@ namespace QuikSharp
         public async Task<List<StopOrder>> GetStopOrders(string classCode, string securityCode)
         {
             var message = new Message<string>(classCode + "|" + securityCode, "get_stop_orders");
-            Message<List<StopOrder>> response = await QuikService.Send<Message<List<StopOrder>>>(message);
+            Message<List<StopOrder>> response = await QuikService.Send<Message<List<StopOrder>>>(message).ConfigureAwait (false);
             return response.Data;
         }
 
@@ -74,7 +76,7 @@ namespace QuikSharp
             //["EXECUTION_CONDITION"] = "FILL_OR_KILL",
     
 
-            return await Quik.Trading.SendTransaction(newStopOrderTransaction);
+            return await Quik.Trading.SendTransaction(newStopOrderTransaction).ConfigureAwait (false);
         }
 
         private StopOrderKind ConvertStopOrderType(StopOrderType stopOrderType)
@@ -99,7 +101,7 @@ namespace QuikSharp
                 SECCODE = stopOrder.SecCode,
                 STOP_ORDER_KEY = stopOrder.OrderNum.ToString()
             };
-            return await Quik.Trading.SendTransaction(killStopOrderTransaction);
+            return await Quik.Trading.SendTransaction(killStopOrderTransaction).ConfigureAwait (false);
         }
     }
 }

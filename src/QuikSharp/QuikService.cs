@@ -1,4 +1,4 @@
-// Copyright (C) 2015 Victor Baybekov
+﻿// Copyright (C) 2015 Victor Baybekov
 
 using System;
 using System.Collections.Concurrent;
@@ -21,10 +21,12 @@ namespace QuikSharp {
         private static Dictionary<int, QuikService> _services =
             new Dictionary<int, QuikService>();
         private static readonly object StaticSync = new object();
-        /// <summary>
-        /// For each port only one instance of QuikService
-        /// </summary>
-        public static QuikService Create(int port) {
+		private ManualResetEvent _сonnectEvent = new ManualResetEvent (false);    // Событие будет установлено после того как произойдет подключение
+
+		/// <summary>
+		/// For each port only one instance of QuikService
+		/// </summary>
+		public static QuikService Create(int port) {
             lock (StaticSync) {
                 QuikService service;
                 if (_services.ContainsKey(port)) {
@@ -33,7 +35,7 @@ namespace QuikSharp {
                 } else {
                     service = new QuikService(port);
                     _services.Add(port, service);
-                }
+				}
                 return service;
             }
         }
@@ -94,11 +96,11 @@ namespace QuikSharp {
             _cts.Cancel();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <exception cref="ApplicationException">Response message id does not exists in results dictionary</exception>
-        public void Start() {
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <exception cref="ApplicationException">Response message id does not exists in results dictionary</exception>
+		public void Start() {
             if (IsStarted) return;
             IsStarted = true;
             _cts = new CancellationTokenSource();
@@ -107,54 +109,64 @@ namespace QuikSharp {
             Task.Factory.StartNew(() => {
                 try {
                     // Enter the listening loop. 
-                    while (IsStarted) {
-                        Trace.WriteLine("Connecting on request channel... ");
+                    while (!_cts.IsCancellationRequested) {		// Обращение к потоко-небезопастному свойству IsStarted - не хорошо... Там токен завершения зачем передается ?!?
+                        Trace.WriteLine("Connecting on request/response channel... ");
                         EnsureConnectedClient();
                         // here we have a connected TCP client
-                        Trace.WriteLine("Request channel connected");
+                        Trace.WriteLine("Request/response channel connected");
                         try {
                             var stream = new NetworkStream(_responseClient.Client);
                             var writer = new StreamWriter(stream);
-                            while (IsStarted) {
+                            while (!_cts.IsCancellationRequested) {
                                 IMessage message = null;
-                                try {
-                                    // BLOCKING
-                                    message = EnvelopeQueue.Take(_cts.Token);
-                                    var request = message.ToJson();
-                                    //Trace.WriteLine("Request: " + request);
-                                    // scenario: Quik is restarted or script is stopped
-                                    // then writer must throw and we will add a message back
-                                    // then we will iterate over messages and cancel expired ones
-                                    if (!message.ValidUntil.HasValue || message.ValidUntil >= DateTime.UtcNow) {
-                                        writer.WriteLine(request);
-                                        writer.Flush();
-                                    } else {
-                                        Trace.Assert(message.Id.HasValue, "All requests must have correlation id");
-                                        Responses[message.Id.Value].Key.SetException(
-                                            new TimeoutException("ValidUntilUTC is less than current time"));
-                                        KeyValuePair<TaskCompletionSource<IMessage>, Type> tcs; // <IMessage>
-                                        Responses.TryRemove(message.Id.Value, out tcs);
-                                    }
-                                } catch (IOException) {
-                                    // this catch is for unexpected and unchecked connection termination
-                                    // add back, there was an error while writing
-                                    if (message != null) { EnvelopeQueue.Add(message); }
-                                    break;
-                                }
+								try
+								{
+									// BLOCKING
+									message = EnvelopeQueue.Take (_cts.Token);
+									var request = message.ToJson ();
+									//Trace.WriteLine("Request: " + request);
+									// scenario: Quik is restarted or script is stopped
+									// then writer must throw and we will add a message back
+									// then we will iterate over messages and cancel expired ones
+									if (!message.ValidUntil.HasValue || message.ValidUntil >= DateTime.UtcNow)
+									{
+										writer.WriteLine (request);
+										writer.Flush ();
+									}
+									else
+									{
+										Trace.Assert (message.Id.HasValue, "All requests must have correlation id");
+										Responses [message.Id.Value].Key.SetException (
+											new TimeoutException ("ValidUntilUTC is less than current time"));
+										KeyValuePair<TaskCompletionSource<IMessage>, Type> tcs; // <IMessage>
+										Responses.TryRemove (message.Id.Value, out tcs);
+									}
+								}
+								catch (OperationCanceledException) { }  // Мы получим такое исключение при отмене операции. Все нормально - исключение логировать не нужно!
+								catch (IOException)
+								{
+									// this catch is for unexpected and unchecked connection termination
+									// add back, there was an error while writing
+									if (message != null)
+									{ EnvelopeQueue.Add (message); }
+									break;
+								}
                             }
                         } catch (IOException e) {
-                            Trace.WriteLine(e.Message);
+                            Trace.TraceError (e.ToString ());
                         }
                     }
                 } catch (Exception e) {
-                    Trace.WriteLine(e);
+					Trace.TraceError  (e.ToString ());
                 } finally {
                     try {
                         Monitor.Enter(_syncRoot);
                         if (_responseClient != null) {
                             _responseClient.Client.Shutdown(SocketShutdown.Both);
                             _responseClient.Close();
-                        }
+							_responseClient = null;     // У нас два потока работают с одним сокетом, но только один из них должен его закрыть !
+							Trace.WriteLine ("Response channel disconnected");
+						}
                     } finally {
                         Monitor.Exit(_syncRoot);
                     }
@@ -164,62 +176,87 @@ namespace QuikSharp {
             // Response Task
             Task.Factory.StartNew(async () => {
                 try {
-                    while (IsStarted) {
-                        Trace.WriteLine("Connecting on response channel... ");
+                    while (!_cts.IsCancellationRequested) {
+                       
+						// Поток Response использует тот же сокет, что и поток request
                         EnsureConnectedClient();
-                        // here we have a connected TCP client
-                        Trace.WriteLine("Response channel connected");
-                        try {
-                            var stream = new NetworkStream(_responseClient.Client);
-                            var reader = new StreamReader(stream, Encoding.GetEncoding(1251)); //true
-                            while (IsStarted) {
-                                var response = await reader.ReadLineAsync();
-                                if (response == null) {
-                                    throw new IOException("Lua returned an empty response or closed the connection");
-                                }
+						// here we have a connected TCP client
 
-                                // No IO exceptions possible for response, move its processing
-                                // to the threadpool and wait for the next mesaage
-                                // A new task here gives c.30% boost for full TransactionSpec echo
+						try
+						{
+							var stream = new NetworkStream (_responseClient.Client);
+							var reader = new StreamReader (stream, Encoding.GetEncoding (1251)); //true
+							while (!_cts.IsCancellationRequested)
+							{
 
-                                // ReSharper disable once UnusedVariable
-                                var doNotAwaitMe = Task.Factory.StartNew(r => {
-                                    //var r = response;
-                                    //Trace.WriteLine("Response:" + response);
-                                    try {
+								// Запускаем ReadLineAsync с CancellationToken. Подсмотрел тут https://habrahabr.ru/post/238377/
+								var taskRead = reader.ReadLineAsync ()
+									.ContinueWith (
+										t => t.GetAwaiter ().GetResult (),
+										_cts.Token,
+										TaskContinuationOptions.ExecuteSynchronously,
+										TaskScheduler.Default
+									);
+								var response = await taskRead.ConfigureAwait (false);
+								if (response == null)
+								{
+									throw new IOException ("Lua returned an empty response or closed the connection");
+								}
 
-                                        var message = (r as string).FromJson(this);
-                                        Trace.Assert(message.Id.HasValue && message.Id > 0);
-                                        // it is a response message
-                                        if (!Responses.ContainsKey(message.Id.Value)) throw new ApplicationException("Unexpected correlation ID");
-                                        KeyValuePair<TaskCompletionSource<IMessage>, Type> tcs;
-                                        Responses.TryRemove(message.Id.Value, out tcs);
-                                        if (!message.ValidUntil.HasValue || message.ValidUntil >= DateTime.UtcNow) {
-                                            tcs.Key.SetResult(message);
-                                        } else {
-                                            tcs.Key.SetException(
-                                                new TimeoutException("ValidUntilUTC is less than current time"));
-                                        }
+								// No IO exceptions possible for response, move its processing
+								// to the threadpool and wait for the next mesaage
+								// A new task here gives c.30% boost for full TransactionSpec echo
 
-                                    } catch (LuaException) {
-                                        //Trace.WriteLine("Caught Lua exception");
-                                    }
-                                }, response, TaskCreationOptions.PreferFairness);
+								// ReSharper disable once UnusedVariable
+								var doNotAwaitMe = Task.Factory.StartNew (r =>
+								{
+									//var r = response;
+									//Trace.WriteLine("Response:" + response);
+									try
+									{
 
-                            }
-                        } catch (IOException e) {
-                            Trace.WriteLine(e.Message);
+										var message = (r as string).FromJson (this);
+										Trace.Assert (message.Id.HasValue && message.Id > 0);
+										// it is a response message
+										if (!Responses.ContainsKey (message.Id.Value))
+											throw new ApplicationException ("Unexpected correlation ID");
+										KeyValuePair<TaskCompletionSource<IMessage>, Type> tcs;
+										Responses.TryRemove (message.Id.Value, out tcs);
+										if (!message.ValidUntil.HasValue || message.ValidUntil >= DateTime.UtcNow)
+										{
+											tcs.Key.SetResult (message);
+										}
+										else
+										{
+											tcs.Key.SetException (
+												new TimeoutException ("ValidUntilUTC is less than current time"));
+										}
+
+									}
+									catch (LuaException)
+									{
+										Trace.TraceError ("Caught Lua exception");
+									}
+								}, response, TaskCreationOptions.PreferFairness);
+
+							}
+						}
+						catch (TaskCanceledException) { }     // Это исключение возникнет при отмене ReadLineAsync через Cancellation Token
+						catch (IOException e) {
+							Trace.TraceError (e.ToString ());
                         }
                     }
                 } catch (Exception e) {
-                    Trace.WriteLine(e);
+					Trace.TraceError (e.ToString ());
                 } finally {
                     try {
                         Monitor.Enter(_syncRoot);
                         if (_responseClient != null) {
                             _responseClient.Client.Shutdown(SocketShutdown.Both);
                             _responseClient.Close();
-                        }
+							_responseClient = null;     // У нас два потока работают с одним сокетом, но только один из них должен его закрыть !
+							Trace.WriteLine ("Response channel disconnected");
+						}
                     } finally {
                         Monitor.Exit(_syncRoot);
                     }
@@ -230,57 +267,84 @@ namespace QuikSharp {
             // Callback Task
             Task.Factory.StartNew(async () => {
                 try {
-                    while (IsStarted) {
+                    while (!_cts.IsCancellationRequested) {
                         Trace.WriteLine("Connecting on callback channel... ");
                         EnsureConnectedClient();
-                        // here we have a connected TCP client
-                        Trace.WriteLine("Callback channel connected");
-                        try {
-                            var stream = new NetworkStream(_callbackClient.Client);
-                            var reader = new StreamReader(stream, Encoding.GetEncoding(1251)); //true
-                            while (IsStarted) {
-                                var callback = await reader.ReadLineAsync();
-                                if (callback == null) {
-                                    throw new IOException("Lua returned an empty response or closed the connection");
-                                }
+						this.Events.OnConnectedToQuikCall ();       // Оповещаем клиента что произошло подключение к Quik'у
+						_сonnectEvent.Set ();
 
-                                // No IO exceptions possible for response, move its processing
-                                // to the threadpool and wait for the next mesaage
-                                // A new task here gives c.30% boost for full TransactionSpec echo
+						// here we have a connected TCP client
+						Trace.WriteLine("Callback channel connected");
+						try
+						{
+							var stream = new NetworkStream (_callbackClient.Client);
+							var reader = new StreamReader (stream, Encoding.GetEncoding (1251)); //true
+							while (!_cts.IsCancellationRequested)
+							{
 
-                                // ReSharper disable once UnusedVariable
-                                var doNotAwaitMe = Task.Factory.StartNew(r => {
-                                    //var r = response;
-                                    //Trace.WriteLine("Response:" + response);
-                                    try {
+								// Запускаем ReadLineAsync с CancellationToken. Подсмотрел тут https://habrahabr.ru/post/238377/
+								var taskRead = reader.ReadLineAsync ()
+									.ContinueWith (
+										t => t.GetAwaiter ().GetResult (),
+										_cts.Token,
+										TaskContinuationOptions.ExecuteSynchronously,
+										TaskScheduler.Default
+									);
+								var callback = await taskRead.ConfigureAwait (false);
+								if (callback == null)
+								{
+									throw new IOException ("Lua returned an empty response or closed the connection");
+								}
 
-                                        var message = (r as string).FromJson(this);
-                                        Trace.Assert(!(message.Id.HasValue && message.Id > 0));
-                                        // it is a callback message
-                                        ProcessCallbackMessage(message);
+								// No IO exceptions possible for response, move its processing
+								// to the threadpool and wait for the next mesaage
+								// A new task here gives c.30% boost for full TransactionSpec echo
 
-                                    } catch (LuaException) {
-                                        //Trace.WriteLine("Caught Lua exception");
-                                    }
-                                }, callback, TaskCreationOptions.PreferFairness);
+								// ReSharper disable once UnusedVariable
+								var doNotAwaitMe = Task.Factory.StartNew (r =>
+								{
+									//var r = response;
+									//Trace.WriteLine("Response:" + response);
+									try
+									{
 
-                            }
-                        } catch (IOException e) {
-                            Trace.WriteLine(e.Message);
-                        }
+										var message = (r as string).FromJson (this);
+										Trace.Assert (!(message.Id.HasValue && message.Id > 0));
+										// it is a callback message
+										ProcessCallbackMessage (message);
+
+									}
+									catch (LuaException)
+									{
+										Trace.TraceError ("Caught Lua exception");
+									}
+								}, callback, TaskCreationOptions.PreferFairness);
+
+							}
+						}
+						catch (TaskCanceledException) { }     // Это исключение возникнет при отмене ReadLineAsync через Cancellation Token
+						catch (IOException e)
+						{
+							Trace.TraceError (e.ToString ());
+						}
                     }
                 } catch (Exception e) {
-                    Trace.WriteLine(e);
+					Trace.TraceError (e.ToString ());
                 } finally {
                     try {
                         Monitor.Enter(_syncRoot);
                         if (_callbackClient != null) {
                             _callbackClient.Client.Shutdown(SocketShutdown.Both);
                             _callbackClient.Close();
-                        }
+							_callbackClient = null;
+							Trace.WriteLine ("Callback channel disconnected");
+
+						}
                     } finally {
                         Monitor.Exit(_syncRoot);
-                    }
+						this.Events.OnDisconnectedFromQuikCall ();
+						_сonnectEvent.Reset ();
+					}
                 }
             }, _cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
 
@@ -288,12 +352,9 @@ namespace QuikSharp {
         }
 
         private void EnsureConnectedClient() {
-            var entered = false;
             try {
                 Monitor.Enter(_syncRoot);
-                if (_responseClient != null && _responseClient.Connected && _responseClient.Client.IsConnectedNow()) {
-                    // reuse alive client
-                } else {
+               
                     if (!(_responseClient != null && _responseClient.Connected && _responseClient.Client.IsConnectedNow())) {
                         var connected = false;
                         while (!connected) {
@@ -308,12 +369,8 @@ namespace QuikSharp {
                                 //Trace.WriteLine("Trying to connect...");
                             }
                         }
-                    }
                 }
 
-                if (_callbackClient != null && _callbackClient.Connected && _callbackClient.Client.IsConnectedNow()) {
-                    // reuse alive client
-                } else {
                     if (!(_callbackClient != null && _callbackClient.Connected && _callbackClient.Client.IsConnectedNow())) {
                         var connected = false;
                         while (!connected) {
@@ -329,7 +386,6 @@ namespace QuikSharp {
                             }
                         }
                     }
-                }
             } finally { Monitor.Exit(_syncRoot); }
         }
 
@@ -379,8 +435,8 @@ namespace QuikSharp {
                     case EventNames.OnFuturesLimitDelete:
                         break;
                     case EventNames.OnInit:
-                        Trace.Assert(message is Message<string>);
-                        Events.OnInitCall(((Message<string>)message).Data, _callbackPort);
+                        // Этот callback никогда не будет вызван так как на момент получения вызова OnInit в lua скрипте
+						// соединение с библиотекой QuikSharp не будет еще установлено. То есть этот callback не имеет смысла.
                         break;
                     case EventNames.OnMoneyLimit:
                         break;
@@ -465,7 +521,7 @@ namespace QuikSharp {
                 // 2^31 = 2147483648
                 // with 1 000 000 messages per second it will take more than
                 // 35 hours to overflow => safe for use as TRANS_ID in SendTransaction
-                // very weird stuff: ���������� ����������������� ����� ������, �������� �� 1 �� 2 294 967 294 
+                // very weird stuff: Уникальный идентификационный номер заявки, значение от 1 до 2 294 967 294 
                 if (newId > 0) {
                     return newId;
                 }
@@ -475,9 +531,9 @@ namespace QuikSharp {
         }
 
         /// <summary>
-        /// ������������� ��������� �������� ��� CorrelactionId.
+        /// Устанавливает стартовое значение для CorrelactionId.
         /// </summary>
-        /// <param name="startCorrelationId">��������� ��������.</param>
+        /// <param name="startCorrelationId">Стартовое значение.</param>
         internal void InitializeCorrelationId(int startCorrelationId)
         {
             _correlationId = startCorrelationId;
@@ -489,6 +545,13 @@ namespace QuikSharp {
 
         internal async Task<TResponse> Send<TResponse>(IMessage request, int timeout = 0)
             where TResponse : class, IMessage, new() {
+
+			// Если мы не подключились к Quik'у продолжение данной функции приведет к полной блокировке в GetNewUniqueId на StaticSync
+			// Если в течении секунды подключение не произошло - вылетит исключение. 
+			// Ожидание 1 секунду нужно, что бы исключение не получали вызовы функций QuikSharp'а, которые вызываются сразу же после создание объекта Quik'a.
+			if (!_сonnectEvent.WaitOne (1000))
+				throw new InvalidOperationException ("Please start QUIK first and run the lua script");
+
             var tcs = new TaskCompletionSource<IMessage>();
             if (timeout > 0) {
                 var ct = new CancellationTokenSource(timeout);
@@ -501,7 +564,7 @@ namespace QuikSharp {
             Responses[request.Id.Value] = kvp;
             // add to queue after responses dictionary
             EnvelopeQueue.Add(request);
-            var response = await tcs.Task;
+            var response = await tcs.Task.ConfigureAwait (false);
             return (response as TResponse);
         }
 

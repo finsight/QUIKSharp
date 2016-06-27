@@ -1,6 +1,7 @@
 ﻿// Copyright (C) 2015 Victor Baybekov
 
-namespace QuikSharp {
+namespace QuikSharp.DataStructures
+{
     /// <summary>
     /// При обработке изменения денежного лимита функция getMoney возвращает таблицу Lua с параметрами: 
     /// </summary>

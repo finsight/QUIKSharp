@@ -1,6 +1,7 @@
 // Copyright (C) 2015 Victor Baybekov
 
-namespace QuikSharp {
+namespace QuikSharp.DataStructures
+{
     /// <summary>
     /// Лимиты по денежным средствам
     /// </summary>

@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using QuikSharp.DataStructures;
+using QuikSharp.DataStructures.Transaction;
 
 namespace QuikSharp.Tests {
 

@@ -2,6 +2,7 @@
 
 using System;
 using System.Threading.Tasks;
+using QuikSharp.DataStructures;
 
 namespace QuikSharp {
 
@@ -63,7 +64,7 @@ namespace QuikSharp {
         
         public async Task<string[]> GetClassesList() {
             var response = await QuikService.Send<Message<string>>(
-                (new Message<string>("", "getClassesList")));
+                (new Message<string>("", "getClassesList"))).ConfigureAwait (false);
             return response.Data == null 
                 ? new string[0]
                 : response.Data.TrimEnd(',').Split(new [] {","}, StringSplitOptions.None);
@@ -71,13 +72,13 @@ namespace QuikSharp {
 
         public async Task<ClassInfo> GetClassInfo(string classID) {
             var response = await QuikService.Send<Message<ClassInfo>>(
-                (new Message<string>(classID, "getClassInfo")));
+                (new Message<string>(classID, "getClassInfo"))).ConfigureAwait (false);
             return response.Data;
         }
 
         public async Task<SecurityInfo> GetSecurityInfo(string classCode, string secCode) {
             var response = await QuikService.Send<Message<SecurityInfo>>(
-                (new Message<string>(classCode + "|" + secCode, "getSecurityInfo")));
+                (new Message<string>(classCode + "|" + secCode, "getSecurityInfo"))).ConfigureAwait (false);
             return response.Data;
         }
 
@@ -87,7 +88,7 @@ namespace QuikSharp {
 
         public async Task<string[]> GetClassSecurities(string classID) {
             var response = await QuikService.Send<Message<string>>(
-                (new Message<string>(classID, "getClassSecurities")));
+                (new Message<string>(classID, "getClassSecurities"))).ConfigureAwait (false);
             return response.Data == null 
                 ? new string[0]
                 : response.Data.TrimEnd(',').Split(new[] { "," }, StringSplitOptions.None);
