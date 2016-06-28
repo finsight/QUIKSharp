@@ -31,9 +31,13 @@ end
 
 --- Функция вызывается когда скрипт ловит ошибку в функциях обратного вызова
 function OnError(message)
-    msg.cmd = "lua_error"
-    msg.data = "Lua error: " .. message
-    sendCallback(msg)
+	if is_connected then
+		local msg = {}
+		msg.t = timemsec()
+		msg.cmd = "lua_error"
+		msg.data = "Lua error: " .. message
+		sendCallback(msg)
+	end
 end
 
 
