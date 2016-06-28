@@ -59,22 +59,22 @@ namespace QuikSharp.Tests {
 			Console.WriteLine ("Количество стро: {depoLimits.Count}");
 			foreach (var depo in depoLimits)
 			{
-				Console.WriteLine ("Код бумаги: {depo.SecCode}");
-				Console.WriteLine ("Счет депо: {depo.TrdAccId}");
-				Console.WriteLine ("Идентификатор фирмы: {depo.FirmId}");
-				Console.WriteLine ("Код клиента: {depo.ClientCode}");
-				Console.WriteLine ("Входящий остаток по бумагам: {depo.OpenBalance}");
-				Console.WriteLine ("Входящий лимит по бумагам: {depo.OpenLimit}");
-				Console.WriteLine ("Текущий остаток по бумагам: {depo.CurrentBalance}");
-				Console.WriteLine ("Текущий лимит по бумагам: {depo.CurrentLimit}");
-				Console.WriteLine ("Заблокировано на продажу количества лотов: {depo.LockedSell}");
-				Console.WriteLine ("Заблокированного на покупку количества лотов: {depo.LockedBuy}");
-				Console.WriteLine ("Стоимость ценных бумаг, заблокированных под покупку: {depo.LockedBuyValue}");
-				Console.WriteLine ("Стоимость ценных бумаг, заблокированных под продажу: {depo.LockedSellValue}");
-				Console.WriteLine ("Цена приобретения: {depo.AweragePositionPrice}");
-				Console.WriteLine ("Тип лимита.  = «0» обычные лимиты, <> «0» – технологические лимиты: {depo.LimitKindInt}");
-				Console.WriteLine ("Тип лимита бумаги (Т0, Т1 или Т2): {depo.LimitKind}");
-				Console.WriteLine ("------------------------------------------------------------------------");
+				Console.WriteLine (@"Код бумаги: {depo.SecCode}");
+				Console.WriteLine (@"Счет депо: {depo.TrdAccId}");
+				Console.WriteLine (@"Идентификатор фирмы: {depo.FirmId}");
+				Console.WriteLine (@"Код клиента: {depo.ClientCode}");
+				Console.WriteLine (@"Входящий остаток по бумагам: {depo.OpenBalance}");
+				Console.WriteLine (@"Входящий лимит по бумагам: {depo.OpenLimit}");
+				Console.WriteLine (@"Текущий остаток по бумагам: {depo.CurrentBalance}");
+				Console.WriteLine (@"Текущий лимит по бумагам: {depo.CurrentLimit}");
+				Console.WriteLine (@"Заблокировано на продажу количества лотов: {depo.LockedSell}");
+				Console.WriteLine (@"Заблокированного на покупку количества лотов: {depo.LockedBuy}");
+				Console.WriteLine (@"Стоимость ценных бумаг, заблокированных под покупку: {depo.LockedBuyValue}");
+				Console.WriteLine (@"Стоимость ценных бумаг, заблокированных под продажу: {depo.LockedSellValue}");
+				Console.WriteLine (@"Цена приобретения: {depo.AweragePositionPrice}");
+				Console.WriteLine (@"Тип лимита.  = «0» обычные лимиты, <> «0» – технологические лимиты: {depo.LimitKindInt}");
+				Console.WriteLine (@"Тип лимита бумаги (Т0, Т1 или Т2): {depo.LimitKind}");
+				Console.WriteLine (@"------------------------------------------------------------------------");
 			}
 		}
 	}

@@ -83,7 +83,7 @@ namespace QuikSharp {
         }
 
         public async Task<SecurityInfo> GetSecurityInfo(ISecurity security) {
-            return await GetSecurityInfo(security.ClassCode, security.SecCode);
+            return await GetSecurityInfo(security.ClassCode, security.SecCode).ConfigureAwait(false);
         }
 
         public async Task<string[]> GetClassSecurities(string classID) {
@@ -97,21 +97,21 @@ namespace QuikSharp {
         public async Task<string> GetSecurityClass(string classesList, string secCode)
         {
             var response = await QuikService.Send<Message<string>>(
-                (new Message<string>(classesList + "|" + secCode, "getSecurityClass")));
+                (new Message<string>(classesList + "|" + secCode, "getSecurityClass"))).ConfigureAwait(false);
             return response.Data;
         }
 
         public async Task<string> GetClientCode()
         {
             var response = await QuikService.Send<Message<string>>(
-                (new Message<string>("", "getClientCode")));
+                (new Message<string>("", "getClientCode"))).ConfigureAwait(false);
             return response.Data;
         }
 
         public async Task<string> GetTradeAccount(string classCode)
         {
             var response = await QuikService.Send<Message<string>>(
-                (new Message<string>(classCode, "getTradeAccount")));
+                (new Message<string>(classCode, "getTradeAccount"))).ConfigureAwait(false);
             return response.Data;
         }
     }
