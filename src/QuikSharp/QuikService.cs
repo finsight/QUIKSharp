@@ -548,11 +548,15 @@ namespace QuikSharp {
         internal async Task<TResponse> Send<TResponse>(IMessage request, int timeout = 0)
             where TResponse : class, IMessage, new() {
             var task = _connectedMre.WaitAsync();
-            if (await Task.WhenAny(task, Task.Delay(timeout)).ConfigureAwait(false) == task) {
-                // task completed within timeout, do nothing
+            if (timeout > 0) {
+                if (await Task.WhenAny(task, Task.Delay(timeout)).ConfigureAwait(false) == task) {
+                    // task completed within timeout, do nothing
+                } else {
+                    // timeout
+                    throw new TimeoutException("Send operation timed out");
+                }
             } else {
-                // timeout
-                throw new TimeoutException("Send operation timed out");
+                await task.ConfigureAwait(false);
             }
 
             var tcs = new TaskCompletionSource<IMessage>();
