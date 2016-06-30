@@ -49,7 +49,7 @@ function split(inputstr, sep)
         sep = "%s"
     end
     local t={}
-	local i=1
+    local i=1
     for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
         t[i] = str
         i = i + 1
