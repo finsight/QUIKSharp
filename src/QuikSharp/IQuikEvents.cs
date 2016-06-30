@@ -44,12 +44,12 @@ namespace QuikSharp {
 		/// <summary>
 		/// Событие вызывается когда библиотека QuikSharp успешно подключилась к Quik'у
 		/// </summary>
-		event Action OnConnectedToQuik;
+		event InitHandler OnConnectedToQuik;
 
 		/// <summary>
 		/// Событие вызывается когда библиотека QuikSharp была отключена от Quik'а
 		/// </summary>
-		event Action OnDisconnectedFromQuik;
+		event VoidHandler OnDisconnectedFromQuik;
 
 		event EventHandler OnAccountBalance;
         event EventHandler OnAccountPosition;
