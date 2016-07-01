@@ -1,7 +1,8 @@
 ﻿// Copyright (C) 2015 Victor Baybekov
 
-namespace QuikSharp.DataStructures
-{
+using Newtonsoft.Json;
+
+namespace QuikSharp.DataStructures {
     /// <summary>
     /// Результат getSecurityInfo
     /// </summary>
@@ -9,50 +10,60 @@ namespace QuikSharp.DataStructures
         // ReSharper disable InconsistentNaming
         /// <summary>
         /// Код инструмента
+        [JsonProperty("sec_code")]
+        public string SecCode { get; set; }
+
         /// </summary>
-        public string sec_code { get; set; }
         
         /// <summary>
+        [JsonProperty("name")]
+        public string Name { get; set; }
         /// Наименование инструмента
         /// </summary>
-        public string name { get; set; }
         /// <summary>
+        [JsonProperty("short_name")]
+        public string ShortName { get; set; }
         /// Краткое наименование
         /// </summary>
-        public string short_name { get; set; }
         /// <summary>
+        [JsonProperty("class_code")]
+        public string ClassCode { get; set; }
         /// Код класса
         /// </summary>
-        public string class_code { get; set; }
         /// <summary>
+        [JsonProperty("class_name")]
+        public string ClassName { get; set; }
         /// Наименование класса
         /// </summary>
-        public string class_name { get; set; }
         /// <summary>
+        [JsonProperty("face_value")]
+        public string FaceValue { get; set; }
         /// Номинал
         /// </summary>
-        public string face_value { get; set; }
         /// <summary>
+        [JsonProperty("face_unit")]
+        public string FaceUnit { get; set; }
         /// Код валюты номинала
         /// </summary>
-        public string face_unit { get; set; }
         /// <summary>
+        [JsonProperty("scale")]
+        public int Scale { get; set; }
         /// Количество значащих цифр после запятой
         /// </summary>
-        public int scale { get; set; }
         /// <summary>
         /// Дата погашения (в QLUA это число, но на самом деле дата записанная как YYYYMMDD),
+        [JsonProperty("mat_date")]
+        public string MatDate { get; set; }
         /// поэтому здесь сохраняем просто как строку
         /// </summary>
-        public string mat_date { get; set; }
         /// <summary>
+        [JsonProperty("lot_size")]
+        public int LotSize { get; set; }
+
         /// Размер лота
         /// </summary>
-        public int lot_size { get; set; }
-        /// <summary>
-        /// ISIN-код
         /// </summary>
-        public string isin_code { get; set; }
-        // ReSharper restore InconsistentNaming
+        [JsonProperty("isin_code")]
+        public string IsinCode { get; set; }
     }
 }

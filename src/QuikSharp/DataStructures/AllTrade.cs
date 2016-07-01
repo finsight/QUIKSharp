@@ -97,7 +97,7 @@ namespace QuikSharp.DataStructures {
         /// <summary>
         /// Открытый интерес 
         /// </summary>
-        [JsonProperty("open_interest ")]
+        [JsonProperty("open_interest")]
         public double OpenInterest { get; set; }
 
         public long LuaTimeStamp { get; set; }
