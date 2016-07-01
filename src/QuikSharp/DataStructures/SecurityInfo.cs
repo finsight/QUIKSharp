@@ -10,58 +10,57 @@ namespace QuikSharp.DataStructures {
         // ReSharper disable InconsistentNaming
         /// <summary>
         /// Код инструмента
+        /// </summary>
         [JsonProperty("sec_code")]
         public string SecCode { get; set; }
-
-        /// </summary>
-        
         /// <summary>
-        [JsonProperty("name")]
-        public string Name { get; set; }
         /// Наименование инструмента
         /// </summary>
+        [JsonProperty("name")]
+        public string Name { get; set; }
         /// <summary>
-        [JsonProperty("short_name")]
-        public string ShortName { get; set; }
         /// Краткое наименование
         /// </summary>
+        [JsonProperty("short_name")]
+        public string ShortName { get; set; }
         /// <summary>
-        [JsonProperty("class_code")]
-        public string ClassCode { get; set; }
         /// Код класса
         /// </summary>
+        [JsonProperty("class_code")]
+        public string ClassCode { get; set; }
         /// <summary>
-        [JsonProperty("class_name")]
-        public string ClassName { get; set; }
         /// Наименование класса
         /// </summary>
+        [JsonProperty("class_name")]
+        public string ClassName { get; set; }
         /// <summary>
-        [JsonProperty("face_value")]
-        public string FaceValue { get; set; }
         /// Номинал
         /// </summary>
+        [JsonProperty("face_value")]
+        public string FaceValue { get; set; }
         /// <summary>
-        [JsonProperty("face_unit")]
-        public string FaceUnit { get; set; }
         /// Код валюты номинала
         /// </summary>
+        [JsonProperty("face_unit")]
+        public string FaceUnit { get; set; }
         /// <summary>
-        [JsonProperty("scale")]
-        public int Scale { get; set; }
         /// Количество значащих цифр после запятой
         /// </summary>
+        [JsonProperty("scale")]
+        public int Scale { get; set; }
         /// <summary>
         /// Дата погашения (в QLUA это число, но на самом деле дата записанная как YYYYMMDD),
-        [JsonProperty("mat_date")]
-        public string MatDate { get; set; }
         /// поэтому здесь сохраняем просто как строку
         /// </summary>
+        [JsonProperty("mat_date")]
+        public string MatDate { get; set; }
         /// <summary>
-        [JsonProperty("lot_size")]
-        public int LotSize { get; set; }
-
         /// Размер лота
         /// </summary>
+        [JsonProperty("lot_size")]
+        public int LotSize { get; set; }
+        /// </summary>
+        /// ISIN-код
         /// </summary>
         [JsonProperty("isin_code")]
         public string IsinCode { get; set; }
