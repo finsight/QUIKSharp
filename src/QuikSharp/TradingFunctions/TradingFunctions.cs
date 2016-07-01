@@ -189,7 +189,7 @@ namespace QuikSharp {
         public async Task<DepoLimitEx> GetDepoEx(string firmId, string clientCode, string secCode, string accID, int limitKind)
         {
             var response = await QuikService.Send<Message<DepoLimitEx>>(
-                    (new Message<string>(firmId + "|" + clientCode + "|" + secCode + "|" + accID + "|" + limitKind, "getDepoEx")));
+                    (new Message<string>(firmId + "|" + clientCode + "|" + secCode + "|" + accID + "|" + limitKind, "getDepoEx"))).ConfigureAwait(false);
             return response.Data;
         }
 
@@ -235,21 +235,21 @@ namespace QuikSharp {
         public async Task<List<Trade>> GetTrades()
         {
             var response = await QuikService.Send<Message<List<Trade>>>(
-                    (new Message<string>("", "get_trades")));
+                    (new Message<string>("", "get_trades"))).ConfigureAwait(false);
             return response.Data;
         }
 
         public async Task<List<Trade>> GetTrades(string classCode, string secCode)
         {
             var response = await QuikService.Send<Message<List<Trade>>>(
-                    (new Message<string>(classCode + "|" + secCode, "get_trades")));
+                    (new Message<string>(classCode + "|" + secCode, "get_trades"))).ConfigureAwait(false);
             return response.Data;
         }
 
         public async Task<List<Trade>> GetTrades_by_OdrerNumber(long order_num)
         {
             var response = await QuikService.Send<Message<List<Trade>>>(
-                    (new Message<string>(order_num.ToString(), "get_Trades_by_OrderNumber")));
+                    (new Message<string>(order_num.ToString(), "get_Trades_by_OrderNumber"))).ConfigureAwait(false);
             return response.Data;
         }
 

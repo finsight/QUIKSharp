@@ -56,7 +56,7 @@ namespace QuikSharp.Tests {
 
 		private void PrintDepoLimits (List<DepoLimitEx> depoLimits)
 		{
-			Console.WriteLine ("Количество стро: {depoLimits.Count}");
+			Console.WriteLine ("Количество строк: {depoLimits.Count}");
 			foreach (var depo in depoLimits)
 			{
 				Console.WriteLine (@"Код бумаги: {depo.SecCode}");
