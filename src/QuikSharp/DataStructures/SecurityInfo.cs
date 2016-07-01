@@ -7,12 +7,12 @@ namespace QuikSharp.DataStructures {
     /// Результат getSecurityInfo
     /// </summary>
     public class SecurityInfo {
-        // ReSharper disable InconsistentNaming
         /// <summary>
         /// Код инструмента
         /// </summary>
         [JsonProperty("sec_code")]
         public string SecCode { get; set; }
+
         /// <summary>
         /// Наименование инструмента
         /// </summary>
@@ -59,7 +59,8 @@ namespace QuikSharp.DataStructures {
         /// </summary>
         [JsonProperty("lot_size")]
         public int LotSize { get; set; }
-        /// </summary>
+
+        /// <summary>
         /// ISIN-код
         /// </summary>
         [JsonProperty("isin_code")]
