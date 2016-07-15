@@ -43,12 +43,12 @@ namespace QuikSharp {
     public delegate void TransReplyHandler(TransactionReply transReply);
 
     /// <summary>
-    /// 
+    /// Обработчик события OnOrder
     /// </summary>
     /// <param name="order"></param>
     public delegate void OrderHandler(Order order);
     /// <summary>
-    /// 
+    /// Обработчик события OnTrade
     /// </summary>
     /// <param name="trade"></param>
     public delegate void TradeHandler(Trade trade);
@@ -58,6 +58,12 @@ namespace QuikSharp {
     /// </summary>
     /// <param name="par">lua table with class_code, sec_code</param>
     public delegate void ParamHandler(Param par);
+
+    /// <summary>
+    /// Обработчик события OnStopOrder
+    /// </summary>
+    /// <param name="stopOrder"></param>
+    public delegate void StopOrderHandler(StopOrder stopOrder);
 
 
     internal class QuikEvents : IQuikEvents
@@ -190,7 +196,43 @@ namespace QuikSharp {
 		public event StopHandler OnStop;
         internal void OnStopCall(int signal) { if (OnStop != null) OnStop(signal); }
 
-		/// <summary>
+        /// <summary>
+        /// Функция вызывается терминалом QUIK при получении новой стоп-заявки или при изменении параметров существующей стоп-заявки.
+        /// </summary>
+        public event StopOrderHandler OnStopOrder;
+        internal void OnStopOrderCall(StopOrder stopOrder)
+        {
+            //if (OnStopOrder != null) OnStopOrder(stopOrder);
+            if (OnStopOrder != null) OnStopOrder(stopOrder);
+            // invoke event specific for the transaction
+            string correlationId = stopOrder.TransId.ToString();
+
+            #region Totally untested code or handling manual transactions
+            if (!QuikService.Storage.Contains(correlationId))
+            {
+                correlationId = "manual:" + stopOrder.OrderNum + ":" + correlationId;
+                var fakeTrans = new Transaction()
+                {
+                    Comment = correlationId,
+                    IsManual = true
+                    // TODO map order properties back to transaction
+                    // ideally, make C# property names consistent (Lua names are set as JSON.NET properties via an attribute)
+                };
+                QuikService.Storage.Set<Transaction>(correlationId, fakeTrans);
+            }
+            #endregion
+
+            var tr = QuikService.Storage.Get<Transaction>(correlationId);
+            if (tr != null)
+            {
+                lock (tr)
+                {
+                    tr.OnStopOrderCall(stopOrder);
+                }
+            }
+            Trace.Assert(tr != null, "Transaction must exist in persistent storage until it is completed and all order messages are recieved");
+        }
+        /// <summary>
 		/// Функция вызывается терминалом QUIK при получении сделки.
 		/// </summary>
 		public event TradeHandler OnTrade;

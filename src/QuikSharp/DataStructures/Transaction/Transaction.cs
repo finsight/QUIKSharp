@@ -48,9 +48,24 @@ namespace QuikSharp.DataStructures.Transaction
             Orders.Add(order);
         }
         /// <summary>
+        /// Функция вызывается терминалом QUIK при получении новой стоп-заявки или при изменении параметров существующей стоп-заявки.
+        /// </summary>
+        public event StopOrderHandler OnStopOrder;
+        internal void OnStopOrderCall(StopOrder stopOrder)
+        {
+            if (OnStopOrder != null) { OnStopOrder(stopOrder); }
+            if (StopOrders == null) { StopOrders = new List<StopOrder>(); }
+            StopOrders.Add(stopOrder);
+        }
+        /// <summary>
         /// Orders
         /// </summary>
         public List<Order> Orders { get; set; }
+
+        /// <summary>
+        /// StopOrders
+        /// </summary>
+        public List<StopOrder> StopOrders { get; set; }
 
         /// <summary>
         /// Функция вызывается терминалом QUIK при получении сделки. 

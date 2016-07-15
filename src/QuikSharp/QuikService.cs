@@ -473,8 +473,12 @@ namespace QuikSharp {
                         break;
 
                     case EventNames.OnStopOrder:
-                        StopOrder stopOrder = (message as Message<StopOrder>).Data;
-                        StopOrders.RaiseNewStopOrderEvent(stopOrder);
+                        //StopOrder stopOrder = (message as Message<StopOrder>).Data;
+                        //StopOrders.RaiseNewStopOrderEvent(stopOrder);
+                        Trace.Assert(message is Message<StopOrder>);
+                        var stord = ((Message<StopOrder>)message).Data;
+                        stord.LuaTimeStamp = message.CreatedTime;
+                        Events.OnStopOrderCall(stord);
                         break;
 
                     case EventNames.OnTrade:

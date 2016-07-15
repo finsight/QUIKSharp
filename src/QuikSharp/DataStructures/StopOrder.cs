@@ -11,6 +11,10 @@ namespace QuikSharp.DataStructures
     /// </summary>
     public class StopOrder
     {
+
+        [JsonProperty("lua_timestamp")]
+        public long LuaTimeStamp { get; internal set; }
+
         /// <summary>
         /// Регистрационный номер стоп-заявки на сервере QUIK
         /// </summary>
