@@ -167,6 +167,13 @@ function qsfunctions.getSecurityInfo(msg)
     return msg
 end
 
+--- Функция для получения информации по денежным лимитам
+function qsfunctions.getMoney(msg)
+	local spl = split(msg.data, "|")
+	local client_code, firm_id, tag, curr_code = spl[1], spl[2], spl[3], spl[4]
+	msg.data = getMoney(client_code, firm_id, tag, curr_code)
+	return msg
+end
 
 
 ---------------------------------------------------------------------

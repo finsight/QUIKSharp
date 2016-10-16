@@ -177,10 +177,14 @@ namespace QuikSharp {
         {
             var message = new Message<string>(secCode, "get_depo_limits");
             Message<List<DepoLimitEx>> response = await QuikService.Send<Message<List<DepoLimitEx>>>(message).ConfigureAwait (false);
+
+        public async Task<MoneyLimit> GetMoney(string clientCode, string firmId, string tag, string currCode)
+        {
+            var response = await QuikService.Send<Message<MoneyLimit>>(
+                    (new Message<string>(clientCode + "|" + firmId + "|" + tag + "|" + currCode, "getMoney"))).ConfigureAwait(false);
             return response.Data;
         }
 
-        public Task<MoneyLimit> GetMoney(string clientCode, string firmId, string tag, string currCode) { throw new NotImplementedException(); }
         public Task<MoneyLimitEx> GetMoneyEx(string firmId, string clientCode, string tag, string currCode, int limitKind) { throw new NotImplementedException(); }
       
         
