@@ -176,8 +176,13 @@ namespace QuikSharp {
         public async Task<List<DepoLimitEx>> GetDepoLimits(string secCode)
         {
             var message = new Message<string>(secCode, "get_depo_limits");
-            Message<List<DepoLimitEx>> response = await QuikService.Send<Message<List<DepoLimitEx>>>(message).ConfigureAwait (false);
+            Message<List<DepoLimitEx>> response = await QuikService.Send<Message<List<DepoLimitEx>>>(message).ConfigureAwait(false);
+            return response.Data;
+        }
 
+        /// <summary>
+        /// Функция для получения информации по денежным лимитам
+        /// </summary>
         public async Task<MoneyLimit> GetMoney(string clientCode, string firmId, string tag, string currCode)
         {
             var response = await QuikService.Send<Message<MoneyLimit>>(

@@ -25,7 +25,5 @@ namespace QuikSharp.Tests {
             Console.WriteLine("IsSubscribed_Level_II_Quotes: "
                 + String.Join(",", _q.OrderBook.IsSubscribed("SPBFUT", "RIH5").Result));
         }
-
-
     }
 }

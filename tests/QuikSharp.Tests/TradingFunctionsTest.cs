@@ -54,6 +54,15 @@ namespace QuikSharp.Tests {
 
         }
 
+        [Test]
+        public void GetMoney()
+        {
+            Quik quik = new Quik();
+            Console.WriteLine("GetMoney: "
+                + string.Join(",", quik.Trading.GetMoney(
+                    Constants.clientCode, Constants.firmId, Constants.tag, Constants.currentCode).Result));
+        }
+
 		private void PrintDepoLimits (List<DepoLimitEx> depoLimits)
 		{
 			Console.WriteLine ($"Количество стро: {depoLimits.Count}");
