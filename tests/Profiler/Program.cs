@@ -4,7 +4,8 @@ using System.Threading.Tasks;
 using QuikSharp;
 using QuikSharp.DataStructures.Transaction;
 
-namespace Profiler {
+namespace Profiler
+{
     public class Program {
 
         public static void Ping() {
