@@ -78,7 +78,7 @@ namespace QuikSharp
         public async Task<List<Order>> GetOrders()
         {
             var message = new Message<string>("", "get_orders");
-            Message<List<Order>> response = await QuikService.Send<Message<List<Order>>>(message);
+            Message<List<Order>> response = await QuikService.Send<Message<List<Order>>>(message).ConfigureAwait(false);
             return response.Data;
         }
 
@@ -88,7 +88,7 @@ namespace QuikSharp
         public async Task<List<Order>> GetOrders(string classCode, string securityCode)
         {
             var message = new Message<string>(classCode + "|" + securityCode, "get_orders");
-            Message<List<Order>> response = await QuikService.Send<Message<List<Order>>>(message);
+            Message<List<Order>> response = await QuikService.Send<Message<List<Order>>>(message).ConfigureAwait(false);
             return response.Data;
         }
 
@@ -98,7 +98,7 @@ namespace QuikSharp
         public async Task<Order> GetOrder_by_transID(string classCode, string securityCode, long trans_id)
         {
             var message = new Message<string>(classCode + "|" + securityCode + "|" + trans_id, "getOrder_by_ID");
-            Message<Order> response = await QuikService.Send<Message<Order>>(message);
+            Message<Order> response = await QuikService.Send<Message<Order>>(message).ConfigureAwait(false);
             return response.Data;
         }
 
@@ -108,7 +108,7 @@ namespace QuikSharp
         public async Task<Order> GetOrder_by_Number(long order_num)
         {
             var message = new Message<string>(order_num.ToString(), "getOrder_by_Number");
-            Message<Order> response = await QuikService.Send<Message<Order>>(message);
+            Message<Order> response = await QuikService.Send<Message<Order>>(message).ConfigureAwait(false);
             return response.Data;
         }
 
