@@ -367,7 +367,7 @@ namespace QuikSharp {
                         } catch {
                             attempt++;
                             Thread.Sleep(100);
-                            if (attempt % 10 == 0) Trace.WriteLine($"Trying to connect... {attempt}");
+                            if (attempt % 10 == 0) Trace.WriteLine(@"Trying to connect... {attempt}");
                         }
                     }
                 }
@@ -385,7 +385,7 @@ namespace QuikSharp {
                         } catch {
                             attempt++;
                             Thread.Sleep(100);
-                            if (attempt % 10 == 0) Trace.WriteLine($"Trying to connect... {attempt}");
+                            if (attempt % 10 == 0) Trace.WriteLine(@"Trying to connect... {attempt}");
                         }
                     }
                 }
@@ -477,18 +477,9 @@ namespace QuikSharp {
                         break;
 
                     case EventNames.OnStopOrder:
-<<<<<<< HEAD
-                        //StopOrder stopOrder = (message as Message<StopOrder>).Data;
-                        //StopOrders.RaiseNewStopOrderEvent(stopOrder);
-                        Trace.Assert(message is Message<StopOrder>);
-                        var stord = ((Message<StopOrder>)message).Data;
-                        stord.LuaTimeStamp = message.CreatedTime;
-                        Events.OnStopOrderCall(stord);
-=======
                         Trace.Assert(message is Message<StopOrder>);
                         StopOrder stopOrder = ((Message<StopOrder>)message).Data;
                         StopOrders.RaiseNewStopOrderEvent(stopOrder);
->>>>>>> finsight/master
                         break;
 
                     case EventNames.OnTrade:

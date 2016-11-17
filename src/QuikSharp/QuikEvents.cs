@@ -166,15 +166,10 @@ namespace QuikSharp {
         }
 
 
-<<<<<<< HEAD
         public event ParamHandler OnParam;
         internal void OnParamCall(Param par){
         if (OnParam != null) OnParam(par);
         }
-=======
-        public event EventHandler OnParam;
-
->>>>>>> finsight/master
 
         /// <summary>
         /// Функция вызывается терминалом QUIK при получении изменения стакана котировок.
@@ -189,7 +184,6 @@ namespace QuikSharp {
         internal void OnStopCall(int signal) { if (OnStop != null) OnStop(signal); }
 
         /// <summary>
-<<<<<<< HEAD
         /// Функция вызывается терминалом QUIK при получении новой стоп-заявки или при изменении параметров существующей стоп-заявки.
         /// </summary>
         public event StopOrderHandler OnStopOrder;
@@ -229,11 +223,6 @@ namespace QuikSharp {
 		/// Функция вызывается терминалом QUIK при получении сделки.
 		/// </summary>
 		public event TradeHandler OnTrade;
-=======
-        /// Функция вызывается терминалом QUIK при получении сделки.
-        /// </summary>
-        public event TradeHandler OnTrade;
->>>>>>> finsight/master
         internal void OnTradeCall(Trade trade) {
             if (OnTrade != null) OnTrade(trade);
             // invoke event specific for the transaction
@@ -270,20 +259,11 @@ namespace QuikSharp {
             //Trace.Assert(tr != null, "Transaction must exist in persistent storage until it is completed and all trades messages are recieved");
         }
 
-<<<<<<< HEAD
-		/// <summary>
-		/// Функция вызывается терминалом QUIK при получении ответа на транзакцию пользователя.
-		/// </summary>
-		public event TransReplyHandler OnTransReply;
-        internal void OnTransReplyCall(TransactionReply reply)
-        {
-=======
         /// <summary>
         /// Функция вызывается терминалом QUIK при получении ответа на транзакцию пользователя.
         /// </summary>
         public event TransReplyHandler OnTransReply;
         internal void OnTransReplyCall(TransactionReply reply) {
->>>>>>> finsight/master
             if (OnTransReply != null) OnTransReply(reply);
 
             // invoke event specific for the transaction
