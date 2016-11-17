@@ -132,6 +132,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CandleFunctions.cs" />
+    <Compile Include="AsyncManualResetEvent.cs" />
     <Compile Include="ClassFunctions\ClassFunctions.cs" />
     <Compile Include="DataStructures\Candle.cs" />
     <Compile Include="DataStructures\CandleInterval.cs" />

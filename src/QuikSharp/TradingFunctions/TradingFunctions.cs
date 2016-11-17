@@ -68,6 +68,13 @@ namespace QuikSharp {
         ///// </summary>
         Task<FuturesClientHolding> GetFuturesHolding(string firmId, string accId,string secCode,int posType);
        
+         /// <summary>
+        /// Функция получения доски опционов
+        /// </summary>
+        /// <param name="classCode"></param>
+        /// <param name="secCode"></param>
+        /// <returns></returns>
+        Task<List<OptionBoard>> GetOptionBoard(string classCode, string secCode);
         /// <summary>
         /// функция для получения значений Таблицы текущих значений параметров
         /// </summary>
@@ -230,6 +237,14 @@ namespace QuikSharp {
                     (new Message<string>(firmId + "|" + accId + "|" + secCode + "|" + posType, "getFuturesHolding"))).ConfigureAwait (false);
             
             return response.Data;
+        }
+        public async Task<List<OptionBoard>> GetOptionBoard(string classCode,  string secCode)
+        {
+            var message = new Message<string>(classCode + "|" + secCode, "getOptionBoard");
+            Message<List<OptionBoard>> response =
+                await QuikService.Send<Message<List<OptionBoard>>>(message).ConfigureAwait(false);
+            return response.Data;
+        
         }
 
         public async Task<List<Trade>> GetTrades()

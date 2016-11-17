@@ -408,6 +408,57 @@ end
 
 
 --------------------------
+-- OptionBoard functions --
+--------------------------
+function qsfunctions.getOptionBoard(msg)
+    local spl = split(msg.data, "|")
+    local classCode, secCode = spl[1], spl[2]
+	local result, err = getOptions(classCode, secCode)
+	if result then
+		msg.data = result
+	else
+		log("Option board returns nil", 3)
+		msg.data = nil
+	end
+    return msg
+end
+
+function getOptions(classCode,secCode)
+	--classCode = "SPBOPT"
+--BaseSecList="RIZ6"
+local SecList = getClassSecurities(classCode) --все сразу
+local t={}
+local p={}
+for sec in string.gmatch(SecList, "([^,]+)") do --перебираем опционы по очереди.
+            local Optionbase=getParamEx(classCode,sec,"optionbase").param_image
+            local Optiontype=getParamEx(classCode,sec,"optiontype").param_image
+            if (string.find(secCode,Optionbase)~=nil) then
+
+                
+                p={
+                    ["code"]=getParamEx(classCode,sec,"code").param_image,
+					["Name"]=getSecurityInfo(classCode,sec).name,
+					["DAYS_TO_MAT_DATE"]=getParamEx(classCode,sec,"DAYS_TO_MAT_DATE").param_value+0,
+					["BID"]=getParamEx(classCode,sec,"BID").param_value+0,
+					["OFFER"]=getParamEx(classCode,sec,"OFFER").param_value+0,
+					["OPTIONBASE"]=getParamEx(classCode,sec,"optionbase").param_image,
+					["OPTIONTYPE"]=getParamEx(classCode,sec,"optiontype").param_image,
+					["Longname"]=getParamEx(classCode,sec,"longname").param_image,
+					["shortname"]=getParamEx(classCode,sec,"shortname").param_image,
+					["Volatility"]=getParamEx(classCode,sec,"volatility").param_value+0,
+					["Strike"]=getParamEx(classCode,sec,"strike").param_value+0
+                    }
+
+				
+
+                        table.insert( t, p ) 
+            end
+              
+end
+return t
+end
+
+--------------------------
 -- Stop order functions --
 --------------------------
 
