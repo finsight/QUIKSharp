@@ -10,8 +10,12 @@ namespace QuikSharp
     public class CandleFunctions
     {
 
+        /// <summary>
+        /// </summary>
         public QuikService QuikService { get; private set; }
 
+        /// <summary>
+        /// </summary>
         public delegate void CandleHandler(Candle candle);
         /// <summary>
         /// Событие получения новой свечи. Для срабатывания необходимо подписаться с помощью метода Subscribe.
@@ -23,6 +27,8 @@ namespace QuikSharp
                 NewCandle(candle);
         }
 
+        /// <summary>
+        /// </summary>
         public CandleFunctions(int port) { QuikService = QuikService.Create(port); }
 
 
@@ -79,18 +85,36 @@ namespace QuikSharp
             return response.Data;
         }
 
+        /// <summary>
+        /// Осуществляет подписку на получение исторических данных (свечи).
+        /// </summary>
+        /// <param name="classCode">Класс инструмента.</param>
+        /// <param name="securityCode">Код инструмента.</param>
+        /// <param name="interval">Интервал свечей.</param>
         public async Task Subscribe(string classCode, string securityCode, CandleInterval interval)
         {
             var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "subscribe_to_candles");
             await QuikService.Send<Message<string>>(message).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Отписывается от получения исторических данных (свечей).
+        /// </summary>
+        /// <param name="classCode">Класс инструмента.</param>
+        /// <param name="securityCode">Код инструмента.</param>
+        /// <param name="interval">Интервал свечей.</param>
         public async Task Unsubscribe(string classCode, string securityCode, CandleInterval interval)
         {
             var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "unsubscribe_from_candles");
             await QuikService.Send<Message<string>>(message).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Проверка состояния подписки на исторические данные (свечи).
+        /// </summary>
+        /// <param name="classCode">Класс инструмента.</param>
+        /// <param name="securityCode">Код инструмента.</param>
+        /// <param name="interval">Интервал свечей.</param>
         public async Task<bool> IsSubscribed(string classCode, string securityCode, CandleInterval interval)
         {
             var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "is_subscribed");
