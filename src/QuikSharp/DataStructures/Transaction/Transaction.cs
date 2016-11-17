@@ -223,7 +223,7 @@ namespace QuikSharp.DataStructures.Transaction
         /// </summary>
         public string STOPPRICE_SECCODE { get; set; }
         /// <summary>
-        /// Направление предельного изменения стоп-цены. Используется только при «STOP_ORDER_KIND» = «CONDITION_PRICE_BY_OTHER_SEC». Возможные значения:  «<=» или «>= »
+        /// Направление предельного изменения стоп-цены. Используется только при «STOP_ORDER_KIND» = «CONDITION_PRICE_BY_OTHER_SEC».
         /// </summary>
         public string STOPPRICE_CONDITION { get; set; }
         /// <summary>

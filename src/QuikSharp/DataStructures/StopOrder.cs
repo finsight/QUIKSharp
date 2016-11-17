@@ -12,6 +12,9 @@ namespace QuikSharp.DataStructures
     public class StopOrder
     {
 
+        /// <summary>
+        /// 
+        /// </summary>
         [JsonProperty("lua_timestamp")]
         public long LuaTimeStamp { get; internal set; }
 
@@ -226,7 +229,7 @@ namespace QuikSharp.DataStructures
     public enum Condition
     {
         /// <summary>
-        /// «4» – <=
+        /// «4» – меньше или равно
         /// </summary>
         LessOrEqual,
 

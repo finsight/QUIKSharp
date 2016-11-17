@@ -33,7 +33,7 @@ namespace QuikSharp {
         /// </summary>
         Task<DepoLimit> GetDepo(string clientCode, string firmId, string secCode, string account);
 
-        /// </summary>
+        /// <summary>
         /// Функция для получения информации по бумажным лимитам указанного типа
         /// </summary>
         Task<DepoLimitEx> GetDepoEx(string firmId, string clientCode, string secCode, string accID, int limitKind);
