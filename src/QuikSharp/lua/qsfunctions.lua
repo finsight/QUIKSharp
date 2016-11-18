@@ -434,7 +434,7 @@ for sec in string.gmatch(SecList, "([^,]+)") do --перебираем опци�
             local Optiontype=getParamEx(classCode,sec,"optiontype").param_image
             if (string.find(secCode,Optionbase)~=nil) then
 
-                
+
                 p={
                     ["code"]=getParamEx(classCode,sec,"code").param_image,
 					["Name"]=getSecurityInfo(classCode,sec).name,
@@ -449,11 +449,11 @@ for sec in string.gmatch(SecList, "([^,]+)") do --перебираем опци�
 					["Strike"]=getParamEx(classCode,sec,"strike").param_value+0
                     }
 
-				
 
-                        table.insert( t, p ) 
+
+                        table.insert( t, p )
             end
-              
+
 end
 return t
 end
@@ -563,55 +563,6 @@ end
 data_sources = {}
 last_indexes = {}
 
----------------------- Pr0phet1c version -----------------------
------ Подписаться на получение ВСЕХ свечей по заданному инструменту и интервалу
---function qsfunctions.subscribe_to_candles(msg)
---	local class, sec, interval = get_candles_param(msg)
---	local key = get_key(class, sec, interval)
---	data_sources[key], error_descr = CreateDataSource(class, sec, interval)
-
---	if(error_descr ~= nil) then
---		msg.cmd = "lua_create_data_source_error"
---		msg.lua_error = error_descr
---		return msg
---	end
-
---	if data_sources[key] == nil then
---		msg.cmd = "lua_create_data_source_error"
---		msg.lua_error = "Can't create data source for " .. class .. ", " .. sec .. ", " .. tostring(interval)
---	else
---		--data_sources[key] = ds
---		last_indexes[key] = data_sources[key]:Size()
---		--------------------------
-
---		all_candles = {}
---		for i = 1, data_sources[key]:Size()-1 do
---			local candle = {}
---			candle.low   = data_sources[key]:L(i)
---			candle.close = data_sources[key]:C(i)
---			candle.high = data_sources[key]:H(i)
---			candle.open = data_sources[key]:O(i)
---			candle.volume = data_sources[key]:V(i)
---			candle.datetime = data_sources[key]:T(i)
-
---			candle.sec = sec
---			candle.class = class
---			candle.interval = interval
-
---			table.insert(all_candles, candle)
---		end
---		msg.data = all_candles
---		--------------------------
---		data_sources[key]:SetUpdateCallback(
---			function(index)
---				data_source_callback(index, class, sec, interval)
---			end)
---	end
---	return msg
---end
----------------------- Pr0phet1c version -----------------------
-
----------------------- original version -----------------------
 --- РџРѕРґРїРёСЃР°С‚СЊСЃСЏ РЅР° РїРѕР»СѓС‡РµРЅРёСЏ СЃРІРµС‡РµР№ РїРѕ Р·Р°РґР°РЅРЅРѕРјСѓ РёРЅСЃС‚СЂСѓРјРµРЅС‚ Рё РёРЅС‚РµСЂРІР°Р»Сѓ
 function qsfunctions.subscribe_to_candles(msg)
 	local ds, is_error = create_data_source(msg)
@@ -621,13 +572,12 @@ function qsfunctions.subscribe_to_candles(msg)
 		data_sources[key] = ds
 		last_indexes[key] = ds:Size()
 		ds:SetUpdateCallback(
-			function(index) 
-				data_source_callback(index, class, sec, interval) 
+			function(index)
+				data_source_callback(index, class, sec, interval)
 			end)
 	end
 	return msg
 end
----------------------- original version -----------------------
 
 
 function data_source_callback(index, class, sec, interval)
