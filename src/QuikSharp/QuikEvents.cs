@@ -15,9 +15,8 @@ namespace QuikSharp {
     /// <summary>
     /// Обработчик события OnInit
     /// </summary>
-    /// <param name="path">Расположение скрипта QuikSharp.lua</param>
     /// <param name="port">Порт обмена данными</param>
-    public delegate void InitHandler(string path, int port);
+    public delegate void InitHandler(int port);
 
     /// <summary>
     /// 
@@ -71,52 +70,40 @@ namespace QuikSharp {
         public QuikEvents(QuikService service) { QuikService = service; }
         public QuikService QuikService { get; private set; }
 
-		/// <summary>
-		/// Событие вызывается когда библиотека QuikSharp успешно подключилась к Quik'у
-		/// </summary>
-		public event Action OnConnectedToQuik;
-		internal void OnConnectedToQuikCall ()
-		{
-			if (OnConnectedToQuik != null)
-				OnConnectedToQuik ();
-		}
-
-		/// <summary>
-		/// Событие вызывается когда библиотека QuikSharp была отключена от Quik'а
-		/// </summary>
-		public event Action OnDisconnectedFromQuik;
-		internal void OnDisconnectedFromQuikCall ()
-		{
-			if (OnDisconnectedFromQuik != null)
-				OnDisconnectedFromQuik ();
-		}
-
-		public event InitHandler OnInit
-		{
-			add
-			{
-				throw new NotImplementedException ("Подписка на данный метод бессымслена. В скрипте lua будет вызван данный callback когда еще нет подключения к QuikSharp библиотеке. Используйте callback OnConnectedToQuikCall если необходимо.");
-			}
-			remove
-			{
-
-			}
-		}
-
-		public event EventHandler OnAccountBalance;
-		public event EventHandler OnAccountPosition;
-
-		/// <summary>
-		/// Функция вызывается терминалом QUIK при получении обезличенной сделки.
-		/// </summary>
-		public event AllTradeHandler OnAllTrade;
-        internal void OnAllTradeCall(AllTrade allTrade) {
-            if (OnAllTrade != null) OnAllTrade(allTrade);
+        /// <summary>
+        /// Событие вызывается когда библиотека QuikSharp успешно подключилась к Quik'у
+        /// </summary>
+        public event InitHandler OnConnectedToQuik;
+        internal void OnConnectedToQuikCall(int port) {
+            OnConnectedToQuik?.Invoke(port);
+            OnInit?.Invoke(port);
         }
 
+        /// <summary>
+        /// Событие вызывается когда библиотека QuikSharp была отключена от Quik'а
+        /// </summary>
+        public event VoidHandler OnDisconnectedFromQuik;
+        internal void OnDisconnectedFromQuikCall() {
+            OnDisconnectedFromQuik?.Invoke();
+        }
+
+        public event InitHandler OnInit;
+ 
+        public event EventHandler OnAccountBalance;
+        public event EventHandler OnAccountPosition;
+ 
+        /// <summary>
+        /// Функция вызывается терминалом QUIK при получении обезличенной сделки.
+        /// </summary>
+        public event AllTradeHandler OnAllTrade;
+        internal void OnAllTradeCall(AllTrade allTrade) => OnAllTrade?.Invoke(allTrade);
+ 
 
         public event VoidHandler OnCleanUp;
-        internal void OnCleanUpCall() { if (OnCleanUp != null) OnCleanUp(); }
+        internal void OnCleanUpCall()
+        {
+            OnCleanUp?.Invoke();
+        }
 
 		/// <summary>
 		/// Функция вызывается перед закрытием терминала QUIK.
@@ -181,7 +168,7 @@ namespace QuikSharp {
 
         public event ParamHandler OnParam;
         internal void OnParamCall(Param par){
-        if (OnParam != null) OnParam(par);
+            OnParam?.Invoke(par);
         }
 
 		/// <summary>

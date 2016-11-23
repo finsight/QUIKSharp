@@ -131,6 +131,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AsyncManualResetEvent.cs" />
     <Compile Include="CandleFunctions.cs" />
     <Compile Include="ClassFunctions\ClassFunctions.cs" />
     <Compile Include="DataStructures\Candle.cs" />
