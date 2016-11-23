@@ -283,6 +283,7 @@ function qsfunctions.getDepoEx(msg)
     return msg
 end
 
+
 function qsfunctions.getFuturesHolding(msg)
     local spl = split(msg.data, "|")
     local firmId, accId, secCode, posType = spl[1], spl[2], spl[3], spl[4]
@@ -334,20 +335,8 @@ function qsfunctions.getOrder_by_ID(msg)
 	return msg
 end
 
----- Функция возвращает заявку по номеру
---function qsfunctions.getOrder_by_Number(msg)
---	for i=0,getNumberOf("orders")-1 do
---		local order = getItem("orders",i)
---		if order.order_num == tonumber(msg.data) then
---			msg.data = order
---			return msg
---		end
---	end
---	return msg
---end
-
---- Р’РѕР·РІСЂР°С‰Р°РµС‚ Р·Р°СЏРІРєСѓ РїРѕ РµС‘ РЅРѕРјРµСЂСѓ ---
---- РќР° РѕСЃРЅРѕРІРµ http://help.qlua.org/ch4_5_1_1.htm ---
+--- Возвращает заявку по её номеру ---
+--- На основе http://help.qlua.org/ch4_5_1_1.htm ---
 function qsfunctions.get_order_by_number(msg)
 	local spl = split(msg.data, "|")
 	local class_code = spl[1]
@@ -356,8 +345,8 @@ function qsfunctions.get_order_by_number(msg)
 	return msg
 end
 
---- Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє Р·Р°РїРёСЃРµР№ РёР· С‚Р°Р±Р»РёС†С‹ 'Р›РёРјРёС‚С‹ РїРѕ Р±СѓРјР°РіР°Рј'
---- РќР° РѕСЃРЅРѕРІРµ http://help.qlua.org/ch4_6_11.htm Рё http://help.qlua.org/ch4_5_3.htm
+--- Возвращает список записей из таблицы 'Лимиты по бумагам'
+--- На основе http://help.qlua.org/ch4_6_11.htm и http://help.qlua.org/ch4_5_3.htm
 function qsfunctions.get_depo_limits(msg)
 	local sec_code = msg.data
 	local count = getNumberOf("depo_limits")
@@ -405,8 +394,6 @@ function qsfunctions.get_Trades_by_OrderNumber(msg)
 	return msg
 end
 
-
-
 --------------------------
 -- OptionBoard functions --
 --------------------------
@@ -434,7 +421,7 @@ for sec in string.gmatch(SecList, "([^,]+)") do --перебираем опци�
             local Optiontype=getParamEx(classCode,sec,"optiontype").param_image
             if (string.find(secCode,Optionbase)~=nil) then
 
-
+                
                 p={
                     ["code"]=getParamEx(classCode,sec,"code").param_image,
 					["Name"]=getSecurityInfo(classCode,sec).name,
@@ -449,14 +436,15 @@ for sec in string.gmatch(SecList, "([^,]+)") do --перебираем опци�
 					["Strike"]=getParamEx(classCode,sec,"strike").param_value+0
                     }
 
+				
 
-
-                        table.insert( t, p )
+                        table.insert( t, p ) 
             end
-
+              
 end
 return t
 end
+
 
 --------------------------
 -- Stop order functions --
@@ -563,7 +551,7 @@ end
 data_sources = {}
 last_indexes = {}
 
---- РџРѕРґРїРёСЃР°С‚СЊСЃСЏ РЅР° РїРѕР»СѓС‡РµРЅРёСЏ СЃРІРµС‡РµР№ РїРѕ Р·Р°РґР°РЅРЅРѕРјСѓ РёРЅСЃС‚СЂСѓРјРµРЅС‚ Рё РёРЅС‚РµСЂРІР°Р»Сѓ
+--- Подписаться на получения свечей по заданному инструмент и интервалу
 function qsfunctions.subscribe_to_candles(msg)
 	local ds, is_error = create_data_source(msg)
 	if not is_error then
@@ -572,13 +560,12 @@ function qsfunctions.subscribe_to_candles(msg)
 		data_sources[key] = ds
 		last_indexes[key] = ds:Size()
 		ds:SetUpdateCallback(
-			function(index)
-				data_source_callback(index, class, sec, interval)
+			function(index) 
+				data_source_callback(index, class, sec, interval) 
 			end)
 	end
 	return msg
 end
-
 
 function data_source_callback(index, class, sec, interval)
 	local key = get_key(class, sec, interval)
