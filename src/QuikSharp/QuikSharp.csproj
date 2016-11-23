@@ -136,6 +136,7 @@
     <Compile Include="ClassFunctions\ClassFunctions.cs" />
     <Compile Include="DataStructures\Candle.cs" />
     <Compile Include="DataStructures\CandleInterval.cs" />
+    <Compile Include="DataStructures\OptionBoard.cs" />
     <Compile Include="DataStructures\Param.cs" />
     <Compile Include="DataStructures\QuikTable.cs" />
     <Compile Include="DataStructures\ClassInfo.cs" />

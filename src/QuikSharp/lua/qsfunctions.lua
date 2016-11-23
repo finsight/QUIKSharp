@@ -283,6 +283,7 @@ function qsfunctions.getDepoEx(msg)
     return msg
 end
 
+
 function qsfunctions.getFuturesHolding(msg)
     local spl = split(msg.data, "|")
     local firmId, accId, secCode, posType = spl[1], spl[2], spl[3], spl[4]
@@ -334,20 +335,8 @@ function qsfunctions.getOrder_by_ID(msg)
 	return msg
 end
 
----- Функция возвращает заявку по номеру
---function qsfunctions.getOrder_by_Number(msg)
---	for i=0,getNumberOf("orders")-1 do
---		local order = getItem("orders",i)
---		if order.order_num == tonumber(msg.data) then
---			msg.data = order
---			return msg
---		end
---	end
---	return msg
---end
-
---- Р’РѕР·РІСЂР°С‰Р°РµС‚ Р·Р°СЏРІРєСѓ РїРѕ РµС‘ РЅРѕРјРµСЂСѓ ---
---- РќР° РѕСЃРЅРѕРІРµ http://help.qlua.org/ch4_5_1_1.htm ---
+--- Возвращает заявку по её номеру ---
+--- На основе http://help.qlua.org/ch4_5_1_1.htm ---
 function qsfunctions.get_order_by_number(msg)
 	local spl = split(msg.data, "|")
 	local class_code = spl[1]
@@ -356,8 +345,8 @@ function qsfunctions.get_order_by_number(msg)
 	return msg
 end
 
---- Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє Р·Р°РїРёСЃРµР№ РёР· С‚Р°Р±Р»РёС†С‹ 'Р›РёРјРёС‚С‹ РїРѕ Р±СѓРјР°РіР°Рј'
---- РќР° РѕСЃРЅРѕРІРµ http://help.qlua.org/ch4_6_11.htm Рё http://help.qlua.org/ch4_5_3.htm
+--- Возвращает список записей из таблицы 'Лимиты по бумагам'
+--- На основе http://help.qlua.org/ch4_6_11.htm и http://help.qlua.org/ch4_5_3.htm
 function qsfunctions.get_depo_limits(msg)
 	local sec_code = msg.data
 	local count = getNumberOf("depo_limits")
@@ -405,6 +394,56 @@ function qsfunctions.get_Trades_by_OrderNumber(msg)
 	return msg
 end
 
+--------------------------
+-- OptionBoard functions --
+--------------------------
+function qsfunctions.getOptionBoard(msg)
+    local spl = split(msg.data, "|")
+    local classCode, secCode = spl[1], spl[2]
+	local result, err = getOptions(classCode, secCode)
+	if result then
+		msg.data = result
+	else
+		log("Option board returns nil", 3)
+		msg.data = nil
+	end
+    return msg
+end
+
+function getOptions(classCode,secCode)
+	--classCode = "SPBOPT"
+--BaseSecList="RIZ6"
+local SecList = getClassSecurities(classCode) --все сразу
+local t={}
+local p={}
+for sec in string.gmatch(SecList, "([^,]+)") do --перебираем опционы по очереди.
+            local Optionbase=getParamEx(classCode,sec,"optionbase").param_image
+            local Optiontype=getParamEx(classCode,sec,"optiontype").param_image
+            if (string.find(secCode,Optionbase)~=nil) then
+
+                
+                p={
+                    ["code"]=getParamEx(classCode,sec,"code").param_image,
+					["Name"]=getSecurityInfo(classCode,sec).name,
+					["DAYS_TO_MAT_DATE"]=getParamEx(classCode,sec,"DAYS_TO_MAT_DATE").param_value+0,
+					["BID"]=getParamEx(classCode,sec,"BID").param_value+0,
+					["OFFER"]=getParamEx(classCode,sec,"OFFER").param_value+0,
+					["OPTIONBASE"]=getParamEx(classCode,sec,"optionbase").param_image,
+					["OPTIONTYPE"]=getParamEx(classCode,sec,"optiontype").param_image,
+					["Longname"]=getParamEx(classCode,sec,"longname").param_image,
+					["shortname"]=getParamEx(classCode,sec,"shortname").param_image,
+					["Volatility"]=getParamEx(classCode,sec,"volatility").param_value+0,
+					["Strike"]=getParamEx(classCode,sec,"strike").param_value+0
+                    }
+
+				
+
+                        table.insert( t, p ) 
+            end
+              
+end
+return t
+end
 
 
 --------------------------
@@ -512,56 +551,7 @@ end
 data_sources = {}
 last_indexes = {}
 
----------------------- Pr0phet1c version -----------------------
------ Подписаться на получение ВСЕХ свечей по заданному инструменту и интервалу
---function qsfunctions.subscribe_to_candles(msg)
---	local class, sec, interval = get_candles_param(msg)
---	local key = get_key(class, sec, interval)
---	data_sources[key], error_descr = CreateDataSource(class, sec, interval)
-
---	if(error_descr ~= nil) then
---		msg.cmd = "lua_create_data_source_error"
---		msg.lua_error = error_descr
---		return msg
---	end
-
---	if data_sources[key] == nil then
---		msg.cmd = "lua_create_data_source_error"
---		msg.lua_error = "Can't create data source for " .. class .. ", " .. sec .. ", " .. tostring(interval)
---	else
---		--data_sources[key] = ds
---		last_indexes[key] = data_sources[key]:Size()
---		--------------------------
-
---		all_candles = {}
---		for i = 1, data_sources[key]:Size()-1 do
---			local candle = {}
---			candle.low   = data_sources[key]:L(i)
---			candle.close = data_sources[key]:C(i)
---			candle.high = data_sources[key]:H(i)
---			candle.open = data_sources[key]:O(i)
---			candle.volume = data_sources[key]:V(i)
---			candle.datetime = data_sources[key]:T(i)
-
---			candle.sec = sec
---			candle.class = class
---			candle.interval = interval
-
---			table.insert(all_candles, candle)
---		end
---		msg.data = all_candles
---		--------------------------
---		data_sources[key]:SetUpdateCallback(
---			function(index)
---				data_source_callback(index, class, sec, interval)
---			end)
---	end
---	return msg
---end
----------------------- Pr0phet1c version -----------------------
-
----------------------- original version -----------------------
---- РџРѕРґРїРёСЃР°С‚СЊСЃСЏ РЅР° РїРѕР»СѓС‡РµРЅРёСЏ СЃРІРµС‡РµР№ РїРѕ Р·Р°РґР°РЅРЅРѕРјСѓ РёРЅСЃС‚СЂСѓРјРµРЅС‚ Рё РёРЅС‚РµСЂРІР°Р»Сѓ
+--- Подписаться на получения свечей по заданному инструмент и интервалу
 function qsfunctions.subscribe_to_candles(msg)
 	local ds, is_error = create_data_source(msg)
 	if not is_error then
@@ -576,8 +566,6 @@ function qsfunctions.subscribe_to_candles(msg)
 	end
 	return msg
 end
----------------------- original version -----------------------
-
 
 function data_source_callback(index, class, sec, interval)
 	local key = get_key(class, sec, interval)
