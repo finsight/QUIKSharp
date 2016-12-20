@@ -234,9 +234,7 @@ namespace QuikSharp {
                         case EventNames.OnCleanUp:
                         case EventNames.OnClose:
                         case EventNames.OnConnected:
-                            return new Message<string>();
                         case EventNames.OnDisconnected:
-                            return new Message<string>();
                         case EventNames.OnInit:
                         case EventNames.OnStop:
                             return new Message<string>();

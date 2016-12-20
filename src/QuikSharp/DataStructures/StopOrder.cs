@@ -11,7 +11,6 @@ namespace QuikSharp.DataStructures
     /// </summary>
     public class StopOrder
     {
-
         /// <summary>
         /// 
         /// </summary>
@@ -229,7 +228,7 @@ namespace QuikSharp.DataStructures
     public enum Condition
     {
         /// <summary>
-        /// «4» – меньше или равно
+        /// «4» – <=
         /// </summary>
         LessOrEqual,
 

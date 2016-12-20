@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 --~ Copyright Ⓒ 2015 Victor Baybekov
-=======
---~ Copyright Ⓒ 2014 Victor Baybekov
->>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
 
 package.path = package.path .. ";" .. ".\\?.lua;" .. ".\\?.luac"
 package.cpath = package.cpath .. ";" .. '.\\clibs\\?.dll'
@@ -29,18 +25,11 @@ function qsfunctions.dispatch_and_process(msg)
 end
 
 
-<<<<<<< HEAD
 ---------------------
 -- Debug functions --
 ---------------------
 
 --- Returns Pong to Ping
-=======
-------------------------------
--- Debug functions
-------------------------------
---- Echoes its message
->>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
 -- @param msg message table
 -- @return same msg table
 function qsfunctions.ping(msg)
@@ -55,7 +44,6 @@ function qsfunctions.ping(msg)
     end
 end
 
-<<<<<<< HEAD
 --- Echoes its message
 function qsfunctions.echo(msg)
     return msg
@@ -68,31 +56,17 @@ function qsfunctions.divide_string_by_zero(msg)
 end
 
 --- Is running inside quik
-=======
---- Test error handling
-function qsfunctions.divide_string_by_zero(msg)
-    msg.data = "asd" / 1
-    return msg
-end
-
->>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
 function qsfunctions.is_quik(msg)
     if getScriptPath then msg.data = 1 else msg.data = 0 end
     return msg
 end
 
-<<<<<<< HEAD
 
 
 -----------------------
 -- Service functions --
 -----------------------
 
-=======
-------------------------------
--- Service functions
-------------------------------
->>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
 --- Функция предназначена для определения состояния подключения клиентского места к
 -- серверу. Возвращает «1», если клиентское место подключено и «0», если не подключено.
 function qsfunctions.isConnected(msg)
@@ -102,10 +76,6 @@ function qsfunctions.isConnected(msg)
     return msg
 end
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
 --- Функция возвращает путь, по которому находится файл info.exe, исполняющий данный
 -- скрипт, без завершающего обратного слэша («\»). Например, C:\QuikFront.
 function qsfunctions.getWorkingFolder(msg)
@@ -164,18 +134,10 @@ function qsfunctions.PrintDbgStr(msg)
     return msg
 end
 
-
-
-<<<<<<< HEAD
 ---------------------
 -- Class functions --
 ---------------------
 
-=======
-------------------------------
--- Class functions
-------------------------------
->>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
 --- Функция предназначена для получения списка кодов классов, переданных с сервера в ходе сеанса связи.
 function qsfunctions.getClassesList(msg)
     msg.data = getClassesList()
@@ -186,11 +148,7 @@ end
 --- Функция предназначена для получения информации о классе.
 function qsfunctions.getClassInfo(msg)
     msg.data = getClassInfo(msg.data)
-<<<<<<< HEAD
 --    if msg.data then log(msg.data.name) else log("getClassInfo  returned nil") end
-=======
-    if msg.data then log(msg.data.name) else log("getClassInfo  returned nil") end
->>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
     return msg
 end
 
@@ -201,7 +159,6 @@ function qsfunctions.getClassSecurities(msg)
     return msg
 end
 
-<<<<<<< HEAD
 --- Функция позволяет узнать, заказан ли с сервера стакан по указанному классу и бумаге.
 function qsfunctions.getSecurityInfo(msg)
     local spl = split(msg.data, "|")
@@ -240,8 +197,6 @@ function qsfunctions.IsSubscribed_Level_II_Quotes(msg)
     return msg
 end
 
-
-
 -----------------------
 -- Trading functions --
 -----------------------
@@ -262,9 +217,202 @@ function qsfunctions.sendTransaction(msg)
         return msg
     end
 end
-=======
 
+--- Функция предназначена для получения значений всех параметров биржевой информации из Таблицы текущих значений параметров. 
+-- С помощью этой функции можно получить любое из значений Таблицы текущих значений параметров для заданных кодов класса и бумаги. 
 
->>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
+function qsfunctions.getParamEx(msg)
+    local spl = split(msg.data, "|")
+    local class_code, sec_code, param_name = spl[1], spl[2], spl[3]
+    msg.data = getParamEx(class_code, sec_code, param_name)
+    return msg
+end
+
+-- Функция предназначена для получения информации по бумажным лимитам. 
+function qsfunctions.getDepo(msg)
+    local spl = split(msg.data, "|")
+    local clientCode, firmId, secCode, account = spl[1], spl[2], spl[3], spl[4]
+    msg.data = getDepo(clientCode, firmId, secCode, account)
+    return msg
+end
+
+function qsfunctions.getFuturesHolding(msg)
+    local spl = split(msg.data, "|")
+    local firmId, accId, secCode, posType = spl[1], spl[2], spl[3], spl[4]
+	local result, err = getFuturesHolding(firmId, accId, secCode, posType*1)
+	if result then
+		msg.data = result
+	else
+		log("Futures holding returns nil", 3)
+		msg.data = nil
+	end
+    return msg
+end
+
+--- Возвращает заявку по её номеру ---
+--- На основе http://help.qlua.org/ch4_5_1_1.htm ---
+function qsfunctions.get_order_by_number(msg)
+	local spl = split(msg.data, "|")
+	local class_code = spl[1]
+	local order_id = tonumber(spl[2])
+	msg.data = getOrderByNumber(class_code, order_id)
+	return msg
+end
+
+--- Возвращает список записей из таблицы 'Лимиты по бумагам'
+--- На основе http://help.qlua.org/ch4_6_11.htm и http://help.qlua.org/ch4_5_3.htm
+function qsfunctions.get_depo_limits(msg)
+	local sec_code = msg.data
+	local count = getNumberOf("depo_limits")
+	local depo_limits = {}
+	for i = 0, count - 1 do
+		local depo_limit = getItem("depo_limits", i)
+		if msg.data == "" or depo_limit.sec_code == sec_code then
+			table.insert(depo_limits, depo_limit)
+		end
+	end
+	msg.data = depo_limits
+	return msg
+end
+
+--------------------------
+-- Stop order functions --
+--------------------------
+
+--- Возвращает список стоп-заявок
+function qsfunctions.get_stop_orders(msg)
+	if msg.data ~= "" then
+		local spl = split(msg.data, "|")
+		class_code, sec_code = spl[1], spl[2]
+	end
+
+	local count = getNumberOf("stop_orders")
+	local stop_orders = {}
+	for i = 0, count - 1 do
+		local stop_order = getItem("stop_orders", i)
+		if msg.data == "" or (stop_order.class_code == class_code and stop_order.sec_code == sec_code) then
+			table.insert(stop_orders, stop_order)
+		end
+	end
+	msg.data = stop_orders
+	return msg
+end
+
+-------------------------
+--- Candles functions ---
+-------------------------
+
+--- Возвращаем все свечи по идентификатору графика. График должен быть открыт
+function qsfunctions.get_candles(msg)
+	log("Called get_candles" .. msg.data, 2)
+	local spl = split(msg.data, "|")
+	local tag = spl[1]
+	local line = tonumber(spl[2])
+	local first_candle = tonumber(spl[3])
+	local count = tonumber(spl[4])
+	if count == 0 then
+		count = getNumCandles(tag) * 1
+	end
+	log("Count: " .. count, 2)
+	local t,n,l = getCandlesByIndex(tag, line, first_candle, count)
+	log("Candles table size: " .. n, 2)
+	log("Label: " .. l, 2)
+	local candles = {}
+	for i = 0, count - 1 do
+		table.insert(candles, t[i])
+	end
+	msg.data = candles
+	return msg
+end
+
+--- Словарь открытых подписок (datasources) на свечи
+data_sources = {}
+last_indexes = {}
+
+--- Подписаться на получения свечей по заданному инструмент и интервалу
+function qsfunctions.subscribe_to_candles(msg)
+	local class, sec, interval = get_candles_param(msg)
+	local ds, error_descr = CreateDataSource(class, sec, interval)
+
+	if(error_descr ~= nil) then
+		msg.cmd = "lua_create_data_source_error"
+		msg.lua_error = error_descr
+		return msg
+	end
+	
+	if ds == nil then
+		msg.cmd = "lua_create_data_source_error"
+		msg.lua_error = "Can't create data source for " .. class .. ", " .. sec .. ", " .. tostring(interval)
+	else
+		local key = get_key(class, sec, interval)
+		data_sources[key] = ds
+		last_indexes[key] = ds:Size()
+		ds:SetUpdateCallback(
+			function(index) 
+				data_source_callback(index, class, sec, interval) 
+			end)
+	end
+	return msg
+end
+
+function data_source_callback(index, class, sec, interval)
+	local key = get_key(class, sec, interval)
+	if index ~= last_indexes[key] then
+		last_indexes[key] = index
+
+		local candle = {}
+		candle.low   = data_sources[key]:L(index - 1)
+		candle.close = data_sources[key]:C(index - 1)
+		candle.high = data_sources[key]:H(index - 1)
+		candle.open = data_sources[key]:O(index - 1)
+		candle.volume = data_sources[key]:V(index - 1)
+		candle.datetime = data_sources[key]:T(index - 1)
+
+		candle.sec = sec
+		candle.class = class
+		candle.interval = interval
+
+		local msg = {}
+        msg.t = timemsec()
+        msg.cmd = "NewCandle"
+        msg.data = candle
+        sendCallback(msg)
+	end
+end
+
+--- Отписать от получения свечей по заданному инструменту и интервалу
+function qsfunctions.unsubscribe_from_candles(msg)
+	local class, sec, interval = get_candles_param(msg)
+	local key = get_key(class, sec, interval)
+	data_sources[key]:Close()
+	data_sources[key] = nil
+	last_indexes[key] = nil
+	return msg
+end
+
+--- Проверить открыта ли подписка на заданный инструмент и интервал
+function qsfunctions.is_subscribed(msg)
+	local class, sec, interval = get_candles_param(msg)
+	local key = get_key(class, sec, interval)
+	for k, v in pairs(data_sources) do
+		if key == k then
+			msg.data = true;
+			return  msg
+		end
+	end
+	msg.data = false
+	return msg
+end
+
+--- Возвращает из msg информацию о инструменте на который подписываемся и интервале
+function get_candles_param(msg)
+	local spl = split(msg.data, "|")
+	return spl[1], spl[2], tonumber(spl[3])
+end
+
+--- Возвращает уникальный ключ для инструмента на который подписываемся и инетрвала
+function get_key(class, sec, interval)
+	return class .. "|" .. sec .. "|" .. tostring(interval)
+end
 
 return qsfunctions

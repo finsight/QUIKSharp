@@ -1,24 +1,20 @@
-using System.Collections.Generic;
+п»їusing System.Collections.Generic;
 using System.Threading.Tasks;
 using QuikSharp.DataStructures;
 
 namespace QuikSharp
 {
     /// <summary>
-    /// Функции для получения свечей
+    /// Р¤СѓРЅРєС†РёРё РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ СЃРІРµС‡РµР№
     /// </summary>
     public class CandleFunctions
     {
 
-        /// <summary>
-        /// </summary>
         public QuikService QuikService { get; private set; }
 
-        /// <summary>
-        /// </summary>
         public delegate void CandleHandler(Candle candle);
         /// <summary>
-        /// Событие получения новой свечи. Для срабатывания необходимо подписаться с помощью метода Subscribe.
+        /// РЎРѕР±С‹С‚РёРµ РїРѕР»СѓС‡РµРЅРёСЏ РЅРѕРІРѕР№ СЃРІРµС‡Рё. Р”Р»СЏ СЃСЂР°Р±Р°С‚С‹РІР°РЅРёСЏ РЅРµРѕР±С…РѕРґРёРјРѕ РїРѕРґРїРёСЃР°С‚СЊСЃСЏ СЃ РїРѕРјРѕС‰СЊСЋ РјРµС‚РѕРґР° Subscribe.
         /// </summary>
         public event CandleHandler NewCandle;
         internal void RaiseNewCandleEvent(Candle candle)
@@ -27,98 +23,96 @@ namespace QuikSharp
                 NewCandle(candle);
         }
 
-        /// <summary>
-        /// </summary>
         public CandleFunctions(int port) { QuikService = QuikService.Create(port); }
 
 
         /// <summary>
-        /// Функция предназначена для получения информации о свечках по идентификатору (заказ данных для построения графика плагин не осуществляет, поэтому для успешного доступа нужный график должен быть открыт). Возвращаются все доступные свечки.
+        /// Р¤СѓРЅРєС†РёСЏ РїСЂРµРґРЅР°Р·РЅР°С‡РµРЅР° РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РёРЅС„РѕСЂРјР°С†РёРё Рѕ СЃРІРµС‡РєР°С… РїРѕ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂСѓ (Р·Р°РєР°Р· РґР°РЅРЅС‹С… РґР»СЏ РїРѕСЃС‚СЂРѕРµРЅРёСЏ РіСЂР°С„РёРєР° РїР»Р°РіРёРЅ РЅРµ РѕСЃСѓС‰РµСЃС‚РІР»СЏРµС‚, РїРѕСЌС‚РѕРјСѓ РґР»СЏ СѓСЃРїРµС€РЅРѕРіРѕ РґРѕСЃС‚СѓРїР° РЅСѓР¶РЅС‹Р№ РіСЂР°С„РёРє РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РѕС‚РєСЂС‹С‚). Р’РѕР·РІСЂР°С‰Р°СЋС‚СЃСЏ РІСЃРµ РґРѕСЃС‚СѓРїРЅС‹Рµ СЃРІРµС‡РєРё.
         /// </summary>
-        /// <param name="graphicTag">Строковый идентификатор графика или индикатора</param>
+        /// <param name="graphicTag">РЎС‚СЂРѕРєРѕРІС‹Р№ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РіСЂР°С„РёРєР° РёР»Рё РёРЅРґРёРєР°С‚РѕСЂР°</param>
         /// <returns></returns>
         public async Task<List<Candle>> GetAllCandles(string graphicTag)
         {
-            return await GetCandles(graphicTag, 0, 0, 0).ConfigureAwait(false);
+            return await GetCandles(graphicTag, 0, 0, 0).ConfigureAwait (false);
         }
 
         /// <summary>
-        /// Функция предназначена для получения информации о свечках по идентификатору (заказ данных для построения графика плагин не осуществляет, поэтому для успешного доступа нужный график должен быть открыт).   
+        /// Р¤СѓРЅРєС†РёСЏ РїСЂРµРґРЅР°Р·РЅР°С‡РµРЅР° РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РёРЅС„РѕСЂРјР°С†РёРё Рѕ СЃРІРµС‡РєР°С… РїРѕ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂСѓ (Р·Р°РєР°Р· РґР°РЅРЅС‹С… РґР»СЏ РїРѕСЃС‚СЂРѕРµРЅРёСЏ РіСЂР°С„РёРєР° РїР»Р°РіРёРЅ РЅРµ РѕСЃСѓС‰РµСЃС‚РІР»СЏРµС‚, РїРѕСЌС‚РѕРјСѓ РґР»СЏ СѓСЃРїРµС€РЅРѕРіРѕ РґРѕСЃС‚СѓРїР° РЅСѓР¶РЅС‹Р№ РіСЂР°С„РёРє РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РѕС‚РєСЂС‹С‚).   
         /// </summary>
-        /// <param name="graphicTag">Строковый идентификатор графика или индикатора</param>
-        /// <param name="line">Номер линии графика или индикатора. Первая линия имеет номер 0</param>
-        /// <param name="first">Индекс первой свечки. Первая (самая левая) свечка имеет индекс 0</param>
-        /// <param name="count">Количество запрашиваемых свечек</param>
+        /// <param name="graphicTag">РЎС‚СЂРѕРєРѕРІС‹Р№ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РіСЂР°С„РёРєР° РёР»Рё РёРЅРґРёРєР°С‚РѕСЂР°</param>
+        /// <param name="line">РќРѕРјРµСЂ Р»РёРЅРёРё РіСЂР°С„РёРєР° РёР»Рё РёРЅРґРёРєР°С‚РѕСЂР°. РџРµСЂРІР°СЏ Р»РёРЅРёСЏ РёРјРµРµС‚ РЅРѕРјРµСЂ 0</param>
+        /// <param name="first">РРЅРґРµРєСЃ РїРµСЂРІРѕР№ СЃРІРµС‡РєРё. РџРµСЂРІР°СЏ (СЃР°РјР°СЏ Р»РµРІР°СЏ) СЃРІРµС‡РєР° РёРјРµРµС‚ РёРЅРґРµРєСЃ 0</param>
+        /// <param name="count">РљРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РїСЂР°С€РёРІР°РµРјС‹С… СЃРІРµС‡РµРє</param>
         /// <returns></returns>
         public async Task<List<Candle>> GetCandles(string graphicTag, int line, int first, int count)
         {
             var message = new Message<string>(graphicTag + "|" + line + "|" + first + "|" + count, "get_candles");
-            Message<List<Candle>> response = await QuikService.Send<Message<List<Candle>>>(message).ConfigureAwait(false);
+            Message<List<Candle>> response = await QuikService.Send<Message<List<Candle>>>(message).ConfigureAwait (false);
             return response.Data;
         }
 
         /// <summary>
-        /// Функция возвращает список свечек указанного инструмента заданного интервала.
+        /// Р¤СѓРЅРєС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє СЃРІРµС‡РµРє СѓРєР°Р·Р°РЅРЅРѕРіРѕ РёРЅСЃС‚СЂСѓРјРµРЅС‚Р° Р·Р°РґР°РЅРЅРѕРіРѕ РёРЅС‚РµСЂРІР°Р»Р°.
         /// </summary>
-        /// <param name="classCode">Класс инструмента.</param>
-        /// <param name="securityCode">Код инструмента.</param>
-        /// <param name="interval">Интервал свечей.</param>
-        /// <returns>Список свечей.</returns>
+        /// <param name="classCode">РљР»Р°СЃСЃ РёРЅСЃС‚СЂСѓРјРµРЅС‚Р°.</param>
+        /// <param name="securityCode">РљРѕРґ РёРЅСЃС‚СЂСѓРјРµРЅС‚Р°.</param>
+        /// <param name="interval">РРЅС‚РµСЂРІР°Р» СЃРІРµС‡РµР№.</param>
+        /// <returns>РЎРїРёСЃРѕРє СЃРІРµС‡РµР№.</returns>
         public async Task<List<Candle>> GetAllCandles(string classCode, string securityCode, CandleInterval interval)
         {
-            //Параметр count == 0 говорт о том, что возвращаются все доступные свечи
-            return await GetLastCandles(classCode, securityCode, interval, 0).ConfigureAwait(false);
+            //РџР°СЂР°РјРµС‚СЂ count == 0 РіРѕРІРѕСЂС‚ Рѕ С‚РѕРј, С‡С‚Рѕ РІРѕР·РІСЂР°С‰Р°СЋС‚СЃСЏ РІСЃРµ РґРѕСЃС‚СѓРїРЅС‹Рµ СЃРІРµС‡Рё
+            return await GetLastCandles(classCode, securityCode, interval, 0).ConfigureAwait (false);
         }
 
         /// <summary>
-        /// Возвращает заданное количество свечек указанного инструмента и интервала с конца.
+        /// Р’РѕР·РІСЂР°С‰Р°РµС‚ Р·Р°РґР°РЅРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЃРІРµС‡РµРє СѓРєР°Р·Р°РЅРЅРѕРіРѕ РёРЅСЃС‚СЂСѓРјРµРЅС‚Р° Рё РёРЅС‚РµСЂРІР°Р»Р° СЃ РєРѕРЅС†Р°.
         /// </summary>
-        /// <param name="classCode">Класс инструмента.</param>
-        /// <param name="securityCode">Код инструмента.</param>
-        /// <param name="interval">Интервал свечей.</param>
-        /// <param name="count">Количество возвращаемых свечей с конца.</param>
-        /// <returns>Список свечей.</returns>
+        /// <param name="classCode">РљР»Р°СЃСЃ РёРЅСЃС‚СЂСѓРјРµРЅС‚Р°.</param>
+        /// <param name="securityCode">РљРѕРґ РёРЅСЃС‚СЂСѓРјРµРЅС‚Р°.</param>
+        /// <param name="interval">РРЅС‚РµСЂРІР°Р» СЃРІРµС‡РµР№.</param>
+        /// <param name="count">РљРѕР»РёС‡РµСЃС‚РІРѕ РІРѕР·РІСЂР°С‰Р°РµРјС‹С… СЃРІРµС‡РµР№ СЃ РєРѕРЅС†Р°.</param>
+        /// <returns>РЎРїРёСЃРѕРє СЃРІРµС‡РµР№.</returns>
         public async Task<List<Candle>> GetLastCandles(string classCode, string securityCode, CandleInterval interval, int count)
         {
             var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval + "|" + count, "get_candles_from_data_source");
-            Message<List<Candle>> response = await QuikService.Send<Message<List<Candle>>>(message).ConfigureAwait(false);
+            Message<List<Candle>> response = await QuikService.Send<Message<List<Candle>>>(message).ConfigureAwait (false);
             return response.Data;
         }
 
         /// <summary>
-        /// Осуществляет подписку на получение исторических данных (свечи).
+        /// РћСЃСѓС‰РµСЃС‚РІР»СЏРµС‚ РїРѕРґРїРёСЃРєСѓ РЅР° РїРѕР»СѓС‡РµРЅРёРµ РёСЃС‚РѕСЂРёС‡РµСЃРєРёС… РґР°РЅРЅС‹С… (СЃРІРµС‡Рё)
         /// </summary>
-        /// <param name="classCode">Класс инструмента.</param>
-        /// <param name="securityCode">Код инструмента.</param>
-        /// <param name="interval">Интервал свечей.</param>
+        /// <param name="classCode">РљР»Р°СЃСЃ РёРЅСЃС‚СЂСѓРјРµРЅС‚Р°.</param>
+        /// <param name="securityCode">РљРѕРґ РёРЅСЃС‚СЂСѓРјРµРЅС‚Р°.</param>
+        /// <param name="interval">РёРЅС‚РµСЂРІР°Р» СЃРІРµС‡РµР№ (С‚Р°Р№Рј-С„СЂРµР№Рј).</param>
         public async Task Subscribe(string classCode, string securityCode, CandleInterval interval)
         {
-            var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "subscribe_to_candles");
-            await QuikService.Send<Message<string>>(message).ConfigureAwait(false);
+            var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "subscribe_to_candles");            
+            await QuikService.Send<Message<string>>(message).ConfigureAwait (false);
         }
 
         /// <summary>
-        /// Отписывается от получения исторических данных (свечей).
+        /// РћС‚РїРёСЃС‹РІР°РµС‚СЃСЏ РѕС‚ РїРѕР»СѓС‡РµРЅРёСЏ РёСЃС‚РѕСЂРёС‡РµСЃРєРёС… РґР°РЅРЅС‹С… (СЃРІРµС‡РµР№)
         /// </summary>
-        /// <param name="classCode">Класс инструмента.</param>
-        /// <param name="securityCode">Код инструмента.</param>
-        /// <param name="interval">Интервал свечей.</param>
+        /// <param name="classCode">РљР»Р°СЃСЃ РёРЅСЃС‚СЂСѓРјРµРЅС‚Р°.</param>
+        /// <param name="securityCode">РљРѕРґ РёРЅСЃС‚СЂСѓРјРµРЅС‚Р°.</param>
+        /// <param name="interval">РёРЅС‚РµСЂРІР°Р» СЃРІРµС‡РµР№ (С‚Р°Р№Рј-С„СЂРµР№Рј).</param>
         public async Task Unsubscribe(string classCode, string securityCode, CandleInterval interval)
         {
-            var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "unsubscribe_from_candles");
-            await QuikService.Send<Message<string>>(message).ConfigureAwait(false);
+            var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "unsubscribe_from_candles");            
+            await QuikService.Send<Message<string>>(message).ConfigureAwait (false);     
         }
 
         /// <summary>
-        /// Проверка состояния подписки на исторические данные (свечи).
+        /// РџСЂРѕРІРµСЂРєР° СЃРѕСЃС‚РѕСЏРЅРёСЏ РїРѕРґРїРёСЃРєРё РЅР° РёСЃС‚РѕСЂРёС‡РµСЃРєРёРµ РґР°РЅРЅС‹Рµ (СЃРІРµС‡Рё)
         /// </summary>
-        /// <param name="classCode">Класс инструмента.</param>
-        /// <param name="securityCode">Код инструмента.</param>
-        /// <param name="interval">Интервал свечей.</param>
+        /// <param name="classCode">РљР»Р°СЃСЃ РёРЅСЃС‚СЂСѓРјРµРЅС‚Р°.</param>
+        /// <param name="securityCode">РљРѕРґ РёРЅСЃС‚СЂСѓРјРµРЅС‚Р°.</param>
+        /// <param name="interval">РёРЅС‚РµСЂРІР°Р» СЃРІРµС‡РµР№ (С‚Р°Р№Рј-С„СЂРµР№Рј).</param>
         public async Task<bool> IsSubscribed(string classCode, string securityCode, CandleInterval interval)
         {
             var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "is_subscribed");
-            Message<bool> response = await QuikService.Send<Message<bool>>(message).ConfigureAwait(false);
+            Message<bool> response = await QuikService.Send<Message<bool>>(message).ConfigureAwait (false);
             return response.Data;
         }
     }

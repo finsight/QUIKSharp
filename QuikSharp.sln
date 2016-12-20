@@ -1,12 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-<<<<<<< HEAD
-# Visual Studio Express 2013 for Windows Desktop
-VisualStudioVersion = 12.0.40629.0
-=======
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
->>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuikSharp", "src\QuikSharp\QuikSharp.csproj", "{48081C21-DFBA-4CBB-88AF-0BD9F606F424}"
 EndProject
@@ -25,14 +20,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuikSharp.Tests", "tests\Qu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Profiler", "tests\Profiler\Profiler.csproj", "{65866E9F-302F-45BE-9BB0-77B3057916CE}"
 EndProject
-<<<<<<< HEAD
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{E7205C0F-B13D-4705-87AF-B071394BC061}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\packages.config = .nuget\packages.config
-	EndProjectSection
-EndProject
-=======
->>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

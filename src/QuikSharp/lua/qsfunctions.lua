@@ -1,4 +1,4 @@
---~ Copyright в’ё 2015 Victor Baybekov
+--~ Copyright Ⓒ 2015 Victor Baybekov
 
 package.path = package.path .. ";" .. ".\\?.lua;" .. ".\\?.luac"
 package.cpath = package.cpath .. ";" .. '.\\clibs\\?.dll'
@@ -67,8 +67,8 @@ end
 -- Service functions --
 -----------------------
 
---- Функция предназначена для определения состояния подключения клиентского места в
--- серверу. Возвращает "1", если клиентское место подключено и "0", если не подключено.
+--- Функция предназначена для определения состояния подключения клиентского места к
+-- серверу. Возвращает «1», если клиентское место подключено и «0», если не подключено.
 function qsfunctions.isConnected(msg)
     -- set time when function was called
     msg.t = timemsec()
@@ -76,8 +76,8 @@ function qsfunctions.isConnected(msg)
     return msg
 end
 
---- Функция возвращает путь по которому находтся файл info.exe, исполняющий данный скрипт,
--- без завершающего обратного слэша ("\"). Например, C:\QuikFront.
+--- Функция возвращает путь, по которому находится файл info.exe, исполняющий данный
+-- скрипт, без завершающего обратного слэша («\»). Например, C:\QuikFront.
 function qsfunctions.getWorkingFolder(msg)
     -- set time when function was called
     msg.t = timemsec()
@@ -85,8 +85,8 @@ function qsfunctions.getWorkingFolder(msg)
     return msg
 end
 
---- Функция возвращает путь по которому находится исполняемый скрипт,
--- без завершающего обратного слэша ("\"). Например, C:\QuikFront\Scripts.
+--- Функция возвращает путь, по которому находится запускаемый скрипт, без завершающего
+-- обратного слэша («\»). Например, C:\QuikFront\Scripts.
 function qsfunctions.getScriptPath(msg)
     -- set time when function was called
     msg.t = timemsec()
@@ -94,8 +94,8 @@ function qsfunctions.getScriptPath(msg)
     return msg
 end
 
---- Функция возвращает значения параметров информационного окна
--- (пункт меню Связь / Информационное окно...).
+--- Функция возвращает значения параметров информационного окна (пункт меню
+-- Связь / Информационное окно…).
 function qsfunctions.getInfoParam(msg)
     -- set time when function was called
     msg.t = timemsec()
@@ -127,7 +127,7 @@ function qsfunctions.sleep(msg)
     return msg
 end
 
---- Функция для вывода отладочной информации.
+--- Функция для вывода отладочной информации. 
 function qsfunctions.PrintDbgStr(msg)
     log(msg.data, 0)
     msg.data = ""
@@ -159,7 +159,7 @@ function qsfunctions.getClassSecurities(msg)
     return msg
 end
 
---- Функция позволяет узнать, заказан ли с сервера стакан по указанному классу и бумаге.
+--- Функция получает информацию по указанному классу и бумаге.
 function qsfunctions.getSecurityInfo(msg)
     local spl = split(msg.data, "|")
     local class_code, sec_code = spl[1], spl[2]
@@ -220,7 +220,7 @@ function qsfunctions.Subscribe_Level_II_Quotes(msg)
     return msg
 end
 
---- Функция отменяет заказ на получение стакана по указанному классу и бумаге.
+--- Функция отменяет заказ на получение с сервера стакана по указанному классу и бумаге.
 function qsfunctions.Unsubscribe_Level_II_Quotes(msg)
     local spl = split(msg.data, "|")
     local class_code, sec_code = spl[1], spl[2]
@@ -240,9 +240,9 @@ end
 -- Trading functions --
 -----------------------
 
--- Функция отправляет транзакцию на сервер и возвращает пустое сообщение, которое
--- будет проигнорировано. Вместо него, отправитель будет ждать события
--- OnTransReply, из которого по TRANS_ID он получит результат отправленной транзакции.
+--- отправляет транзакцию на сервер и возвращает пустое сообщение, которое
+-- будет проигноировано. Вместо него, отправитель будет ждать события
+-- OnTransReply, из которого по TRANS_ID он получит результат отправленной транзакции
 function qsfunctions.sendTransaction(msg)
     local res = sendTransaction(msg.data)
     if res~="" then
@@ -257,8 +257,8 @@ function qsfunctions.sendTransaction(msg)
     end
 end
 
--- Функция предназначена для получения значений всех параметров биржевой информации из таблицы текущих значений параметров.
--- С помощью этой функции можно получить любое из значений таблицы текущих значений параметров для заданных кодов класса и бумаги.
+--- Функция предназначена для получения значений всех параметров биржевой информации из Таблицы текущих значений параметров. 
+-- С помощью этой функции можно получить любое из значений Таблицы текущих значений параметров для заданных кодов класса и бумаги. 
 
 function qsfunctions.getParamEx(msg)
     local spl = split(msg.data, "|")
@@ -267,7 +267,7 @@ function qsfunctions.getParamEx(msg)
     return msg
 end
 
--- Функция предназначена для получения информации по бумажным лимитам.
+-- Функция предназначена для получения информации по бумажным лимитам. 
 function qsfunctions.getDepo(msg)
     local spl = split(msg.data, "|")
     local clientCode, firmId, secCode, account = spl[1], spl[2], spl[3], spl[4]
@@ -282,7 +282,6 @@ function qsfunctions.getDepoEx(msg)
     msg.data = getDepoEx(firmId, clientCode, secCode, account, tonumber(limit_kind))
     return msg
 end
-
 
 function qsfunctions.getFuturesHolding(msg)
     local spl = split(msg.data, "|")
@@ -445,12 +444,11 @@ end
 return t
 end
 
-
 --------------------------
 -- Stop order functions --
 --------------------------
 
---- Функция возвращает список стоп-заявок
+--- Возвращает список стоп-заявок
 function qsfunctions.get_stop_orders(msg)
 	if msg.data ~= "" then
 		local spl = split(msg.data, "|")
@@ -473,7 +471,7 @@ end
 --- Candles functions ---
 -------------------------
 
---- Возвращаем все свечи по идентификатору графика. График должен быть открыт.
+--- Возвращаем все свечи по идентификатору графика. График должен быть открыт
 function qsfunctions.get_candles(msg)
 	log("Called get_candles" .. msg.data, 2)
 	local spl = split(msg.data, "|")
@@ -496,14 +494,14 @@ function qsfunctions.get_candles(msg)
 	return msg
 end
 
---- Р’РѕР·РІСЂР°С‰Р°РµРј РІСЃРµ СЃРІРµС‡Рё РїРѕ Р·Р°РґР°РЅРЅРѕРјСѓ РёРЅСЃС‚СЂСѓРјРµРЅС‚Сѓ Рё РёРЅС‚РµСЂРІР°Р»Сѓ
+--- Возвращаем все свечи по заданному инструменту и интервалу
 function qsfunctions.get_candles_from_data_source(msg)
 	local ds, is_error = create_data_source(msg)
 	if not is_error then
-		--- РґР°С‚Р°СЃРѕСЂСЃ РёР·РЅР°С‡Р°Р»СЊРЅРѕ РїСЂРёС…РѕРґРёС‚ РїСѓСЃС‚РѕР№, РЅСѓР¶РЅРѕ РЅРµРєРѕС‚РѕСЂРѕРµ РІСЂРµРјСЏ РїРѕРґРѕР¶РґР°С‚СЊ РїРѕРєР° РѕРЅ Р·Р°РїРѕР»РЅРёС‚СЊСЃСЏ РґР°РЅРЅС‹РјРё
+		--- датасорс изначально приходит пустой, нужно некоторое время подождать пока он заполниться данными
 		repeat sleep(1) until ds:Size() > 0
 
-		local count = tonumber(split(msg.data, "|")[4]) --- РІРѕР·РІСЂР°С‰Р°РµРј РїРѕСЃР»РµРґРЅРёРµ count СЃРІРµС‡РµР№. Р•СЃР»Рё СЂР°РІРµРЅ 0, С‚Рѕ РІРѕР·РІСЂР°С‰Р°РµРј РІСЃРµ РґРѕСЃС‚СѓРїРЅС‹Рµ СЃРІРµС‡Рё.
+		local count = tonumber(split(msg.data, "|")[4]) --- возвращаем последние count свечей. Если равен 0, то возвращаем все доступные свечи.
 		local class, sec, interval = get_candles_param(msg)
 		local candles = {}
 		local start_i = count == 0 and 1 or math.max(1, ds:Size() - count + 1)
@@ -585,7 +583,7 @@ function data_source_callback(index, class, sec, interval)
 	end
 end
 
---- Отписаться от получения свечей по заданному инструменту и интервалу
+--- Отписать от получения свечей по заданному инструменту и интервалу
 function qsfunctions.unsubscribe_from_candles(msg)
 	local class, sec, interval = get_candles_param(msg)
 	local key = get_key(class, sec, interval)
@@ -615,7 +613,7 @@ function get_candles_param(msg)
 	return spl[1], spl[2], tonumber(spl[3])
 end
 
---- Возвращает уникальный ключ для инструмента на который подписываемся и интервала
+--- Возвращает уникальный ключ для инструмента на который подписываемся и инетрвала
 function get_key(class, sec, interval)
 	return class .. "|" .. sec .. "|" .. tostring(interval)
 end

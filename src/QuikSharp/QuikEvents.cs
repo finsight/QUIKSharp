@@ -64,9 +64,7 @@ namespace QuikSharp {
     /// <param name="stopOrder"></param>
     public delegate void StopOrderHandler(StopOrder stopOrder);
 
-
-    internal class QuikEvents : IQuikEvents
-    {
+    internal class QuikEvents : IQuikEvents {
         public QuikEvents(QuikService service) { QuikService = service; }
         public QuikService QuikService { get; private set; }
 
@@ -80,24 +78,24 @@ namespace QuikSharp {
         }
 
         /// <summary>
-        /// Событие вызывается когда библиотека QuikSharp была отключена от Quik'а
-        /// </summary>
-        public event VoidHandler OnDisconnectedFromQuik;
+		/// Событие вызывается когда библиотека QuikSharp была отключена от Quik'а
+		/// </summary>
+		public event VoidHandler OnDisconnectedFromQuik;
         internal void OnDisconnectedFromQuikCall() {
             OnDisconnectedFromQuik?.Invoke();
         }
 
         public event InitHandler OnInit;
- 
+
         public event EventHandler OnAccountBalance;
         public event EventHandler OnAccountPosition;
- 
+
         /// <summary>
         /// Функция вызывается терминалом QUIK при получении обезличенной сделки.
         /// </summary>
         public event AllTradeHandler OnAllTrade;
         internal void OnAllTradeCall(AllTrade allTrade) => OnAllTrade?.Invoke(allTrade);
- 
+
 
         public event VoidHandler OnCleanUp;
         internal void OnCleanUpCall()
@@ -105,10 +103,10 @@ namespace QuikSharp {
             OnCleanUp?.Invoke();
         }
 
-		/// <summary>
-		/// Функция вызывается перед закрытием терминала QUIK.
-		/// </summary>
-		public event VoidHandler OnClose;
+        /// <summary>
+        /// Функция вызывается перед закрытием терминала QUIK.
+        /// </summary>
+        public event VoidHandler OnClose;
         internal void OnCloseCall() { if (OnClose != null) OnClose(); }
 
 
@@ -121,23 +119,25 @@ namespace QuikSharp {
 
 
         public event VoidHandler OnDisconnected;
-        internal void OnDisconnectedCall() { if (OnDisconnected != null) OnDisconnected(); }
+        internal void OnDisconnectedCall() {
+            if (OnDisconnected != null) OnDisconnected();
+        }
 
 
-		public event EventHandler OnFirm;
-		public event EventHandler OnFuturesClientHolding;
-		public event EventHandler OnFuturesLimitChange;
-		public event EventHandler OnFuturesLimitDelete;
-		public event EventHandler OnMoneyLimit;
-		public event EventHandler OnMoneyLimitDelete;
-		public event EventHandler OnNegDeal;
-		public event EventHandler OnNegTrade;
+        public event EventHandler OnFirm;
+        public event EventHandler OnFuturesClientHolding;
+        public event EventHandler OnFuturesLimitChange;
+        public event EventHandler OnFuturesLimitDelete;
+        public event EventHandler OnMoneyLimit;
+        public event EventHandler OnMoneyLimitDelete;
+        public event EventHandler OnNegDeal;
+        public event EventHandler OnNegTrade;
 
 
-		/// <summary>
-		/// Функция вызывается терминалом QUIK при получении сделки.
-		/// </summary>
-		public event OrderHandler OnOrder;
+        /// <summary>
+        /// Функция вызывается терминалом QUIK при получении сделки.
+        /// </summary>
+        public event OrderHandler OnOrder;
         internal void OnOrderCall(Order order) {
             if (OnOrder != null) OnOrder(order);
             // invoke event specific for the transaction
@@ -167,20 +167,22 @@ namespace QuikSharp {
 
 
         public event ParamHandler OnParam;
-        internal void OnParamCall(Param par){
+        internal void OnParamCall(Param par)
+        {
             OnParam?.Invoke(par);
         }
 
-		/// <summary>
-		/// Функция вызывается терминалом QUIK при получении изменения стакана котировок.
-		/// </summary>
-		public event QuoteHandler OnQuote;
+
+        /// <summary>
+        /// Функция вызывается терминалом QUIK при получении изменения стакана котировок.
+        /// </summary>
+        public event QuoteHandler OnQuote;
         internal void OnQuoteCall(OrderBook orderBook) { if (OnQuote != null) OnQuote(orderBook); }
 
-		/// <summary>
-		/// Функция вызывается терминалом QUIK при остановке скрипта из диалога управления и при закрытии терминала QUIK.
-		/// </summary>
-		public event StopHandler OnStop;
+        /// <summary>
+        /// Функция вызывается терминалом QUIK при остановке скрипта из диалога управления и при закрытии терминала QUIK.
+        /// </summary>
+        public event StopHandler OnStop;
         internal void OnStopCall(int signal) { if (OnStop != null) OnStop(signal); }
 
         /// <summary>
@@ -219,10 +221,11 @@ namespace QuikSharp {
             }
             Trace.Assert(tr != null, "Transaction must exist in persistent storage until it is completed and all order messages are recieved");
         }
+
         /// <summary>
-		/// Функция вызывается терминалом QUIK при получении сделки.
-		/// </summary>
-		public event TradeHandler OnTrade;
+        /// Функция вызывается терминалом QUIK при получении сделки.
+        /// </summary>
+        public event TradeHandler OnTrade;
         internal void OnTradeCall(Trade trade) {
             if (OnTrade != null) OnTrade(trade);
             // invoke event specific for the transaction
@@ -259,28 +262,23 @@ namespace QuikSharp {
             //Trace.Assert(tr != null, "Transaction must exist in persistent storage until it is completed and all trades messages are recieved");
         }
 
-		/// <summary>
-		/// Функция вызывается терминалом QUIK при получении ответа на транзакцию пользователя.
-		/// </summary>
-		public event TransReplyHandler OnTransReply;
-        internal void OnTransReplyCall(TransactionReply reply)
-        {
+        /// <summary>
+        /// Функция вызывается терминалом QUIK при получении ответа на транзакцию пользователя.
+        /// </summary>
+        public event TransReplyHandler OnTransReply;
+        internal void OnTransReplyCall(TransactionReply reply) {
             if (OnTransReply != null) OnTransReply(reply);
 
             // invoke event specific for the transaction
             if (string.IsNullOrEmpty(reply.Comment))//"Initialization user successful" transaction doesn't contain comment
                 return;
 
-            if (QuikService.Storage.Contains(reply.Comment))
-            {
+            if (QuikService.Storage.Contains(reply.Comment)) {
                 var tr = QuikService.Storage.Get<Transaction>(reply.Comment);
-                lock (tr)
-                {
+                lock (tr) {
                     tr.OnTransReplyCall(reply);
                 }
-            }
-            else
-            {
+            } else {
                 // NB ignore unmatched transactions
                 //Trace.Fail("Transaction must exist in persistent storage until it is completed and its reply is recieved");
             }

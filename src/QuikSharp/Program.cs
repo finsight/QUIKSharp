@@ -170,8 +170,7 @@ namespace QuikSharp {
             Console.WriteLine("Events_OnStopOrder: " + stopOrder.ToJson());
         }
 
-        static void Cleanup()
-        {
+        static void Cleanup() {
 #if DEBUG
             System.Windows.Forms.MessageBox.Show("Bye!");
 #endif

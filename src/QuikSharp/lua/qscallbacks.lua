@@ -99,7 +99,7 @@ function OnInit(script_path)
     log("Hello, QuikSharp! Running inside Quik from the path: "..getScriptPath(), 1)
 end
 
---- Функция вызывается терминалом QUIK при изменении в таблице заявок.
+--- Функция вызывается терминалом QUIK при в таблице заявок.
 function OnOrder(order)
     local msg = {}
     msg.t = timemsec()
@@ -202,6 +202,5 @@ function OnConnected()
     msg.data = ""
     sendCallback(msg)
 end
-
 
 return qscallbacks

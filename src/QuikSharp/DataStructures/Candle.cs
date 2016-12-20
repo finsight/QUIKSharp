@@ -71,7 +71,7 @@ namespace QuikSharp.DataStructures
 
         public override string ToString()
         {
-            return @"Open: {Open}, Close: {Close}, High: {High}, Low: {Low}, Volume: {Volume}";
+            return $"Open: {Open}, Close: {Close}, High: {High}, Low: {Low}, Volume: {Volume}";
         }
     }
 }

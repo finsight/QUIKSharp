@@ -111,6 +111,5 @@ namespace QuikSharp
             Message<Order> response = await QuikService.Send<Message<Order>>(message).ConfigureAwait(false);
             return response.Data;
         }
-
     }
 }

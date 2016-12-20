@@ -12,7 +12,6 @@ namespace QuikSharp {
     /// <summary>
     /// Функции взаимодействия скрипта Lua и Рабочего места QUIK
     /// getDepo - функция для получения информации по бумажным лимитам 
-    /// getDepoEx - функция для получения информации по бумажным лимитам указанного типа 
     /// getMoney - функция для получения информации по денежным лимитам 
     /// getMoneyEx - функция для получения информации по денежным лимитам указанного типа 
     /// getFuturesLimit - функция для получения информации по фьючерсным лимитам 
@@ -67,15 +66,14 @@ namespace QuikSharp {
         /////  функция для получения информации по фьючерсным позициям
         ///// </summary>
         Task<FuturesClientHolding> GetFuturesHolding(string firmId, string accId,string secCode,int posType);
-
-        /// <summary>
+       
+         /// <summary>
         /// Функция получения доски опционов
         /// </summary>
         /// <param name="classCode"></param>
         /// <param name="secCode"></param>
         /// <returns></returns>
         Task<List<OptionBoard>> GetOptionBoard(string classCode, string secCode);
-
         /// <summary>
         /// функция для получения значений Таблицы текущих значений параметров
         /// </summary>
@@ -193,7 +191,7 @@ namespace QuikSharp {
                     (new Message<string>(clientCode + "|" + firmId + "|" + secCode + "|" + account, "getDepo"))).ConfigureAwait (false);
             return response.Data;
         }
-        
+
         public async Task<DepoLimitEx> GetDepoEx(string firmId, string clientCode, string secCode, string accID, int limitKind)
         {
             var response = await QuikService.Send<Message<DepoLimitEx>>(
@@ -232,21 +230,20 @@ namespace QuikSharp {
                 return response.Data;            
         }
 
-        public async Task<List<OptionBoard>> GetOptionBoard(string classCode, string secCode)
-        {
-            var message = new Message<string>(classCode + "|" + secCode, "getOptionBoard");
-            Message<List<OptionBoard>> response = 
-                await QuikService.Send<Message<List<OptionBoard>>>(message).ConfigureAwait(false);
-            return response.Data;
-        
-        }
-
         public async Task<FuturesClientHolding> GetFuturesHolding(string firmId, string accId, string secCode, int posType)
         {
             var response = await QuikService.Send<Message<FuturesClientHolding>>(
                     (new Message<string>(firmId + "|" + accId + "|" + secCode + "|" + posType, "getFuturesHolding"))).ConfigureAwait (false);
             
             return response.Data;
+        }
+        public async Task<List<OptionBoard>> GetOptionBoard(string classCode,  string secCode)
+        {
+            var message = new Message<string>(classCode + "|" + secCode, "getOptionBoard");
+            Message<List<OptionBoard>> response =
+                await QuikService.Send<Message<List<OptionBoard>>>(message).ConfigureAwait(false);
+            return response.Data;
+        
         }
 
         public async Task<List<Trade>> GetTrades()

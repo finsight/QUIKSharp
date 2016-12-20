@@ -131,19 +131,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AsyncManualResetEvent.cs" />
     <Compile Include="CandleFunctions.cs" />
+    <Compile Include="AsyncManualResetEvent.cs" />
     <Compile Include="ClassFunctions\ClassFunctions.cs" />
     <Compile Include="DataStructures\Candle.cs" />
     <Compile Include="DataStructures\CandleInterval.cs" />
-    <Compile Include="DataStructures\OptionBoard.cs" />
-    <Compile Include="DataStructures\Param.cs" />
-    <Compile Include="DataStructures\QuikTable.cs" />
     <Compile Include="DataStructures\ClassInfo.cs" />
     <Compile Include="DataStructures\FuturesClientHolding.cs" />
     <Compile Include="DataStructures\IWithLuaTimeStamp.cs" />
+    <Compile Include="DataStructures\OptionBoard.cs" />
     <Compile Include="DataStructures\OrderBook.cs" />
+    <Compile Include="DataStructures\Param.cs" />
     <Compile Include="DataStructures\ParamTable.cs" />
+    <Compile Include="DataStructures\QuikTable.cs" />
     <Compile Include="DataStructures\SecurityInfo.cs" />
     <Compile Include="DataStructures\EventNames.cs" />
     <Compile Include="DataStructures\Flags.cs" />
