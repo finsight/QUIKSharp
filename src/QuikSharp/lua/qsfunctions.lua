@@ -167,6 +167,45 @@ function qsfunctions.getSecurityInfo(msg)
     return msg
 end
 
+--- Функция предназначена для определения класса по коду инструмента из заданного списка классов.
+function qsfunctions.getSecurityClass(msg)
+    local spl = split(msg.data, "|")
+    local classes_list, sec_code = spl[1], spl[2]
+
+	for class_code in string.gmatch(classes_list,"%a+") do
+		if getSecurityInfo(class_code,sec_code) then
+			msg.data = class_code
+			return msg
+		end
+	end
+	msg.data = ""
+	return msg
+end
+
+--- Функция возвращает код клиента
+function qsfunctions.getClientCode(msg)
+	for i=0,getNumberOf("MONEY_LIMITS")-1 do
+		local clientcode = getItem("MONEY_LIMITS",i).client_code
+		if clientcode ~= nil then
+			msg.data = clientcode
+			return msg
+		end
+    end
+	return msg
+end
+
+--- Функция возвращает торговый счет для запрашиваемого кода класса
+function qsfunctions.getTradeAccount(msg)
+	for i=0,getNumberOf("trade_accounts")-1 do
+		local trade_account = getItem("trade_accounts",i)
+		if string.find(trade_account.class_codes,msg.data,1,1) then
+			msg.data = trade_account.trdaccid
+			return msg
+		end
+	end
+	return msg
+end
+
 
 
 ---------------------------------------------------------------------
@@ -236,6 +275,14 @@ function qsfunctions.getDepo(msg)
     return msg
 end
 
+-- Функция предназначена для получения информации по бумажным лимитам.
+function qsfunctions.getDepoEx(msg)
+    local spl = split(msg.data, "|")
+    local firmId, clientCode, secCode, account, limit_kind = spl[1], spl[2], spl[3], spl[4], spl[5]
+    msg.data = getDepoEx(firmId, clientCode, secCode, account, tonumber(limit_kind))
+    return msg
+end
+
 function qsfunctions.getFuturesHolding(msg)
     local spl = split(msg.data, "|")
     local firmId, accId, secCode, posType = spl[1], spl[2], spl[3], spl[4]
@@ -247,6 +294,44 @@ function qsfunctions.getFuturesHolding(msg)
 		msg.data = nil
 	end
     return msg
+end
+
+-- Функция возвращает таблицу заявок (всю или по заданному инструменту)
+function qsfunctions.get_orders(msg)
+	if msg.data ~= "" then
+		local spl = split(msg.data, "|")
+		class_code, sec_code = spl[1], spl[2]
+	end
+
+	local orders = {}
+	for i = 0, getNumberOf("orders") - 1 do
+		local order = getItem("orders", i)
+		if msg.data == "" or (order.class_code == class_code and order.sec_code == sec_code) then
+			table.insert(orders, order)
+		end
+	end
+	msg.data = orders
+	return msg
+end
+
+-- Функция возвращает заявку по заданному инструменту и ID-транзакции
+function qsfunctions.getOrder_by_ID(msg)
+	if msg.data ~= "" then
+		local spl = split(msg.data, "|")
+		class_code, sec_code, trans_id = spl[1], spl[2], spl[3]
+	end
+
+	local order_num = 0
+	local res
+	for i = 0, getNumberOf("orders") - 1 do
+		local order = getItem("orders", i)
+		if order.class_code == class_code and order.sec_code == sec_code and order.trans_id == tonumber(trans_id) and order.order_num > order_num then
+			order_num = order.order_num
+			res = order
+		end
+	end
+	msg.data = res
+	return msg
 end
 
 --- Возвращает заявку по её номеру ---
@@ -272,6 +357,39 @@ function qsfunctions.get_depo_limits(msg)
 		end
 	end
 	msg.data = depo_limits
+	return msg
+end
+
+-- Функция возвращает таблицу сделок (всю или по заданному инструменту)
+function qsfunctions.get_trades(msg)
+	if msg.data ~= "" then
+		local spl = split(msg.data, "|")
+		class_code, sec_code = spl[1], spl[2]
+	end
+
+	local trades = {}
+	for i = 0, getNumberOf("trades") - 1 do
+		local trade = getItem("trades", i)
+		if msg.data == "" or (trade.class_code == class_code and trade.sec_code == sec_code) then
+			table.insert(trades, trade)
+		end
+	end
+	msg.data = trades
+	return msg
+end
+
+-- Функция возвращает таблицу сделок по номеру заявки
+function qsfunctions.get_Trades_by_OrderNumber(msg)
+	local order_num = tonumber(msg.data)
+
+	local trades = {}
+	for i = 0, getNumberOf("trades") - 1 do
+		local trade = getItem("trades", i)
+		if trade.order_num == order_num then
+			table.insert(trades, trade)
+		end
+	end
+	msg.data = trades
 	return msg
 end
 

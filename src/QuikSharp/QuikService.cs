@@ -459,6 +459,9 @@ namespace QuikSharp {
                         break;
 
                     case EventNames.OnParam:
+                        Trace.Assert(message is Message<Param>);
+                        var data = ((Message<Param>)message).Data;
+                        Events.OnParamCall(data);
                         break;
 
                     case EventNames.OnQuote:

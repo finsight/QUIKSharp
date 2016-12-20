@@ -32,6 +32,11 @@ namespace QuikSharp {
         /// </summary>
         Task<DepoLimit> GetDepo(string clientCode, string firmId, string secCode, string account);
 
+        /// </summary>
+        /// Функция для получения информации по бумажным лимитам указанного типа
+        /// </summary>
+        Task<DepoLimitEx> GetDepoEx(string firmId, string clientCode, string secCode, string accID, int limitKind);
+
         /// <summary>
         /// Возвращает список записей из таблицы 'Лимиты по бумагам'.
         /// </summary>
@@ -77,6 +82,26 @@ namespace QuikSharp {
         /// <param name="paramName"></param>
         /// <returns></returns>
         Task<ParamTable> GetParamEx(string classCode, string secCode, string paramName);
+
+        /// <summary>
+        /// функция для получения таблицы сделок по заданному инструменту
+        /// </summary>
+        Task<List<Trade>> GetTrades();
+
+        /// <summary>
+        /// функция для получения таблицы сделок по заданному инструменту
+        /// </summary>
+        /// <param name="classCode"></param>
+        /// <param name="secCode"></param>
+        /// <returns></returns>
+        Task<List<Trade>> GetTrades(string classCode, string secCode);
+
+        /// <summary>
+        /// функция для получения таблицы сделок номеру заявки
+        /// </summary>
+        /// <param name="order_num"></param>
+        /// <returns></returns>
+        Task<List<Trade>> GetTrades_by_OdrerNumber(long order_num);
 
         ///// <summary>
         /////  функция для получения информации по инструменту
@@ -167,6 +192,13 @@ namespace QuikSharp {
             return response.Data;
         }
 
+        public async Task<DepoLimitEx> GetDepoEx(string firmId, string clientCode, string secCode, string accID, int limitKind)
+        {
+            var response = await QuikService.Send<Message<DepoLimitEx>>(
+                    (new Message<string>(firmId + "|" + clientCode + "|" + secCode + "|" + accID + "|" + limitKind, "getDepoEx"))).ConfigureAwait(false);
+            return response.Data;
+        }
+
         /// <summary>
         /// Возвращает список всех записей из таблицы 'Лимиты по бумагам'.
         /// </summary>
@@ -212,6 +244,27 @@ namespace QuikSharp {
                 await QuikService.Send<Message<List<OptionBoard>>>(message).ConfigureAwait(false);
             return response.Data;
         
+        }
+
+        public async Task<List<Trade>> GetTrades()
+        {
+            var response = await QuikService.Send<Message<List<Trade>>>(
+                    (new Message<string>("", "get_trades"))).ConfigureAwait(false);
+            return response.Data;
+        }
+
+        public async Task<List<Trade>> GetTrades(string classCode, string secCode)
+        {
+            var response = await QuikService.Send<Message<List<Trade>>>(
+                    (new Message<string>(classCode + "|" + secCode, "get_trades"))).ConfigureAwait(false);
+            return response.Data;
+        }
+
+        public async Task<List<Trade>> GetTrades_by_OdrerNumber(long order_num)
+        {
+            var response = await QuikService.Send<Message<List<Trade>>>(
+                    (new Message<string>(order_num.ToString(), "get_Trades_by_OrderNumber"))).ConfigureAwait(false);
+            return response.Data;
         }
 
 

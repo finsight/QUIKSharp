@@ -267,7 +267,7 @@ namespace QuikSharp {
                             };
 
                         case EventNames.OnParam:
-                            break;
+                            return new Message<Param> { Data = new Param() };
 
                         case EventNames.OnQuote:
                             return new Message<OrderBook> {

@@ -99,7 +99,7 @@ function OnInit(script_path)
     log("Hello, QuikSharp! Running inside Quik from the path: "..getScriptPath(), 1)
 end
 
---- Функция вызывается терминалом QUIK при получении сделки.
+--- Функция вызывается терминалом QUIK при в таблице заявок.
 function OnOrder(order)
     local msg = {}
     msg.t = timemsec()
@@ -171,6 +171,35 @@ function OnStopOrder(stop_order)
     msg.t = timemsec()
     msg.data = stop_order
     msg.cmd = "OnStopOrder"
+    sendCallback(msg)
+end
+
+function OnParam(class_code, sec_code)
+    local msg = {}
+    msg.cmd = "OnParam"
+    msg.t = timemsec()
+	local dat = {}
+	dat.class_code = class_code
+	dat.sec_code = sec_code
+    msg.data = dat
+    sendCallback(msg)
+end
+
+--- Функция вызывается терминалом QUIK при отключении от сервера QUIK.
+function OnDisconnected()
+    local msg = {}
+    msg.cmd = "OnDisconnected"
+    msg.t = timemsec()
+    msg.data = ""
+    sendCallback(msg)
+end
+
+--- Функция вызывается терминалом QUIK при установлении связи с сервером QUIK.
+function OnConnected()
+    local msg = {}
+    msg.cmd = "OnConnected"
+    msg.t = timemsec()
+    msg.data = ""
     sendCallback(msg)
 end
 
