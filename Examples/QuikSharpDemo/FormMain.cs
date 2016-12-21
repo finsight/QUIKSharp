@@ -110,7 +110,6 @@ namespace QuikSharpDemo
         {
             Run();
         }
-
         void Run()
         {
             try
@@ -440,11 +439,9 @@ namespace QuikSharpDemo
             order_new.Price = price;
             order_new.Quantity = qty;
             order_new.Account = _tool.AccountID;
-            //order_new.ClientCode = _tool.ClientCode;
             try
             {
-                res = await _quik.Orders.CreateOrder(order_new).ConfigureAwait(false);
-                //res = _quik.Orders.CreateOrder(order_new).Result;
+                res = _quik.Orders.CreateOrder(order_new).Result;
             }
             catch
             {
