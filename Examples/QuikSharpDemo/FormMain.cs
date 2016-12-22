@@ -24,7 +24,7 @@ namespace QuikSharpDemo
         bool isSubscribedToolOrderBook = false;
         bool isSubscribedToolCandles = false;
         string secCode = "SRH7";
-        string classCode = "SPBFUT";
+        string classCode = "";
         string clientCode;
         decimal bid;
         decimal offer;

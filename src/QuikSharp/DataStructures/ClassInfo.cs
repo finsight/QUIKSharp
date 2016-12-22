@@ -1,4 +1,5 @@
 // Copyright (C) 2015 Victor Baybekov
+using Newtonsoft.Json;
 
 namespace QuikSharp.DataStructures
 {
@@ -11,24 +12,28 @@ namespace QuikSharp.DataStructures
         /// <summary>
         /// Код фирмы
         /// </summary>
-        public string firmid { get; set; }
-        
+        [JsonProperty("firmid")]
+        public string FirmId { get; set; }
         /// <summary>
         /// Наименование класса
         /// </summary>
-        public string name { get; set; }
+        [JsonProperty("name")]
+        public string Name { get; set; }
         /// <summary>
         /// Код класса
         /// </summary>
-        public string code { get; set; }
+        [JsonProperty("code")]
+        public string Code { get; set; }
         /// <summary>
         /// Количество параметров в классе
         /// </summary>
-        public int npars { get; set; }
+        [JsonProperty("npars")]
+        public int NPars { get; set; }
         /// <summary>
         /// Количество бумаг в классе
         /// </summary>
-        public int nsecs { get; set; }
+        [JsonProperty("nsecs")]
+        public int NSecs { get; set; }
         // ReSharper restore InconsistentNaming
 
 
