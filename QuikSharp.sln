@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuikSharp", "src\QuikSharp\QuikSharp.csproj", "{48081C21-DFBA-4CBB-88AF-0BD9F606F424}"
 EndProject
@@ -19,6 +19,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuikSharp.Tests", "tests\QuikSharp.Tests\QuikSharp.Tests.csproj", "{E8381C47-9297-4BD3-B384-CD366037F587}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Profiler", "tests\Profiler\Profiler.csproj", "{65866E9F-302F-45BE-9BB0-77B3057916CE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{2F3B9E30-BDC5-4886-90ED-A6D2FF98FEF9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuikSharpDemo", "Examples\QuikSharpDemo\QuikSharpDemo.csproj", "{EB833A29-974F-4FDC-B2C1-45758920E504}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -62,6 +66,18 @@ Global
 		{65866E9F-302F-45BE-9BB0-77B3057916CE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{65866E9F-302F-45BE-9BB0-77B3057916CE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{65866E9F-302F-45BE-9BB0-77B3057916CE}.Release|x86.ActiveCfg = Release|Any CPU
+		{EB833A29-974F-4FDC-B2C1-45758920E504}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB833A29-974F-4FDC-B2C1-45758920E504}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB833A29-974F-4FDC-B2C1-45758920E504}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{EB833A29-974F-4FDC-B2C1-45758920E504}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{EB833A29-974F-4FDC-B2C1-45758920E504}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EB833A29-974F-4FDC-B2C1-45758920E504}.Debug|x86.Build.0 = Debug|Any CPU
+		{EB833A29-974F-4FDC-B2C1-45758920E504}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB833A29-974F-4FDC-B2C1-45758920E504}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB833A29-974F-4FDC-B2C1-45758920E504}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{EB833A29-974F-4FDC-B2C1-45758920E504}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{EB833A29-974F-4FDC-B2C1-45758920E504}.Release|x86.ActiveCfg = Release|Any CPU
+		{EB833A29-974F-4FDC-B2C1-45758920E504}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -69,5 +85,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{E8381C47-9297-4BD3-B384-CD366037F587} = {9C0672CC-6182-4469-B5DF-B92265713169}
 		{65866E9F-302F-45BE-9BB0-77B3057916CE} = {9C0672CC-6182-4469-B5DF-B92265713169}
+		{EB833A29-974F-4FDC-B2C1-45758920E504} = {2F3B9E30-BDC5-4886-90ED-A6D2FF98FEF9}
 	EndGlobalSection
 EndGlobal
