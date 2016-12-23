@@ -1,5 +1,4 @@
 ﻿// Copyright (C) 2015 Victor Baybekov
-
 using Newtonsoft.Json;
 
 namespace QuikSharp.DataStructures
