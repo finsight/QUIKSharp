@@ -106,7 +106,7 @@ public class Tool
                     {
                         name = quik.Class.GetSecurityInfo(classCode, securityCode).Result.ShortName;
                         accountID = quik.Class.GetTradeAccount(classCode).Result;
-                        firmID = quik.Class.GetClassInfo(classCode).Result.firmid;
+                        firmID = quik.Class.GetClassInfo(classCode).Result.FirmId;
                         step = Convert.ToDecimal(quik.Trading.GetParamEx(classCode, securityCode, "SEC_PRICE_STEP").Result.ParamValue.Replace('.', separator));
                         priceAccuracy = Convert.ToInt32(Convert.ToDouble(quik.Trading.GetParamEx(classCode, securityCode, "SEC_SCALE").Result.ParamValue.Replace('.', separator)));
                     }
