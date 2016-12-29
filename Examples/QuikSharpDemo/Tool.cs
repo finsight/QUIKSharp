@@ -12,8 +12,7 @@ using QuikSharp.DataStructures;
 
 public class Tool   
 {
-    Char separator = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalSeparator[0];
-
+    Char separator = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0];
 
     Quik _quik;
     string name;
