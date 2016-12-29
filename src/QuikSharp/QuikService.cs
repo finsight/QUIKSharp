@@ -1,5 +1,8 @@
 ﻿// Copyright (C) 2015 Victor Baybekov
 
+using Newtonsoft.Json;
+using QuikSharp.DataStructures;
+using QuikSharp.DataStructures.Transaction;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -10,18 +13,25 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using QuikSharp.DataStructures;
-using QuikSharp.DataStructures.Transaction;
 
 namespace QuikSharp {
+
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class QuikService {
+
         private static readonly Dictionary<int, QuikService> Services =
             new Dictionary<int, QuikService>();
+
         private static readonly object StaticSync = new object();
         private readonly AsyncManualResetEvent _connectedMre = new AsyncManualResetEvent();
+
+        internal JsonSerializer Serializer;
+
+        static QuikService() {
+            System.Runtime.GCSettings.LatencyMode = System.Runtime.GCLatencyMode.SustainedLowLatency;
+        }
 
         /// <summary>
         /// For each port only one instance of QuikService
@@ -36,6 +46,13 @@ namespace QuikSharp {
                     service = new QuikService(port);
                     Services.Add(port, service);
                 }
+
+                service.Serializer = new JsonSerializer
+                {
+                    TypeNameHandling = TypeNameHandling.None,
+                    NullValueHandling = NullValueHandling.Ignore
+                };
+                service.Serializer.Converters.Add(new MessageConverter(service));
                 return service;
             }
         }
@@ -46,18 +63,16 @@ namespace QuikSharp {
             Start();
             Events = new QuikEvents(this);
         }
+
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public bool IsStarted { get; private set; }
-
-
 
         internal QuikEvents Events { get; set; }
         internal IPersistentStorage Storage { get; set; }
         internal CandleFunctions Candles { get; set; }
         internal StopOrderFunctions StopOrders { get; set; }
-
 
         internal readonly string SessionId = DateTime.Now.ToString("yyMMddHHmmss");
 
@@ -69,7 +84,6 @@ namespace QuikSharp {
 
         private readonly object _syncRoot = new object();
 
-
         private Task _requestTask;
         private Task _responseTask;
         private Task _callbackTask;
@@ -77,10 +91,12 @@ namespace QuikSharp {
         private CancellationTokenSource _cts;
         private TaskCompletionSource<bool> _cancelledTcs;
         private CancellationTokenRegistration _cancelRegistration;
+
         /// <summary>
         /// Current correlation id. Use Interlocked.Increment to get a new id.
         /// </summary>
         private static int _correlationId;
+
         /// <summary>
         /// IQuickCalls functions enqueue a message and return a task from TCS
         /// </summary>
@@ -94,7 +110,7 @@ namespace QuikSharp {
             Responses = new ConcurrentDictionary<long, KeyValuePair<TaskCompletionSource<IMessage>, Type>>();
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public void Stop() {
             if (!IsStarted) return;
@@ -108,7 +124,7 @@ namespace QuikSharp {
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <exception cref="ApplicationException">Response message id does not exists in results dictionary</exception>
         public void Start() {
@@ -121,7 +137,7 @@ namespace QuikSharp {
             // Request Task
             _requestTask = Task.Factory.StartNew(() => {
                 try {
-                    // Enter the listening loop. 
+                    // Enter the listening loop.
                     while (!_cts.IsCancellationRequested) {
                         Trace.WriteLine("Connecting on request/response channel... ");
                         EnsureConnectedClient();
@@ -188,7 +204,6 @@ namespace QuikSharp {
             _responseTask = Task.Factory.StartNew(async () => {
                 try {
                     while (!_cts.IsCancellationRequested) {
-
                         // Поток Response использует тот же сокет, что и поток request
                         EnsureConnectedClient();
                         // here we have a connected TCP client
@@ -217,7 +232,6 @@ namespace QuikSharp {
                                     //var r = response;
                                     //Trace.WriteLine("Response:" + response);
                                     try {
-
                                         var message = (r as string).FromJson(this);
                                         Trace.Assert(message.Id.HasValue && message.Id > 0);
                                         // it is a response message
@@ -231,12 +245,10 @@ namespace QuikSharp {
                                             tcs.Key.SetException(
                                                 new TimeoutException("ValidUntilUTC is less than current time"));
                                         }
-
                                     } catch (LuaException e) {
                                         Trace.TraceError(e.ToString());
                                     }
                                 }, response, TaskCreationOptions.PreferFairness);
-
                             }
                         } catch (TaskCanceledException) { }     // Это исключение возникнет при отмене ReadLineAsync через Cancellation Token
                         catch (IOException e) {
@@ -263,7 +275,6 @@ namespace QuikSharp {
             CancellationToken.None, // NB we use the token for signalling, could use a simple TCS
             TaskCreationOptions.LongRunning,
             TaskScheduler.Default);
-
 
             // Callback Task
             _callbackTask = Task.Factory.StartNew(async () => {
@@ -308,7 +319,6 @@ namespace QuikSharp {
                                         Trace.TraceError(e.ToString());
                                     }
                                 }, response, TaskCreationOptions.PreferFairness);
-
                             }
                         } catch (IOException e) {
                             Trace.TraceError(e.ToString());
@@ -341,9 +351,7 @@ namespace QuikSharp {
             CancellationToken.None, // NB we use the token for signalling, could use a simple TCS
             TaskCreationOptions.LongRunning,
             TaskScheduler.Default);
-
         }
-
 
         private bool IsServiceConnected() {
             return (_responseClient != null && _responseClient.Connected && _responseClient.Client.IsConnectedNow())
@@ -401,30 +409,38 @@ namespace QuikSharp {
                 switch (eventName) {
                     case EventNames.OnAccountBalance:
                         break;
+
                     case EventNames.OnAccountPosition:
                         break;
+
                     case EventNames.OnAllTrade:
                         Trace.Assert(message is Message<AllTrade>);
                         var allTrade = ((Message<AllTrade>)message).Data;
                         allTrade.LuaTimeStamp = message.CreatedTime;
                         Events.OnAllTradeCall(allTrade);
                         break;
+
                     case EventNames.OnCleanUp:
                         Trace.Assert(message is Message<string>);
                         Events.OnCleanUpCall();
                         break;
+
                     case EventNames.OnClose:
                         Trace.Assert(message is Message<string>);
                         Events.OnCloseCall();
                         break;
+
                     case EventNames.OnConnected:
                         Trace.Assert(message is Message<string>);
                         Events.OnConnectedCall();
                         break;
+
                     case EventNames.OnDepoLimit:
                         break;
+
                     case EventNames.OnDepoLimitDelete:
                         break;
+
                     case EventNames.OnDisconnected:
                         Trace.Assert(message is Message<string>);
                         Events.OnDisconnectedCall();
@@ -432,22 +448,30 @@ namespace QuikSharp {
 
                     case EventNames.OnFirm:
                         break;
+
                     case EventNames.OnFuturesClientHolding:
                         break;
+
                     case EventNames.OnFuturesLimitChange:
                         break;
+
                     case EventNames.OnFuturesLimitDelete:
                         break;
+
                     case EventNames.OnInit:
                         // Этот callback никогда не будет вызван так как на момент получения вызова OnInit в lua скрипте
                         // соединение с библиотекой QuikSharp не будет еще установлено. То есть этот callback не имеет смысла.
                         break;
+
                     case EventNames.OnMoneyLimit:
                         break;
+
                     case EventNames.OnMoneyLimitDelete:
                         break;
+
                     case EventNames.OnNegDeal:
                         break;
+
                     case EventNames.OnNegTrade:
                         break;
 
@@ -512,6 +536,7 @@ namespace QuikSharp {
                         Trace.Assert(message is Message<string>);
                         Trace.TraceError(((Message<string>)message).Data);
                         break;
+
                     default:
                         throw new InvalidOperationException("Unknown command in a message: " + message.Command);
                 }
@@ -527,7 +552,7 @@ namespace QuikSharp {
                 // 2^31 = 2147483648
                 // with 1 000 000 messages per second it will take more than
                 // 35 hours to overflow => safe for use as TRANS_ID in SendTransaction
-                // very weird stuff: Уникальный идентификационный номер заявки, значение от 1 до 2 294 967 294 
+                // very weird stuff: Уникальный идентификационный номер заявки, значение от 1 до 2 294 967 294
                 if (newId > 0) {
                     return newId;
                 }
@@ -584,6 +609,5 @@ namespace QuikSharp {
             if (timeout > 0) { ctRegistration.Dispose(); }
             return (response as TResponse);
         }
-
     }
 }
