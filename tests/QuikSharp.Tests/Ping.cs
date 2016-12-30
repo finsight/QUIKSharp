@@ -12,7 +12,8 @@ namespace QuikSharp.Tests
 
         [Test]
         public void PingWorks() {
-            var pong = _df.Ping().Result;
+            var df = new DebugFunctions(Quik.DefaultPort);
+            var pong = df.Ping().Result;
         }
 
         [Test]
