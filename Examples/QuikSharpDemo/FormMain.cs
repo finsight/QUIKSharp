@@ -37,11 +37,6 @@ namespace QuikSharpDemo
         FormOutputTable toolCandlesTable;
         Order order;
 
-        //////////////////// отладка //////////////////////////////
-        //Instrument instr;
-
-        //////////////////// отладка //////////////////////////////
-
         public FormMain()
         {
             InitializeComponent();
@@ -63,7 +58,6 @@ namespace QuikSharpDemo
             listBoxCommands.Items.Add("Получить таблицу лимитов по всем бумагам");
             listBoxCommands.Items.Add("Получить таблицу заявок");
             listBoxCommands.Items.Add("Получить таблицу сделок");
-
         }
 
         private void buttonStart_Click(object sender, EventArgs e)
@@ -75,7 +69,7 @@ namespace QuikSharpDemo
             }
             catch
             {
-                Console.WriteLine("Ошибка инициализации объекта Quik");
+                textBoxLogsWindow.AppendText("Ошибка инициализации объекта Quik..." + Environment.NewLine);
             }
             if (_quik != null)
             {
@@ -86,14 +80,12 @@ namespace QuikSharpDemo
                     isServerConnected = _quik.Service.IsConnected().Result;
                     if (isServerConnected)
                     {
-                        Console.WriteLine("Соединение с сервером установлено");
                         textBoxLogsWindow.AppendText("Соединение с сервером установлено." + Environment.NewLine);
                         buttonRun.Enabled = true;
                         buttonStart.Enabled = false;
                     }
                     else
                     {
-                        Console.WriteLine("Соединение с сервером НЕ установлено");
                         textBoxLogsWindow.AppendText("Соединение с сервером НЕ установлено." + Environment.NewLine);
                         buttonRun.Enabled = false;
                         buttonStart.Enabled = true;
@@ -101,7 +93,6 @@ namespace QuikSharpDemo
                 }
                 catch
                 {
-                    Console.WriteLine("Неудачная попытка получить статус соединения с сервером");
                     textBoxLogsWindow.AppendText("Неудачная попытка получить статус соединения с сервером." + Environment.NewLine);
                 }
             }
@@ -449,6 +440,5 @@ namespace QuikSharpDemo
             }
             return res;
         }
-
     }
 }

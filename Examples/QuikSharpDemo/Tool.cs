@@ -1,14 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Runtime.InteropServices;
-using System.Diagnostics;
-using System.ComponentModel;
 using QuikSharp;
-using QuikSharp.DataStructures;
 
 public class Tool   
 {
@@ -147,6 +138,5 @@ public class Tool
         {
             Console.WriteLine("Ошибка в методе GetBaseParam: " + e.Message);
         }
-
     }
 }
