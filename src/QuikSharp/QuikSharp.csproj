@@ -147,6 +147,8 @@
     <Compile Include="DataStructures\OrderBook.cs" />
     <Compile Include="DataStructures\Param.cs" />
     <Compile Include="DataStructures\ParamTable.cs" />
+    <Compile Include="DataStructures\PortfolioInfo.cs" />
+    <Compile Include="DataStructures\PortfolioInfoEx.cs" />
     <Compile Include="DataStructures\QuikTable.cs" />
     <Compile Include="DataStructures\SecurityInfo.cs" />
     <Compile Include="DataStructures\EventNames.cs" />

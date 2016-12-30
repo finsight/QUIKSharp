@@ -283,6 +283,22 @@ function qsfunctions.getDepoEx(msg)
     return msg
 end
 
+-- Функция для получения информации по денежным лимитам.
+function qsfunctions.getMoney(msg)
+    local spl = split(msg.data, "|")
+    local client_code, firm_id, tag, curr_code = spl[1], spl[2], spl[3], spl[4]
+    msg.data = getMoney(client_code, firm_id, tag, curr_code)
+    return msg
+end
+
+-- Функция для получения информации по денежным лимитам указанного типа.
+function qsfunctions.getMoneyEx(msg)
+    local spl = split(msg.data, "|")
+    local firm_id, client_code, tag, curr_code, limit_kind = spl[1], spl[2], spl[3], spl[4], spl[5]
+    msg.data = getMoneyEx(firm_id, client_code, tag, curr_code, tonumber(limit_kind))
+    return msg
+end
+
 function qsfunctions.getFuturesHolding(msg)
     local spl = split(msg.data, "|")
     local firmId, accId, secCode, posType = spl[1], spl[2], spl[3], spl[4]
@@ -392,6 +408,23 @@ function qsfunctions.get_Trades_by_OrderNumber(msg)
 	msg.data = trades
 	return msg
 end
+
+-- Функция предназначена для получения значений параметров таблицы «Клиентский портфель», соответствующих идентификатору участника торгов «firmid» и коду клиента «client_code».
+function qsfunctions.getPortfolioInfo(msg)
+    local spl = split(msg.data, "|")
+    local firmId, clientCode = spl[1], spl[2]
+    msg.data = getPortfolioInfo(firmId, clientCode)
+    return msg
+end
+
+-- Функция предназначена для получения значений параметров таблицы «Клиентский портфель», соответствующих идентификатору участника торгов «firmid», коду клиента «client_code» и виду лимита «limit_kind».
+function qsfunctions.getPortfolioInfoEx(msg)
+    local spl = split(msg.data, "|")
+    local firmId, clientCode, limit_kind = spl[1], spl[2], spl[3]
+    msg.data = getPortfolioInfoEx(firmId, clientCode, tonumber(limit_kind))
+    return msg
+end
+
 
 --------------------------
 -- OptionBoard functions --

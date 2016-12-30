@@ -34,6 +34,8 @@ namespace QuikSharpDemo
         List<Order> listOrders;
         List<Trade> listTrades;
         List<DepoLimitEx> listDepoLimits;
+        List<PortfolioInfoEx> listPortfolio;
+        List<MoneyLimitEx> listMoneyLimits;
         FormOutputTable toolCandlesTable;
         Order order;
 
@@ -58,6 +60,8 @@ namespace QuikSharpDemo
             listBoxCommands.Items.Add("Получить таблицу лимитов по всем бумагам");
             listBoxCommands.Items.Add("Получить таблицу заявок");
             listBoxCommands.Items.Add("Получить таблицу сделок");
+            listBoxCommands.Items.Add("Получить таблицу `Клиентский портфель`");
+            listBoxCommands.Items.Add("Получить таблицу денежных лимитов");
         }
 
         private void buttonStart_Click(object sender, EventArgs e)
@@ -65,7 +69,8 @@ namespace QuikSharpDemo
             try
             {
                 textBoxLogsWindow.AppendText("Подключаемся к терминалу Quik..." + Environment.NewLine);
-                _quik = new Quik(Quik.DefaultPort, new InMemoryStorage());    // инициализируем объект Quik
+                //_quik = new Quik(Quik.DefaultPort, new InMemoryStorage());    // инициализируем объект Quik
+                _quik = new Quik(34136, new InMemoryStorage());    // инициализируем объект Quik
             }
             catch
             {
@@ -133,6 +138,7 @@ namespace QuikSharpDemo
                         textBoxStep.Text = Convert.ToString(tool.Step);
                         textBoxGuaranteeProviding.Text = Convert.ToString(tool.GuaranteeProviding);
                         textBoxLastPrice.Text = Convert.ToString(tool.LastPrice);
+                        textBoxQty.Text = Convert.ToString(GetPositionT2(_quik, tool, clientCode));
                         textBoxLogsWindow.AppendText("Подписываемся на стакан..." + Environment.NewLine);
                         _quik.OrderBook.Subscribe(tool.ClassCode, tool.SecurityCode).Wait();
                         isSubscribedToolOrderBook = _quik.OrderBook.IsSubscribed(tool.ClassCode, tool.SecurityCode).Result;
@@ -143,6 +149,7 @@ namespace QuikSharpDemo
                             textBoxLogsWindow.AppendText("Подписываемся на колбэк 'OnQuote'..." + Environment.NewLine);
                             _quik.Events.OnQuote += OnQuoteDo;
                             timerRenewForm.Enabled = true;
+                            listBoxCommands.SelectedIndex = 0;
                             listBoxCommands.Enabled = true;
                             buttonCommandRun.Enabled = true;
                         }
@@ -178,6 +185,7 @@ namespace QuikSharpDemo
         private void timerRenewForm_Tick(object sender, EventArgs e)
         {
             textBoxLastPrice.Text = Convert.ToString(tool.LastPrice);
+            textBoxQty.Text = Convert.ToString(GetPositionT2(_quik, tool, clientCode));
             if (toolOrderBook != null && toolOrderBook.bid != null)
             {
                 textBoxBestBid.Text = bid.ToString();
@@ -212,6 +220,12 @@ namespace QuikSharpDemo
                     break;
                 case "Получить таблицу сделок":
                     textBoxDescription.Text = "Получить и отобразить таблицу всех клиентских сделок. quik.Trading.GetTrades()";
+                    break;
+                case "Получить таблицу `Клиентский портфель`":
+                    textBoxDescription.Text = "Получить и отобразить таблицу `Клиентский портфель`. quik.Trading.GetPortfolioInfoEx()";
+                    break;
+                case "Получить таблицу денежных лимитов":
+                    textBoxDescription.Text = "Получить и отобразить таблицу денежных лимитов Т2. quik.Trading.GetMoneyEx()";
                     break;
             }
         }
@@ -250,7 +264,7 @@ namespace QuikSharpDemo
                     {
                         decimal priceInOrder = Math.Round(tool.LastPrice - tool.LastPrice / 20, tool.PriceAccuracy);
                         textBoxLogsWindow.AppendText("Выставляем заявку на покупку, по цене:" + priceInOrder + " ..." + Environment.NewLine);
-                        long transactionID = NewOrder(_quik, tool, Operation.Buy, priceInOrder, 1).Result;
+                        long transactionID = NewOrder(_quik, tool, Operation.Buy, priceInOrder, 1);
                         if (transactionID > 0)
                         {
                             Thread.Sleep(500);
@@ -288,7 +302,7 @@ namespace QuikSharpDemo
                     {
                         decimal priceInOrder = Math.Round(tool.LastPrice + tool.Step * 5, tool.PriceAccuracy);
                         textBoxLogsWindow.AppendText("Выставляем заявку на покупку, по цене:" + priceInOrder + " ..." + Environment.NewLine);
-                        long transactionID = NewOrder(_quik, tool, Operation.Buy, priceInOrder, 1).Result;
+                        long transactionID = NewOrder(_quik, tool, Operation.Buy, priceInOrder, 1);
                         if (transactionID > 0)
                         {
                             textBoxLogsWindow.AppendText("Заявка выставлена. ID транзакции - " + transactionID + Environment.NewLine);
@@ -417,10 +431,80 @@ namespace QuikSharpDemo
                         textBoxLogsWindow.AppendText("Ошибка получения сделок." + Environment.NewLine);
                     }
                     break;
+                case "Получить таблицу `Клиентский портфель`":
+                    try
+                    {
+                        textBoxLogsWindow.AppendText("Получаем таблицу `Клиентский портфель`..." + Environment.NewLine);
+                        listPortfolio = new List<PortfolioInfoEx>();
+                        if (classCode == "SPBFUT") listPortfolio.Add(_quik.Trading.GetPortfolioInfoEx(tool.FirmID, tool.AccountID, 0).Result);
+                        else listPortfolio.Add(_quik.Trading.GetPortfolioInfoEx(tool.FirmID, clientCode, 2).Result);
+
+                        if (listPortfolio.Count > 0)
+                        {
+                            textBoxLogsWindow.AppendText("Выводим данные о портфеле в таблицу..." + Environment.NewLine);
+                            toolCandlesTable = new FormOutputTable(listPortfolio);
+                            toolCandlesTable.Show();
+                        }
+                        else
+                        {
+                            textBoxLogsWindow.AppendText("В таблице `Клиентский портфель` отсутствуют записи." + Environment.NewLine);
+                        }
+                    }
+                    catch
+                    {
+                        textBoxLogsWindow.AppendText("Ошибка получения клиентского портфеля." + Environment.NewLine);
+                    }
+                    break;
+                case "Получить таблицу денежных лимитов":
+                    try
+                    {
+                        textBoxLogsWindow.AppendText("Получаем таблицу денежных лимитов..." + Environment.NewLine);
+                        listMoneyLimits = new List<MoneyLimitEx>();
+                        listMoneyLimits.Add(_quik.Trading.GetMoneyEx(tool.FirmID, clientCode, "EQTV", "SUR", 2).Result);
+
+                        if (listMoneyLimits.Count > 0)
+                        {
+                            textBoxLogsWindow.AppendText("Выводим данные о денежных лимитах в таблицу..." + Environment.NewLine);
+                            toolCandlesTable = new FormOutputTable(listMoneyLimits);
+                            toolCandlesTable.Show();
+                        }
+                    }
+                    catch
+                    {
+                        textBoxLogsWindow.AppendText("Ошибка получения денежных лимитов." + Environment.NewLine);
+                    }
+                    break;
             }
         }
 
-        async Task<long> NewOrder(Quik _quik, Tool _tool, Operation operation, decimal price, int qty)
+        int GetPositionT2(Quik _quik, Tool instrument, string clientCode)
+        {
+            // возвращает чистую позицию по инструменту
+            // для срочного рынка передаем номер счета, для спот-рынка код-клиента
+            int qty = 0;
+            if (instrument.ClassCode == "SPBFUT")
+            {
+                // фьючерсы
+                try
+                {
+                    FuturesClientHolding q1 = _quik.Trading.GetFuturesHolding(instrument.FirmID, instrument.AccountID, instrument.SecurityCode, 0).Result;
+                    if (q1 != null) qty = Convert.ToInt32(q1.totalNet);
+                }
+                catch (Exception e) { Console.WriteLine("GetPositionT2: SPBFUT, ошибка - " + e.Message); }
+            }
+            else
+            {
+                // акции
+                try
+                {
+                    DepoLimitEx q1 = _quik.Trading.GetDepoEx(instrument.FirmID, clientCode, instrument.SecurityCode, instrument.AccountID, 2).Result;
+                    if (q1 != null) qty = Convert.ToInt32(q1.CurrentBalance);
+                }
+                catch (Exception e) { Console.WriteLine("GetPositionT2: ошибка - " + e.Message); }
+            }
+            return qty;
+        }
+        long NewOrder(Quik _quik, Tool _tool, Operation operation, decimal price, int qty)
         {
             long res = 0;
             Order order_new = new Order();

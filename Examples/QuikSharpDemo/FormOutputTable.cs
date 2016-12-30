@@ -46,5 +46,29 @@ namespace QuikSharpDemo
             InitializeComponent();
             dataGridViewCandles.DataSource = _trades;
         }
+
+        public FormOutputTable(List<PortfolioInfo> _portfolio)
+        {
+            InitializeComponent();
+            dataGridViewCandles.DataSource = _portfolio;
+        }
+
+        public FormOutputTable(List<PortfolioInfoEx> _portfolio)
+        {
+            InitializeComponent();
+            dataGridViewCandles.DataSource = _portfolio;
+        }
+
+        public FormOutputTable(List<MoneyLimit> _moneyLimit)
+        {
+            InitializeComponent();
+            dataGridViewCandles.DataSource = _moneyLimit;
+        }
+
+        public FormOutputTable(List<MoneyLimitEx> _moneyLimit)
+        {
+            InitializeComponent();
+            dataGridViewCandles.DataSource = _moneyLimit;
+        }
     }
 }
