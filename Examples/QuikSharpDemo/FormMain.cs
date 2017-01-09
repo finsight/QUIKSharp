@@ -35,7 +35,8 @@ namespace QuikSharpDemo
         List<Trade> listTrades;
         List<DepoLimitEx> listDepoLimits;
         List<PortfolioInfoEx> listPortfolio;
-        List<MoneyLimitEx> listMoneyLimits;
+        List<MoneyLimit> listMoneyLimits;
+        List<MoneyLimitEx> listMoneyLimitsEx;
         FormOutputTable toolCandlesTable;
         Order order;
 
@@ -61,7 +62,7 @@ namespace QuikSharpDemo
             listBoxCommands.Items.Add("Получить таблицу заявок");
             listBoxCommands.Items.Add("Получить таблицу сделок");
             listBoxCommands.Items.Add("Получить таблицу `Клиентский портфель`");
-            listBoxCommands.Items.Add("Получить таблицу денежных лимитов");
+            listBoxCommands.Items.Add("Получить таблицы денежных лимитов");
         }
 
         private void buttonStart_Click(object sender, EventArgs e)
@@ -69,8 +70,8 @@ namespace QuikSharpDemo
             try
             {
                 textBoxLogsWindow.AppendText("Подключаемся к терминалу Quik..." + Environment.NewLine);
-                //_quik = new Quik(Quik.DefaultPort, new InMemoryStorage());    // инициализируем объект Quik
-                _quik = new Quik(34136, new InMemoryStorage());    // инициализируем объект Quik
+                _quik = new Quik(Quik.DefaultPort, new InMemoryStorage());    // инициализируем объект Quik
+                //_quik = new Quik(34136, new InMemoryStorage());    // отладочное подключение
             }
             catch
             {
@@ -224,8 +225,8 @@ namespace QuikSharpDemo
                 case "Получить таблицу `Клиентский портфель`":
                     textBoxDescription.Text = "Получить и отобразить таблицу `Клиентский портфель`. quik.Trading.GetPortfolioInfoEx()";
                     break;
-                case "Получить таблицу денежных лимитов":
-                    textBoxDescription.Text = "Получить и отобразить таблицу денежных лимитов Т2. quik.Trading.GetMoneyEx()";
+                case "Получить таблицы денежных лимитов":
+                    textBoxDescription.Text = "Получить и отобразить таблицы денежных лимитов (стандартную и дополнительную Т2). Работает только на инструментах фондовой секции. quik.Trading.GetMoney() и quik.Trading.GetMoneyEx()";
                     break;
             }
         }
@@ -455,17 +456,28 @@ namespace QuikSharpDemo
                         textBoxLogsWindow.AppendText("Ошибка получения клиентского портфеля." + Environment.NewLine);
                     }
                     break;
-                case "Получить таблицу денежных лимитов":
+                case "Получить таблицы денежных лимитов":
                     try
                     {
                         textBoxLogsWindow.AppendText("Получаем таблицу денежных лимитов..." + Environment.NewLine);
-                        listMoneyLimits = new List<MoneyLimitEx>();
-                        listMoneyLimits.Add(_quik.Trading.GetMoneyEx(tool.FirmID, clientCode, "EQTV", "SUR", 2).Result);
+                        listMoneyLimits = new List<MoneyLimit>();
+                        listMoneyLimits.Add(_quik.Trading.GetMoney(clientCode, tool.FirmID, "EQTV", "SUR").Result);
 
                         if (listMoneyLimits.Count > 0)
                         {
                             textBoxLogsWindow.AppendText("Выводим данные о денежных лимитах в таблицу..." + Environment.NewLine);
                             toolCandlesTable = new FormOutputTable(listMoneyLimits);
+                            toolCandlesTable.Show();
+                        }
+
+                        textBoxLogsWindow.AppendText("Получаем расширение таблицы денежных лимитов..." + Environment.NewLine);
+                        listMoneyLimitsEx = new List<MoneyLimitEx>();
+                        listMoneyLimitsEx.Add(_quik.Trading.GetMoneyEx(tool.FirmID, clientCode, "EQTV", "SUR", 2).Result);
+
+                        if (listMoneyLimitsEx.Count > 0)
+                        {
+                            textBoxLogsWindow.AppendText("Выводим данные о денежных лимитах в таблицу..." + Environment.NewLine);
+                            toolCandlesTable = new FormOutputTable(listMoneyLimitsEx);
                             toolCandlesTable.Show();
                         }
                     }
