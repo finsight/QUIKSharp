@@ -63,6 +63,8 @@
             this.label13 = new System.Windows.Forms.Label();
             this.textBoxOrderNumber = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.textBoxQty = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // buttonStart
@@ -265,7 +267,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(20, 387);
+            this.label9.Location = new System.Drawing.Point(20, 414);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(46, 13);
             this.label9.TabIndex = 5;
@@ -274,7 +276,7 @@
             // textBoxBestBid
             // 
             this.textBoxBestBid.Enabled = false;
-            this.textBoxBestBid.Location = new System.Drawing.Point(93, 384);
+            this.textBoxBestBid.Location = new System.Drawing.Point(93, 411);
             this.textBoxBestBid.Name = "textBoxBestBid";
             this.textBoxBestBid.Size = new System.Drawing.Size(140, 20);
             this.textBoxBestBid.TabIndex = 6;
@@ -282,7 +284,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(20, 361);
+            this.label10.Location = new System.Drawing.Point(20, 388);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(54, 13);
             this.label10.TabIndex = 5;
@@ -291,7 +293,7 @@
             // textBoxLastPrice
             // 
             this.textBoxLastPrice.Enabled = false;
-            this.textBoxLastPrice.Location = new System.Drawing.Point(93, 358);
+            this.textBoxLastPrice.Location = new System.Drawing.Point(93, 385);
             this.textBoxLastPrice.Name = "textBoxLastPrice";
             this.textBoxLastPrice.Size = new System.Drawing.Size(140, 20);
             this.textBoxLastPrice.TabIndex = 6;
@@ -299,7 +301,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(20, 335);
+            this.label11.Location = new System.Drawing.Point(20, 362);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(54, 13);
             this.label11.TabIndex = 5;
@@ -308,7 +310,7 @@
             // textBoxBestOffer
             // 
             this.textBoxBestOffer.Enabled = false;
-            this.textBoxBestOffer.Location = new System.Drawing.Point(93, 332);
+            this.textBoxBestOffer.Location = new System.Drawing.Point(93, 359);
             this.textBoxBestOffer.Name = "textBoxBestOffer";
             this.textBoxBestOffer.Size = new System.Drawing.Size(140, 20);
             this.textBoxBestOffer.TabIndex = 6;
@@ -338,7 +340,7 @@
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(20, 417);
+            this.label13.Location = new System.Drawing.Point(20, 444);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(109, 13);
             this.label13.TabIndex = 5;
@@ -347,7 +349,7 @@
             // textBoxOrderNumber
             // 
             this.textBoxOrderNumber.Enabled = false;
-            this.textBoxOrderNumber.Location = new System.Drawing.Point(93, 436);
+            this.textBoxOrderNumber.Location = new System.Drawing.Point(93, 463);
             this.textBoxOrderNumber.Name = "textBoxOrderNumber";
             this.textBoxOrderNumber.Size = new System.Drawing.Size(140, 20);
             this.textBoxOrderNumber.TabIndex = 6;
@@ -360,6 +362,23 @@
             this.label14.Size = new System.Drawing.Size(270, 13);
             this.label14.TabIndex = 5;
             this.label14.Text = "- НЕОБХОДИМО УКАЗАТЬ ТИКЕР ИНСТРУМЕНТА";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(20, 317);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(66, 13);
+            this.label15.TabIndex = 5;
+            this.label15.Text = "Количество";
+            // 
+            // textBoxQty
+            // 
+            this.textBoxQty.Enabled = false;
+            this.textBoxQty.Location = new System.Drawing.Point(93, 314);
+            this.textBoxQty.Name = "textBoxQty";
+            this.textBoxQty.Size = new System.Drawing.Size(140, 20);
+            this.textBoxQty.TabIndex = 6;
             // 
             // FormMain
             // 
@@ -382,6 +401,8 @@
             this.Controls.Add(this.label13);
             this.Controls.Add(this.textBoxBestBid);
             this.Controls.Add(this.label9);
+            this.Controls.Add(this.textBoxQty);
+            this.Controls.Add(this.label15);
             this.Controls.Add(this.textBoxGuaranteeProviding);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.textBoxStep);
@@ -442,6 +463,8 @@
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.TextBox textBoxOrderNumber;
         private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.TextBox textBoxQty;
     }
 }
 

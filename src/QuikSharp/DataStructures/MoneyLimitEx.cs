@@ -9,43 +9,6 @@ namespace QuikSharp.DataStructures
     public class MoneyLimitEx {
         // ReSharper disable InconsistentNaming
         /// <summary>
-        /// Входящий лимит по денежным средствам
-        /// </summary>
-        [JsonProperty("money_open_limit")]
-        public double MoneyOpenLimit { get; set; }
-
-        /// <summary>
-        /// Стоимость немаржинальных бумаг в заявках на покупку
-        /// </summary>
-        [JsonProperty("money_open_limit")]
-        public double MoneyLimitLockedNonmarginalValue { get; set; }
-        /// <summary>
-        /// Заблокированное в заявках на покупку количество денежных средств
-        /// </summary>
-        [JsonProperty("money_open_limit")]
-        public double MoneyLimitLocked { get; set; }
-        /// <summary>
-        /// Входящий остаток по денежным средствам
-        /// </summary>
-        [JsonProperty("money_open_limit")]
-        public double MoneyOpenBalance { get; set; }
-        /// <summary>
-        /// Текущий лимит по денежным средствам
-        /// </summary>
-        [JsonProperty("money_open_limit")]
-        public double MoneyCurrentLimit { get; set; }
-        /// <summary>
-        /// Текущий остаток по денежным средствам
-        /// </summary>
-        [JsonProperty("money_open_limit")]
-        public double MoneyCurrentBalance { get; set; }
-        /// <summary>
-        /// Доступное количество денежных средств
-        /// </summary>
-        [JsonProperty("money_open_limit")]
-        public double MoneyLimitAvailable { get; set; }
-
-        /// <summary>
         /// Код валюты
         /// </summary>
         [JsonProperty("currcode")]
