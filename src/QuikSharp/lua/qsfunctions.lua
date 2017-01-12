@@ -127,11 +127,54 @@ function qsfunctions.sleep(msg)
     return msg
 end
 
---- Функция для вывода отладочной информации. 
+--- Функция для вывода отладочной информации.
 function qsfunctions.PrintDbgStr(msg)
     log(msg.data, 0)
     msg.data = ""
     return msg
+end
+
+-- Выводит на график метку
+function qsfunctions.addLabel(msg)
+	local spl = split(msg.data, "|")
+	local price, curdate, curtime, qty, path, id, algmnt, bgnd = spl[1], spl[2], spl[3], spl[4], spl[5], spl[6], spl[7], spl[8]
+	label = {
+			TEXT = "",
+			IMAGE_PATH = path,
+			ALIGNMENT = algmnt,
+			YVALUE = tostring(price),
+			DATE = tostring(curdate),
+			TIME = tostring(curtime),
+			R = 255,
+			G = 255,
+			B = 255,
+			TRANSPARENCY = 0,
+			TRANSPARENT_BACKGROUND = bgnd,
+			FONT_FACE_NAME = "Arial",
+			FONT_HEIGHT = "15",
+			HINT = " " .. tostring(price) .. " " .. tostring(qty)
+			}
+	local res = AddLabel(id, label)
+	msg.data = res
+	return msg
+end
+
+-- Удаляем выбранную метку
+function qsfunctions.delLabel(msg)
+	local spl = split(msg.data, "|")
+	local tag, id = spl[1], spl[2]
+	DelLabel(tag, tonumber(id))
+	msg.data = ""
+	return msg
+end
+
+-- Удаляем все метки с графика
+function qsfunctions.delAllLabels(msg)
+	local spl = split(msg.data, "|")
+	local id = spl[1]
+	DelAllLabels(id)
+	msg.data = ""
+	return msg
 end
 
 ---------------------
@@ -257,8 +300,8 @@ function qsfunctions.sendTransaction(msg)
     end
 end
 
---- Функция предназначена для получения значений всех параметров биржевой информации из Таблицы текущих значений параметров. 
--- С помощью этой функции можно получить любое из значений Таблицы текущих значений параметров для заданных кодов класса и бумаги. 
+--- Функция предназначена для получения значений всех параметров биржевой информации из Таблицы текущих значений параметров.
+-- С помощью этой функции можно получить любое из значений Таблицы текущих значений параметров для заданных кодов класса и бумаги.
 
 function qsfunctions.getParamEx(msg)
     local spl = split(msg.data, "|")
@@ -267,7 +310,7 @@ function qsfunctions.getParamEx(msg)
     return msg
 end
 
--- Функция предназначена для получения информации по бумажным лимитам. 
+-- Функция предназначена для получения информации по бумажным лимитам.
 function qsfunctions.getDepo(msg)
     local spl = split(msg.data, "|")
     local clientCode, firmId, secCode, account = spl[1], spl[2], spl[3], spl[4]
@@ -453,7 +496,7 @@ for sec in string.gmatch(SecList, "([^,]+)") do --перебираем опци�
             local Optiontype=getParamEx(classCode,sec,"optiontype").param_image
             if (string.find(secCode,Optionbase)~=nil) then
 
-                
+
                 p={
                     ["code"]=getParamEx(classCode,sec,"code").param_image,
 					["Name"]=getSecurityInfo(classCode,sec).name,
@@ -468,11 +511,11 @@ for sec in string.gmatch(SecList, "([^,]+)") do --перебираем опци�
 					["Strike"]=getParamEx(classCode,sec,"strike").param_value+0
                     }
 
-				
 
-                        table.insert( t, p ) 
+
+                        table.insert( t, p )
             end
-              
+
 end
 return t
 end
@@ -591,8 +634,8 @@ function qsfunctions.subscribe_to_candles(msg)
 		data_sources[key] = ds
 		last_indexes[key] = ds:Size()
 		ds:SetUpdateCallback(
-			function(index) 
-				data_source_callback(index, class, sec, interval) 
+			function(index)
+				data_source_callback(index, class, sec, interval)
 			end)
 	end
 	return msg

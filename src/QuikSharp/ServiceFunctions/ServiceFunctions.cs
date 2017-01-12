@@ -46,6 +46,35 @@ namespace QuikSharp {
         Task<bool> PrintDbgStr(string message);
 
         /// <summary>
+        /// Выводит метку на график
+        /// </summary>
+        /// <param name="price"></param>
+        /// <param name="curDate"></param>
+        /// <param name="curTime"></param>
+        /// <param name="hint"></param>
+        /// <param name="path"></param>
+        /// <param name="tag"></param>
+        /// <param name="alignment">LEFT, RIGHT, TOP, BOTTOM</param>
+        /// <param name="backgnd"> On = 1, Off = 0</param>
+        /// <returns>Возвращает Id метки</returns>
+        Task<double> AddLabel(double price, string curDate, string curTime, string hint, string path, string tag, string alignment, double backgnd);
+
+        /// <summary>
+        /// Удаляет метку по ее Id
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="id">Id метки</param>
+        /// <returns></returns>
+        Task<bool> DelLabel(string tag, double id);
+
+        /// <summary>
+        /// Удаляет все метки с графика
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <returns></returns>
+        Task<bool> DelAllLabels(string tag);
+        
+        /// <summary>
         /// Устанавливает стартовое значение для CorrelactionId.
         /// </summary>
         /// <param name="startCorrelationId">Стартовое значение.</param>
@@ -107,6 +136,27 @@ namespace QuikSharp {
         public async Task<bool> PrintDbgStr(string message) {
             await QuikService.Send<Message<string>>(
                 (new Message<string>(message, "PrintDbgStr"))).ConfigureAwait (false);
+            return true;
+        }
+
+        public async Task<double> AddLabel(double price, string curDate, string curTime, string hint, string path, string tag, string alignment, double backgnd)
+        {
+            var response = await QuikService.Send<Message<double>>(
+                (new Message<string>(price + "|" + curDate + "|" + curTime + "|" + hint + "|" + path + "|" + tag + "|" + alignment + "|" + backgnd, "addLabel"))).ConfigureAwait(false);
+            return response.Data;
+        }
+
+        public async Task<bool> DelLabel(string tag, double id)
+        {
+            await QuikService.Send<Message<string>>(
+                (new Message<string>(tag + "|" + id, "delLabel"))).ConfigureAwait(false);
+            return true;
+        }
+
+        public async Task<bool> DelAllLabels(string tag)
+        {
+            await QuikService.Send<Message<string>>(
+                (new Message<string>(tag, "delAllLabels"))).ConfigureAwait(false);
             return true;
         }
 
