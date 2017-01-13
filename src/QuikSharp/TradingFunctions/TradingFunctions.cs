@@ -134,7 +134,7 @@ namespace QuikSharp {
         ///  Для получения значений параметров таблицы «Клиентский портфель» для клиентов срочного рынка без единой денежной позиции 
         ///  необходимо указать в качестве «clientCode» – торговый счет на срочном рынке, а в качестве «limitKind» – 0.
         /// </summary>
-        Task<PortfolioInfoEx> GetPortfolioInfoEx(string firmId, string clientCode, double limitKind);
+        Task<PortfolioInfoEx> GetPortfolioInfoEx(string firmId, string clientCode, int limitKind);
         ///// <summary>
         /////  функция для получения параметров таблицы «Купить/Продать»
         ///// </summary>
@@ -299,7 +299,7 @@ namespace QuikSharp {
             return response.Data;
         }
 
-        public async Task<PortfolioInfoEx> GetPortfolioInfoEx(string firmId, string clientCode, double limitKind)
+        public async Task<PortfolioInfoEx> GetPortfolioInfoEx(string firmId, string clientCode, int limitKind)
         {
             var response = await QuikService.Send<Message<PortfolioInfoEx>>(
                     (new Message<string>(firmId + "|" + clientCode + "|" + limitKind, "getPortfolioInfoEx"))).ConfigureAwait(false);

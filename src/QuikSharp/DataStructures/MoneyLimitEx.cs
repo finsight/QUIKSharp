@@ -74,7 +74,7 @@ namespace QuikSharp.DataStructures
         /// иначе Ц технологические лимиты
         /// </summary>
         [JsonProperty("limit_kind")]
-        public double LimitKind { get; set; }
+        public int LimitKind { get; set; }
         // ReSharper restore InconsistentNaming
     }
 }
