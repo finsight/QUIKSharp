@@ -1,19 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Runtime.InteropServices;
-using System.Diagnostics;
-using System.ComponentModel;
 using QuikSharp;
-using QuikSharp.DataStructures;
 
 public class Tool   
 {
-    Char separator = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalSeparator[0];
-
+    Char separator = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0];
 
     Quik _quik;
     string name;
@@ -148,6 +138,5 @@ public class Tool
         {
             Console.WriteLine("Ошибка в методе GetBaseParam: " + e.Message);
         }
-
     }
 }

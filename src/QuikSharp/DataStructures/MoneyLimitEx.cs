@@ -9,43 +9,6 @@ namespace QuikSharp.DataStructures
     public class MoneyLimitEx {
         // ReSharper disable InconsistentNaming
         /// <summary>
-        /// ¬ход€щий лимит по денежным средствам
-        /// </summary>
-        [JsonProperty("money_open_limit")]
-        public double MoneyOpenLimit { get; set; }
-
-        /// <summary>
-        /// —тоимость немаржинальных бумаг в за€вках на покупку
-        /// </summary>
-        [JsonProperty("money_open_limit")]
-        public double MoneyLimitLockedNonmarginalValue { get; set; }
-        /// <summary>
-        /// «аблокированное в за€вках на покупку количество денежных средств
-        /// </summary>
-        [JsonProperty("money_open_limit")]
-        public double MoneyLimitLocked { get; set; }
-        /// <summary>
-        /// ¬ход€щий остаток по денежным средствам
-        /// </summary>
-        [JsonProperty("money_open_limit")]
-        public double MoneyOpenBalance { get; set; }
-        /// <summary>
-        /// “екущий лимит по денежным средствам
-        /// </summary>
-        [JsonProperty("money_open_limit")]
-        public double MoneyCurrentLimit { get; set; }
-        /// <summary>
-        /// “екущий остаток по денежным средствам
-        /// </summary>
-        [JsonProperty("money_open_limit")]
-        public double MoneyCurrentBalance { get; set; }
-        /// <summary>
-        /// ƒоступное количество денежных средств
-        /// </summary>
-        [JsonProperty("money_open_limit")]
-        public double MoneyLimitAvailable { get; set; }
-
-        /// <summary>
         ///  од валюты
         /// </summary>
         [JsonProperty("currcode")]
@@ -111,7 +74,7 @@ namespace QuikSharp.DataStructures
         /// иначе Ц технологические лимиты
         /// </summary>
         [JsonProperty("limit_kind")]
-        public double LimitKind { get; set; }
+        public int LimitKind { get; set; }
         // ReSharper restore InconsistentNaming
     }
 }
