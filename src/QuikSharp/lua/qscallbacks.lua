@@ -203,4 +203,76 @@ function OnConnected()
     sendCallback(msg)
 end
 
+--- Функция вызывается терминалом QUIK при получении изменений текущей позиции по счету.
+function OnAccountBalance(acc_bal)
+    local msg = {}
+    msg.t = timemsec()
+    msg.data = acc_bal
+    msg.cmd = "OnAccountBalance"
+    sendCallback(msg)
+end
+
+--- Функция вызывается терминалом QUIK при изменении денежной позиции по счету.
+function OnAccountPosition(acc_pos)
+    local msg = {}
+    msg.t = timemsec()
+    msg.data = acc_pos
+    msg.cmd = "OnAccountPosition"
+    sendCallback(msg)
+end
+
+--- Функция вызывается терминалом QUIK при получении изменений лимита по бумагам.
+function OnDepoLimit(dlimit)
+    local msg = {}
+    msg.t = timemsec()
+    msg.data = dlimit
+    msg.cmd = "OnDepoLimit"
+    sendCallback(msg)
+end
+
+--- Функция вызывается терминалом QUIK при удалении клиентского лимита по бумагам.
+function OnDepoLimitDelete(dlimit_del)
+    local msg = {}
+    msg.t = timemsec()
+    msg.data = dlimit_del
+    msg.cmd = "OnDepoLimitDelete"
+    sendCallback(msg)
+end
+
+--- Функция вызывается терминалом QUIK при получении описания новой фирмы от сервера.
+function OnFirm(firm)
+    local msg = {}
+    msg.t = timemsec()
+    msg.data = firm
+    msg.cmd = "OnFirm"
+    sendCallback(msg)
+end
+
+--- Функция вызывается терминалом QUIK при изменении позиции по срочному рынку.
+function OnFuturesClientHolding(fut_pos)
+    local msg = {}
+    msg.t = timemsec()
+    msg.data = fut_pos
+    msg.cmd = "OnFuturesClientHolding"
+    sendCallback(msg)
+end
+
+--- Функция вызывается терминалом QUIK при получении изменений ограничений по срочному рынку.
+function OnFuturesLimitChange(fut_limit)
+    local msg = {}
+    msg.t = timemsec()
+    msg.data = fut_limit
+    msg.cmd = "OnFuturesLimitChange"
+    sendCallback(msg)
+end
+
+--- Функция вызывается терминалом QUIK при удалении лимита по срочному рынку.
+function OnFuturesLimitDelete(lim_del)
+    local msg = {}
+    msg.t = timemsec()
+    msg.data = lim_del
+    msg.cmd = "OnFuturesLimitDelete"
+    sendCallback(msg)
+end
+
 return qscallbacks

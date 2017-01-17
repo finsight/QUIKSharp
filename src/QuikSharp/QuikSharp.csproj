@@ -143,7 +143,8 @@
     <Compile Include="DataStructures\Candle.cs" />
     <Compile Include="DataStructures\CandleInterval.cs" />
     <Compile Include="DataStructures\ClassInfo.cs" />
-    <Compile Include="DataStructures\Firms.cs" />
+    <Compile Include="DataStructures\DepoLimitDelete.cs" />
+    <Compile Include="DataStructures\Firm.cs" />
     <Compile Include="DataStructures\FuturesClientHolding.cs" />
     <Compile Include="DataStructures\FuturesLimitDelete.cs" />
     <Compile Include="DataStructures\FuturesLimits.cs" />

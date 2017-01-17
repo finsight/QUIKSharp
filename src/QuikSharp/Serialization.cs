@@ -255,10 +255,10 @@ namespace QuikSharp {
                 if (parsed) {
                     switch (eventName) {
                         case EventNames.OnAccountBalance:
-                            break;
+                            return new Message<AccountBalance> { Data = new AccountBalance() };
 
                         case EventNames.OnAccountPosition:
-                            break;
+                            return new Message<AccountPosition> { Data = new AccountPosition() };
 
                         case EventNames.OnAllTrade:
                             return new Message<AllTrade> { Data = new AllTrade() };
@@ -268,26 +268,27 @@ namespace QuikSharp {
                         case EventNames.OnConnected:
                         case EventNames.OnDisconnected:
                         case EventNames.OnInit:
+
                         case EventNames.OnStop:
                             return new Message<string>();
 
                         case EventNames.OnDepoLimit:
-                            break;
+                            return new Message<DepoLimit> { Data = new DepoLimit() };
 
                         case EventNames.OnDepoLimitDelete:
-                            break;
+                            return new Message<DepoLimitDelete> { Data = new DepoLimitDelete() };
 
                         case EventNames.OnFirm:
-                            break;
+                            return new Message<Firm> { Data = new Firm() };
 
                         case EventNames.OnFuturesClientHolding:
-                            break;
+                            return new Message<FuturesClientHolding> { Data = new FuturesClientHolding() };
 
                         case EventNames.OnFuturesLimitChange:
-                            break;
+                            return new Message<FuturesLimits> { Data = new FuturesLimits() };
 
                         case EventNames.OnFuturesLimitDelete:
-                            break;
+                            return new Message<FuturesLimitDelete> { Data = new FuturesLimitDelete() };
 
                         case EventNames.OnMoneyLimit:
                             break;
@@ -302,30 +303,22 @@ namespace QuikSharp {
                             break;
 
                         case EventNames.OnOrder:
-                            return new Message<Order> {
-                                Data = new Order()
-                            };
+                            return new Message<Order> { Data = new Order() };
 
                         case EventNames.OnParam:
                             return new Message<Param> { Data = new Param() };
 
                         case EventNames.OnQuote:
-                            return new Message<OrderBook> {
-                                Data = new OrderBook()
-                            };
+                            return new Message<OrderBook> { Data = new OrderBook() };
 
                         case EventNames.OnStopOrder:
                             return new Message<StopOrder> { Data = new StopOrder() };
 
                         case EventNames.OnTrade:
-                            return new Message<Trade> {
-                                Data = new Trade()
-                            };
+                            return new Message<Trade> { Data = new Trade() };
 
                         case EventNames.OnTransReply:
-                            return new Message<TransactionReply> {
-                                Data = new TransactionReply()
-                            };
+                            return new Message<TransactionReply> { Data = new TransactionReply() };
 
                         case EventNames.NewCandle:
                             return new Message<Candle> { Data = new Candle() };

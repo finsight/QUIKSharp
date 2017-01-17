@@ -51,25 +51,55 @@ namespace QuikSharp {
 		/// </summary>
 		event VoidHandler OnDisconnectedFromQuik;
 
-		event EventHandler OnAccountBalance;
-        event EventHandler OnAccountPosition;
+        /// <summary>
+        /// Событие вызывается при получении изменений текущей позиции по счету. 
+        /// </summary>
+        event AccountBalanceHandler OnAccountBalance;
+
+        /// <summary>
+        /// Событие вызывается при изменении денежной позиции по счету.
+        /// </summary>
+        event AccountPositionHandler OnAccountPosition;
+
         /// <summary>
         /// Новая обезличенная сделка
         /// </summary>
+
         event AllTradeHandler OnAllTrade;
+        /// <summary>
+        /// Функция вызывается терминалом QUIK при смене сессии и при выгрузке файла qlua.dll
+        /// </summary>
+
         event VoidHandler OnCleanUp;
+
         /// <summary>
         /// Функция вызывается перед закрытием терминала QUIK. 
         /// </summary>
         event VoidHandler OnClose;
         event VoidHandler OnConnected;
-        event EventHandler OnDepoLimit;
-        event EventHandler OnDepoLimitDelete;
+        event DepoLimitHandler OnDepoLimit;
+        event DepoLimitDeleteHandler OnDepoLimitDelete;
         event VoidHandler OnDisconnected;
-        event EventHandler OnFirm;
-        event EventHandler OnFuturesClientHolding;
-        event EventHandler OnFuturesLimitChange;
-        event EventHandler OnFuturesLimitDelete;
+
+        /// <summary>
+        /// Функция вызывается терминалом QUIK при получении описания новой фирмы от сервера.
+        /// </summary>
+        event FirmHandler OnFirm;
+
+        /// <summary>
+        /// Функция вызывается терминалом QUIK при изменении позиции по срочному рынку.
+        /// </summary>
+        event FuturesClientHoldingHandler OnFuturesClientHolding;
+
+        /// <summary>
+        /// Функция вызывается терминалом QUIK при получении изменений ограничений по срочному рынку.
+        /// </summary>
+        event FuturesLimitHandler OnFuturesLimitChange;
+
+        /// <summary>
+        /// Функция вызывается терминалом QUIK при удалении лимита по срочному рынку.
+        /// </summary>
+        event FuturesLimitDeleteHandler OnFuturesLimitDelete;
 
 		/// <summary>
 		/// Depricated
@@ -83,6 +113,7 @@ namespace QuikSharp {
         event OrderHandler OnOrder;
         event ParamHandler OnParam;
         event QuoteHandler OnQuote;
+
         /// <summary>
         /// Функция вызывается терминалом QUIK при остановке скрипта из диалога управления. 
         /// Примечание: Значение параметра «stop_flag» – «1».После окончания выполнения функции таймаут завершения работы скрипта 5 секунд. По истечении этого интервала функция main() завершается принудительно. При этом возможна потеря системных ресурсов.
