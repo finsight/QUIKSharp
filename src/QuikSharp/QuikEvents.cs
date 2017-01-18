@@ -112,6 +112,18 @@ namespace QuikSharp {
     /// <param name="limDel"></param>
     public delegate void FuturesLimitDeleteHandler(FuturesLimitDelete limDel);
 
+    /// <summary>
+    /// Обработчик события OnMoneyLimit
+    /// </summary>
+    /// <param name="mLimit"></param>
+    public delegate void MoneyLimitHandler(MoneyLimit mLimit);
+
+    /// <summary>
+    /// Обработчик события OnMoneyLimitDelete
+    /// </summary>
+    /// <param name="mLimitDel"></param>
+    public delegate void MoneyLimitDeleteHandler(MoneyLimitDelete mLimitDel);
+
     internal class QuikEvents : IQuikEvents {
         public QuikEvents(QuikService service) { QuikService = service; }
         public QuikService QuikService { get; private set; }
@@ -215,8 +227,17 @@ namespace QuikSharp {
         public event FuturesLimitDeleteHandler OnFuturesLimitDelete;
         internal void OnFuturesLimitDeleteCall(FuturesLimitDelete limDel) { OnFuturesLimitDelete?.Invoke(limDel); }
 
-        public event EventHandler OnMoneyLimit;
-        public event EventHandler OnMoneyLimitDelete;
+        /// <summary>
+        /// Функция вызывается терминалом QUIK при получении изменений по денежному лимиту клиента.
+        /// </summary>
+        public event MoneyLimitHandler OnMoneyLimit;
+        internal void OnMoneyLimitCall(MoneyLimit mLimit) { OnMoneyLimit?.Invoke(mLimit); }
+
+        /// <summary>
+        /// Функция вызывается терминалом QUIK при удалении денежного лимита.
+        /// </summary>
+        public event MoneyLimitDeleteHandler OnMoneyLimitDelete;
+        internal void OnMoneyLimitDeleteCall(MoneyLimitDelete mLimitDel) { OnMoneyLimitDelete?.Invoke(mLimitDel); }
         public event EventHandler OnNegDeal;
         public event EventHandler OnNegTrade;
 

@@ -275,4 +275,22 @@ function OnFuturesLimitDelete(lim_del)
     sendCallback(msg)
 end
 
+--- Функция вызывается терминалом QUIK при получении изменений по денежному лимиту клиента.
+function OnMoneyLimit(mlimit)
+    local msg = {}
+    msg.t = timemsec()
+    msg.data = mlimit
+    msg.cmd = "OnMoneyLimit"
+    sendCallback(msg)
+end
+
+--- Функция вызывается терминалом QUIK при удалении денежного лимита.
+function OnMoneyLimitDelete(mlimit_del)
+    local msg = {}
+    msg.t = timemsec()
+    msg.data = mlimit_del
+    msg.cmd = "OnMoneyLimitDelete"
+    sendCallback(msg)
+end
+
 return qscallbacks

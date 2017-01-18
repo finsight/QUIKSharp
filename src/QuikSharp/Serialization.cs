@@ -291,10 +291,10 @@ namespace QuikSharp {
                             return new Message<FuturesLimitDelete> { Data = new FuturesLimitDelete() };
 
                         case EventNames.OnMoneyLimit:
-                            break;
+                            return new Message<MoneyLimit> { Data = new MoneyLimit() };
 
                         case EventNames.OnMoneyLimitDelete:
-                            break;
+                            return new Message<MoneyLimitDelete> { Data = new MoneyLimitDelete() };
 
                         case EventNames.OnNegDeal:
                             break;
