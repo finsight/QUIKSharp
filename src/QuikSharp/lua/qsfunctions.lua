@@ -393,7 +393,19 @@ function qsfunctions.getOrder_by_ID(msg)
 	return msg
 end
 
---- Возвращает заявку по её номеру ---
+---- Функция возвращает заявку по номеру
+function qsfunctions.getOrder_by_Number(msg)
+	for i=0,getNumberOf("orders")-1 do
+		local order = getItem("orders",i)
+		if order.order_num == tonumber(msg.data) then
+			msg.data = order
+			return msg
+		end
+	end
+	return msg
+end
+
+--- Возвращает заявку по её номеру и классу инструмента ---
 --- На основе http://help.qlua.org/ch4_5_1_1.htm ---
 function qsfunctions.get_order_by_number(msg)
 	local spl = split(msg.data, "|")

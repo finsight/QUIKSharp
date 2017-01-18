@@ -5,7 +5,7 @@ namespace QuikSharp.DataStructures
     /// <summary>
     /// При получении описания новой фирмы от сервера функция возвращает таблицу Lua с параметрами
     /// </summary>
-    public class Firms
+    public class Firm
     {
         // ReSharper disable InconsistentNaming
         /// <summary>
