@@ -28,6 +28,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuikSharpDemo", "Examples\Q
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoConnector", "Examples\AutoConnector\AutoConnector.csproj", "{809C5C78-5BE5-471A-9BF8-FD97CA891571}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RobotDemo", "Examples\RobotDemo\RobotDemo.csproj", "{CD23572D-CF1A-404F-B373-77CC8A4FB093}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -94,6 +96,18 @@ Global
 		{809C5C78-5BE5-471A-9BF8-FD97CA891571}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{809C5C78-5BE5-471A-9BF8-FD97CA891571}.Release|x86.ActiveCfg = Release|Any CPU
 		{809C5C78-5BE5-471A-9BF8-FD97CA891571}.Release|x86.Build.0 = Release|Any CPU
+		{CD23572D-CF1A-404F-B373-77CC8A4FB093}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD23572D-CF1A-404F-B373-77CC8A4FB093}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD23572D-CF1A-404F-B373-77CC8A4FB093}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{CD23572D-CF1A-404F-B373-77CC8A4FB093}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{CD23572D-CF1A-404F-B373-77CC8A4FB093}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CD23572D-CF1A-404F-B373-77CC8A4FB093}.Debug|x86.Build.0 = Debug|Any CPU
+		{CD23572D-CF1A-404F-B373-77CC8A4FB093}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD23572D-CF1A-404F-B373-77CC8A4FB093}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD23572D-CF1A-404F-B373-77CC8A4FB093}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{CD23572D-CF1A-404F-B373-77CC8A4FB093}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{CD23572D-CF1A-404F-B373-77CC8A4FB093}.Release|x86.ActiveCfg = Release|Any CPU
+		{CD23572D-CF1A-404F-B373-77CC8A4FB093}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -103,5 +117,6 @@ Global
 		{65866E9F-302F-45BE-9BB0-77B3057916CE} = {9C0672CC-6182-4469-B5DF-B92265713169}
 		{EB833A29-974F-4FDC-B2C1-45758920E504} = {2F3B9E30-BDC5-4886-90ED-A6D2FF98FEF9}
 		{809C5C78-5BE5-471A-9BF8-FD97CA891571} = {2F3B9E30-BDC5-4886-90ED-A6D2FF98FEF9}
+		{CD23572D-CF1A-404F-B373-77CC8A4FB093} = {2F3B9E30-BDC5-4886-90ED-A6D2FF98FEF9}
 	EndGlobalSection
 EndGlobal
