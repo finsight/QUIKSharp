@@ -1,3 +1,7 @@
+#### 1.0.0-alpha - February 10 2017
+* Cumulative update with all commits over the past 15 months
+* Almost all QLua API is implemented
+
 #### 0.3.0 - November 11 2015
 * Cumulative update with all commits over the past 6 months
 

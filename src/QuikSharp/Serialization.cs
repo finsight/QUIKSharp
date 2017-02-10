@@ -1,6 +1,5 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
 
-using Microsoft.Isam.Esent.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
@@ -100,17 +99,6 @@ namespace QuikSharp {
             return message;
         }
 
-        internal static PersistentBlob ToBlob<T>(this T value) {
-            var bytes = value.ToJson().ToZipBytes();
-            var blob = new PersistentBlob(bytes);
-            return blob;
-        }
-
-        internal static T FromBlob<T>(this PersistentBlob value) {
-            var bytes = value.GetBytes();
-            var json = bytes.FromZipBytes();
-            return json.FromJson<T>();
-        }
     }
 
     /// <summary>

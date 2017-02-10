@@ -5,25 +5,25 @@
     <version>@build.number@</version>
     <authors>@authors@</authors>
     <owners>@authors@</owners>
-    <licenseUrl>http://github.com/buybackoff/QuikSharp/blob/master/LICENSE.txt</licenseUrl>
-    <projectUrl>https://github.com/buybackoff/QuikSharp</projectUrl>
-    <iconUrl>https://raw.githubusercontent.com/buybackoff/QuikSharp/master/docs/files/img/logo.png</iconUrl>
+    <licenseUrl>http://github.com/finsight/QuikSharp/blob/master/LICENSE.txt</licenseUrl>
+    <projectUrl>https://github.com/finsight/QuikSharp</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/finsight/QuikSharp/master/docs/files/img/logo.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>@summary@</summary>
     <description>@description@</description>
     <releaseNotes>@releaseNotes@</releaseNotes>
-    <copyright>Copyright Ⓒ 2015-2017</copyright>
+    <copyright>Copyright Ⓒ 2014-2017</copyright>
     <tags>@tags@</tags>
     <dependencies>
+      <dependency id="System.Buffers" />
       <dependency id="Newtonsoft.Json" />
-      <dependency id="Microsoft.Database.Collections.Generic" />
     </dependencies>
   </metadata>
   <files>
     <file src="..\bin\QuikSharp.dll" target="lib\net45" />
     <file src="..\bin\QuikSharp.xml" target="lib\net45" />
     <file src="..\bin\QuikSharp.pdb" target="lib\net45" />
-
+    
     <file src="..\bin\lua\dkjson.lua" target="content\lua" />
     <file src="..\bin\lua\qscallbacks.lua" target="content\lua" />
     <file src="..\bin\lua\qsfunctions.lua" target="content\lua" />

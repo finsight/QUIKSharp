@@ -16,7 +16,7 @@ namespace QuikSharp {
         /// Quik interface in .NET constructor
         /// </summary>
         public Quik(int port = DefaultPort, IPersistentStorage storage = null) {
-            if (storage == null) { Storage = new EsentStorage(); } else { Storage = storage; }
+            if (storage == null) { Storage = new InMemoryStorage(); } else { Storage = storage; }
             QuikService = QuikService.Create(port);
             // poor man's DI
             QuikService.Storage = Storage;
