@@ -18,8 +18,9 @@ function qsfunctions.dispatch_and_process(msg)
             return msg
         end
     else
+		log(to_json(msg), 3)
+		msg.lua_error = "Command not implemented in Lua qsfunctions module: " .. msg.cmd
         msg.cmd = "lua_error"
-        msg.lua_error = "Command not implemented in Lua qsfunctions module: " .. msg.cmd
         return msg
     end
 end
