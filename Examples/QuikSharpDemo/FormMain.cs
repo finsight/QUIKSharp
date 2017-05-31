@@ -39,6 +39,7 @@ namespace QuikSharpDemo
         List<MoneyLimitEx> listMoneyLimitsEx;
         FormOutputTable toolCandlesTable;
         Order order;
+        FuturesClientHolding futuresPosition;
 
         public FormMain()
         {
@@ -163,6 +164,8 @@ namespace QuikSharpDemo
                             listBoxCommands.Enabled = false;
                             buttonCommandRun.Enabled = false;
                         }
+                        textBoxLogsWindow.AppendText("Подписываемся на колбэк 'OnFuturesClientHolding'..." + Environment.NewLine);
+                        _quik.Events.OnFuturesClientHolding += OnFuturesClientHoldingDo;
                     }
                     buttonRun.Enabled = false;
                 }
@@ -182,6 +185,10 @@ namespace QuikSharpDemo
                 offer = Convert.ToDecimal(toolOrderBook.offer[0].price);
             }
         }
+        void OnFuturesClientHoldingDo(FuturesClientHolding futPos)
+        {
+            if (futPos.secCode == tool.SecurityCode) futuresPosition = futPos;
+        }
 
         private void timerRenewForm_Tick(object sender, EventArgs e)
         {
@@ -192,6 +199,7 @@ namespace QuikSharpDemo
                 textBoxBestBid.Text = bid.ToString();
                 textBoxBestOffer.Text = offer.ToString();
             }
+            if (futuresPosition != null) textBoxVarMargin.Text = futuresPosition.varMargin.ToString(); 
         }
         private void listBoxCommands_SelectedIndexChanged(object sender, EventArgs e)
         {
