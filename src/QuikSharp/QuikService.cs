@@ -451,8 +451,8 @@ namespace QuikSharp {
 
                     case EventNames.OnFuturesClientHolding:
                         Trace.Assert(message is Message<FuturesClientHolding>);
-                        var data = ((Message<FuturesClientHolding>)message).Data;
-                        Events.OnFuturesClientHoldingCall(data);
+                        var futPos = ((Message<FuturesClientHolding>)message).Data;
+                        Events.OnFuturesClientHoldingCall(futPos);
                         break;
 
                     case EventNames.OnFuturesLimitChange:
@@ -487,8 +487,8 @@ namespace QuikSharp {
 
                     case EventNames.OnParam:
                         Trace.Assert(message is Message<Param>);
-                        var futPos = ((Message<Param>)message).Data;
-                        Events.OnParamCall(futPos);
+                        var data = ((Message<Param>)message).Data;
+                        Events.OnParamCall(data);
                         break;
 
                     case EventNames.OnQuote:
