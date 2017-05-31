@@ -65,6 +65,8 @@
             this.label14 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.textBoxQty = new System.Windows.Forms.TextBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.textBoxVarMargin = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // buttonStart
@@ -267,7 +269,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(20, 414);
+            this.label9.Location = new System.Drawing.Point(20, 455);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(46, 13);
             this.label9.TabIndex = 5;
@@ -276,7 +278,7 @@
             // textBoxBestBid
             // 
             this.textBoxBestBid.Enabled = false;
-            this.textBoxBestBid.Location = new System.Drawing.Point(93, 411);
+            this.textBoxBestBid.Location = new System.Drawing.Point(93, 452);
             this.textBoxBestBid.Name = "textBoxBestBid";
             this.textBoxBestBid.Size = new System.Drawing.Size(140, 20);
             this.textBoxBestBid.TabIndex = 6;
@@ -284,7 +286,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(20, 388);
+            this.label10.Location = new System.Drawing.Point(20, 429);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(54, 13);
             this.label10.TabIndex = 5;
@@ -293,7 +295,7 @@
             // textBoxLastPrice
             // 
             this.textBoxLastPrice.Enabled = false;
-            this.textBoxLastPrice.Location = new System.Drawing.Point(93, 385);
+            this.textBoxLastPrice.Location = new System.Drawing.Point(93, 426);
             this.textBoxLastPrice.Name = "textBoxLastPrice";
             this.textBoxLastPrice.Size = new System.Drawing.Size(140, 20);
             this.textBoxLastPrice.TabIndex = 6;
@@ -301,7 +303,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(20, 362);
+            this.label11.Location = new System.Drawing.Point(20, 403);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(54, 13);
             this.label11.TabIndex = 5;
@@ -310,7 +312,7 @@
             // textBoxBestOffer
             // 
             this.textBoxBestOffer.Enabled = false;
-            this.textBoxBestOffer.Location = new System.Drawing.Point(93, 359);
+            this.textBoxBestOffer.Location = new System.Drawing.Point(93, 400);
             this.textBoxBestOffer.Name = "textBoxBestOffer";
             this.textBoxBestOffer.Size = new System.Drawing.Size(140, 20);
             this.textBoxBestOffer.TabIndex = 6;
@@ -340,7 +342,7 @@
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(20, 444);
+            this.label13.Location = new System.Drawing.Point(20, 485);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(109, 13);
             this.label13.TabIndex = 5;
@@ -349,7 +351,7 @@
             // textBoxOrderNumber
             // 
             this.textBoxOrderNumber.Enabled = false;
-            this.textBoxOrderNumber.Location = new System.Drawing.Point(93, 463);
+            this.textBoxOrderNumber.Location = new System.Drawing.Point(93, 504);
             this.textBoxOrderNumber.Name = "textBoxOrderNumber";
             this.textBoxOrderNumber.Size = new System.Drawing.Size(140, 20);
             this.textBoxOrderNumber.TabIndex = 6;
@@ -380,6 +382,23 @@
             this.textBoxQty.Size = new System.Drawing.Size(140, 20);
             this.textBoxQty.TabIndex = 6;
             // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(20, 343);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(66, 13);
+            this.label16.TabIndex = 5;
+            this.label16.Text = "Вар. маржа";
+            // 
+            // textBoxVarMargin
+            // 
+            this.textBoxVarMargin.Enabled = false;
+            this.textBoxVarMargin.Location = new System.Drawing.Point(93, 340);
+            this.textBoxVarMargin.Name = "textBoxVarMargin";
+            this.textBoxVarMargin.Size = new System.Drawing.Size(140, 20);
+            this.textBoxVarMargin.TabIndex = 6;
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -401,6 +420,8 @@
             this.Controls.Add(this.label13);
             this.Controls.Add(this.textBoxBestBid);
             this.Controls.Add(this.label9);
+            this.Controls.Add(this.textBoxVarMargin);
+            this.Controls.Add(this.label16);
             this.Controls.Add(this.textBoxQty);
             this.Controls.Add(this.label15);
             this.Controls.Add(this.textBoxGuaranteeProviding);
@@ -465,6 +486,8 @@
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.TextBox textBoxQty;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.TextBox textBoxVarMargin;
     }
 }
 
