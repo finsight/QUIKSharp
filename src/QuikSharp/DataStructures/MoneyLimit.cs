@@ -1,4 +1,5 @@
-﻿// Copyright (C) 2015 Victor Baybekov
+﻿// Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
+using Newtonsoft.Json;
 
 namespace QuikSharp.DataStructures
 {
@@ -10,32 +11,39 @@ namespace QuikSharp.DataStructures
         /// <summary>
         /// Входящий лимит по денежным средствам
         /// </summary>
-        public double money_open_limit { get; set; }
+        [JsonProperty("money_open_limit")]
+        public double MoneyOpenLimit { get; set; }
 
         /// <summary>
         /// Стоимость немаржинальных бумаг в заявках на покупку
         /// </summary>
-        public double money_limit_locked_nonmarginal_value { get; set; }
+        [JsonProperty("money_limit_locked_nonmarginal_value")]
+        public double MoneyLimitLockedNonmarginalValue { get; set; }
         /// <summary>
         /// Заблокированное в заявках на покупку количество денежных средств
         /// </summary>
-        public double money_limit_locked { get; set; }
+        [JsonProperty("money_limit_locked")]
+        public double MoneyLimitLocked { get; set; }
         /// <summary>
         /// Входящий остаток по денежным средствам
         /// </summary>
-        public double money_open_balance { get; set; }
+        [JsonProperty("money_open_balance")]
+        public double MoneyOpenBalance { get; set; }
         /// <summary>
         /// Текущий лимит по денежным средствам
         /// </summary>
-        public double money_current_limit { get; set; }
+        [JsonProperty("money_current_limit")]
+        public double MoneyCurrentLimit { get; set; }
         /// <summary>
         /// Текущий остаток по денежным средствам
         /// </summary>
-        public double money_current_balance { get; set; }
+        [JsonProperty("money_current_balance")]
+        public double MoneyCurrentBalance { get; set; }
         /// <summary>
         /// Доступное количество денежных средств
         /// </summary>
-        public double money_limit_available { get; set; }
+        [JsonProperty("money_limit_available")]
+        public double MoneyLimitAvailable { get; set; }
         // ReSharper restore InconsistentNaming
     }
 }

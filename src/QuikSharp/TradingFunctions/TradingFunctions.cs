@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2015 Victor Baybekov
+﻿// Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
 
 using System;
 using System.Collections.Generic;
@@ -31,6 +31,11 @@ namespace QuikSharp {
         /// Функция для получения информации по бумажным лимитам
         /// </summary>
         Task<DepoLimit> GetDepo(string clientCode, string firmId, string secCode, string account);
+
+        /// <summary>
+        /// Функция для получения информации по бумажным лимитам указанного типа
+        /// </summary>
+        Task<DepoLimitEx> GetDepoEx(string firmId, string clientCode, string secCode, string accID, int limitKind);
 
         /// <summary>
         /// Возвращает список записей из таблицы 'Лимиты по бумагам'.
@@ -70,13 +75,33 @@ namespace QuikSharp {
         /// <returns></returns>
         Task<List<OptionBoard>> GetOptionBoard(string classCode, string secCode);
         /// <summary>
-        /// функция для получения значений Таблицы текущих значений параметров
+        /// Функция для получения значений Таблицы текущих значений параметров
         /// </summary>
         /// <param name="classCode"></param>
         /// <param name="secCode"></param>
         /// <param name="paramName"></param>
         /// <returns></returns>
         Task<ParamTable> GetParamEx(string classCode, string secCode, string paramName);
+
+        /// <summary>
+        /// функция для получения таблицы сделок по заданному инструменту
+        /// </summary>
+        Task<List<Trade>> GetTrades();
+
+        /// <summary>
+        /// функция для получения таблицы сделок по заданному инструменту
+        /// </summary>
+        /// <param name="classCode"></param>
+        /// <param name="secCode"></param>
+        /// <returns></returns>
+        Task<List<Trade>> GetTrades(string classCode, string secCode);
+
+        /// <summary>
+        /// функция для получения таблицы сделок номеру заявки
+        /// </summary>
+        /// <param name="order_num"></param>
+        /// <returns></returns>
+        Task<List<Trade>> GetTrades_by_OdrerNumber(long orderNum);
 
         ///// <summary>
         /////  функция для получения информации по инструменту
@@ -100,14 +125,16 @@ namespace QuikSharp {
         /////  функция для расчета максимально возможного количества лотов в заявке
         ///// </summary>
         //Task<string> CulcBuySell();
-        ///// <summary>
-        /////  функция для получения значений параметров таблицы «Клиентский портфель»
-        ///// </summary>
-        //Task<string> getPortfolioInfo();
-        ///// <summary>
-        /////  функция для получения значений параметров таблицы «Клиентский портфель» с учетом вида лимита
-        ///// </summary>
-        //Task<string> getPortfolioInfoEx();
+        /// <summary>
+        ///  функция для получения значений параметров таблицы «Клиентский портфель»
+        /// </summary>
+        Task<PortfolioInfo> GetPortfolioInfo(string firmId, string clientCode);
+        /// <summary>
+        ///  функция для получения значений параметров таблицы «Клиентский портфель» с учетом вида лимита
+        ///  Для получения значений параметров таблицы «Клиентский портфель» для клиентов срочного рынка без единой денежной позиции 
+        ///  необходимо указать в качестве «clientCode» – торговый счет на срочном рынке, а в качестве «limitKind» – 0.
+        /// </summary>
+        Task<PortfolioInfoEx> GetPortfolioInfoEx(string firmId, string clientCode, int limitKind);
         ///// <summary>
         /////  функция для получения параметров таблицы «Купить/Продать»
         ///// </summary>
@@ -167,6 +194,13 @@ namespace QuikSharp {
             return response.Data;
         }
 
+        public async Task<DepoLimitEx> GetDepoEx(string firmId, string clientCode, string secCode, string accID, int limitKind)
+        {
+            var response = await QuikService.Send<Message<DepoLimitEx>>(
+                    (new Message<string>(firmId + "|" + clientCode + "|" + secCode + "|" + accID + "|" + limitKind, "getDepoEx"))).ConfigureAwait(false);
+            return response.Data;
+        }
+
         /// <summary>
         /// Возвращает список всех записей из таблицы 'Лимиты по бумагам'.
         /// </summary>
@@ -187,10 +221,33 @@ namespace QuikSharp {
             return response.Data;
         }
 
-        public Task<MoneyLimit> GetMoney(string clientCode, string firmId, string tag, string currCode) { throw new NotImplementedException(); }
-        public Task<MoneyLimitEx> GetMoneyEx(string firmId, string clientCode, string tag, string currCode, int limitKind) { throw new NotImplementedException(); }
-      
-        
+        /// <summary>
+        /// Функция для получения информации по денежным лимитам.
+        /// </summary>
+        public async Task<MoneyLimit> GetMoney(string clientCode, string firmId, string tag, string currCode)
+        {
+            var response = await QuikService.Send<Message<MoneyLimit>>(
+                (new Message<string>(clientCode + "|" + firmId + "|" + tag + "|" + currCode, "getMoney"))).ConfigureAwait(false);
+            return response.Data;
+        }
+
+        /// <summary>
+        /// Функция для получения информации по денежным лимитам указанного типа.
+        /// </summary>
+        public async Task<MoneyLimitEx> GetMoneyEx(string firmId, string clientCode, string tag, string currCode, int limitKind)
+        {
+            var response = await QuikService.Send<Message<MoneyLimitEx>>(
+                (new Message<string>(firmId + "|" + clientCode + "|" + tag + "|" + currCode + "|" + limitKind, "getMoneyEx"))).ConfigureAwait(false);
+            return response.Data;
+        }
+
+        /// <summary>
+        /// Функция для получения значений Таблицы текущих значений параметров
+        /// </summary>
+        /// <param name="classCode"></param>
+        /// <param name="secCode"></param>
+        /// <param name="paramName"></param>
+        /// <returns></returns>
         public async Task<ParamTable> GetParamEx(string classCode, string secCode, string paramName) 
         {
             var response = await QuikService.Send<Message<ParamTable>>(
@@ -214,7 +271,40 @@ namespace QuikSharp {
         
         }
 
+        public async Task<List<Trade>> GetTrades()
+        {
+            var response = await QuikService.Send<Message<List<Trade>>>(
+                    (new Message<string>("", "get_trades"))).ConfigureAwait(false);
+            return response.Data;
+        }
 
+        public async Task<List<Trade>> GetTrades(string classCode, string secCode)
+        {
+            var response = await QuikService.Send<Message<List<Trade>>>(
+                    (new Message<string>(classCode + "|" + secCode, "get_trades"))).ConfigureAwait(false);
+            return response.Data;
+        }
+
+        public async Task<List<Trade>> GetTrades_by_OdrerNumber(long orderNum)
+        {
+            var response = await QuikService.Send<Message<List<Trade>>>(
+                    (new Message<string>(orderNum.ToString(), "get_Trades_by_OrderNumber"))).ConfigureAwait(false);
+            return response.Data;
+        }
+
+        public async Task<PortfolioInfo> GetPortfolioInfo(string firmId, string clientCode)
+        {
+            var response = await QuikService.Send<Message<PortfolioInfo>>(
+                    (new Message<string>(firmId + "|" + clientCode, "getPortfolioInfo"))).ConfigureAwait(false);
+            return response.Data;
+        }
+
+        public async Task<PortfolioInfoEx> GetPortfolioInfoEx(string firmId, string clientCode, int limitKind)
+        {
+            var response = await QuikService.Send<Message<PortfolioInfoEx>>(
+                    (new Message<string>(firmId + "|" + clientCode + "|" + limitKind, "getPortfolioInfoEx"))).ConfigureAwait(false);
+            return response.Data;
+        }
 
 
         /*public async Task<ClassInfo> GetClassInfo(string classID) {

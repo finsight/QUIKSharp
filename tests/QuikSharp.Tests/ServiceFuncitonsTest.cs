@@ -51,5 +51,31 @@ namespace QuikSharp.Tests {
                 _q.Service.PrintDbgStr("This is debug info").Result);
         }
 
+        [Test]
+        public void addLabel()
+        {
+            var res = _q.Service.AddLabel(61000, "20170105", "100000", "1", "C:\\ClassesC\\Labels\\buy.bmp", "si", "BOTTOM", 0);
+            Console.WriteLine("AddLabel: "
+                    + String.Join(",", Convert.ToString(res.Result)));
+        }
+
+        [Test]
+        public void delLabel()
+        {
+            double tagId = 13;
+            var res = _q.Service.DelLabel("si", tagId);
+
+            Console.WriteLine("delLabel: "
+                    + String.Join(",", Convert.ToString(res.Result)));
+        }
+
+        [Test]
+        public void delAllLabels()
+        {
+            var res = _q.Service.DelAllLabels("si").Result;
+
+            Console.WriteLine("delAllLabels: "
+                  + String.Join(",", Convert.ToString(res)));
+        }
     }
 }

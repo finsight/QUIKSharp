@@ -100,23 +100,15 @@
     <DocumentationFile>..\..\bin\QuikSharp.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Esent.Collections, Version=1.9.3.2, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Database.Collections.Generic.1.9.3.2\lib\net40\Esent.Collections.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Esent.Interop, Version=1.9.3.2, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\ManagedEsent.1.9.3.2\lib\net40\Esent.Interop.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Esent.Isam, Version=1.9.3.2, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Database.Isam.1.9.3.2\lib\net40\Esent.Isam.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Buffers.4.3.0\lib\netstandard1.1\System.Buffers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -134,13 +126,25 @@
     <Compile Include="CandleFunctions.cs" />
     <Compile Include="AsyncManualResetEvent.cs" />
     <Compile Include="ClassFunctions\ClassFunctions.cs" />
+    <Compile Include="DataStructures\AccountBalance.cs" />
+    <Compile Include="DataStructures\AccountPosition.cs" />
     <Compile Include="DataStructures\Candle.cs" />
     <Compile Include="DataStructures\CandleInterval.cs" />
     <Compile Include="DataStructures\ClassInfo.cs" />
+    <Compile Include="DataStructures\DepoLimitDelete.cs" />
+    <Compile Include="DataStructures\Firm.cs" />
     <Compile Include="DataStructures\FuturesClientHolding.cs" />
+    <Compile Include="DataStructures\FuturesLimitDelete.cs" />
+    <Compile Include="DataStructures\FuturesLimits.cs" />
     <Compile Include="DataStructures\IWithLuaTimeStamp.cs" />
+    <Compile Include="DataStructures\MoneyLimitDelete.cs" />
+    <Compile Include="DataStructures\OptionBoard.cs" />
     <Compile Include="DataStructures\OrderBook.cs" />
+    <Compile Include="DataStructures\Param.cs" />
     <Compile Include="DataStructures\ParamTable.cs" />
+    <Compile Include="DataStructures\PortfolioInfo.cs" />
+    <Compile Include="DataStructures\PortfolioInfoEx.cs" />
+    <Compile Include="DataStructures\QuikTable.cs" />
     <Compile Include="DataStructures\SecurityInfo.cs" />
     <Compile Include="DataStructures\EventNames.cs" />
     <Compile Include="DataStructures\Flags.cs" />
@@ -185,6 +189,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="lua\dkjson.lua">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

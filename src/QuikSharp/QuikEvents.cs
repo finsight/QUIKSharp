@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2015 Victor Baybekov
+﻿// Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
 
 using System;
 using System.Diagnostics;
@@ -42,15 +42,87 @@ namespace QuikSharp {
     public delegate void TransReplyHandler(TransactionReply transReply);
 
     /// <summary>
-    /// 
+    /// Обработчик события OnOrder
     /// </summary>
     /// <param name="order"></param>
     public delegate void OrderHandler(Order order);
     /// <summary>
-    /// 
+    /// Обработчик события OnTrade
     /// </summary>
     /// <param name="trade"></param>
     public delegate void TradeHandler(Trade trade);
+
+    /// <summary>
+    /// Обработчик события OnParam
+    /// </summary>
+    /// <param name="par">lua table with class_code, sec_code</param>
+    public delegate void ParamHandler(Param par);
+
+    /// <summary>
+    /// Обработчик события OnStopOrder
+    /// </summary>
+    /// <param name="stopOrder"></param>
+    public delegate void StopOrderHandler(StopOrder stopOrder);
+
+    /// <summary>
+    /// Обработчик события OnAccountBalance
+    /// </summary>
+    /// <param name="accBal"></param>
+    public delegate void AccountBalanceHandler(AccountBalance accBal);
+
+    /// <summary>
+    /// Обработчик события OnAccountPosition
+    /// </summary>
+    /// <param name="accPos"></param>
+    public delegate void AccountPositionHandler(AccountPosition accPos);
+
+    /// <summary>
+    /// Обработчик события OnDepoLimit
+    /// </summary>
+    /// <param name="dLimit"></param>
+    public delegate void DepoLimitHandler(DepoLimit dLimit);
+
+    /// <summary>
+    /// Обработчик события OnDepoLimitDelete
+    /// </summary>
+    /// <param name="dLimitDel"></param>
+    public delegate void DepoLimitDeleteHandler(DepoLimitDelete dLimitDel);
+
+    /// <summary>
+    /// Обработчик события OnFirm
+    /// </summary>
+    /// <param name="frm"></param>
+    public delegate void FirmHandler(Firm frm);
+
+    /// <summary>
+    /// Обработчик события OnFuturesClientHolding
+    /// </summary>
+    /// <param name="futPos"></param>
+    public delegate void FuturesClientHoldingHandler(FuturesClientHolding futPos);
+
+    /// <summary>
+    /// Обработчик события OnFuturesLimitChange
+    /// </summary>
+    /// <param name="futLimit"></param>
+    public delegate void FuturesLimitHandler(FuturesLimits futLimit);
+
+    /// <summary>
+    /// Обработчик события OnFuturesLimitDelete
+    /// </summary>
+    /// <param name="limDel"></param>
+    public delegate void FuturesLimitDeleteHandler(FuturesLimitDelete limDel);
+
+    /// <summary>
+    /// Обработчик события OnMoneyLimit
+    /// </summary>
+    /// <param name="mLimit"></param>
+    public delegate void MoneyLimitHandler(MoneyLimit mLimit);
+
+    /// <summary>
+    /// Обработчик события OnMoneyLimitDelete
+    /// </summary>
+    /// <param name="mLimitDel"></param>
+    public delegate void MoneyLimitDeleteHandler(MoneyLimitDelete mLimitDel);
 
     internal class QuikEvents : IQuikEvents {
         public QuikEvents(QuikService service) { QuikService = service; }
@@ -69,14 +141,25 @@ namespace QuikSharp {
 		/// Событие вызывается когда библиотека QuikSharp была отключена от Quik'а
 		/// </summary>
 		public event VoidHandler OnDisconnectedFromQuik;
-        internal void OnDisconnectedFromQuikCall() {
-            OnDisconnectedFromQuik?.Invoke();
-        }
+        internal void OnDisconnectedFromQuikCall() { OnDisconnectedFromQuik?.Invoke(); }
 
+        /// <summary>
+		/// Функция вызывается терминалом QUIK перед вызовом функции main(). 
+        /// В качестве параметра принимает значение полного пути к запускаемому скрипту.
+		/// </summary>
         public event InitHandler OnInit;
 
-        public event EventHandler OnAccountBalance;
-        public event EventHandler OnAccountPosition;
+        /// <summary>
+        /// Функция вызывается терминалом QUIK при получении изменений текущей позиции по счету.
+        /// </summary>
+        public event AccountBalanceHandler OnAccountBalance;
+        internal void OnAccountBalanceCall(AccountBalance accBal) { OnAccountBalance?.Invoke(accBal); }
+
+        /// <summary>
+        /// Функция вызывается терминалом QUIK при изменении денежной позиции по счету.
+        /// </summary>
+        public event AccountPositionHandler OnAccountPosition;
+        internal void OnAccountPositionCall(AccountPosition accPos) { OnAccountPosition?.Invoke(accPos); }
 
         /// <summary>
         /// Функция вызывается терминалом QUIK при получении обезличенной сделки.
@@ -84,40 +167,77 @@ namespace QuikSharp {
         public event AllTradeHandler OnAllTrade;
         internal void OnAllTradeCall(AllTrade allTrade) => OnAllTrade?.Invoke(allTrade);
 
-
+        /// <summary>
+        /// Функция вызывается терминалом QUIK при смене сессии и при выгрузке файла qlua.dll
+        /// </summary>
         public event VoidHandler OnCleanUp;
-        internal void OnCleanUpCall()
-        {
-            OnCleanUp?.Invoke();
-        }
+        internal void OnCleanUpCall() { OnCleanUp?.Invoke(); }
 
         /// <summary>
         /// Функция вызывается перед закрытием терминала QUIK.
         /// </summary>
         public event VoidHandler OnClose;
-        internal void OnCloseCall() { if (OnClose != null) OnClose(); }
+        internal void OnCloseCall() { OnClose?.Invoke(); }
 
-
+        /// <summary>
+        /// Функция вызывается терминалом QUIK при установлении связи с сервером QUIK.
+        /// </summary>
         public event VoidHandler OnConnected;
-        internal void OnConnectedCall() { if (OnConnected != null) OnConnected(); }
+        internal void OnConnectedCall() { OnConnected?.Invoke(); }
 
+        /// <summary>
+        /// Функция вызывается терминалом QUIK при получении изменений лимита по бумагам.
+        /// </summary>
+        public event DepoLimitHandler OnDepoLimit;
+        internal void OnDepoLimitCall(DepoLimit dLimit) { OnDepoLimit?.Invoke(dLimit); }
 
-        public event EventHandler OnDepoLimit;
-        public event EventHandler OnDepoLimitDelete;
+        /// <summary>
+        /// Функция вызывается терминалом QUIK при удалении клиентского лимита по бумагам.
+        /// </summary>
+        public event DepoLimitDeleteHandler OnDepoLimitDelete;
+        internal void OnDepoLimitDeleteCall(DepoLimitDelete dLimitDel) { OnDepoLimitDelete?.Invoke(dLimitDel); }
 
-
+        /// <summary>
+        /// Функция вызывается терминалом QUIK при отключении от сервера QUIK.
+        /// </summary>
         public event VoidHandler OnDisconnected;
-        internal void OnDisconnectedCall() {
-            if (OnDisconnected != null) OnDisconnected();
-        }
+        internal void OnDisconnectedCall() { OnDisconnected?.Invoke(); }
 
+        /// <summary>
+        /// Функция вызывается терминалом QUIK при получении описания новой фирмы от сервера.
+        /// </summary>
+        public event FirmHandler OnFirm;
+        internal void OnFirmCall(Firm frm) { OnFirm?.Invoke(frm); }
 
-        public event EventHandler OnFirm;
-        public event EventHandler OnFuturesClientHolding;
-        public event EventHandler OnFuturesLimitChange;
-        public event EventHandler OnFuturesLimitDelete;
-        public event EventHandler OnMoneyLimit;
-        public event EventHandler OnMoneyLimitDelete;
+        /// <summary>
+        /// Функция вызывается терминалом QUIK при изменении позиции по срочному рынку.
+        /// </summary>
+        public event FuturesClientHoldingHandler OnFuturesClientHolding;
+        internal void OnFuturesClientHoldingCall(FuturesClientHolding futPos) { OnFuturesClientHolding?.Invoke(futPos); }
+
+        /// <summary>
+        /// Функция вызывается терминалом QUIK при получении изменений ограничений по срочному рынку.
+        /// </summary>
+        public event FuturesLimitHandler OnFuturesLimitChange;
+        internal void OnFuturesLimitChangeCall(FuturesLimits futLimit) { OnFuturesLimitChange?.Invoke(futLimit); }
+
+        /// <summary>
+        /// Функция вызывается терминалом QUIK при удалении лимита по срочному рынку.
+        /// </summary>
+        public event FuturesLimitDeleteHandler OnFuturesLimitDelete;
+        internal void OnFuturesLimitDeleteCall(FuturesLimitDelete limDel) { OnFuturesLimitDelete?.Invoke(limDel); }
+
+        /// <summary>
+        /// Функция вызывается терминалом QUIK при получении изменений по денежному лимиту клиента.
+        /// </summary>
+        public event MoneyLimitHandler OnMoneyLimit;
+        internal void OnMoneyLimitCall(MoneyLimit mLimit) { OnMoneyLimit?.Invoke(mLimit); }
+
+        /// <summary>
+        /// Функция вызывается терминалом QUIK при удалении денежного лимита.
+        /// </summary>
+        public event MoneyLimitDeleteHandler OnMoneyLimitDelete;
+        internal void OnMoneyLimitDeleteCall(MoneyLimitDelete mLimitDel) { OnMoneyLimitDelete?.Invoke(mLimitDel); }
         public event EventHandler OnNegDeal;
         public event EventHandler OnNegTrade;
 
@@ -127,7 +247,7 @@ namespace QuikSharp {
         /// </summary>
         public event OrderHandler OnOrder;
         internal void OnOrderCall(Order order) {
-            if (OnOrder != null) OnOrder(order);
+            OnOrder?.Invoke(order);
             // invoke event specific for the transaction
             string correlationId = order.TransID.ToString();
 
@@ -153,28 +273,67 @@ namespace QuikSharp {
             Trace.Assert(tr != null, "Transaction must exist in persistent storage until it is completed and all order messages are recieved");
         }
 
-
-        public event EventHandler OnParam;
-
+        /// <summary>
+        /// Функция вызывается терминалом QUIK при при изменении текущих параметров.
+        /// </summary>
+        public event ParamHandler OnParam;
+        internal void OnParamCall(Param par) { OnParam?.Invoke(par); }
 
         /// <summary>
         /// Функция вызывается терминалом QUIK при получении изменения стакана котировок.
         /// </summary>
         public event QuoteHandler OnQuote;
-        internal void OnQuoteCall(OrderBook orderBook) { if (OnQuote != null) OnQuote(orderBook); }
+        internal void OnQuoteCall(OrderBook orderBook) { OnQuote?.Invoke(orderBook); }
 
         /// <summary>
         /// Функция вызывается терминалом QUIK при остановке скрипта из диалога управления и при закрытии терминала QUIK.
         /// </summary>
         public event StopHandler OnStop;
-        internal void OnStopCall(int signal) { if (OnStop != null) OnStop(signal); }
+        internal void OnStopCall(int signal) { OnStop?.Invoke(signal); }
+
+        /// <summary>
+        /// Функция вызывается терминалом QUIK при получении новой стоп-заявки или при изменении параметров существующей стоп-заявки.
+        /// </summary>
+        public event StopOrderHandler OnStopOrder;
+        internal void OnStopOrderCall(StopOrder stopOrder)
+        {
+            //if (OnStopOrder != null) OnStopOrder(stopOrder);
+            OnStopOrder?.Invoke(stopOrder);
+            // invoke event specific for the transaction
+            string correlationId = stopOrder.TransId.ToString();
+
+            #region Totally untested code or handling manual transactions
+            if (!QuikService.Storage.Contains(correlationId))
+            {
+                correlationId = "manual:" + stopOrder.OrderNum + ":" + correlationId;
+                var fakeTrans = new Transaction()
+                {
+                    Comment = correlationId,
+                    IsManual = true
+                    // TODO map order properties back to transaction
+                    // ideally, make C# property names consistent (Lua names are set as JSON.NET properties via an attribute)
+                };
+                QuikService.Storage.Set<Transaction>(correlationId, fakeTrans);
+            }
+            #endregion
+
+            var tr = QuikService.Storage.Get<Transaction>(correlationId);
+            if (tr != null)
+            {
+                lock (tr)
+                {
+                    tr.OnStopOrderCall(stopOrder);
+                }
+            }
+            Trace.Assert(tr != null, "Transaction must exist in persistent storage until it is completed and all order messages are recieved");
+        }
 
         /// <summary>
         /// Функция вызывается терминалом QUIK при получении сделки.
         /// </summary>
         public event TradeHandler OnTrade;
         internal void OnTradeCall(Trade trade) {
-            if (OnTrade != null) OnTrade(trade);
+            OnTrade?.Invoke(trade);
             // invoke event specific for the transaction
             string correlationId = trade.Comment;
 
@@ -214,7 +373,7 @@ namespace QuikSharp {
         /// </summary>
         public event TransReplyHandler OnTransReply;
         internal void OnTransReplyCall(TransactionReply reply) {
-            if (OnTransReply != null) OnTransReply(reply);
+            OnTransReply?.Invoke(reply);
 
             // invoke event specific for the transaction
             if (string.IsNullOrEmpty(reply.Comment))//"Initialization user successful" transaction doesn't contain comment

@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2015 Victor Baybekov
+﻿// Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
 
 using System;
 using System.Linq;
@@ -163,6 +163,11 @@ namespace QuikSharp {
 
         static void Events_OnStop(int signal) {
             Console.WriteLine("Events_OnStop: " + signal);
+        }
+
+        static void Events_OnStopOrder(StopOrder stopOrder)
+        {
+            Console.WriteLine("Events_OnStopOrder: " + stopOrder.ToJson());
         }
 
         static void Cleanup() {

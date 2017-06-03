@@ -21,20 +21,20 @@ open System
 
 // The name of the project 
 // (used by attributes in AssemblyInfo, name of a NuGet package and directory in 'src')
-let project = "QuikSharp"
+let project = "QUIKSharp"
 
 // Short summary of the project
 // (used as description in AssemblyInfo and as a short summary for NuGet package)
-let summary = "Quik Lua interface in .NET"
+let summary = "QUIK Lua interface in .NET"
 
 // Longer description of the project
 // (used as a description for NuGet package; line breaks are automatically cleaned up)
-let description = """Quik Lua interface in .NET."""
+let description = """QUIK Lua interface in .NET."""
 
 // List of author names (for NuGet package)
 let authors = [ "Victor Baybekov (@buybackoff)" ]
 // Tags for your project (for NuGet package)
-let tags = "Quik Lua .NET trading hft c#"
+let tags = "QUIK Lua .NET trading hft c#"
 
 // File system information 
 // (<solutionFile>.sln is built during the building process)
@@ -44,10 +44,10 @@ let testAssemblies = "tests/**/bin/Release/*Tests*.dll"
 
 // Git configuration (used for publishing documentation in gh-pages branch)
 // The profile where the project is posted 
-let gitHome = "https://github.com/buybackoff"
+let gitHome = "https://github.com/finsight"
 // The name of the project on GitHub
 let gitName = "QuikSharp"
-let cloneUrl = "git@github.com:buybackoff/QuikSharp.git"
+let cloneUrl = "git@github.com:finsight/QuikSharp.git"
 
 
 // --------------------------------------------------------------------------------------

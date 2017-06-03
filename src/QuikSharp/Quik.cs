@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2015 Victor Baybekov
+﻿// Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
 
 using System;
 
@@ -16,7 +16,7 @@ namespace QuikSharp {
         /// Quik interface in .NET constructor
         /// </summary>
         public Quik(int port = DefaultPort, IPersistentStorage storage = null) {
-            if (storage == null) { Storage = new EsentStorage(); } else { Storage = storage; }
+            if (storage == null) { Storage = new InMemoryStorage(); } else { Storage = storage; }
             QuikService = QuikService.Create(port);
             // poor man's DI
             QuikService.Storage = Storage;

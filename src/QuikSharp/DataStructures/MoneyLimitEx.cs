@@ -1,4 +1,5 @@
-// Copyright (C) 2015 Victor Baybekov
+// Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
+using Newtonsoft.Json;
 
 namespace QuikSharp.DataStructures
 {
@@ -8,89 +9,72 @@ namespace QuikSharp.DataStructures
     public class MoneyLimitEx {
         // ReSharper disable InconsistentNaming
         /// <summary>
-        /// Входящий лимит по денежным средствам
-        /// </summary>
-        public double money_open_limit { get; set; }
-        
-        /// <summary>
-        /// Стоимость немаржинальных бумаг в заявках на покупку
-        /// </summary>
-        public double money_limit_locked_nonmarginal_value { get; set; }
-        /// <summary>
-        /// Заблокированное в заявках на покупку количество денежных средств
-        /// </summary>
-        public double money_limit_locked { get; set; }
-        /// <summary>
-        /// Входящий остаток по денежным средствам
-        /// </summary>
-        public double money_open_balance { get; set; }
-        /// <summary>
-        /// Текущий лимит по денежным средствам
-        /// </summary>
-        public double money_current_limit { get; set; }
-        /// <summary>
-        /// Текущий остаток по денежным средствам
-        /// </summary>
-        public double money_current_balance { get; set; }
-        /// <summary>
-        /// Доступное количество денежных средств
-        /// </summary>
-        public double money_limit_available { get; set; }
-
-        /// <summary>
         /// Код валюты
         /// </summary>
-        public string currcode { get; set; }
+        [JsonProperty("currcode")]
+        public string CurrCode { get; set; }
         /// <summary>
         /// Тэг расчетов
         /// </summary>
-        public string tag { get; set; }
+        [JsonProperty("tag")]
+        public string Tag { get; set; }
         /// <summary>
         /// Идентификатор фирмы
         /// </summary>
-        public string firmid { get; set; }
+        [JsonProperty("firmid")]
+        public string FirmId { get; set; }
         /// <summary>
         /// Код клиента
         /// </summary>
-        public string client_code { get; set; }
+        [JsonProperty("client_code")]
+        public string ClientCode { get; set; }
         /// <summary>
         /// Входящий остаток по деньгам
         /// </summary>
-        public double openbal { get; set; }
+        [JsonProperty("openbal")]
+        public double OpenBal { get; set; }
         /// <summary>
         /// Входящий лимит по деньгам
         /// </summary>
-        public double openlimit { get; set; }
+        [JsonProperty("openlimit")]
+        public double OpenLimit { get; set; }
         /// <summary>
         /// Текущий остаток по деньгам
         /// </summary>
-        public double currentbal { get; set; }
+        [JsonProperty("currentbal")]
+        public double CurrentBal { get; set; }
         /// <summary>
         /// Текущий лимит по деньгам
         /// </summary>
-        public double currentlimit { get; set; }
+        [JsonProperty("currentlimit")]
+        public double CurrentLimit { get; set; }
         /// <summary>
         /// Заблокированное количество
         /// </summary>
-        public double locked { get; set; }
+        [JsonProperty("locked")]
+        public double Locked { get; set; }
         /// <summary>
         /// Стоимость активов в заявках на покупку немаржинальных бумаг
         /// </summary>
-        public double locked_value_coef { get; set; }
+        [JsonProperty("locked_value_coef")]
+        public double LockedValueCoef { get; set; }
         /// <summary>
         /// Стоимость активов в заявках на покупку маржинальных бумаг
         /// </summary>
-        public double locked_margin_value { get; set; }
+        [JsonProperty("locked_margin_value")]
+        public double LockedMarginValue { get; set; }
         /// <summary>
         /// Плечо
         /// </summary>
-        public double leverage { get; set; }
+        [JsonProperty("leverage")]
+        public double Leverage { get; set; }
         /// <summary>
         /// Тип лимита. Возможные значения:
         /// «0» – обычные лимиты,
         /// иначе – технологические лимиты
         /// </summary>
-        public double limit_kind { get; set; }
+        [JsonProperty("limit_kind")]
+        public int LimitKind { get; set; }
         // ReSharper restore InconsistentNaming
     }
 }

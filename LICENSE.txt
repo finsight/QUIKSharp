@@ -1,5 +1,5 @@
-Copyright 2015
-	Victor Baybekov (@buybackoff)
+Copyright 2015-2017 
+	Authors https://github.com/finsight/QUIKSharp/blob/master/AUTHORS.md
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

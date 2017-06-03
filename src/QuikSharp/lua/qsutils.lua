@@ -1,4 +1,4 @@
---~ Copyright Ⓒ 2015 Victor Baybekov
+--~ // Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
 
 local socket = require ("socket")
 --local json = require "cjson"
@@ -102,28 +102,36 @@ local callback_client
 --- accept client on server
 local function getResponseServer()
     print('Waiting for a client')
-    local i = 0
-    while true do
-        local status, client, err = pcall(response_server.accept, response_server )
-        if status and client then
-            return client
-        else
-            log(err, 3)
-        end
-    end
+	local i = 0
+	if not response_server then
+		log("Cannot bind to response_server, probably the port is already in use", 3)
+	else
+		while true do
+			local status, client, err = pcall(response_server.accept, response_server )
+			if status and client then
+				return client
+			else
+				log(err, 3)
+			end
+		end
+	end
 end
 
 local function getCallbackClient()
     print('Waiting for a client')
-    local i = 0
-    while true do
-        local status, client, err = pcall(callback_server.accept, callback_server)
-        if status and client then
-            return client
-        else
-            log(err, 3)
-        end
-    end
+	local i = 0
+	if not callback_server then
+		log("Cannot bind to callback_server, probably the port is already in use", 3)
+	else
+		while true do
+			local status, client, err = pcall(callback_server.accept, callback_server)
+			if status and client then
+				return client
+			else
+				log(err, 3)
+			end
+		end
+	end
 end
 
 function qsutils.connect()

@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2015 Victor Baybekov
+﻿// Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
 
 using System;
 using System.Threading.Tasks;
@@ -36,6 +36,21 @@ namespace QuikSharp {
         /// Функция предназначена для получения списка кодов бумаг для списка классов, заданного списком кодов.
         /// </summary>
         Task<string[]> GetClassSecurities(string classID);
+
+        /// <summary>
+        /// Функция предназначена для определения класса по коду инструмента из заданного списка классов.
+        /// </summary>
+        Task<string> GetSecurityClass(string classesList, string secCode);
+
+        /// <summary>
+        /// Функция возвращает код клиента.
+        /// </summary>
+        Task<string> GetClientCode();
+
+        /// <summary>
+        /// Функция возвращает таблицу с описанием торгового счета для запрашиваемого кода класса.
+        /// </summary>
+        Task<string> GetTradeAccount(string classCode);
     }
 
     /// <summary>
@@ -68,7 +83,7 @@ namespace QuikSharp {
         }
 
         public async Task<SecurityInfo> GetSecurityInfo(ISecurity security) {
-            return await GetSecurityInfo(security.ClassCode, security.SecCode);
+            return await GetSecurityInfo(security.ClassCode, security.SecCode).ConfigureAwait(false);
         }
 
         public async Task<string[]> GetClassSecurities(string classID) {
@@ -77,6 +92,27 @@ namespace QuikSharp {
             return response.Data == null 
                 ? new string[0]
                 : response.Data.TrimEnd(',').Split(new[] { "," }, StringSplitOptions.None);
+        }
+
+        public async Task<string> GetSecurityClass(string classesList, string secCode)
+        {
+            var response = await QuikService.Send<Message<string>>(
+                (new Message<string>(classesList + "|" + secCode, "getSecurityClass"))).ConfigureAwait(false);
+            return response.Data;
+        }
+
+        public async Task<string> GetClientCode()
+        {
+            var response = await QuikService.Send<Message<string>>(
+                (new Message<string>("", "getClientCode"))).ConfigureAwait(false);
+            return response.Data;
+        }
+
+        public async Task<string> GetTradeAccount(string classCode)
+        {
+            var response = await QuikService.Send<Message<string>>(
+                (new Message<string>(classCode, "getTradeAccount"))).ConfigureAwait(false);
+            return response.Data;
         }
     }
 }
