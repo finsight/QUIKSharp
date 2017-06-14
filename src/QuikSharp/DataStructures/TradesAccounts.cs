@@ -15,29 +15,29 @@ namespace QuikSharp.DataStructures
         /// <summary>
         /// Описание
         /// </summary>
-        [JsonProperty("description")]
+        [JsonProperty("Description")]
         public string description { get; set; }
         /// <summary>
         /// Список кодов классов, разделенных символом «|»
         /// </summary>
-        [JsonProperty("class_codes")]
+        [JsonProperty("ClassCodes")]
         public string class_codes { get; set; }
         /// <summary>
         /// Запрет необеспеченных продаж. Возможные значения:
         /// «0» – Нет;
         /// «1» – Да
         /// </summary>
-        [JsonProperty("fullcoveredsell")]
+        [JsonProperty("Fullcoveredsell")]
         public int fullcoveredsell { get; set; }
         /// <summary>
         /// Номер основного торгового счета
         /// </summary>
-        [JsonProperty("main_trdaccid")]
+        [JsonProperty("MainTrdaccid")]
         public string main_trdaccid { get; set; }
         /// <summary>
         /// Расчетная организация по «Т+»
         /// </summary>
-        [JsonProperty("bankid_tplus")]
+        [JsonProperty("BankidTplus")]
         public string bankid_tplus { get; set; }
         /// <summary>
         /// Тип депозитарного счета
@@ -47,46 +47,46 @@ namespace QuikSharp.DataStructures
         /// <summary>
         /// Идентификатор фирмы
         /// </summary>
-        [JsonProperty("firmid")]
+        [JsonProperty("Firmid")]
         public string firmid { get; set; }
         /// <summary>
         /// Раздел счета Депо
         /// </summary>
-        [JsonProperty("depunitid")]
+        [JsonProperty("Depunitid")]
         public string depunitid { get; set; }
         /// <summary>
         /// Расчетная организация по «Т0»
         /// </summary>
-        [JsonProperty("bankid_t0")]
+        [JsonProperty("Bankid_t0")]
         public string bankid_t0 { get; set; }
         /// <summary>
         /// Тип раздела. Возможные значения:
         /// «0» – раздел обеспечения;
         /// иначе – для торговых разделов
         /// </summary>
-        [JsonProperty("firmuse")]
+        [JsonProperty("Firmuse")]
         public int firmuse { get; set; }
         /// <summary>
         /// Статус торгового счета. Возможные значения:
         /// «0» – операции разрешены;
         /// «1» – операции запрещены
         /// </summary>
-        [JsonProperty("status")]
+        [JsonProperty("Status")]
         public int status { get; set; }
         /// <summary>
         /// Номер счета депо в депозитарии
         /// </summary>
-        [JsonProperty("depaccid")]
+        [JsonProperty("Depaccid")]
         public string depaccid { get; set; }
         /// <summary>
         /// Код торгового счета
         /// </summary>
-        [JsonProperty("trdaccid")]
+        [JsonProperty("Trdaccid")]
         public string trdaccid { get; set; }
         /// <summary>
         /// Код дополнительной позиции по денежным средствам
         /// </summary>
-        [JsonProperty("bank_acc_id")]
+        [JsonProperty("BankAccId")]
         public string bank_acc_id { get; set; }
     }
 }
