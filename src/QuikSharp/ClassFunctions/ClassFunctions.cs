@@ -51,6 +51,11 @@ namespace QuikSharp {
         /// Функция возвращает таблицу с описанием торгового счета для запрашиваемого кода класса.
         /// </summary>
         Task<string> GetTradeAccount(string classCode);
+        /// <summary>
+        /// Функция возвращает таблицу всех счетов в торговой системе.
+        /// </summary>
+        /// <returns></returns>
+        Task<List<TradesAccounts>> GetTradeAccounts();
     }
 
     /// <summary>
@@ -113,6 +118,12 @@ namespace QuikSharp {
             var response = await QuikService.Send<Message<string>>(
                 (new Message<string>(classCode, "getTradeAccount"))).ConfigureAwait(false);
             return response.Data;
+        }
+        public async Task<List<TradesAccounts>> GetTradeAccounts()
+        {
+            var response = await QuikService.Send<Message<List<TradesAccounts>>>(
+                (new Message<string>("", "getTradeAccounts"))).ConfigureAwait(false);
+            return  response.Data;
         }
     }
 }

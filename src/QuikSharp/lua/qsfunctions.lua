@@ -250,6 +250,17 @@ function qsfunctions.getTradeAccount(msg)
 	return msg
 end
 
+--- Функция возвращает торговые счета в системе 
+function qsfunctions.getTradeAccounts(msg)
+local ListAccounts={}
+	for i=0,getNumberOf("trade_accounts")-1 do
+		local trade_accounts = getItem("trade_accounts",i)
+		table.insert(ListAccounts,trade_accounts)
+	end
+	msg.data=ListAccounts
+	return msg
+end
+
 
 
 ---------------------------------------------------------------------
