@@ -15,15 +15,19 @@ A simple Ping/Pong benchmark shows c.60 microseconds roundtrip time for QUIK
 Install & Usage
 ================
 
-Use NuGet to install QUIK# into your project. 
+The best way to use QUIK# is to build the project from the master branch. That will give you 
+the latest features and bug fixes.
+
+You may use NuGet to install the latest version of QUIK# into your project, but before verion 1.0 it 
+may be unstable and miss some latest features from the master branch.
 
     PM> Install-Package QUIKSharp
 
 
 A folder `lua` with all required scritps will be added to your project. 
 Start `QuikSharp.lua` script from QUIK and never stop it
-manually (it will be started automatically when QUIK starts). See unit tests for 
-usage examples in C#.
+manually (it will be started automatically when QUIK starts). See demo applications and 
+unit tests for usage examples in C#.
 
 
 Why use .NET for QUIK

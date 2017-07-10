@@ -1,3 +1,6 @@
+#### 1.0.0-beta1 - July 10 2017
+* Update NuGet. Minor changes and some new functions (e.g. GetTradesAccounts).
+
 #### 1.0.0-alpha - February 10 2017
 * Cumulative update with all commits over the past 15 months
 * Almost all QLua API is implemented
