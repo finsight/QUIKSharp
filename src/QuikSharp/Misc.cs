@@ -9,22 +9,6 @@ using System.Net.Sockets;
 namespace QuikSharp {
     public static class NetworkUtils {
 
-        public static IPAddress LocalIPAddress() {
-            if (!NetworkInterface.GetIsNetworkAvailable()) {
-                return null;
-            }
-
-            IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
-
-            return host
-                .AddressList
-                .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
-        }
-
-        public static bool IsRunningOnEc2() {
-            return LocalIPAddress().ToString().StartsWith("10.");
-        }
-
         /// <summary>
         /// The connection state of a socket is reflected in the Connected property,
         ///  but this property only gets updated with the last send- or receive-action. 
