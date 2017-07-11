@@ -1,7 +1,6 @@
 --~ // Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
 
 local socket = require ("socket")
---local json = require "cjson"
 local json = require ("dkjson")
 local qsutils = {}
 
@@ -58,7 +57,6 @@ function split(inputstr, sep)
 end
 
 function from_json(str)
-    -- local status, msg= pcall(json.decode, str) -- cjson
     local status, msg= pcall(json.decode, str, 1, json.null) -- dkjson
     if status then
         return msg
@@ -68,7 +66,6 @@ function from_json(str)
 end
 
 function to_json(msg)
-    -- local status, str= pcall(json.encode, msg) -- cjson
     local status, str= pcall(json.encode, msg, { indent = false }) -- dkjson
     if status then
         return str

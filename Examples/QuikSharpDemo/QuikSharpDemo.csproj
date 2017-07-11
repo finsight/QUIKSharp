@@ -91,7 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\QuikSharp\QuikSharp.csproj">
-      <Project>{48081c21-dfba-4cbb-88af-0bd9f606f424}</Project>
+      <Project>{8c1515d0-c068-47fb-b64d-8f47834c6933}</Project>
       <Name>QuikSharp</Name>
     </ProjectReference>
   </ItemGroup>

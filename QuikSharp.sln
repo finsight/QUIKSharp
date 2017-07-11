@@ -1,16 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuikSharp", "src\QuikSharp\QuikSharp.csproj", "{48081C21-DFBA-4CBB-88AF-0BD9F606F424}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "project", "project", "{8E6032D5-4061-44AD-8151-7F70FE09880A}"
 	ProjectSection(SolutionItems) = preProject
 		AUTHORS.md = AUTHORS.md
-		build.fsx = build.fsx
 		LICENSE.txt = LICENSE.txt
-		NuGet\QuikSharp.nuspec = NuGet\QuikSharp.nuspec
 		README.md = README.md
 		README.RU.md = README.RU.md
 		RELEASE_NOTES.md = RELEASE_NOTES.md
@@ -30,6 +26,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoConnector", "Examples\A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RobotDemo", "Examples\RobotDemo\RobotDemo.csproj", "{CD23572D-CF1A-404F-B373-77CC8A4FB093}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuikSharp", "src\QuikSharp\QuikSharp.csproj", "{8C1515D0-C068-47FB-B64D-8F47834C6933}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,18 +38,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{48081C21-DFBA-4CBB-88AF-0BD9F606F424}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{48081C21-DFBA-4CBB-88AF-0BD9F606F424}.Debug|Any CPU.Build.0 = Debug|x86
-		{48081C21-DFBA-4CBB-88AF-0BD9F606F424}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{48081C21-DFBA-4CBB-88AF-0BD9F606F424}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{48081C21-DFBA-4CBB-88AF-0BD9F606F424}.Debug|x86.ActiveCfg = Debug|x86
-		{48081C21-DFBA-4CBB-88AF-0BD9F606F424}.Debug|x86.Build.0 = Debug|x86
-		{48081C21-DFBA-4CBB-88AF-0BD9F606F424}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{48081C21-DFBA-4CBB-88AF-0BD9F606F424}.Release|Any CPU.Build.0 = Release|Any CPU
-		{48081C21-DFBA-4CBB-88AF-0BD9F606F424}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{48081C21-DFBA-4CBB-88AF-0BD9F606F424}.Release|Mixed Platforms.Build.0 = Release|x86
-		{48081C21-DFBA-4CBB-88AF-0BD9F606F424}.Release|x86.ActiveCfg = Release|x86
-		{48081C21-DFBA-4CBB-88AF-0BD9F606F424}.Release|x86.Build.0 = Release|x86
 		{E8381C47-9297-4BD3-B384-CD366037F587}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E8381C47-9297-4BD3-B384-CD366037F587}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E8381C47-9297-4BD3-B384-CD366037F587}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -108,6 +94,18 @@ Global
 		{CD23572D-CF1A-404F-B373-77CC8A4FB093}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{CD23572D-CF1A-404F-B373-77CC8A4FB093}.Release|x86.ActiveCfg = Release|Any CPU
 		{CD23572D-CF1A-404F-B373-77CC8A4FB093}.Release|x86.Build.0 = Release|Any CPU
+		{8C1515D0-C068-47FB-B64D-8F47834C6933}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C1515D0-C068-47FB-B64D-8F47834C6933}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C1515D0-C068-47FB-B64D-8F47834C6933}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{8C1515D0-C068-47FB-B64D-8F47834C6933}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{8C1515D0-C068-47FB-B64D-8F47834C6933}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8C1515D0-C068-47FB-B64D-8F47834C6933}.Debug|x86.Build.0 = Debug|Any CPU
+		{8C1515D0-C068-47FB-B64D-8F47834C6933}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C1515D0-C068-47FB-B64D-8F47834C6933}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C1515D0-C068-47FB-B64D-8F47834C6933}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{8C1515D0-C068-47FB-B64D-8F47834C6933}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{8C1515D0-C068-47FB-B64D-8F47834C6933}.Release|x86.ActiveCfg = Release|Any CPU
+		{8C1515D0-C068-47FB-B64D-8F47834C6933}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
