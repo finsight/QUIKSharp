@@ -19,7 +19,7 @@ namespace QuikSharp
     /// <summary>
     ///
     /// </summary>
-    public class QuikService
+    public sealed class QuikService
     {
         private static readonly Dictionary<int, QuikService> Services =
             new Dictionary<int, QuikService>();

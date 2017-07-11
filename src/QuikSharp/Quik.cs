@@ -7,7 +7,7 @@ namespace QuikSharp
     /// <summary>
     /// Quik interface in .NET
     /// </summary>
-    public class Quik
+    public sealed class Quik
     {
         /// <summary>
         /// 34130
