@@ -145,5 +145,4 @@ namespace QuikSharp.DataStructures
         /// </summary>
         NotImplemented
     }
-
 }

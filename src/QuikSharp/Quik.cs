@@ -2,11 +2,13 @@
 
 using System;
 
-namespace QuikSharp {
+namespace QuikSharp
+{
     /// <summary>
     /// Quik interface in .NET
     /// </summary>
-    public class Quik {
+    public class Quik
+    {
         /// <summary>
         /// 34130
         /// </summary>
@@ -15,7 +17,8 @@ namespace QuikSharp {
         /// <summary>
         /// Quik interface in .NET constructor
         /// </summary>
-        public Quik(int port = DefaultPort, IPersistentStorage storage = null) {
+        public Quik(int port = DefaultPort, IPersistentStorage storage = null)
+        {
             if (storage == null) { Storage = new InMemoryStorage(); } else { Storage = storage; }
             QuikService = QuikService.Create(port);
             // poor man's DI
@@ -33,15 +36,14 @@ namespace QuikSharp {
             QuikService.StopOrders = StopOrders;
         }
 
-		// Если запуск "сервиса" (потоков работы с Lua) происходит в конструкторе Quik, то возможности остановить "сервис" нет.
-		// QuikService объявлен как private.
-		public void StopService ()
-		{
-			QuikService.Stop ();
-		}
+        // Если запуск "сервиса" (потоков работы с Lua) происходит в конструкторе Quik, то возможности остановить "сервис" нет.
+        // QuikService объявлен как private.
+        public void StopService()
+        {
+            QuikService.Stop();
+        }
 
         private QuikService QuikService { get; set; }
-
 
         /// <summary>
         /// Quik current data is all in local time. This property allows to convert it to UTC datetime

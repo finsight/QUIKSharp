@@ -2,9 +2,11 @@
 
 using System;
 
-namespace QuikSharp.DataStructures {
+namespace QuikSharp.DataStructures
+{
     [Flags]
-    public enum AllTradeFlags {
+    public enum AllTradeFlags
+    {
         Sell = 0x1,
         Buy = 0x2
     }

@@ -6,64 +6,77 @@ namespace QuikSharp.DataStructures
 {
     /// <summary>
     /// Формат даты и времени, используемый таблицах.
-    /// Для корректного отображения даты и времени все параметры должны быть заданы. 
+    /// Для корректного отображения даты и времени все параметры должны быть заданы.
     /// </summary>
-    public class QuikDateTime {
+    public class QuikDateTime
+    {
         // ReSharper disable InconsistentNaming
         /// <summary>
         /// Микросекунды игнорируются в текущей версии.
         /// </summary>
         public int mcs { get; set; }
+
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public int ms { get; set; }
+
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public int sec { get; set; }
+
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public int min { get; set; }
+
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public int hour { get; set; }
+
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public int day { get; set; }
+
         /// <summary>
         /// Monday is 1
         /// </summary>
         public int week_day { get; set; }
+
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public int month { get; set; }
+
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public int year { get; set; }
+
         // ReSharper restore InconsistentNaming
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="qdt"></param>
         /// <returns></returns>
-        public static explicit operator DateTime(QuikDateTime qdt) {
+        public static explicit operator DateTime(QuikDateTime qdt)
+        {
             var dt = new DateTime(qdt.year, qdt.month, qdt.day, qdt.hour, qdt.min, qdt.sec, qdt.ms);
             return dt; //dt.AddTicks(qdt.mcs * 10);
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="dt"></param>
         /// <returns></returns>
-        public static explicit operator QuikDateTime(DateTime dt) {
-            return new QuikDateTime {
+        public static explicit operator QuikDateTime(DateTime dt)
+        {
+            return new QuikDateTime
+            {
                 year = dt.Year,
                 month = dt.Month,
                 day = dt.Day,

@@ -6,7 +6,8 @@ namespace QuikSharp.DataStructures
     /// <summary>
     /// Описание класса
     /// </summary>
-    public class ClassInfo {
+    public class ClassInfo
+    {
         // ReSharper disable InconsistentNaming
 
         /// <summary>
@@ -14,30 +15,35 @@ namespace QuikSharp.DataStructures
         /// </summary>
         [JsonProperty("firmid")]
         public string FirmId { get; set; }
+
         /// <summary>
         /// Наименование класса
         /// </summary>
         [JsonProperty("name")]
         public string Name { get; set; }
+
         /// <summary>
         /// Код класса
         /// </summary>
         [JsonProperty("code")]
         public string Code { get; set; }
+
         /// <summary>
         /// Количество параметров в классе
         /// </summary>
         [JsonProperty("npars")]
         public int NPars { get; set; }
+
         /// <summary>
         /// Количество бумаг в классе
         /// </summary>
         [JsonProperty("nsecs")]
         public int NSecs { get; set; }
+
         // ReSharper restore InconsistentNaming
 
-
-        public override string ToString() {
+        public override string ToString()
+        {
             return this.ToJson();
         }
     }

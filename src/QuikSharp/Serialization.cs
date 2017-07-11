@@ -14,19 +14,22 @@ using System.Runtime.Serialization.Formatters;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuikSharp {
-
+namespace QuikSharp
+{
     /// <summary>
     /// Extensions for JSON.NET
     /// </summary>
-    public static class JsonExtensions {
+    public static class JsonExtensions
+    {
         private static JsonSerializer _serializer;
 
         [ThreadStatic]
         private static StringBuilder _stringBuilder;
 
-        static JsonExtensions() {
-            _serializer = new JsonSerializer {
+        static JsonExtensions()
+        {
+            _serializer = new JsonSerializer
+            {
                 TypeNameHandling = TypeNameHandling.None,
                 NullValueHandling = NullValueHandling.Ignore
             };
@@ -35,8 +38,10 @@ namespace QuikSharp {
         /// <summary>
         ///
         /// </summary>
-        public static T FromJson<T>(this string json) {
-            using (var reader = new JsonTextReader(new StringReader(json))) {
+        public static T FromJson<T>(this string json)
+        {
+            using (var reader = new JsonTextReader(new StringReader(json)))
+            {
                 // reader will get buffer from array pool
                 reader.ArrayPool = JsonArrayPool.Instance;
                 var value = _serializer.Deserialize<T>(reader);
@@ -44,8 +49,10 @@ namespace QuikSharp {
             }
         }
 
-        internal static IMessage FromJson(this string json, QuikService service) {
-            using (var reader = new JsonTextReader(new StringReader(json))) {
+        internal static IMessage FromJson(this string json, QuikService service)
+        {
+            using (var reader = new JsonTextReader(new StringReader(json)))
+            {
                 // reader will get buffer from array pool
                 reader.ArrayPool = JsonArrayPool.Instance;
                 var value = service.Serializer.Deserialize<IMessage>(reader);
@@ -56,8 +63,10 @@ namespace QuikSharp {
         /// <summary>
         ///
         /// </summary>
-        public static object FromJson(this string json, Type type) {
-            using (var reader = new JsonTextReader(new StringReader(json))) {
+        public static object FromJson(this string json, Type type)
+        {
+            using (var reader = new JsonTextReader(new StringReader(json)))
+            {
                 // reader will get buffer from array pool
                 reader.ArrayPool = JsonArrayPool.Instance;
                 var value = _serializer.Deserialize(reader, type);
@@ -68,17 +77,23 @@ namespace QuikSharp {
         /// <summary>
         ///
         /// </summary>
-        public static string ToJson<T>(this T obj) {
-            if (_stringBuilder == null) {
+        public static string ToJson<T>(this T obj)
+        {
+            if (_stringBuilder == null)
+            {
                 _stringBuilder = new StringBuilder();
             }
-            using (var writer = new JsonTextWriter(new StringWriter(_stringBuilder))) {
-                try {
+            using (var writer = new JsonTextWriter(new StringWriter(_stringBuilder)))
+            {
+                try
+                {
                     // reader will get buffer from array pool
                     writer.ArrayPool = JsonArrayPool.Instance;
                     _serializer.Serialize(writer, obj);
                     return _stringBuilder.ToString();
-                } finally {
+                }
+                finally
+                {
                     _stringBuilder.Clear();
                 }
             }
@@ -87,9 +102,11 @@ namespace QuikSharp {
         /// <summary>
         /// Returns indented JSON
         /// </summary>
-        public static string ToJsonFormatted<T>(this T obj) {
+        public static string ToJsonFormatted<T>(this T obj)
+        {
             var message = JsonConvert.SerializeObject(obj, Formatting.Indented,
-                new JsonSerializerSettings {
+                new JsonSerializerSettings
+                {
                     TypeNameHandling = TypeNameHandling.None, // Objects
                     TypeNameAssemblyFormat = FormatterAssemblyStyle.Simple,
                     // NB this is important for correctness and performance
@@ -98,18 +115,19 @@ namespace QuikSharp {
                 });
             return message;
         }
-
     }
 
     /// <summary>
     /// Limits enum serialization only to defined values
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class SafeEnumConverter<T> : StringEnumConverter {
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
+    public class SafeEnumConverter<T> : StringEnumConverter
+    {
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
             var isDef = Enum.IsDefined(typeof(T), value);
-            if (!isDef) {
+            if (!isDef)
+            {
                 value = null;
             }
             base.WriteJson(writer, value, serializer);
@@ -119,16 +137,18 @@ namespace QuikSharp {
     /// <summary>
     /// Serialize as string with ToString()
     /// </summary>
-    public class ToStringConverter<T> : JsonConverter {
-
-        public override bool CanConvert(Type objectType) {
+    public class ToStringConverter<T> : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
             return true;
         }
 
         public override object ReadJson(JsonReader reader,
                                         Type objectType,
                                          object existingValue,
-                                         JsonSerializer serializer) {
+                                         JsonSerializer serializer)
+        {
             var t = JToken.Load(reader);
             T target = t.Value<T>();
             return target;
@@ -136,7 +156,8 @@ namespace QuikSharp {
 
         public override void WriteJson(JsonWriter writer,
                                        object value,
-                                       JsonSerializer serializer) {
+                                       JsonSerializer serializer)
+        {
             var t = JToken.FromObject(value.ToString());
             t.WriteTo(writer);
         }
@@ -145,23 +166,26 @@ namespace QuikSharp {
     /// <summary>
     /// Serialize Decimal to string without trailing zeros
     /// </summary>
-    public class DecimalG29ToStringConverter : JsonConverter {
-
-        public override bool CanConvert(Type objectType) {
+    public class DecimalG29ToStringConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
             return objectType.Equals(typeof(decimal));
         }
 
         public override object ReadJson(JsonReader reader,
                                         Type objectType,
                                          object existingValue,
-                                         JsonSerializer serializer) {
+                                         JsonSerializer serializer)
+        {
             var t = JToken.Load(reader);
             return t.Value<decimal>();
         }
 
         public override void WriteJson(JsonWriter writer,
                                        object value,
-                                       JsonSerializer serializer) {
+                                       JsonSerializer serializer)
+        {
             decimal d = (decimal)value;
             var t = JToken.FromObject(d.ToString("G29"));
             t.WriteTo(writer);
@@ -172,16 +196,18 @@ namespace QuikSharp {
     /// Convert DateTime to HHMMSS
     /// </summary>
     // ReSharper disable once InconsistentNaming
-    public class HHMMSSDateTimeConverter : JsonConverter {
-
-        public override bool CanConvert(Type objectType) {
+    public class HHMMSSDateTimeConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
             return true;
         }
 
         public override object ReadJson(JsonReader reader,
                                         Type objectType,
                                          object existingValue,
-                                         JsonSerializer serializer) {
+                                         JsonSerializer serializer)
+        {
             var t = JToken.Load(reader);
             var target = t.Value<string>();
             if (target == null) return null;
@@ -195,28 +221,34 @@ namespace QuikSharp {
 
         public override void WriteJson(JsonWriter writer,
                                        object value,
-                                       JsonSerializer serializer) {
+                                       JsonSerializer serializer)
+        {
             var t = JToken.FromObject(((DateTime)value).ToString("HHmmss"));
             t.WriteTo(writer);
         }
     }
 
-    internal class MessageConverter : JsonCreationConverter<IMessage> {
+    internal class MessageConverter : JsonCreationConverter<IMessage>
+    {
         private QuikService _service;
 
-        public MessageConverter(QuikService service) {
+        public MessageConverter(QuikService service)
+        {
             _service = service;
         }
 
         // we learn object type from correlation id and a type stored in responses dictionary
         // ReSharper disable once RedundantAssignment
-        protected override IMessage Create(Type objectType, JObject jObject) {
-            if (FieldExists("lua_error", jObject)) {
+        protected override IMessage Create(Type objectType, JObject jObject)
+        {
+            if (FieldExists("lua_error", jObject))
+            {
                 var id = jObject.GetValue("id").Value<long>();
                 var cmd = jObject.GetValue("cmd").Value<string>();
                 var message = jObject.GetValue("lua_error").Value<string>();
                 LuaException exn;
-                switch (cmd) {
+                switch (cmd)
+                {
                     case "lua_transaction_error":
                         exn = new TransactionException(message);
                         break;
@@ -231,17 +263,23 @@ namespace QuikSharp {
                 tcs.SetException(exn);
                 // terminate listener task that was processing this task
                 throw exn;
-            } else if (FieldExists("id", jObject)) {
+            }
+            else if (FieldExists("id", jObject))
+            {
                 var id = jObject.GetValue("id").Value<long>();
                 objectType = _service.Responses[id].Value;
                 return (IMessage)Activator.CreateInstance(objectType);
-            } else if (FieldExists("cmd", jObject)) {
+            }
+            else if (FieldExists("cmd", jObject))
+            {
                 // without id we have an event
                 EventNames eventName;
                 string cmd = jObject.GetValue("cmd").Value<string>();
                 var parsed = Enum.TryParse(cmd, true, out eventName);
-                if (parsed) {
-                    switch (eventName) {
+                if (parsed)
+                {
+                    switch (eventName)
+                    {
                         case EventNames.OnAccountBalance:
                             return new Message<AccountBalance> { Data = new AccountBalance() };
 
@@ -314,9 +352,12 @@ namespace QuikSharp {
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
-                } else {
+                }
+                else
+                {
                     // if we have a custom event (e.g. add some processing  of standard Quik event) then we must process it here
-                    switch (cmd) {
+                    switch (cmd)
+                    {
                         case "lua_error":
                             return new Message<string>();
 
@@ -329,13 +370,14 @@ namespace QuikSharp {
             throw new ArgumentException("Bad message format: no cmd or lua_error fields");
         }
 
-        private static bool FieldExists(string fieldName, JObject jObject) {
+        private static bool FieldExists(string fieldName, JObject jObject)
+        {
             return jObject[fieldName] != null;
         }
     }
 
-    internal abstract class JsonCreationConverter<T> : JsonConverter {
-
+    internal abstract class JsonCreationConverter<T> : JsonConverter
+    {
         /// <summary>
         /// Create an instance of objectType, based properties in the JSON object
         /// </summary>
@@ -346,14 +388,16 @@ namespace QuikSharp {
         /// <returns></returns>
         protected abstract T Create(Type objectType, JObject jObject);
 
-        public override bool CanConvert(Type objectType) {
+        public override bool CanConvert(Type objectType)
+        {
             return typeof(T).IsAssignableFrom(objectType);
         }
 
         public override object ReadJson(JsonReader reader,
                                         Type objectType,
                                          object existingValue,
-                                         JsonSerializer serializer) {
+                                         JsonSerializer serializer)
+        {
             // Load JObject from stream
             JObject jObject = JObject.Load(reader);
 
@@ -368,7 +412,8 @@ namespace QuikSharp {
 
         public override void WriteJson(JsonWriter writer,
                                        object value,
-                                       JsonSerializer serializer) {
+                                       JsonSerializer serializer)
+        {
             throw new InvalidOperationException();
         }
     }
@@ -376,15 +421,19 @@ namespace QuikSharp {
     /// <summary>
     ///
     /// </summary>
-    internal static class ZipExtentions {
-
+    internal static class ZipExtentions
+    {
         /// <summary>
         /// In-memory compress
         /// </summary>
-        internal static byte[] GZip(this byte[] bytes) {
-            using (var inStream = new MemoryStream(bytes)) {
-                using (var outStream = new MemoryStream()) {
-                    using (var compress = new GZipStream(outStream, CompressionMode.Compress)) {
+        internal static byte[] GZip(this byte[] bytes)
+        {
+            using (var inStream = new MemoryStream(bytes))
+            {
+                using (var outStream = new MemoryStream())
+                {
+                    using (var compress = new GZipStream(outStream, CompressionMode.Compress))
+                    {
                         inStream.CopyTo(compress);
                     }
                     return outStream.ToArray();
@@ -397,10 +446,14 @@ namespace QuikSharp {
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        internal static byte[] ToZipBytes(this string value) {
-            using (var inStream = new MemoryStream(Encoding.UTF8.GetBytes(value))) {
-                using (var outStream = new MemoryStream()) {
-                    using (var compress = new GZipStream(outStream, CompressionMode.Compress)) {
+        internal static byte[] ToZipBytes(this string value)
+        {
+            using (var inStream = new MemoryStream(Encoding.UTF8.GetBytes(value)))
+            {
+                using (var outStream = new MemoryStream())
+                {
+                    using (var compress = new GZipStream(outStream, CompressionMode.Compress))
+                    {
                         inStream.CopyTo(compress);
                     }
                     return outStream.ToArray();
@@ -411,11 +464,15 @@ namespace QuikSharp {
         /// <summary>
         /// In-memory uncompress
         /// </summary>
-        internal static byte[] UnGZip(this byte[] bytes) {
+        internal static byte[] UnGZip(this byte[] bytes)
+        {
             byte[] outBytes;
-            using (var inStream = new MemoryStream(bytes)) {
-                using (var outStream = new MemoryStream()) {
-                    using (var deCompress = new GZipStream(inStream, CompressionMode.Decompress)) {
+            using (var inStream = new MemoryStream(bytes))
+            {
+                using (var outStream = new MemoryStream())
+                {
+                    using (var deCompress = new GZipStream(inStream, CompressionMode.Decompress))
+                    {
                         deCompress.CopyTo(outStream);
                     }
                     outBytes = outStream.ToArray();
@@ -429,11 +486,15 @@ namespace QuikSharp {
         /// </summary>
         /// <param name="bytes"></param>
         /// <returns></returns>
-        internal static string FromZipBytes(this byte[] bytes) {
+        internal static string FromZipBytes(this byte[] bytes)
+        {
             byte[] outBytes;
-            using (var inStream = new MemoryStream(bytes)) {
-                using (var outStream = new MemoryStream()) {
-                    using (var deCompress = new GZipStream(inStream, CompressionMode.Decompress)) {
+            using (var inStream = new MemoryStream(bytes))
+            {
+                using (var outStream = new MemoryStream())
+                {
+                    using (var deCompress = new GZipStream(inStream, CompressionMode.Decompress))
+                    {
                         deCompress.CopyTo(outStream);
                     }
                     outBytes = outStream.ToArray();
@@ -443,15 +504,18 @@ namespace QuikSharp {
         }
     }
 
-    public class JsonArrayPool : IArrayPool<char> {
+    public class JsonArrayPool : IArrayPool<char>
+    {
         public static readonly JsonArrayPool Instance = new JsonArrayPool();
 
-        public char[] Rent(int minimumLength) {
+        public char[] Rent(int minimumLength)
+        {
             // get char array from System.Buffers shared pool
             return ArrayPool<char>.Shared.Rent(minimumLength);
         }
 
-        public void Return(char[] array) {
+        public void Return(char[] array)
+        {
             // return char array to System.Buffers shared pool
             ArrayPool<char>.Shared.Return(array);
         }

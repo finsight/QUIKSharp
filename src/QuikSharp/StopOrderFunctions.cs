@@ -1,8 +1,8 @@
-﻿using System;
+﻿using QuikSharp.DataStructures;
+using QuikSharp.DataStructures.Transaction;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using QuikSharp.DataStructures;
-using QuikSharp.DataStructures.Transaction;
 
 namespace QuikSharp
 {
@@ -15,7 +15,9 @@ namespace QuikSharp
         private Quik Quik { get; set; }
 
         public delegate void StopOrderHandler(StopOrder stopOrder);
+
         public event StopOrderHandler NewStopOrder;
+
         internal void RaiseNewStopOrderEvent(StopOrder stopOrder)
         {
             if (NewStopOrder != null)
@@ -35,8 +37,8 @@ namespace QuikSharp
         public async Task<List<StopOrder>> GetStopOrders()
         {
             var message = new Message<string>("", "get_stop_orders");
-            Message<List<StopOrder>> response = await QuikService.Send<Message<List<StopOrder>>>(message).ConfigureAwait (false);
-            return response.Data;			
+            Message<List<StopOrder>> response = await QuikService.Send<Message<List<StopOrder>>>(message).ConfigureAwait(false);
+            return response.Data;
         }
 
         /// <summary>
@@ -45,7 +47,7 @@ namespace QuikSharp
         public async Task<List<StopOrder>> GetStopOrders(string classCode, string securityCode)
         {
             var message = new Message<string>(classCode + "|" + securityCode, "get_stop_orders");
-            Message<List<StopOrder>> response = await QuikService.Send<Message<List<StopOrder>>>(message).ConfigureAwait (false);
+            Message<List<StopOrder>> response = await QuikService.Send<Message<List<StopOrder>>>(message).ConfigureAwait(false);
             return response.Data;
         }
 
@@ -62,7 +64,7 @@ namespace QuikSharp
                 PRICE = stopOrder.Price,
                 QUANTITY = stopOrder.Quantity,
                 STOP_ORDER_KIND = ConvertStopOrderType(stopOrder.StopOrderType),
-                OPERATION = stopOrder.Operation == Operation.Buy?TransactionOperation.B : TransactionOperation.S
+                OPERATION = stopOrder.Operation == Operation.Buy ? TransactionOperation.B : TransactionOperation.S
             };
 
             //todo: Not implemented
@@ -74,9 +76,8 @@ namespace QuikSharp
             //["MARKET_TAKE_PROFIT"]="YES",
             //["STOPPRICE2"]=tostring(SysFunc.toPrice(SecCode,StopLoss)),
             //["EXECUTION_CONDITION"] = "FILL_OR_KILL",
-    
 
-            return await Quik.Trading.SendTransaction(newStopOrderTransaction).ConfigureAwait (false);
+            return await Quik.Trading.SendTransaction(newStopOrderTransaction).ConfigureAwait(false);
         }
 
         private StopOrderKind ConvertStopOrderType(StopOrderType stopOrderType)
@@ -85,8 +86,10 @@ namespace QuikSharp
             {
                 case StopOrderType.StopLimit:
                     return StopOrderKind.SIMPLE_STOP_ORDER;
+
                 case StopOrderType.TakeProfit:
                     return StopOrderKind.TAKE_PROFIT_STOP_ORDER;
+
                 default:
                     throw new Exception("Not implemented stop order type: " + stopOrderType);
             }
@@ -101,7 +104,7 @@ namespace QuikSharp
                 SECCODE = stopOrder.SecCode,
                 STOP_ORDER_KEY = stopOrder.OrderNum.ToString()
             };
-            return await Quik.Trading.SendTransaction(killStopOrderTransaction).ConfigureAwait (false);
+            return await Quik.Trading.SendTransaction(killStopOrderTransaction).ConfigureAwait(false);
         }
     }
 }

@@ -13,21 +13,25 @@ namespace QuikSharp.DataStructures
         /// </summary>
         [JsonProperty("firmid")]
         public string FirmId { get; set; }
+
         /// <summary>
         /// Название класса
         /// </summary>
         [JsonProperty("firm_name")]
         public string FirmName { get; set; }
+
         /// <summary>
         /// Статус
         /// </summary>
         [JsonProperty("status")]
         public double Status { get; set; }
+
         /// <summary>
         /// Торговая площадка
         /// </summary>
         [JsonProperty("exchange")]
         public string Exchange { get; set; }
+
         // ReSharper restore InconsistentNaming
     }
 }

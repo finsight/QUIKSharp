@@ -9,7 +9,6 @@ namespace QuikSharp
     // TODO Menu items and icons with notifications
     internal class Tray : Form
     {
-
         public static Tray Instance = new Tray();
 
         //[STAThread]
@@ -50,7 +49,7 @@ namespace QuikSharp
 
         public void OnExit(object sender, EventArgs e)
         {
-            Application.Exit(); 
+            Application.Exit();
         }
 
         protected override void Dispose(bool isDisposing)

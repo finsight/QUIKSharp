@@ -3,38 +3,48 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace QuikSharp {
-    public class DebugFunctions : IQuikService {
-        public DebugFunctions(int port) { QuikService = QuikService.Create(port); }
+namespace QuikSharp
+{
+    public class DebugFunctions : IQuikService
+    {
+        public DebugFunctions(int port)
+        {
+            QuikService = QuikService.Create(port);
+        }
 
         public QuikService QuikService { get; private set; }
-        class PingRequest : Message<string> {
+
+        private class PingRequest : Message<string>
+        {
             public PingRequest()
                 : base("Ping", "ping", null) { }
         }
 
-        class PingResponse : Message<string> {
+        private class PingResponse : Message<string>
+        {
             public PingResponse()
                 : base("Pong", "ping", null) { }
         }
 
-        public async Task<string> Ping() {
+        public async Task<string> Ping()
+        {
             // could have used StringMessage directly. This is an example of how to define DTOs for custom commands
-            var response = await QuikService.Send<PingResponse>((new PingRequest())).ConfigureAwait (false);
+            var response = await QuikService.Send<PingResponse>((new PingRequest())).ConfigureAwait(false);
             Trace.Assert(response.Data == "Pong");
             return response.Data;
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="msg"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public async Task<T> Echo<T>(T msg) {
+        public async Task<T> Echo<T>(T msg)
+        {
             // could have used StringMessage directly. This is an example of how to define DTOs for custom commands
             var response = await QuikService.Send<Message<T>>(
-                (new Message<T>(msg, "echo"))).ConfigureAwait (false);
+                (new Message<T>(msg, "echo"))).ConfigureAwait(false);
             return response.Data;
         }
 
@@ -42,20 +52,21 @@ namespace QuikSharp {
         /// This method returns LuaException and demonstrates how Lua errors are caught
         /// </summary>
         /// <returns></returns>
-        public async Task<string> DivideStringByZero() {
+        public async Task<string> DivideStringByZero()
+        {
             var response = await QuikService.Send<Message<string>>(
-                (new Message<string>("", "divide_string_by_zero"))).ConfigureAwait (false);
+                (new Message<string>("", "divide_string_by_zero"))).ConfigureAwait(false);
             return response.Data;
         }
 
         /// <summary>
         /// Check if running inside Quik
         /// </summary>
-        public async Task<bool> IsQuik() {
+        public async Task<bool> IsQuik()
+        {
             var response = await QuikService.Send<Message<string>>(
-                (new Message<string>("", "is_quik"))).ConfigureAwait (false);
+                (new Message<string>("", "is_quik"))).ConfigureAwait(false);
             return response.Data == "1";
         }
-
     }
 }

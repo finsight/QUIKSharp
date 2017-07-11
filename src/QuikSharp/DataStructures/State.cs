@@ -1,5 +1,4 @@
-﻿
-namespace QuikSharp.DataStructures
+﻿namespace QuikSharp.DataStructures
 {
     /// <summary>
     /// Состояние заявки или стоп-заявки

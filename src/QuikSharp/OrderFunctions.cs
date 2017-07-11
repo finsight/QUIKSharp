@@ -1,7 +1,7 @@
-﻿using System.Threading.Tasks;
-using System.Collections.Generic;
+﻿using QuikSharp.DataStructures;
 using QuikSharp.DataStructures.Transaction;
-using QuikSharp.DataStructures;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace QuikSharp
 {
@@ -31,14 +31,14 @@ namespace QuikSharp
             Transaction newOrderTransaction = new Transaction
             {
                 ACTION = TransactionAction.NEW_ORDER,
-                ACCOUNT = order.Account, 
+                ACCOUNT = order.Account,
                 CLASSCODE = order.ClassCode,
                 SECCODE = order.SecCode,
                 QUANTITY = order.Quantity,
                 OPERATION = order.Operation == Operation.Buy ? TransactionOperation.B : TransactionOperation.S,
                 PRICE = order.Price
             };
-            return await Quik.Trading.SendTransaction(newOrderTransaction).ConfigureAwait (false);
+            return await Quik.Trading.SendTransaction(newOrderTransaction).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace QuikSharp
                 SECCODE = order.SecCode,
                 ORDER_KEY = order.OrderNum.ToString()
             };
-            return await Quik.Trading.SendTransaction(killOrderTransaction).ConfigureAwait (false);
+            return await Quik.Trading.SendTransaction(killOrderTransaction).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace QuikSharp
         public async Task<Order> GetOrder(string classCode, long orderId)
         {
             var message = new Message<string>(classCode + "|" + orderId, "get_order_by_number");
-            Message<Order> response = await QuikService.Send<Message<Order>>(message).ConfigureAwait (false);
+            Message<Order> response = await QuikService.Send<Message<Order>>(message).ConfigureAwait(false);
             return response.Data;
         }
 

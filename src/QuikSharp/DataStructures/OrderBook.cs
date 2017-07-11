@@ -1,24 +1,23 @@
 ﻿// Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
 
-using System;
-using Newtonsoft.Json;
-using QuikSharp.DataStructures;
-
 namespace QuikSharp.DataStructures
 {
     /// <summary>
     /// Стакан
     /// </summary>
-    public class OrderBook : IWithLuaTimeStamp {
+    public class OrderBook : IWithLuaTimeStamp
+    {
         // ReSharper disable InconsistentNaming
         /// <summary>
         /// Строка стакана
         /// </summary>
-        public class PriceQuantity {
+        public class PriceQuantity
+        {
             /// <summary>
             /// Цена покупки / продажи
             /// </summary>
             public double price { get; set; }
+
             /// <summary>
             /// Количество в лотах
             /// </summary>
@@ -29,6 +28,7 @@ namespace QuikSharp.DataStructures
         /// Код класса
         /// </summary>
         public string class_code { get; set; }
+
         /// <summary>
         /// Код бумаги
         /// </summary>
@@ -54,7 +54,6 @@ namespace QuikSharp.DataStructures
         ///// </summary>
         //[Obsolete("Use offer array length instead")]
         //public double offer_count { get; set; }
-        
 
         /// <summary>
         /// Котировки спроса (покупки)
@@ -65,8 +64,7 @@ namespace QuikSharp.DataStructures
         /// Котировки предложений (продажи)
         /// </summary>
         public PriceQuantity[] offer { get; set; }
+
         // ReSharper restore InconsistentNaming
     }
-
-    
 }

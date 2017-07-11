@@ -14,21 +14,25 @@ namespace QuikSharp.DataStructures
         /// </summary>
         [JsonProperty("sec_code")]
         public string SecCode { get; set; }
+
         /// <summary>
         /// Код торгового счета
         /// </summary>
         [JsonProperty("trdaccid")]
         public string TrdAccId { get; set; }
+
         /// <summary>
         /// Идентификатор фирмы
         /// </summary>
         [JsonProperty("firmid")]
         public string FirmId { get; set; }
+
         /// <summary>
         /// Код клиента
         /// </summary>
         [JsonProperty("client_code")]
         public string ClientCode { get; set; }
+
         /// <summary>
         /// Тип лимита. Возможные значения:
         /// ///«0» – обычные лимиты,
@@ -36,6 +40,7 @@ namespace QuikSharp.DataStructures
         /// </summary>
         [JsonProperty("limit_kind")]
         public int LimitKindInt { get; set; }
+
         // ReSharper restore InconsistentNaming
     }
 }

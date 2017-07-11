@@ -4,14 +4,18 @@ using System.Threading.Tasks;
 
 namespace QuikSharp
 {
-     static class ServiceManager {
+    internal static class ServiceManager
+    {
         private static QuikService quikService;
-        public static void StartServices() {
+
+        public static void StartServices()
+        {
             quikService = QuikService.Create(Quik.DefaultPort);
             Task.Run(() => Tray.Run());
         }
 
-        public static void StopServices() {
+        public static void StopServices()
+        {
             Tray.Instance.OnExit(null, null);
         }
 

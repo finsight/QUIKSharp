@@ -215,6 +215,7 @@ namespace QuikSharp
                 catch (Exception e)
                 {
                     Trace.TraceError(e.ToString());
+                    _cts.Cancel();
                     throw new AggregateException("Unhandled exception in background task", e);
                 }
                 finally
@@ -315,6 +316,7 @@ namespace QuikSharp
                 catch (Exception e)
                 {
                     Trace.TraceError(e.ToString());
+                    _cts.Cancel();
                     throw new AggregateException("Unhandled exception in background task", e);
                 }
                 finally
@@ -414,6 +416,7 @@ namespace QuikSharp
                 catch (Exception e)
                 {
                     Trace.TraceError(e.ToString());
+                    _cts.Cancel();
                     throw new AggregateException("Unhandled exception in background task", e);
                 }
                 finally

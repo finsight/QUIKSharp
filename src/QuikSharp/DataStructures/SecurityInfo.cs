@@ -2,11 +2,13 @@
 
 using Newtonsoft.Json;
 
-namespace QuikSharp.DataStructures {
+namespace QuikSharp.DataStructures
+{
     /// <summary>
     /// Результат getSecurityInfo
     /// </summary>
-    public class SecurityInfo {
+    public class SecurityInfo
+    {
         /// <summary>
         /// Код инструмента
         /// </summary>
@@ -18,42 +20,50 @@ namespace QuikSharp.DataStructures {
         /// </summary>
         [JsonProperty("name")]
         public string Name { get; set; }
+
         /// <summary>
         /// Краткое наименование
         /// </summary>
         [JsonProperty("short_name")]
         public string ShortName { get; set; }
+
         /// <summary>
         /// Код класса
         /// </summary>
         [JsonProperty("class_code")]
         public string ClassCode { get; set; }
+
         /// <summary>
         /// Наименование класса
         /// </summary>
         [JsonProperty("class_name")]
         public string ClassName { get; set; }
+
         /// <summary>
         /// Номинал
         /// </summary>
         [JsonProperty("face_value")]
         public string FaceValue { get; set; }
+
         /// <summary>
         /// Код валюты номинала
         /// </summary>
         [JsonProperty("face_unit")]
         public string FaceUnit { get; set; }
+
         /// <summary>
         /// Количество значащих цифр после запятой
         /// </summary>
         [JsonProperty("scale")]
         public int Scale { get; set; }
+
         /// <summary>
         /// Дата погашения (в QLUA это число, но на самом деле дата записанная как YYYYMMDD),
         /// поэтому здесь сохраняем просто как строку
         /// </summary>
         [JsonProperty("mat_date")]
         public string MatDate { get; set; }
+
         /// <summary>
         /// Размер лота
         /// </summary>

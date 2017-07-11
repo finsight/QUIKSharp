@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using QuikSharp.DataStructures;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using QuikSharp.DataStructures;
 
 namespace QuikSharp
 {
@@ -9,22 +9,25 @@ namespace QuikSharp
     /// </summary>
     public class CandleFunctions
     {
-
         public QuikService QuikService { get; private set; }
 
         public delegate void CandleHandler(Candle candle);
+
         /// <summary>
         /// Событие получения новой свечи. Для срабатывания необходимо подписаться с помощью метода Subscribe.
         /// </summary>
         public event CandleHandler NewCandle;
+
         internal void RaiseNewCandleEvent(Candle candle)
         {
             if (NewCandle != null)
                 NewCandle(candle);
         }
 
-        public CandleFunctions(int port) { QuikService = QuikService.Create(port); }
-
+        public CandleFunctions(int port)
+        {
+            QuikService = QuikService.Create(port);
+        }
 
         /// <summary>
         /// Функция предназначена для получения информации о свечках по идентификатору (заказ данных для построения графика плагин не осуществляет, поэтому для успешного доступа нужный график должен быть открыт). Возвращаются все доступные свечки.
@@ -33,11 +36,11 @@ namespace QuikSharp
         /// <returns></returns>
         public async Task<List<Candle>> GetAllCandles(string graphicTag)
         {
-            return await GetCandles(graphicTag, 0, 0, 0).ConfigureAwait (false);
+            return await GetCandles(graphicTag, 0, 0, 0).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// Функция предназначена для получения информации о свечках по идентификатору (заказ данных для построения графика плагин не осуществляет, поэтому для успешного доступа нужный график должен быть открыт).   
+        /// Функция предназначена для получения информации о свечках по идентификатору (заказ данных для построения графика плагин не осуществляет, поэтому для успешного доступа нужный график должен быть открыт).
         /// </summary>
         /// <param name="graphicTag">Строковый идентификатор графика или индикатора</param>
         /// <param name="line">Номер линии графика или индикатора. Первая линия имеет номер 0</param>
@@ -47,7 +50,7 @@ namespace QuikSharp
         public async Task<List<Candle>> GetCandles(string graphicTag, int line, int first, int count)
         {
             var message = new Message<string>(graphicTag + "|" + line + "|" + first + "|" + count, "get_candles");
-            Message<List<Candle>> response = await QuikService.Send<Message<List<Candle>>>(message).ConfigureAwait (false);
+            Message<List<Candle>> response = await QuikService.Send<Message<List<Candle>>>(message).ConfigureAwait(false);
             return response.Data;
         }
 
@@ -61,7 +64,7 @@ namespace QuikSharp
         public async Task<List<Candle>> GetAllCandles(string classCode, string securityCode, CandleInterval interval)
         {
             //Параметр count == 0 говорт о том, что возвращаются все доступные свечи
-            return await GetLastCandles(classCode, securityCode, interval, 0).ConfigureAwait (false);
+            return await GetLastCandles(classCode, securityCode, interval, 0).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -75,7 +78,7 @@ namespace QuikSharp
         public async Task<List<Candle>> GetLastCandles(string classCode, string securityCode, CandleInterval interval, int count)
         {
             var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval + "|" + count, "get_candles_from_data_source");
-            Message<List<Candle>> response = await QuikService.Send<Message<List<Candle>>>(message).ConfigureAwait (false);
+            Message<List<Candle>> response = await QuikService.Send<Message<List<Candle>>>(message).ConfigureAwait(false);
             return response.Data;
         }
 
@@ -87,8 +90,8 @@ namespace QuikSharp
         /// <param name="interval">интервал свечей (тайм-фрейм).</param>
         public async Task Subscribe(string classCode, string securityCode, CandleInterval interval)
         {
-            var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "subscribe_to_candles");            
-            await QuikService.Send<Message<string>>(message).ConfigureAwait (false);
+            var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "subscribe_to_candles");
+            await QuikService.Send<Message<string>>(message).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -99,8 +102,8 @@ namespace QuikSharp
         /// <param name="interval">интервал свечей (тайм-фрейм).</param>
         public async Task Unsubscribe(string classCode, string securityCode, CandleInterval interval)
         {
-            var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "unsubscribe_from_candles");            
-            await QuikService.Send<Message<string>>(message).ConfigureAwait (false);     
+            var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "unsubscribe_from_candles");
+            await QuikService.Send<Message<string>>(message).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -112,7 +115,7 @@ namespace QuikSharp
         public async Task<bool> IsSubscribed(string classCode, string securityCode, CandleInterval interval)
         {
             var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "is_subscribed");
-            Message<bool> response = await QuikService.Send<Message<bool>>(message).ConfigureAwait (false);
+            Message<bool> response = await QuikService.Send<Message<bool>>(message).ConfigureAwait(false);
             return response.Data;
         }
     }

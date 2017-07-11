@@ -13,11 +13,13 @@ namespace QuikSharp.DataStructures
         /// </summary>
         [JsonProperty("trdaccid")]
         public string TrdAccId { get; set; }
+
         /// <summary>
         /// Тип лимита
         /// </summary>
         [JsonProperty("limit_type")]
         public string LimitType { get; set; }
+
         // ReSharper restore InconsistentNaming
     }
 }

@@ -1,17 +1,17 @@
 ﻿// Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
 
-using System;
-using System.Threading.Tasks;
 using QuikSharp.DataStructures;
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace QuikSharp {
-
+namespace QuikSharp
+{
     /// <summary>
     /// Функции для обращения к спискам доступных параметров
     /// </summary>
-    public interface IClassFunctions : IQuikService {
-
+    public interface IClassFunctions : IQuikService
+    {
         /// <summary>
         /// Функция предназначена для получения списка кодов классов, переданных с сервера в ходе сеанса связи.
         /// </summary>
@@ -19,17 +19,18 @@ namespace QuikSharp {
         Task<string[]> GetClassesList();
 
         /// <summary>
-        /// Функция предназначена для получения информации о классе. 
+        /// Функция предназначена для получения информации о классе.
         /// </summary>
         /// <param name="classID"></param>
         Task<ClassInfo> GetClassInfo(string classID);
 
         /// <summary>
-        /// Функция предназначена для получения информации по бумаге. 
+        /// Функция предназначена для получения информации по бумаге.
         /// </summary>
         Task<SecurityInfo> GetSecurityInfo(string classCode, string secCode);
+
         /// <summary>
-        /// Функция предназначена для получения информации по бумаге. 
+        /// Функция предназначена для получения информации по бумаге.
         /// </summary>
         Task<SecurityInfo> GetSecurityInfo(ISecurity security);
 
@@ -52,6 +53,7 @@ namespace QuikSharp {
         /// Функция возвращает таблицу с описанием торгового счета для запрашиваемого кода класса.
         /// </summary>
         Task<string> GetTradeAccount(string classCode);
+
         /// <summary>
         /// Функция возвращает таблицу всех счетов в торговой системе.
         /// </summary>
@@ -62,40 +64,48 @@ namespace QuikSharp {
     /// <summary>
     /// Функции для обращения к спискам доступных параметров
     /// </summary>
-    public class ClassFunctions : IClassFunctions {
-        public ClassFunctions(int port) { QuikService = QuikService.Create(port); }
+    public class ClassFunctions : IClassFunctions
+    {
+        public ClassFunctions(int port)
+        {
+            QuikService = QuikService.Create(port);
+        }
 
         public QuikService QuikService { get; private set; }
 
-        
-        public async Task<string[]> GetClassesList() {
+        public async Task<string[]> GetClassesList()
+        {
             var response = await QuikService.Send<Message<string>>(
-                (new Message<string>("", "getClassesList"))).ConfigureAwait (false);
-            return response.Data == null 
+                (new Message<string>("", "getClassesList"))).ConfigureAwait(false);
+            return response.Data == null
                 ? new string[0]
-                : response.Data.TrimEnd(',').Split(new [] {","}, StringSplitOptions.None);
+                : response.Data.TrimEnd(',').Split(new[] { "," }, StringSplitOptions.None);
         }
 
-        public async Task<ClassInfo> GetClassInfo(string classID) {
+        public async Task<ClassInfo> GetClassInfo(string classID)
+        {
             var response = await QuikService.Send<Message<ClassInfo>>(
-                (new Message<string>(classID, "getClassInfo"))).ConfigureAwait (false);
+                (new Message<string>(classID, "getClassInfo"))).ConfigureAwait(false);
             return response.Data;
         }
 
-        public async Task<SecurityInfo> GetSecurityInfo(string classCode, string secCode) {
+        public async Task<SecurityInfo> GetSecurityInfo(string classCode, string secCode)
+        {
             var response = await QuikService.Send<Message<SecurityInfo>>(
-                (new Message<string>(classCode + "|" + secCode, "getSecurityInfo"))).ConfigureAwait (false);
+                (new Message<string>(classCode + "|" + secCode, "getSecurityInfo"))).ConfigureAwait(false);
             return response.Data;
         }
 
-        public async Task<SecurityInfo> GetSecurityInfo(ISecurity security) {
+        public async Task<SecurityInfo> GetSecurityInfo(ISecurity security)
+        {
             return await GetSecurityInfo(security.ClassCode, security.SecCode).ConfigureAwait(false);
         }
 
-        public async Task<string[]> GetClassSecurities(string classID) {
+        public async Task<string[]> GetClassSecurities(string classID)
+        {
             var response = await QuikService.Send<Message<string>>(
-                (new Message<string>(classID, "getClassSecurities"))).ConfigureAwait (false);
-            return response.Data == null 
+                (new Message<string>(classID, "getClassSecurities"))).ConfigureAwait(false);
+            return response.Data == null
                 ? new string[0]
                 : response.Data.TrimEnd(',').Split(new[] { "," }, StringSplitOptions.None);
         }
@@ -120,11 +130,12 @@ namespace QuikSharp {
                 (new Message<string>(classCode, "getTradeAccount"))).ConfigureAwait(false);
             return response.Data;
         }
+
         public async Task<List<TradesAccounts>> GetTradeAccounts()
         {
             var response = await QuikService.Send<Message<List<TradesAccounts>>>(
                 (new Message<string>("", "getTradeAccounts"))).ConfigureAwait(false);
-            return  response.Data;
+            return response.Data;
         }
     }
 }

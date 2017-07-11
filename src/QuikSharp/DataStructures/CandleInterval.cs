@@ -1,5 +1,4 @@
-﻿
-namespace QuikSharp.DataStructures
+﻿namespace QuikSharp.DataStructures
 {
     /// <summary>
     /// Интервал запрашиваемого графика
@@ -45,47 +44,47 @@ namespace QuikSharp.DataStructures
         /// 10 минут
         /// </summary>
         M10 = 10,
-        
+
         /// <summary>
         /// 15 минут
         /// </summary>
         M15 = 15,
-        
+
         /// <summary>
         /// 20 минут
         /// </summary>
         M20 = 20,
-        
+
         /// <summary>
         /// 30 минут
         /// </summary>
         M30 = 30,
-        
+
         /// <summary>
         /// 1 час
         /// </summary>
         H1 = 60,
-        
+
         /// <summary>
         /// 2 часа
         /// </summary>
         H2 = 120,
-        
+
         /// <summary>
         /// 4 часа
         /// </summary>
         H4 = 240,
-        
+
         /// <summary>
         /// 1 день
         /// </summary>
         D1 = 1440,
-        
+
         /// <summary>
         /// 1 неделя
         /// </summary>
         W1 = 10080,
-        
+
         /// <summary>
         /// 1 месяц
         /// </summary>

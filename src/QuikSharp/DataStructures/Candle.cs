@@ -23,7 +23,7 @@ namespace QuikSharp.DataStructures
         /// Максимальная цена сделки
         /// </summary>
         [JsonProperty("high")]
-        public decimal High {get; set; }
+        public decimal High { get; set; }
 
         /// <summary>
         /// Цена открытия
@@ -35,7 +35,7 @@ namespace QuikSharp.DataStructures
         /// Объем последней сделки
         /// </summary>
         [JsonProperty("volume")]
-        public int Volume{ get; set; }
+        public int Volume { get; set; }
 
         /// <summary>
         /// Дата и время
@@ -47,6 +47,7 @@ namespace QuikSharp.DataStructures
         //"doesExist": 1,
 
         #region Candles subscription info
+
         // Информация о принадлежности свечки к одной из подписок. Заполняется в тех свечках, которые приходят в событии NewCandle
 
         /// <summary>
@@ -67,7 +68,7 @@ namespace QuikSharp.DataStructures
         [JsonProperty("interval")]
         public CandleInterval Interval { get; set; }
 
-        #endregion
+        #endregion Candles subscription info
 
         public override string ToString()
         {
