@@ -166,6 +166,8 @@ namespace QuikSharpDemo
                         }
                         textBoxLogsWindow.AppendText("Подписываемся на колбэк 'OnFuturesClientHolding'..." + Environment.NewLine);
                         _quik.Events.OnFuturesClientHolding += OnFuturesClientHoldingDo;
+                        textBoxLogsWindow.AppendText("Подписываемся на колбэк 'OnDepoLimit'..." + Environment.NewLine);
+                        _quik.Events.OnDepoLimit += OnDepoLimitDo;
                     }
                     buttonRun.Enabled = false;
                 }
@@ -188,6 +190,11 @@ namespace QuikSharpDemo
         void OnFuturesClientHoldingDo(FuturesClientHolding futPos)
         {
             if (futPos.secCode == tool.SecurityCode) futuresPosition = futPos;
+        }
+        void OnDepoLimitDo(DepoLimit depLimit)
+        {
+            textBoxLogsWindow.AppendText("Вызвано событие OnDepoLimit (изменение бумажного лимита)..." + Environment.NewLine);
+            textBoxLogsWindow.AppendText("Количество лотов ценых бумаг заблокированных на покупку - " + depLimit.DepoLimitLockedBuy + Environment.NewLine);
         }
 
         private void timerRenewForm_Tick(object sender, EventArgs e)
