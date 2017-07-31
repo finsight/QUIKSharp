@@ -299,7 +299,7 @@ namespace QuikSharp
                             return new Message<string>();
 
                         case EventNames.OnDepoLimit:
-                            return new Message<DepoLimit> { Data = new DepoLimit() };
+                            return new Message<DepoLimitEx> { Data = new DepoLimitEx() };
 
                         case EventNames.OnDepoLimitDelete:
                             return new Message<DepoLimitDelete> { Data = new DepoLimitDelete() };

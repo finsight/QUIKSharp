@@ -546,8 +546,8 @@ namespace QuikSharp
                         break;
 
                     case EventNames.OnDepoLimit:
-                        Trace.Assert(message is Message<DepoLimit>);
-                        var dLimit = ((Message<DepoLimit>)message).Data;
+                        Trace.Assert(message is Message<DepoLimitEx>);
+                        var dLimit = ((Message<DepoLimitEx>)message).Data;
                         Events.OnDepoLimitCall(dLimit);
                         break;
 

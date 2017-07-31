@@ -81,7 +81,7 @@ namespace QuikSharp
     /// Обработчик события OnDepoLimit
     /// </summary>
     /// <param name="dLimit"></param>
-    public delegate void DepoLimitHandler(DepoLimit dLimit);
+    public delegate void DepoLimitHandler(DepoLimitEx dLimit);
 
     /// <summary>
     /// Обработчик события OnDepoLimitDelete
@@ -223,7 +223,7 @@ namespace QuikSharp
         /// </summary>
         public event DepoLimitHandler OnDepoLimit;
 
-        internal void OnDepoLimitCall(DepoLimit dLimit)
+        internal void OnDepoLimitCall(DepoLimitEx dLimit)
         {
             OnDepoLimit?.Invoke(dLimit);
         }
