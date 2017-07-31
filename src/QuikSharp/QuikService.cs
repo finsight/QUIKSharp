@@ -512,9 +512,15 @@ namespace QuikSharp
                 switch (eventName)
                 {
                     case EventNames.OnAccountBalance:
+                        Trace.Assert(message is Message<AccountBalance>);
+                        var accBal = ((Message<AccountBalance>)message).Data;
+                        Events.OnAccountBalanceCall(accBal);
                         break;
 
                     case EventNames.OnAccountPosition:
+                        Trace.Assert(message is Message<AccountPosition>);
+                        var accPos = ((Message<AccountPosition>)message).Data;
+                        Events.OnAccountPositionCall(accPos);
                         break;
 
                     case EventNames.OnAllTrade:
@@ -540,9 +546,15 @@ namespace QuikSharp
                         break;
 
                     case EventNames.OnDepoLimit:
+                        Trace.Assert(message is Message<DepoLimit>);
+                        var dLimit = ((Message<DepoLimit>)message).Data;
+                        Events.OnDepoLimitCall(dLimit);
                         break;
 
                     case EventNames.OnDepoLimitDelete:
+                        Trace.Assert(message is Message<DepoLimitDelete>);
+                        var dLimitDel = ((Message<DepoLimitDelete>)message).Data;
+                        Events.OnDepoLimitDeleteCall(dLimitDel);
                         break;
 
                     case EventNames.OnDisconnected:
@@ -551,6 +563,9 @@ namespace QuikSharp
                         break;
 
                     case EventNames.OnFirm:
+                        Trace.Assert(message is Message<Firm>);
+                        var frm = ((Message<Firm>)message).Data;
+                        Events.OnFirmCall(frm);
                         break;
 
                     case EventNames.OnFuturesClientHolding:
@@ -560,9 +575,15 @@ namespace QuikSharp
                         break;
 
                     case EventNames.OnFuturesLimitChange:
+                        Trace.Assert(message is Message<FuturesLimits>);
+                        var futLimit = ((Message<FuturesLimits>)message).Data;
+                        Events.OnFuturesLimitChangeCall(futLimit);
                         break;
 
                     case EventNames.OnFuturesLimitDelete:
+                        Trace.Assert(message is Message<FuturesLimitDelete>);
+                        var limDel = ((Message<FuturesLimitDelete>)message).Data;
+                        Events.OnFuturesLimitDeleteCall(limDel);
                         break;
 
                     case EventNames.OnInit:
@@ -571,9 +592,15 @@ namespace QuikSharp
                         break;
 
                     case EventNames.OnMoneyLimit:
+                        Trace.Assert(message is Message<MoneyLimit>);
+                        var mLimit = ((Message<MoneyLimit>)message).Data;
+                        Events.OnMoneyLimitCall(mLimit);
                         break;
 
                     case EventNames.OnMoneyLimitDelete:
+                        Trace.Assert(message is Message<MoneyLimitDelete>);
+                        var mLimitDel = ((Message<MoneyLimitDelete>)message).Data;
+                        Events.OnMoneyLimitDeleteCall(mLimitDel);
                         break;
 
                     case EventNames.OnNegDeal:
