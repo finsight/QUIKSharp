@@ -317,7 +317,7 @@ namespace QuikSharp
                             return new Message<FuturesLimitDelete> { Data = new FuturesLimitDelete() };
 
                         case EventNames.OnMoneyLimit:
-                            return new Message<MoneyLimit> { Data = new MoneyLimit() };
+                            return new Message<MoneyLimitEx> { Data = new MoneyLimitEx() };
 
                         case EventNames.OnMoneyLimitDelete:
                             return new Message<MoneyLimitDelete> { Data = new MoneyLimitDelete() };

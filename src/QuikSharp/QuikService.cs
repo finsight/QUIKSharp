@@ -592,8 +592,8 @@ namespace QuikSharp
                         break;
 
                     case EventNames.OnMoneyLimit:
-                        Trace.Assert(message is Message<MoneyLimit>);
-                        var mLimit = ((Message<MoneyLimit>)message).Data;
+                        Trace.Assert(message is Message<MoneyLimitEx>);
+                        var mLimit = ((Message<MoneyLimitEx>)message).Data;
                         Events.OnMoneyLimitCall(mLimit);
                         break;
 

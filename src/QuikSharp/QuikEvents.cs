@@ -117,7 +117,7 @@ namespace QuikSharp
     /// Обработчик события OnMoneyLimit
     /// </summary>
     /// <param name="mLimit"></param>
-    public delegate void MoneyLimitHandler(MoneyLimit mLimit);
+    public delegate void MoneyLimitHandler(MoneyLimitEx mLimit);
 
     /// <summary>
     /// Обработчик события OnMoneyLimitDelete
@@ -293,7 +293,7 @@ namespace QuikSharp
         /// </summary>
         public event MoneyLimitHandler OnMoneyLimit;
 
-        internal void OnMoneyLimitCall(MoneyLimit mLimit)
+        internal void OnMoneyLimitCall(MoneyLimitEx mLimit)
         {
             OnMoneyLimit?.Invoke(mLimit);
         }
