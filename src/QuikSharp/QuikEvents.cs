@@ -243,7 +243,7 @@ namespace QuikSharp {
 
 
         /// <summary>
-        /// Функция вызывается терминалом QUIK при получении заявки или изменении параметров текущей заявки.
+        /// Функция вызывается терминалом QUIK при получении заявки или изменении параметров существующей заявки.
         /// </summary>
         public event OrderHandler OnOrder;
         internal void OnOrderCall(Order order) {
