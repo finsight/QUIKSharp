@@ -127,6 +127,20 @@ namespace QuikSharp.DataStructures
         [JsonProperty("total_varmargin ")]
         public double totalVarMargin { get; set; }
 
+        /// <summary>
+        /// Актуальный статус торговой сессии. Возможные значения: 
+        /// «0» – не определено; 
+        /// «1» – основная сессия; 
+        /// «2» – начался промклиринг; 
+        /// «3» – завершился промклиринг; 
+        /// «4» – начался основной клиринг; 
+        /// «5» – основной клиринг: новая сессия назначена; 
+        /// «6» – завершился основной клиринг; 
+        /// «7» – завершилась вечерняя сессия
+        /// </summary>
+        [JsonProperty("session_status ")]
+        public int SessionStatus { get; set; }
+
         public long LuaTimeStamp { get; set; }
     }
 }

@@ -233,12 +233,12 @@ namespace QuikSharp.DataStructures
     public enum Condition
     {
         /// <summary>
-        /// «4» – <=
+        /// «4» – меньше или равно
         /// </summary>
         LessOrEqual,
 
         /// <summary>
-        /// «5» – >=
+        /// «5» – больше или равно
         /// </summary>
         MoreOrEqual
     }

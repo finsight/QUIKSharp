@@ -116,6 +116,18 @@ namespace QuikSharp.DataStructures
         [JsonProperty("open_interest")]
         public double OpenInterest { get; set; }
 
+        /// <summary>
+        /// Код биржи в торговой системе
+        /// </summary>
+        [JsonProperty("exchange_code")]
+        public string ExchangeCode { get; set; }
+
+        /// <summary>
+        /// Площадка исполнения
+        /// </summary>
+        [JsonProperty("exec_market")]
+        public string ExecMarket { get; set; }
+
         public long LuaTimeStamp { get; set; }
     }
 }
