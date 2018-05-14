@@ -21,6 +21,22 @@ namespace QuikSharp.DataStructures
         [JsonProperty("order_num")]
         public long OrderNum { get; set; }
 
+        private int _flags;
+
+        /// <summary>
+        /// Набор битовых флагов.
+        /// </summary>
+        [JsonProperty("flags")]
+        public int Flags
+        {
+            get { return _flags; }
+            set
+            {
+                _flags = value;
+                ParseFlags(value);
+            }
+        }
+
         /// <summary>
         /// Идентификатор транзакции.
         /// </summary>
@@ -125,22 +141,6 @@ namespace QuikSharp.DataStructures
         [JsonProperty("linkedorder")]
         public long LinkedOrder { get; set; }
 
-        private int _flags;
-
-        /// <summary>
-        /// Набор битовых флагов.
-        /// </summary>
-        [JsonProperty("flags")]
-        public int Flags
-        {
-            get { return _flags; }
-            set
-            {
-                _flags = value;
-                ParseFlags(value);
-            }
-        }
-
         /// <summary>
         /// Заявка на продажу, иначе – на покупку.
         /// </summary>
@@ -233,12 +233,12 @@ namespace QuikSharp.DataStructures
     public enum Condition
     {
         /// <summary>
-        /// «4» – <=
+        /// «4» – меньше или равно
         /// </summary>
         LessOrEqual,
 
         /// <summary>
-        /// «5» – >=
+        /// «5» – больше или равно
         /// </summary>
         MoreOrEqual
     }

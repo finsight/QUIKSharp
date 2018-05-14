@@ -89,6 +89,24 @@ namespace QuikSharp.DataStructures
         [JsonProperty("limit_kind")]
         public int LimitKind { get; set; }
 
+        /// <summary>
+        /// Средневзвешенная цена приобретения позиции
+        /// </summary>
+        [JsonProperty("wa_position_price")]
+        public double WaPositionPrice { get; set; }
+
+        /// <summary>
+        /// Гарантийное обеспечение заявок
+        /// </summary>
+        [JsonProperty("orders_collateral")]
+        public double OrdersCollateral { get; set; }
+
+        /// <summary>
+        /// Гарантийное обеспечение позиций
+        /// </summary>
+        [JsonProperty("positions_collateral")]
+        public double PositionsCollateral { get; set; }
+
         // ReSharper restore InconsistentNaming
     }
 }

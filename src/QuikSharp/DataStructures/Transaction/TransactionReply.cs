@@ -122,6 +122,40 @@ namespace QuikSharp.DataStructures.Transaction
         [JsonProperty("sec_code")]
         public string SecCode { get; set; }
 
+        /// <summary>
+        /// Биржевой номер заявки
+        /// </summary>
+        [JsonProperty("exchange_code")]
+        public string ExchangeCode { get; set; }
+
+        /// <summary>
+        /// Числовой код ошибки. Значение равно «0», если транзакция выполнена успешно
+        /// </summary>
+        [JsonProperty("error_code")]
+        public int ErrorCode { get; set; }
+
+        /// <summary>
+        /// Источник сообщения. Возможные значения: 
+        /// «1» – Торговая система; 
+        /// «2» – Сервер QUIK; 
+        /// «3» – Библиотека расчёта лимитов; 
+        /// «4» – Шлюз торговой системы
+        /// </summary>
+        [JsonProperty("error_source")]
+        public int ErrorSource { get; set; }
+
+        /// <summary>
+        /// Номер первой заявки, которая выставлялась при автоматической замене кода клиента. Используется, если на сервере QUIK настроена замена кода клиента для кросс-сделки
+        /// </summary>
+        [JsonProperty("first_ordernum")]
+        public long FirstOrderNum { get; set; }
+
+        /// <summary>
+        /// Дата и время получения шлюзом ответа на транзакцию
+        /// </summary>
+        [JsonProperty("gate_reply_time")]
+        public QuikDateTime GateReplyTime { get; set; }
+
         [JsonProperty("lua_timestamp")]
         public long LuaTimeStamp { get; internal set; }
     }

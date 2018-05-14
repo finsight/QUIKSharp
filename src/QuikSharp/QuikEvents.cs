@@ -313,7 +313,7 @@ namespace QuikSharp
         public event EventHandler OnNegTrade;
 
         /// <summary>
-        /// Функция вызывается терминалом QUIK при получении сделки.
+        /// Функция вызывается терминалом QUIK при получении заявки или изменении параметров существующей заявки.
         /// </summary>
         public event OrderHandler OnOrder;
 

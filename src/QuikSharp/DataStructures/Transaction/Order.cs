@@ -247,6 +247,129 @@ namespace QuikSharp.DataStructures.Transaction
         public int PassiveOnlyOrder { get; set; }
 
         /// <summary>
+        /// Видимое количество. Параметр айсберг-заявок, для обычных заявок выводится значение: «0»
+        /// </summary>
+        [JsonProperty("visible")]
+        public int Visible { get; set; }
+
+        /// <summary>
+        /// Средняя цена приобретения. Актуально, когда заявка выполнилась частями
+        /// </summary>
+        [JsonProperty("awg_price")]
+        public decimal AwgPrice { get; set; }
+
+        /// <summary>
+        /// Время окончания срока действия заявки в формате "ЧЧММСС DESIGNTIMESP=19552". Для GTT-заявок, используется вместе со сроком истечения заявки (Expiry)
+        /// </summary>
+        [JsonProperty("expiry_time")]
+        public int ExpiryTime { get; set; }
+
+        /// <summary>
+        /// Номер ревизии заявки. Используется, если заявка была заменена с сохранением номера
+        /// </summary>
+        [JsonProperty("revision_number")]
+        public int RevisionNumber { get; set; }
+
+        /// <summary>
+        /// Валюта цены заявки
+        /// </summary>
+        [JsonProperty("price_currency")]
+        public string PriceCurrency { get; set; }
+
+        /// <summary>
+        /// Расширенный статус заявки. Возможные значения: 
+        /// «0» (по умолчанию) – не определено; 
+        /// «1» – заявка активна; 
+        /// «2» – заявка частично исполнена; 
+        /// «3» – заявка исполнена; 
+        /// «4» – заявка отменена; 
+        /// «5» – заявка заменена; 
+        /// «6» – заявка в состоянии отмены; 
+        /// «7» – заявка отвергнута; 
+        /// «8» – приостановлено исполнение заявки; 
+        /// «9» – заявка в состоянии регистрации; 
+        /// «10» – заявка снята по времени действия; 
+        /// «11» – заявка в состоянии замены
+        /// </summary>
+        [JsonProperty("ext_order_status")]
+        public int ExtOrderStatus { get; set; }
+
+        /// <summary>
+        /// UID пользователя-менеджера, подтвердившего заявку при работе в режиме с подтверждениями
+        /// </summary>
+        [JsonProperty("accepted_uid")]
+        public long AcceptedUID { get; set; }
+
+        /// <summary>
+        /// Исполненный объем заявки в валюте цены для частично или полностью исполненных заявок
+        /// </summary>
+        [JsonProperty("filled_value")]
+        public int FilledValue { get; set; }
+
+        /// <summary>
+        /// Внешняя ссылка, используется для обратной связи с внешними системами
+        /// </summary>
+        [JsonProperty("extref")]
+        public string ExtRef { get; set; }
+
+        /// <summary>
+        /// Валюта расчетов по заявке
+        /// </summary>
+        [JsonProperty("settle_currency")]
+        public string SettleCurrency { get; set; }
+
+        /// <summary>
+        /// UID пользователя, от имени которого выставлена заявка
+        /// </summary>
+        [JsonProperty("on_behalf_of_uid")]
+        public long OnBehalfOfUID { get; set; }
+
+        /// <summary>
+        /// Квалификатор клиента, от имени которого выставлена заявка. Возможные значения: 
+        /// «0» – не определено; 
+        /// «1» – Natural Person; 
+        /// «3» – Legal Entity
+        /// </summary>
+        [JsonProperty("client_qualifier")]
+        public int ClientQualifier { get; set; }
+
+        /// <summary>
+        /// Краткий идентификатор клиента, от имени которого выставлена заявка
+        /// </summary>
+        [JsonProperty("client_short_code")]
+        public long ClientShortCode { get; set; }
+
+        /// <summary>
+        /// Квалификатор принявшего решение о выставлении заявки. Возможные значения: 
+        /// «0» – не определено; 
+        /// «1» – Natural Person; 
+        /// «2» – Algorithm
+        /// </summary>
+        [JsonProperty("investment_decision_maker_qualifier")]
+        public long InvestmentDecisionMakerQualifier { get; set; }
+
+        /// <summary>
+        /// Краткий идентификатор принявшего решение о выставлении заявки
+        /// </summary>
+        [JsonProperty("investment_decision_maker_short_code")]
+        public long InvestmentDecisionMakerShortCode { get; set; }
+
+        /// <summary>
+        /// Квалификатор трейдера, исполнившего заявку. Возможные значения: 
+        /// «0» – не определено; 
+        /// «1» – Natural Person; 
+        /// «2» – Algorithm
+        /// </summary>
+        [JsonProperty("executing_trader_qualifier")]
+        public long ExecutingTraderQualifier { get; set; }
+
+        /// <summary>
+        /// Краткий идентификатор трейдера, исполнившего заявку
+        /// </summary>
+        [JsonProperty("executing_trader_short_code")]
+        public long ExecutingTraderShortCode { get; set; }
+
+        /// <summary>
         /// Тип операции - Buy или Sell
         /// </summary>
         [JsonIgnore]
