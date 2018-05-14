@@ -66,7 +66,7 @@ namespace QuikSharpDemo
             listBoxCommands.Items.Add("Получить таблицы денежных лимитов");
         }
 
-        private void buttonStart_Click(object sender, EventArgs e)
+        private void ButtonStart_Click(object sender, EventArgs e)
         {
             try
             {
@@ -104,7 +104,7 @@ namespace QuikSharpDemo
                 }
             }
         }
-        private void buttonRun_Click(object sender, EventArgs e)
+        private void ButtonRun_Click(object sender, EventArgs e)
         {
             Run();
         }
@@ -197,7 +197,7 @@ namespace QuikSharpDemo
             textBoxLogsWindow.AppendText("Заблокировано на покупку количества лотов - " + depLimit.LockedBuy + Environment.NewLine);
         }
 
-        private void timerRenewForm_Tick(object sender, EventArgs e)
+        private void TimerRenewForm_Tick(object sender, EventArgs e)
         {
             textBoxLastPrice.Text = Convert.ToString(tool.LastPrice);
             textBoxQty.Text = Convert.ToString(GetPositionT2(_quik, tool, clientCode));
@@ -208,7 +208,7 @@ namespace QuikSharpDemo
             }
             if (futuresPosition != null) textBoxVarMargin.Text = futuresPosition.varMargin.ToString(); 
         }
-        private void listBoxCommands_SelectedIndexChanged(object sender, EventArgs e)
+        private void ListBoxCommands_SelectedIndexChanged(object sender, EventArgs e)
         {
             string selectedCommand = listBoxCommands.SelectedItem.ToString();
             switch (selectedCommand)
@@ -245,7 +245,7 @@ namespace QuikSharpDemo
                     break;
             }
         }
-        private void buttonCommandRun_Click(object sender, EventArgs e)
+        private void ButtonCommandRun_Click(object sender, EventArgs e)
         {
             string selectedCommand = listBoxCommands.SelectedItem.ToString();
             switch (selectedCommand)

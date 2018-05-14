@@ -78,7 +78,7 @@
             this.buttonStart.TabIndex = 0;
             this.buttonStart.Text = "CONNECT";
             this.buttonStart.UseVisualStyleBackColor = true;
-            this.buttonStart.Click += new System.EventHandler(this.buttonStart_Click);
+            this.buttonStart.Click += new System.EventHandler(this.ButtonStart_Click);
             // 
             // textBoxLogsWindow
             // 
@@ -98,7 +98,7 @@
             this.listBoxCommands.Name = "listBoxCommands";
             this.listBoxCommands.Size = new System.Drawing.Size(378, 95);
             this.listBoxCommands.TabIndex = 2;
-            this.listBoxCommands.SelectedIndexChanged += new System.EventHandler(this.listBoxCommands_SelectedIndexChanged);
+            this.listBoxCommands.SelectedIndexChanged += new System.EventHandler(this.ListBoxCommands_SelectedIndexChanged);
             // 
             // textBoxDescription
             // 
@@ -118,7 +118,7 @@
             this.buttonCommandRun.TabIndex = 4;
             this.buttonCommandRun.Text = "Выполнить команду";
             this.buttonCommandRun.UseVisualStyleBackColor = true;
-            this.buttonCommandRun.Click += new System.EventHandler(this.buttonCommandRun_Click);
+            this.buttonCommandRun.Click += new System.EventHandler(this.ButtonCommandRun_Click);
             // 
             // label1
             // 
@@ -213,7 +213,7 @@
             this.buttonRun.TabIndex = 0;
             this.buttonRun.Text = "RUN";
             this.buttonRun.UseVisualStyleBackColor = true;
-            this.buttonRun.Click += new System.EventHandler(this.buttonRun_Click);
+            this.buttonRun.Click += new System.EventHandler(this.ButtonRun_Click);
             // 
             // label6
             // 
@@ -337,7 +337,7 @@
             // timerRenewForm
             // 
             this.timerRenewForm.Interval = 500;
-            this.timerRenewForm.Tick += new System.EventHandler(this.timerRenewForm_Tick);
+            this.timerRenewForm.Tick += new System.EventHandler(this.TimerRenewForm_Tick);
             // 
             // label13
             // 
