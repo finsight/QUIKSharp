@@ -84,6 +84,7 @@ namespace QuikSharp
         /// <param name="paramName"></param>
         /// <returns></returns>
         Task<ParamTable> GetParamEx(string classCode, string secCode, string paramName);
+        Task<ParamTable> GetParamEx(string classCode, string secCode, ParamNames paramName);
 
         /// <summary>
         /// функция для получения таблицы сделок по заданному инструменту
@@ -101,7 +102,7 @@ namespace QuikSharp
         /// <summary>
         /// функция для получения таблицы сделок номеру заявки
         /// </summary>
-        /// <param name="order_num"></param>
+        /// <param name="orderNum"></param>
         /// <returns></returns>
         Task<List<Trade>> GetTrades_by_OdrerNumber(long orderNum);
 
@@ -254,6 +255,12 @@ namespace QuikSharp
         /// <param name="paramName"></param>
         /// <returns></returns>
         public async Task<ParamTable> GetParamEx(string classCode, string secCode, string paramName)
+        {
+            var response = await QuikService.Send<Message<ParamTable>>(
+                    (new Message<string>(classCode + "|" + secCode + "|" + paramName, "getParamEx"))).ConfigureAwait(false);
+            return response.Data;
+        }
+        public async Task<ParamTable> GetParamEx(string classCode, string secCode, ParamNames paramName)
         {
             var response = await QuikService.Send<Message<ParamTable>>(
                     (new Message<string>(classCode + "|" + secCode + "|" + paramName, "getParamEx"))).ConfigureAwait(false);
