@@ -216,7 +216,7 @@ function qsfunctions.getSecurityClass(msg)
     local spl = split(msg.data, "|")
     local classes_list, sec_code = spl[1], spl[2]
 
-	for class_code in string.gmatch(classes_list,"%a+") do
+	for class_code in string.gmatch(classes_list,"([^,]+)") do
 		if getSecurityInfo(class_code,sec_code) then
 			msg.data = class_code
 			return msg
