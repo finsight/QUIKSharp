@@ -80,6 +80,6 @@ namespace QuikSharp.DataStructures
         /// Минимальный шаг цены
         /// </summary>
         [JsonProperty("min_price_step")]
-        public string MinPriceStep { get; set; }
+        public double MinPriceStep { get; set; }
     }
 }
