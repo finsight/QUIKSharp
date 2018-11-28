@@ -75,5 +75,11 @@ namespace QuikSharp.DataStructures
         /// </summary>
         [JsonProperty("isin_code")]
         public string IsinCode { get; set; }
+
+        /// <summary>
+        /// Минимальный шаг цены
+        /// </summary>
+        [JsonProperty("min_price_step")]
+        public string MinPriceStep { get; set; }
     }
 }
