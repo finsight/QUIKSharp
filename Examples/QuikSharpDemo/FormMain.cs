@@ -33,6 +33,7 @@ namespace QuikSharpDemo
         List<Candle> toolCandles;
         List<Order> listOrders;
         List<Trade> listTrades;
+        List<SecurityInfo> listSecurityInfo;
         List<DepoLimitEx> listDepoLimits;
         List<PortfolioInfoEx> listPortfolio;
         List<MoneyLimit> listMoneyLimits;
@@ -58,6 +59,7 @@ namespace QuikSharpDemo
             listBoxCommands.Items.Add("Выставить заявку (без сделки)");
             listBoxCommands.Items.Add("Выставить заявку (c выполнением!!!)");
             listBoxCommands.Items.Add("Удалить активную заявку");
+            listBoxCommands.Items.Add("Получить информацию по бумаге");
             listBoxCommands.Items.Add("Получить таблицу лимитов по бумаге");
             listBoxCommands.Items.Add("Получить таблицу лимитов по всем бумагам");
             listBoxCommands.Items.Add("Получить таблицу заявок");
@@ -228,6 +230,9 @@ namespace QuikSharpDemo
                 case "Получить таблицу лимитов по бумаге":
                     textBoxDescription.Text = "Получить и отобразить таблицу лимитов по бумагам. quik.Trading.GetDepoLimits(securityCode)";
                     break;
+                case "Получить информацию по бумаге":
+                    textBoxDescription.Text = "Получить и отобразить таблицу c информацией по бумаге. quik.Class.GetSecurityInfo(classCode, securityCode)";
+                    break;
                 case "Получить таблицу лимитов по всем бумагам":
                     textBoxDescription.Text = "Получить и отобразить таблицу лимитов по бумагам. quik.Trading.GetDepoLimits()";
                     break;
@@ -247,6 +252,10 @@ namespace QuikSharpDemo
         }
         private void ButtonCommandRun_Click(object sender, EventArgs e)
         {
+            CallCommand();
+        }
+        private async Task CallCommand()
+        {
             string selectedCommand = listBoxCommands.SelectedItem.ToString();
             switch (selectedCommand)
             {
@@ -260,7 +269,7 @@ namespace QuikSharpDemo
                         if (isSubscribedToolCandles)
                         {
                             textBoxLogsWindow.AppendText("Получаем исторические данные..." + Environment.NewLine);
-                            toolCandles = _quik.Candles.GetAllCandles(tool.ClassCode, tool.SecurityCode, CandleInterval.H1).Result;
+                            toolCandles = await _quik.Candles.GetAllCandles(tool.ClassCode, tool.SecurityCode, CandleInterval.H1).ConfigureAwait(false);
                             textBoxLogsWindow.AppendText("Выводим исторические данные в таблицу..." + Environment.NewLine);
                             toolCandlesTable = new FormOutputTable(toolCandles);
                             toolCandlesTable.Show();
@@ -287,7 +296,7 @@ namespace QuikSharpDemo
                             textBoxLogsWindow.AppendText("Заявка выставлена. ID транзакции - " + transactionID + Environment.NewLine);
                             try
                             {
-                                listOrders = _quik.Orders.GetOrders().Result;
+                                listOrders = await _quik.Orders.GetOrders().ConfigureAwait(false);
                                 foreach (Order _order in listOrders)
                                 {
                                     if (_order.TransID == transactionID && _order.ClassCode == tool.ClassCode && _order.SecCode == tool.SecurityCode)
@@ -325,7 +334,7 @@ namespace QuikSharpDemo
                             Thread.Sleep(500);
                             try
                             {
-                                listOrders = _quik.Orders.GetOrders().Result;
+                                listOrders = await _quik.Orders.GetOrders().ConfigureAwait(false);
                                 foreach (Order _order in listOrders)
                                 {
                                     if (_order.TransID == transactionID && _order.ClassCode == tool.ClassCode && _order.SecCode == tool.SecurityCode)
@@ -362,7 +371,7 @@ namespace QuikSharpDemo
                         {
                             textBoxLogsWindow.AppendText("Удаляем заявку на покупку с номером - " + order.OrderNum + " ..." + Environment.NewLine);
                         }
-                        long x = _quik.Orders.KillOrder(order).Result;
+                        long x = await _quik.Orders.KillOrder(order).ConfigureAwait(false);
                         textBoxLogsWindow.AppendText("Результат - " + x + " ..." + Environment.NewLine);
                         textBoxOrderNumber.Text = "";
                     }
@@ -371,11 +380,34 @@ namespace QuikSharpDemo
                         textBoxLogsWindow.AppendText("Ошибка удаления заявки." + Environment.NewLine);
                     }
                     break;
+                case "Получить информацию по бумаге":
+                    try
+                    {
+                        textBoxLogsWindow.AppendText("Получаем таблицу информации..." + Environment.NewLine);
+                        listSecurityInfo = new List<SecurityInfo>();
+                        listSecurityInfo.Add(await _quik.Class.GetSecurityInfo(tool.ClassCode, tool.SecurityCode).ConfigureAwait(false));
+
+                        if (listDepoLimits.Count > 0)
+                        {
+                            textBoxLogsWindow.AppendText("Выводим данные в таблицу..." + Environment.NewLine);
+                            toolCandlesTable = new FormOutputTable(listSecurityInfo);
+                            toolCandlesTable.Show();
+                        }
+                        else
+                        {
+                            textBoxLogsWindow.AppendText("Информация по бумаге '" + tool.Name + "' отсутствует." + Environment.NewLine);
+                        }
+                    }
+                    catch
+                    {
+                        textBoxLogsWindow.AppendText("Ошибка получения лимитов." + Environment.NewLine);
+                    }
+                    break;
                 case "Получить таблицу лимитов по бумаге":
                     try
                     {
                         textBoxLogsWindow.AppendText("Получаем таблицу лимитов..." + Environment.NewLine);
-                        listDepoLimits = _quik.Trading.GetDepoLimits(tool.SecurityCode).Result;
+                        listDepoLimits = await _quik.Trading.GetDepoLimits(tool.SecurityCode).ConfigureAwait(false);
 
                         if (listDepoLimits.Count > 0)
                         {
@@ -397,7 +429,7 @@ namespace QuikSharpDemo
                     try
                     {
                         textBoxLogsWindow.AppendText("Получаем таблицу лимитов..." + Environment.NewLine);
-                        listDepoLimits = _quik.Trading.GetDepoLimits().Result;
+                        listDepoLimits = await _quik.Trading.GetDepoLimits().ConfigureAwait(false);
 
                         if (listDepoLimits.Count > 0)
                         {
@@ -415,7 +447,7 @@ namespace QuikSharpDemo
                     try
                     {
                         textBoxLogsWindow.AppendText("Получаем таблицу заявок..." + Environment.NewLine);
-                        listOrders = _quik.Orders.GetOrders().Result;
+                        listOrders = await _quik.Orders.GetOrders().ConfigureAwait(false);
 
                         if (listOrders.Count > 0)
                         {
@@ -433,7 +465,7 @@ namespace QuikSharpDemo
                     try
                     {
                         textBoxLogsWindow.AppendText("Получаем таблицу сделок..." + Environment.NewLine);
-                        listTrades = _quik.Trading.GetTrades().Result;
+                        listTrades = await _quik.Trading.GetTrades().ConfigureAwait(false);
 
                         if (listTrades.Count > 0)
                         {
@@ -452,8 +484,8 @@ namespace QuikSharpDemo
                     {
                         textBoxLogsWindow.AppendText("Получаем таблицу `Клиентский портфель`..." + Environment.NewLine);
                         listPortfolio = new List<PortfolioInfoEx>();
-                        if (classCode == "SPBFUT") listPortfolio.Add(_quik.Trading.GetPortfolioInfoEx(tool.FirmID, tool.AccountID, 0).Result);
-                        else listPortfolio.Add(_quik.Trading.GetPortfolioInfoEx(tool.FirmID, clientCode, 2).Result);
+                        if (classCode == "SPBFUT") listPortfolio.Add(await _quik.Trading.GetPortfolioInfoEx(tool.FirmID, tool.AccountID, 0).ConfigureAwait(false));
+                        else listPortfolio.Add(await _quik.Trading.GetPortfolioInfoEx(tool.FirmID, clientCode, 2).ConfigureAwait(false));
 
                         if (listPortfolio.Count > 0)
                         {
@@ -476,7 +508,7 @@ namespace QuikSharpDemo
                     {
                         textBoxLogsWindow.AppendText("Получаем таблицу денежных лимитов..." + Environment.NewLine);
                         listMoneyLimits = new List<MoneyLimit>();
-                        listMoneyLimits.Add(_quik.Trading.GetMoney(clientCode, tool.FirmID, "EQTV", "SUR").Result);
+                        listMoneyLimits.Add(await _quik.Trading.GetMoney(clientCode, tool.FirmID, "EQTV", "SUR").ConfigureAwait(false));
 
                         if (listMoneyLimits.Count > 0)
                         {
@@ -487,7 +519,7 @@ namespace QuikSharpDemo
 
                         textBoxLogsWindow.AppendText("Получаем расширение таблицы денежных лимитов..." + Environment.NewLine);
                         listMoneyLimitsEx = new List<MoneyLimitEx>();
-                        listMoneyLimitsEx.Add(_quik.Trading.GetMoneyEx(tool.FirmID, clientCode, "EQTV", "SUR", 2).Result);
+                        listMoneyLimitsEx.Add(await _quik.Trading.GetMoneyEx(tool.FirmID, clientCode, "EQTV", "SUR", 2).ConfigureAwait(false));
 
                         if (listMoneyLimitsEx.Count > 0)
                         {
