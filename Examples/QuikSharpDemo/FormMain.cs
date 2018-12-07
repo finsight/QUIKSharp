@@ -254,7 +254,7 @@ namespace QuikSharpDemo
         {
             CallCommand();
         }
-        private async Task CallCommand()
+        private void CallCommand()
         {
             string selectedCommand = listBoxCommands.SelectedItem.ToString();
             switch (selectedCommand)
@@ -269,7 +269,7 @@ namespace QuikSharpDemo
                         if (isSubscribedToolCandles)
                         {
                             textBoxLogsWindow.AppendText("Получаем исторические данные..." + Environment.NewLine);
-                            toolCandles = await _quik.Candles.GetAllCandles(tool.ClassCode, tool.SecurityCode, CandleInterval.H1).ConfigureAwait(false);
+                            toolCandles = _quik.Candles.GetAllCandles(tool.ClassCode, tool.SecurityCode, CandleInterval.H1).Result;
                             textBoxLogsWindow.AppendText("Выводим исторические данные в таблицу..." + Environment.NewLine);
                             toolCandlesTable = new FormOutputTable(toolCandles);
                             toolCandlesTable.Show();
@@ -296,7 +296,7 @@ namespace QuikSharpDemo
                             textBoxLogsWindow.AppendText("Заявка выставлена. ID транзакции - " + transactionID + Environment.NewLine);
                             try
                             {
-                                listOrders = await _quik.Orders.GetOrders().ConfigureAwait(false);
+                                listOrders = _quik.Orders.GetOrders().Result;
                                 foreach (Order _order in listOrders)
                                 {
                                     if (_order.TransID == transactionID && _order.ClassCode == tool.ClassCode && _order.SecCode == tool.SecurityCode)
@@ -334,7 +334,7 @@ namespace QuikSharpDemo
                             Thread.Sleep(500);
                             try
                             {
-                                listOrders = await _quik.Orders.GetOrders().ConfigureAwait(false);
+                                listOrders = _quik.Orders.GetOrders().Result;
                                 foreach (Order _order in listOrders)
                                 {
                                     if (_order.TransID == transactionID && _order.ClassCode == tool.ClassCode && _order.SecCode == tool.SecurityCode)
@@ -371,7 +371,7 @@ namespace QuikSharpDemo
                         {
                             textBoxLogsWindow.AppendText("Удаляем заявку на покупку с номером - " + order.OrderNum + " ..." + Environment.NewLine);
                         }
-                        long x = await _quik.Orders.KillOrder(order).ConfigureAwait(false);
+                        long x = _quik.Orders.KillOrder(order).Result;
                         textBoxLogsWindow.AppendText("Результат - " + x + " ..." + Environment.NewLine);
                         textBoxOrderNumber.Text = "";
                     }
@@ -385,7 +385,7 @@ namespace QuikSharpDemo
                     {
                         textBoxLogsWindow.AppendText("Получаем таблицу информации..." + Environment.NewLine);
                         listSecurityInfo = new List<SecurityInfo>();
-                        listSecurityInfo.Add(await _quik.Class.GetSecurityInfo(tool.ClassCode, tool.SecurityCode).ConfigureAwait(false));
+                        listSecurityInfo.Add(_quik.Class.GetSecurityInfo(tool.ClassCode, tool.SecurityCode).Result);
 
                         if (listDepoLimits.Count > 0)
                         {
@@ -407,7 +407,7 @@ namespace QuikSharpDemo
                     try
                     {
                         textBoxLogsWindow.AppendText("Получаем таблицу лимитов..." + Environment.NewLine);
-                        listDepoLimits = await _quik.Trading.GetDepoLimits(tool.SecurityCode).ConfigureAwait(false);
+                        listDepoLimits = _quik.Trading.GetDepoLimits(tool.SecurityCode).Result;
 
                         if (listDepoLimits.Count > 0)
                         {
@@ -429,7 +429,7 @@ namespace QuikSharpDemo
                     try
                     {
                         textBoxLogsWindow.AppendText("Получаем таблицу лимитов..." + Environment.NewLine);
-                        listDepoLimits = await _quik.Trading.GetDepoLimits().ConfigureAwait(false);
+                        listDepoLimits = _quik.Trading.GetDepoLimits().Result;
 
                         if (listDepoLimits.Count > 0)
                         {
@@ -447,7 +447,7 @@ namespace QuikSharpDemo
                     try
                     {
                         textBoxLogsWindow.AppendText("Получаем таблицу заявок..." + Environment.NewLine);
-                        listOrders = await _quik.Orders.GetOrders().ConfigureAwait(false);
+                        listOrders = _quik.Orders.GetOrders().Result;
 
                         if (listOrders.Count > 0)
                         {
@@ -465,7 +465,7 @@ namespace QuikSharpDemo
                     try
                     {
                         textBoxLogsWindow.AppendText("Получаем таблицу сделок..." + Environment.NewLine);
-                        listTrades = await _quik.Trading.GetTrades().ConfigureAwait(false);
+                        listTrades = _quik.Trading.GetTrades().Result;
 
                         if (listTrades.Count > 0)
                         {
@@ -484,8 +484,8 @@ namespace QuikSharpDemo
                     {
                         textBoxLogsWindow.AppendText("Получаем таблицу `Клиентский портфель`..." + Environment.NewLine);
                         listPortfolio = new List<PortfolioInfoEx>();
-                        if (classCode == "SPBFUT") listPortfolio.Add(await _quik.Trading.GetPortfolioInfoEx(tool.FirmID, tool.AccountID, 0).ConfigureAwait(false));
-                        else listPortfolio.Add(await _quik.Trading.GetPortfolioInfoEx(tool.FirmID, clientCode, 2).ConfigureAwait(false));
+                        if (classCode == "SPBFUT") listPortfolio.Add(_quik.Trading.GetPortfolioInfoEx(tool.FirmID, tool.AccountID, 0).Result);
+                        else listPortfolio.Add(_quik.Trading.GetPortfolioInfoEx(tool.FirmID, clientCode, 2).Result);
 
                         if (listPortfolio.Count > 0)
                         {
@@ -508,7 +508,7 @@ namespace QuikSharpDemo
                     {
                         textBoxLogsWindow.AppendText("Получаем таблицу денежных лимитов..." + Environment.NewLine);
                         listMoneyLimits = new List<MoneyLimit>();
-                        listMoneyLimits.Add(await _quik.Trading.GetMoney(clientCode, tool.FirmID, "EQTV", "SUR").ConfigureAwait(false));
+                        listMoneyLimits.Add(_quik.Trading.GetMoney(clientCode, tool.FirmID, "EQTV", "SUR").Result);
 
                         if (listMoneyLimits.Count > 0)
                         {
@@ -519,7 +519,7 @@ namespace QuikSharpDemo
 
                         textBoxLogsWindow.AppendText("Получаем расширение таблицы денежных лимитов..." + Environment.NewLine);
                         listMoneyLimitsEx = new List<MoneyLimitEx>();
-                        listMoneyLimitsEx.Add(await _quik.Trading.GetMoneyEx(tool.FirmID, clientCode, "EQTV", "SUR", 2).ConfigureAwait(false));
+                        listMoneyLimitsEx.Add(_quik.Trading.GetMoneyEx(tool.FirmID, clientCode, "EQTV", "SUR", 2).Result);
 
                         if (listMoneyLimitsEx.Count > 0)
                         {
