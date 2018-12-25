@@ -8,6 +8,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -123,19 +124,31 @@ namespace QuikSharp
         {
             if (!IsStarted) return;
             IsStarted = false;
-            _cts.Cancel();
+	        _cts.Cancel();
             _cancelRegistration.Dispose();
 
-            // here all tasks must exit gracefully
-            var isCleanExit = Task.WaitAll(new[] { _requestTask, _responseTask, _callbackTask }, 5000);
-            Trace.Assert(isCleanExit, "All tasks must finish gracefully after cancellation token is cancelled!");
-        }
+	        try
+	        {
+		        // here all tasks must exit gracefully
+		        var isCleanExit = Task.WaitAll(new[] { _requestTask, _responseTask, _callbackTask }, 5000);
+		        Trace.Assert(isCleanExit, "All tasks must finish gracefully after cancellation token is cancelled!");
+	        }
+	        finally
+	        {
+				// cancel responses to release waiters
+		        foreach (var responseKey in Responses.Keys.ToList())
+		        {
+			        if (Responses.TryRemove(responseKey, out var responseInfo))
+				        responseInfo.Key.TrySetCanceled();
+		        }
+			}
+		}
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <exception cref="ApplicationException">Response message id does not exists in results dictionary</exception>
-        public void Start()
+		/// <summary>
+		///
+		/// </summary>
+		/// <exception cref="ApplicationException">Response message id does not exists in results dictionary</exception>
+		public void Start()
         {
             if (IsStarted) return;
             IsStarted = true;
