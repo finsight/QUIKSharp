@@ -268,8 +268,8 @@ namespace QuikSharp
                             while (!_cts.IsCancellationRequested)
                             {
                                 var readLineTask = reader.ReadLineAsync();
-                                var lineOrCancelledTask = await Task.WhenAny(readLineTask, _cancelledTcs.Task).ConfigureAwait(false);
-                                if (lineOrCancelledTask == _cancelledTcs.Task)
+                                await Task.WhenAny(readLineTask, _cancelledTcs.Task).ConfigureAwait(false);
+                                if (_cts.IsCancellationRequested)
                                 {
                                     break;
                                 }
@@ -373,10 +373,10 @@ namespace QuikSharp
                             while (!_cts.IsCancellationRequested)
                             {
                                 var readLineTask = reader.ReadLineAsync();
-                                var lineOrCancelledTask = await Task.WhenAny(readLineTask, _cancelledTcs.Task).ConfigureAwait(false);
-                                if (lineOrCancelledTask == _cancelledTcs.Task)
+	                            await Task.WhenAny(readLineTask, _cancelledTcs.Task).ConfigureAwait(false);
+	                            if (_cts.IsCancellationRequested)
                                 {
-                                    break;
+									break;
                                 }
                                 Trace.Assert(readLineTask.Status == TaskStatus.RanToCompletion);
                                 var response = readLineTask.Result;
