@@ -85,7 +85,7 @@ namespace QuikSharp
         /// <param name="secCode"></param>
         /// <param name="paramName"></param>
         /// <returns></returns>
-        Task<ParamTable> GetParamEx(string classCode, string secCode, string paramName);
+        Task<ParamTable> GetParamEx(string classCode, string secCode, string paramName, int timeout = Timeout.Infinite);
         Task<ParamTable> GetParamEx(string classCode, string secCode, ParamNames paramName, int timeout = Timeout.Infinite);
 
         /// <summary>
@@ -256,7 +256,7 @@ namespace QuikSharp
         /// <param name="secCode"></param>
         /// <param name="paramName"></param>
         /// <returns></returns>
-        public async Task<ParamTable> GetParamEx(string classCode, string secCode, string paramName)
+        public async Task<ParamTable> GetParamEx(string classCode, string secCode, string paramName, int timeout = Timeout.Infinite)
         {
             var response = await QuikService.Send<Message<ParamTable>>(
                     (new Message<string>(classCode + "|" + secCode + "|" + paramName, "getParamEx"))).ConfigureAwait(false);
