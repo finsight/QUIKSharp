@@ -455,14 +455,14 @@ namespace QuikSharp
 
             #endregion Totally untested code or handling manual transactions
 
-            var tr = QuikService.Storage.Get<Transaction>(trade.Comment);
+            var tr = QuikService.Storage.Get<Transaction>(correlationId);
             if (tr != null)
             {
                 lock (tr)
                 {
                     tr.OnTradeCall(trade);
                     // persist transaction with added trade
-                    QuikService.Storage.Set(trade.Comment, tr);
+                    QuikService.Storage.Set(correlationId, tr);
                 }
             }
 

@@ -229,3 +229,5 @@ docs/content/release-notes.md
 !src/QuikSharp/lua/clibs/*.dll
 !src/QuikSharp/lua/clibs/socket/*.dll
 >>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
+
+\.vs/
