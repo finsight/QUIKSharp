@@ -1,6 +1,7 @@
 ﻿// Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace QuikSharp
@@ -20,7 +21,7 @@ namespace QuikSharp
         /// Функция предназначена для определения состояния подключения клиентского места к серверу. Возвращает «1», если клиентское место подключено и «0», если не подключено.
         /// </summary>
         /// <returns></returns>
-        Task<bool> IsConnected();
+        Task<bool> IsConnected(int timeout = Timeout.Infinite);
 
         /// <summary>
         /// Функция возвращает путь, по которому находится запускаемый скрипт, без завершающего обратного слэша («\»). Например, C:\QuikFront\Scripts
@@ -100,14 +101,14 @@ namespace QuikSharp
             return response.Data;
         }
 
-        public async Task<bool> IsConnected()
+        public async Task<bool> IsConnected(int timeout = Timeout.Infinite)
         {
             var response = await QuikService.Send<Message<string>>(
-                (new Message<string>("", "isConnected"))).ConfigureAwait(false);
+                (new Message<string>("", "isConnected")), timeout).ConfigureAwait(false);
             return response.Data == "1";
         }
 
-        public async Task<string> GetScriptPath()
+		public async Task<string> GetScriptPath()
         {
             var response = await QuikService.Send<Message<string>>(
                 (new Message<string>("", "getScriptPath"))).ConfigureAwait(false);

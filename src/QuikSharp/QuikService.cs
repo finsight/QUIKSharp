@@ -721,9 +721,18 @@ namespace QuikSharp
             return SessionId + "." + id;
         }
 
+	    /// <summary>
+	    /// Default timeout to use for send operations if no specific timeout supplied.
+	    /// </summary>
+	    public TimeSpan DefaultSendTimeout { get; set; } = Timeout.InfiniteTimeSpan;
+
         internal async Task<TResponse> Send<TResponse>(IMessage request, int timeout = 0)
             where TResponse : class, IMessage, new()
         {
+			// use DefaultSendTimeout for default calls
+			if (timeout == 0)
+		        timeout = (int) DefaultSendTimeout.TotalMilliseconds;
+
             var task = _connectedMre.WaitAsync();
             if (timeout > 0)
             {

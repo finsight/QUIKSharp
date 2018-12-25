@@ -48,6 +48,15 @@ namespace QuikSharp
 		    return QuikService.IsServiceConnected();
 	    }
 
+	    /// <summary>
+	    /// Default timeout to use for send operations if no specific timeout supplied.
+	    /// </summary>
+	    public TimeSpan DefaultSendTimeout
+	    {
+		    get => QuikService.DefaultSendTimeout;
+		    set => QuikService.DefaultSendTimeout = value;
+	    }
+
 		private QuikService QuikService { get; set; }
 
         /// <summary>
