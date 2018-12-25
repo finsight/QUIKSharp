@@ -739,20 +739,33 @@ namespace QuikSharp
             }
             if (timeout > 0)
             {
-                var ct = new CancellationTokenSource(timeout);
+                var ct = new CancellationTokenSource();
                 ctRegistration = ct.Token.Register(() =>
                 {
                     tcs.TrySetException(new TimeoutException("Send operation timed out"));
                     KeyValuePair<TaskCompletionSource<IMessage>, Type> temp;
                     Responses.TryRemove(request.Id.Value, out temp);
                 }, false);
-            }
-            Responses[request.Id.Value] = kvp;
+
+	            ct.CancelAfter(timeout);
+			}
+
+	        Responses[request.Id.Value] = kvp;
             // add to queue after responses dictionary
             EnvelopeQueue.Add(request);
-            var response = await tcs.Task.ConfigureAwait(false);
-            if (timeout > 0) { ctRegistration.Dispose(); }
-            return (response as TResponse);
+	        IMessage response;
+
+	        try
+			{
+		        response = await tcs.Task.ConfigureAwait(false);
+	        }
+	        finally 
+	        {
+		        if (timeout > 0)
+			        ctRegistration.Dispose();
+	        }
+
+			return (response as TResponse);
         }
     }
 }
