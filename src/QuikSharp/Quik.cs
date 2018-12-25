@@ -43,7 +43,12 @@ namespace QuikSharp
             QuikService.Stop();
         }
 
-        private QuikService QuikService { get; set; }
+	    public bool IsServiceConnected()
+	    {
+		    return QuikService.IsServiceConnected();
+	    }
+
+		private QuikService QuikService { get; set; }
 
         /// <summary>
         /// Quik current data is all in local time. This property allows to convert it to UTC datetime

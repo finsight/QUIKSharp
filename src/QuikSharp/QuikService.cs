@@ -431,7 +431,7 @@ namespace QuikSharp
             TaskScheduler.Default);
         }
 
-        private bool IsServiceConnected()
+        public bool IsServiceConnected()
         {
             return (_responseClient != null && _responseClient.Connected && _responseClient.Client.IsConnectedNow())
                    && (_callbackClient != null && _callbackClient.Connected && _callbackClient.Client.IsConnectedNow());
