@@ -396,18 +396,11 @@ namespace QuikSharp
                         catch (IOException e)
                         {
                             Trace.TraceError(e.ToString());
-                            if (!IsServiceConnected())
-                            {
-                                // handled exception will cause reconnect in the outer loop
-                                _connectedMre.Reset();
-                                this.Events.OnDisconnectedFromQuikCall();
-                            }
-                            else
-                            {
-                                throw;
-                            }
+	                        // handled exception will cause reconnect in the outer loop
+	                        _connectedMre.Reset();
+	                        this.Events.OnDisconnectedFromQuikCall();
                         }
-                    }
+					}
                 }
                 catch (OperationCanceledException)
                 {
