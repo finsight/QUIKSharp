@@ -8,6 +8,12 @@ namespace QuikSharp.DataStructures
     public class Candle
     {
         /// <summary>
+        /// Индекс свечи
+        /// </summary>
+        [JsonProperty("index")]
+        public long index{ get; set; }
+
+        /// <summary>
         /// Минимальная цена сделки
         /// </summary>
         [JsonProperty("low")]
@@ -72,7 +78,7 @@ namespace QuikSharp.DataStructures
 
         public override string ToString()
         {
-            return $"Open: {Open}, Close: {Close}, High: {High}, Low: {Low}, Volume: {Volume}";
+            return $"Open: {Open}, Close: {Close}, High: {High}, Low: {Low}, Volume: {Volume}, Index: {index}";
         }
     }
 }

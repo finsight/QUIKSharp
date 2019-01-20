@@ -660,6 +660,12 @@ namespace QuikSharp
                         Candles.RaiseNewCandleEvent(candle);
                         break;
 
+                    case EventNames.UpdateCandle:
+                        Trace.Assert(message is Message<Candle>);
+                        var updatedCandle = ((Message<Candle>)message).Data;
+                        Candles.RaiseUpdateCandleEvent(updatedCandle);
+                        break;
+
                     default:
                         throw new ArgumentOutOfRangeException();
                 }

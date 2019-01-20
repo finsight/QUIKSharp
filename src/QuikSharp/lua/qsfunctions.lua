@@ -5,7 +5,7 @@ package.cpath = package.cpath .. ";" .. '.\\clibs\\?.dll'
 
 local qsfunctions = {}
 
-function qsfunctions.dispatch_and_process(msg)
+function qsfunctions.dispatch_and_process(msg)	
     if qsfunctions[msg.cmd] then
         -- dispatch a command simply by a table lookup
         -- in qsfunctions method names must match commands
@@ -619,7 +619,7 @@ function qsfunctions.get_candles_from_data_source(msg)
 end
 
 function create_data_source(msg)
-	local class, sec, interval = get_candles_param(msg)
+	local class, sec, interval, only_new = get_candles_param(msg)
 	local ds, error_descr = CreateDataSource(class, sec, interval)
 	local is_error = false
 	if(error_descr ~= nil) then
@@ -631,7 +631,7 @@ function create_data_source(msg)
 		msg.lua_error = "Can't create data source for " .. class .. ", " .. sec .. ", " .. tostring(interval)
 		is_error = true
 	end
-	return ds, is_error
+	return ds, is_error, only_new
 end
 
 function fetch_candle(data_source, index)
@@ -651,7 +651,7 @@ last_indexes = {}
 
 --- Подписаться на получения свечей по заданному инструмент и интервалу
 function qsfunctions.subscribe_to_candles(msg)
-	local ds, is_error = create_data_source(msg)
+	local ds, is_error, only_new = create_data_source(msg)
 	if not is_error then
 		local class, sec, interval = get_candles_param(msg)
 		local key = get_key(class, sec, interval)
@@ -659,15 +659,15 @@ function qsfunctions.subscribe_to_candles(msg)
 		last_indexes[key] = ds:Size()
 		ds:SetUpdateCallback(
 			function(index)
-				data_source_callback(index, class, sec, interval)
+				data_source_callback(index, class, sec, interval, only_new)
 			end)
 	end
 	return msg
 end
 
-function data_source_callback(index, class, sec, interval)
+function data_source_callback(index, class, sec, interval, only_new)	
 	local key = get_key(class, sec, interval)
-	if index ~= last_indexes[key] then
+	if (index ~= last_indexes[key] and only_new) or only_new == false then
 		last_indexes[key] = index
 
 		local candle = fetch_candle(data_sources[key], index - 1)
@@ -677,7 +677,12 @@ function data_source_callback(index, class, sec, interval)
 
 		local msg = {}
         msg.t = timemsec()
-        msg.cmd = "NewCandle"
+		if only_new then
+			msg.cmd = "NewCandle"
+		else
+		    msg.cmd = "UpdateCandle"
+		end
+
         msg.data = candle
         sendCallback(msg)
 	end
@@ -710,7 +715,11 @@ end
 --- Возвращает из msg информацию о инструменте на который подписываемся и интервале
 function get_candles_param(msg)
 	local spl = split(msg.data, "|")
-	return spl[1], spl[2], tonumber(spl[3])
+	local only_new = true
+	if tonumber(spl[4]) == 0 then
+		only_new = false
+	end
+	return spl[1], spl[2], tonumber(spl[3]), only_new
 end
 
 --- Возвращает уникальный ключ для инструмента на который подписываемся и инетрвала

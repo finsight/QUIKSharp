@@ -349,6 +349,9 @@ namespace QuikSharp
                         case EventNames.NewCandle:
                             return new Message<Candle> { Data = new Candle() };
 
+                        case EventNames.UpdateCandle:
+                            return new Message<Candle> { Data = new Candle() };
+
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
