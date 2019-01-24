@@ -65,7 +65,7 @@ namespace CandleSubscribe
             {
                 Invoke(new Action(() =>
                 {
-                    LogTextBox.AppendText("update_candle\n");
+                    LogTextBox.AppendText("update_candle" + " / " + candle.index + "\n");
                 }));
             }
             else

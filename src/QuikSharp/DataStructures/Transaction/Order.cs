@@ -381,6 +381,13 @@ namespace QuikSharp.DataStructures.Transaction
         [JsonIgnore]
         public State State { get; private set; }
 
+        /// <summary>
+        /// Тип заявки L - лимитная, M - рыночная
+        /// </summary>        
+        /// [JsonIgnore]
+        public OrderType Type { get; set; }
+
+
         private OrderTradeFlags _flags;
 
         /// <summary>
@@ -409,4 +416,22 @@ namespace QuikSharp.DataStructures.Transaction
                     : State.Completed);
         }
     }
+
+    /// <summary>
+    /// Тип заявки, необязательный параметр.
+    /// </summary>
+    [JsonConverter(typeof(SafeEnumConverter<OrderType>))]
+    public enum OrderType
+    {
+        /// <summary>
+        /// «L» - лимитированная (по умолчанию),
+        /// </summary>
+        L = 0,
+
+        /// <summary>
+        /// «M» – рыночная
+        /// </summary>
+        M
+    }
+
 }

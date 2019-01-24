@@ -674,7 +674,8 @@ function data_source_callback(index, class, sec, interval, only_new)
 		candle.sec = sec
 		candle.class = class
 		candle.interval = interval
-
+		candle.index = index
+		
 		local msg = {}
         msg.t = timemsec()
 		if only_new then
