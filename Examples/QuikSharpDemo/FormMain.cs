@@ -23,7 +23,7 @@ namespace QuikSharpDemo
         bool isServerConnected = false;
         bool isSubscribedToolOrderBook = false;
         bool isSubscribedToolCandles = false;
-        string secCode = "GZM8";
+        string secCode = "GZH9";
         string classCode = "";
         string clientCode;
         decimal bid;
@@ -56,8 +56,9 @@ namespace QuikSharpDemo
             timerRenewForm.Enabled = false;
             listBoxCommands.Enabled = false;
             listBoxCommands.Items.Add("Получить исторические данные");
-            listBoxCommands.Items.Add("Выставить заявку (без сделки)");
-            listBoxCommands.Items.Add("Выставить заявку (c выполнением!!!)");
+            listBoxCommands.Items.Add("Выставить лимитрированную заявку (без сделки)");
+            listBoxCommands.Items.Add("Выставить лимитрированную заявку (c выполнением!!!)");
+            listBoxCommands.Items.Add("Выставить рыночную заявку (c выполнением!!!)");
             listBoxCommands.Items.Add("Удалить активную заявку");
             listBoxCommands.Items.Add("Получить информацию по бумаге");
             listBoxCommands.Items.Add("Получить таблицу лимитов по бумаге");
@@ -218,11 +219,14 @@ namespace QuikSharpDemo
                 case "Получить исторические данные":
                     textBoxDescription.Text = "Получить и отобразить исторические данные котировок по заданному инструменту. Тайм-фрейм = 1 Hour";
                     break;
-                case "Выставить заявку (без сделки)":
+                case "Выставить лимитрированную заявку (без сделки)":
                     textBoxDescription.Text = "Будет выставлена заявку на покупку 1-го лота заданного инструмента, по цене на 5% ниже текущей цены (вероятность срабатывания такой заявки достаточно низкая, чтобы успеть ее отменить)";
                     break;
-                case "Выставить заявку (c выполнением!!!)":
+                case "Выставить лимитрированную заявку (c выполнением!!!)":
                     textBoxDescription.Text = "Будет выставлена заявку на покупку 1-го лота заданного инструмента, по цене на 5 шагов цены выше текущей цены (вероятность срабатывания такой заявки достаточно высокая!!!)";
+                    break;
+                case "Выставить рыночную заявку (c выполнением!!!)":
+                    textBoxDescription.Text = "Будет выставлена заявку на покупку 1-го лота заданного инструмента, \"по рынку\" (Заявка будет автоматически исполнена по текущим доступным ценам!!!)";
                     break;
                 case "Выставить заявку (Удалить активную заявку)":
                     textBoxDescription.Text = "Если предварительно была выставлена заявка, заявка имеет статус 'Активна' и ее номер отображается в форме, то эта заявка будет удалена/отменена";
@@ -254,7 +258,7 @@ namespace QuikSharpDemo
         {
             CallCommand();
         }
-        private void CallCommand()
+        private async Task CallCommand()
         {
             string selectedCommand = listBoxCommands.SelectedItem.ToString();
             switch (selectedCommand)
@@ -279,55 +283,33 @@ namespace QuikSharpDemo
                             textBoxLogsWindow.AppendText("Неудачная попытка подписки на исторические данные." + Environment.NewLine);
                         }
                     }
-                    catch
-                    {
-                        textBoxLogsWindow.AppendText("Ошибка получения исторических данных." + Environment.NewLine);
-                    }
+                    catch { textBoxLogsWindow.AppendText("Ошибка получения исторических данных." + Environment.NewLine); }
                     break;
-                case "Выставить заявку (без сделки)":
+                case "Выставить лимитрированную заявку (без сделки)":
                     try
                     {
                         decimal priceInOrder = Math.Round(tool.LastPrice - tool.LastPrice / 20, tool.PriceAccuracy);
                         textBoxLogsWindow.AppendText("Выставляем заявку на покупку, по цене:" + priceInOrder + " ..." + Environment.NewLine);
-                        long transactionID = NewOrder(_quik, tool, Operation.Buy, priceInOrder, 1);
-                        if (transactionID > 0)
+                        order = await _quik.Orders.SendLimitOrder(tool.ClassCode, tool.SecurityCode, tool.AccountID, Operation.Buy, priceInOrder, 1).ConfigureAwait(false);
+                        if (order.OrderNum > 0)
                         {
-                            Thread.Sleep(500);
-                            textBoxLogsWindow.AppendText("Заявка выставлена. ID транзакции - " + transactionID + Environment.NewLine);
-                            try
-                            {
-                                listOrders = _quik.Orders.GetOrders().Result;
-                                foreach (Order _order in listOrders)
-                                {
-                                    if (_order.TransID == transactionID && _order.ClassCode == tool.ClassCode && _order.SecCode == tool.SecurityCode)
-                                    {
-                                        textBoxLogsWindow.AppendText("Заявка выставлена. Номер заявки - " + _order.OrderNum + Environment.NewLine);
-                                        textBoxOrderNumber.Text = _order.OrderNum.ToString();
-                                        order = _order;
-                                    }
-                                }
-                            }
-                            catch (Exception er)
-                            {
-                                textBoxLogsWindow.AppendText("Ошибка получения номера заявки. Error: " + er.Message + Environment.NewLine);
-                            }
+                            textBoxLogsWindow.AppendText("Заявка выставлена. ID транзакции - " + order.TransID + Environment.NewLine);
+                            textBoxLogsWindow.AppendText("Заявка выставлена. Номер заявки - " + order.OrderNum + Environment.NewLine);
+                            textBoxOrderNumber.Text = order.OrderNum.ToString();
                         }
                         else
                         {
-                            textBoxLogsWindow.AppendText("Неудачная попытка выставления заявки." + Environment.NewLine);
+                            textBoxLogsWindow.AppendText("Неудачная попытка размещения заявки. Error: " + order.RejectReason + Environment.NewLine);
                         }
                     }
-                    catch
-                    {
-                        textBoxLogsWindow.AppendText("Ошибка выставления заявки." + Environment.NewLine);
-                    }
+                    catch (Exception er) { textBoxLogsWindow.AppendText("Ошибка процедуры размещения заявки. Error: " + er.Message + Environment.NewLine); }
                     break;
-                case "Выставить заявку (c выполнением!!!)":
+                case "Выставить лимитрированную заявку (c выполнением!!!)":
                     try
                     {
                         decimal priceInOrder = Math.Round(tool.LastPrice + tool.Step * 5, tool.PriceAccuracy);
                         textBoxLogsWindow.AppendText("Выставляем заявку на покупку, по цене:" + priceInOrder + " ..." + Environment.NewLine);
-                        long transactionID = NewOrder(_quik, tool, Operation.Buy, priceInOrder, 1);
+                        long transactionID = (await _quik.Orders.SendLimitOrder(tool.ClassCode, tool.SecurityCode, tool.AccountID, Operation.Buy, priceInOrder, 1).ConfigureAwait(false)).TransID;
                         if (transactionID > 0)
                         {
                             textBoxLogsWindow.AppendText("Заявка выставлена. ID транзакции - " + transactionID + Environment.NewLine);
@@ -349,20 +331,47 @@ namespace QuikSharpDemo
                                     }
                                 }
                             }
-                            catch
-                            {
-                                textBoxLogsWindow.AppendText("Ошибка получения номера заявки." + Environment.NewLine);
-                            }
+                            catch { textBoxLogsWindow.AppendText("Ошибка получения номера заявки." + Environment.NewLine); }
                         }
                         else
                         {
                             textBoxLogsWindow.AppendText("Неудачная попытка выставления заявки." + Environment.NewLine);
                         }
                     }
-                    catch
+                    catch { textBoxLogsWindow.AppendText("Ошибка выставления заявки." + Environment.NewLine); }
+                    break;
+                case "Выставить рыночную заявку (c выполнением!!!)":
+                    try
                     {
-                        textBoxLogsWindow.AppendText("Ошибка выставления заявки." + Environment.NewLine);
+                        decimal priceInOrder = Math.Round(tool.LastPrice + tool.Step * 5, tool.PriceAccuracy);
+                        textBoxLogsWindow.AppendText("Выставляем рыночную заявку на покупку..." + Environment.NewLine);
+                        long transactionID = (await _quik.Orders.SendMarketOrder(tool.ClassCode, tool.SecurityCode, tool.AccountID, Operation.Buy, 1).ConfigureAwait(false)).TransID;
+                        if (transactionID > 0)
+                        {
+                            textBoxLogsWindow.AppendText("Заявка выставлена. ID транзакции - " + transactionID + Environment.NewLine);
+                            Thread.Sleep(500);
+                            try
+                            {
+                                listOrders = _quik.Orders.GetOrders().Result;
+                                foreach (Order _order in listOrders)
+                                {
+                                    if (_order.TransID == transactionID && _order.ClassCode == tool.ClassCode && _order.SecCode == tool.SecurityCode)
+                                    {
+                                        textBoxLogsWindow.AppendText("Заявка выставлена. Номер заявки - " + _order.OrderNum + Environment.NewLine);
+                                        textBoxOrderNumber.Text = _order.OrderNum.ToString();
+                                        order = _order;
+                                    }
+                                    else
+                                    {
+                                        textBoxOrderNumber.Text = "---";
+                                    }
+                                }
+                            }
+                            catch { textBoxLogsWindow.AppendText("Ошибка получения номера заявки." + Environment.NewLine); }
+                        }
+                        else { textBoxLogsWindow.AppendText("Неудачная попытка выставления заявки." + Environment.NewLine); }
                     }
+                    catch { textBoxLogsWindow.AppendText("Ошибка выставления заявки." + Environment.NewLine); }
                     break;
                 case "Удалить активную заявку":
                     try
@@ -375,10 +384,7 @@ namespace QuikSharpDemo
                         textBoxLogsWindow.AppendText("Результат - " + x + " ..." + Environment.NewLine);
                         textBoxOrderNumber.Text = "";
                     }
-                    catch
-                    {
-                        textBoxLogsWindow.AppendText("Ошибка удаления заявки." + Environment.NewLine);
-                    }
+                    catch { textBoxLogsWindow.AppendText("Ошибка удаления заявки." + Environment.NewLine); }
                     break;
                 case "Получить информацию по бумаге":
                     try
@@ -398,10 +404,7 @@ namespace QuikSharpDemo
                             textBoxLogsWindow.AppendText("Информация по бумаге '" + tool.Name + "' отсутствует." + Environment.NewLine);
                         }
                     }
-                    catch
-                    {
-                        textBoxLogsWindow.AppendText("Ошибка получения лимитов." + Environment.NewLine);
-                    }
+                    catch { textBoxLogsWindow.AppendText("Ошибка получения лимитов." + Environment.NewLine); }
                     break;
                 case "Получить таблицу лимитов по бумаге":
                     try
@@ -420,10 +423,7 @@ namespace QuikSharpDemo
                             textBoxLogsWindow.AppendText("Бумага '" + tool.Name + "' в таблице лимитов отсутствует." + Environment.NewLine);
                         }
                     }
-                    catch
-                    {
-                        textBoxLogsWindow.AppendText("Ошибка получения лимитов." + Environment.NewLine);
-                    }
+                    catch { textBoxLogsWindow.AppendText("Ошибка получения лимитов." + Environment.NewLine); }
                     break;
                 case "Получить таблицу лимитов по всем бумагам":
                     try
@@ -438,10 +438,7 @@ namespace QuikSharpDemo
                             toolCandlesTable.Show();
                         }
                     }
-                    catch
-                    {
-                        textBoxLogsWindow.AppendText("Ошибка получения лимитов." + Environment.NewLine);
-                    }
+                    catch { textBoxLogsWindow.AppendText("Ошибка получения лимитов." + Environment.NewLine); }
                     break;
                 case "Получить таблицу заявок":
                     try
@@ -456,10 +453,7 @@ namespace QuikSharpDemo
                             toolCandlesTable.Show();
                         }
                     }
-                    catch
-                    {
-                        textBoxLogsWindow.AppendText("Ошибка получения заявок." + Environment.NewLine);
-                    }
+                    catch { textBoxLogsWindow.AppendText("Ошибка получения заявок." + Environment.NewLine); }
                     break;
                 case "Получить таблицу сделок":
                     try
@@ -474,10 +468,7 @@ namespace QuikSharpDemo
                             toolCandlesTable.Show();
                         }
                     }
-                    catch
-                    {
-                        textBoxLogsWindow.AppendText("Ошибка получения сделок." + Environment.NewLine);
-                    }
+                    catch { textBoxLogsWindow.AppendText("Ошибка получения сделок." + Environment.NewLine); }
                     break;
                 case "Получить таблицу `Клиентский портфель`":
                     try
@@ -498,10 +489,7 @@ namespace QuikSharpDemo
                             textBoxLogsWindow.AppendText("В таблице `Клиентский портфель` отсутствуют записи." + Environment.NewLine);
                         }
                     }
-                    catch
-                    {
-                        textBoxLogsWindow.AppendText("Ошибка получения клиентского портфеля." + Environment.NewLine);
-                    }
+                    catch { textBoxLogsWindow.AppendText("Ошибка получения клиентского портфеля." + Environment.NewLine); }
                     break;
                 case "Получить таблицы денежных лимитов":
                     try
@@ -528,10 +516,7 @@ namespace QuikSharpDemo
                             toolCandlesTable.Show();
                         }
                     }
-                    catch
-                    {
-                        textBoxLogsWindow.AppendText("Ошибка получения денежных лимитов." + Environment.NewLine);
-                    }
+                    catch { textBoxLogsWindow.AppendText("Ошибка получения денежных лимитов." + Environment.NewLine); }
                     break;
             }
         }
@@ -563,25 +548,25 @@ namespace QuikSharpDemo
             }
             return qty;
         }
-        long NewOrder(Quik _quik, Tool _tool, Operation operation, decimal price, int qty)
-        {
-            long res = 0;
-            Order order_new = new Order();
-            order_new.ClassCode = _tool.ClassCode;
-            order_new.SecCode = _tool.SecurityCode;
-            order_new.Operation = operation;
-            order_new.Price = price;
-            order_new.Quantity = qty;
-            order_new.Account = _tool.AccountID;
-            try
-            {
-                res = _quik.Orders.CreateOrder(order_new).Result;
-            }
-            catch
-            {
-                Console.WriteLine("Неудачная попытка отправки заявки");
-            }
-            return res;
-        }
+        //long NewOrder(Quik _quik, Tool _tool, Operation operation, decimal price, int qty)
+        //{
+        //    long res = 0;
+        //    Order order_new = new Order();
+        //    order_new.ClassCode = _tool.ClassCode;
+        //    order_new.SecCode = _tool.SecurityCode;
+        //    order_new.Operation = operation;
+        //    order_new.Price = price;
+        //    order_new.Quantity = qty;
+        //    order_new.Account = _tool.AccountID;
+        //    try
+        //    {
+        //        res = _quik.Orders.CreateOrder(order_new).Result;
+        //    }
+        //    catch
+        //    {
+        //        Console.WriteLine("Неудачная попытка отправки заявки");
+        //    }
+        //    return res;
+        //}
     }
 }

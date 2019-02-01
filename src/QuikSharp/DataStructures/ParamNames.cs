@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace QuikSharp.DataStructures
+﻿namespace QuikSharp.DataStructures
 {
+    /// <summary>
+    /// Наименования параметров для функции GetParamEx
+    /// </summary>
     public enum ParamNames
     {
         /// <summary>
@@ -363,10 +360,6 @@ namespace QuikSharp.DataStructures
         /// <summary>
         /// Тип цены фьючерса
         /// </summary>
-        ISPERCENT,
-
-
-
-
+        ISPERCENT
     }
 }
