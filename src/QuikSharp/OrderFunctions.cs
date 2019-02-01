@@ -3,6 +3,7 @@ using QuikSharp.DataStructures.Transaction;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
+using System;
 
 namespace QuikSharp
 {
@@ -31,13 +32,13 @@ namespace QuikSharp
         {
             Transaction newOrderTransaction = new Transaction
             {
-                ACTION = TransactionAction.NEW_ORDER,
-                ACCOUNT = order.Account,
-                CLASSCODE = order.ClassCode,
-                SECCODE = order.SecCode,
-                QUANTITY = order.Quantity,
-                OPERATION = order.Operation == Operation.Buy ? TransactionOperation.B : TransactionOperation.S,
-                PRICE = order.Price
+                ACTION      = TransactionAction.NEW_ORDER,
+                ACCOUNT     = order.Account,
+                CLASSCODE   = order.ClassCode,
+                SECCODE     = order.SecCode,
+                QUANTITY    = order.Quantity,
+                OPERATION   = order.Operation == Operation.Buy ? TransactionOperation.B : TransactionOperation.S,
+                PRICE       = order.Price
             };
             return await Quik.Trading.SendTransaction(newOrderTransaction).ConfigureAwait(false);
         }
@@ -53,7 +54,7 @@ namespace QuikSharp
         /// <param name="qty">Количество (в лотах)</param>
         public async Task<Order> SendLimitOrder(string classCode, string securityCode, string accountID, Operation operation, decimal price, int qty)
         {
-            return await SendOrder(classCode, securityCode, accountID, operation, price, qty, TransactionType.L);
+            return await SendOrder(classCode, securityCode, accountID, operation, price, qty, TransactionType.L).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -66,7 +67,7 @@ namespace QuikSharp
         /// <param name="qty">Количество (в лотах)</param>
         public async Task<Order> SendMarketOrder(string classCode, string securityCode, string accountID, Operation operation, int qty)
         {
-            return await SendOrder(classCode, securityCode, accountID, operation, 0, qty, TransactionType.M);
+            return await SendOrder(classCode, securityCode, accountID, operation, 0, qty, TransactionType.M).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -83,23 +84,23 @@ namespace QuikSharp
         {
             long res = 0;
             bool set = false;
-            TransactionReply lastTransactionReply = new TransactionReply();
-            Quik.Events.OnTransReply += (TransactionReply transReply) => { if (transReply.TransID == res) lastTransactionReply = transReply; };
             Order order_result = new Order();
+            Transaction newOrderTransaction = new Transaction
+            {
+                ACTION      = TransactionAction.NEW_ORDER,
+                ACCOUNT     = accountID,
+                CLASSCODE   = classCode,
+                SECCODE     = securityCode,
+                QUANTITY    = qty,
+                OPERATION   = operation == Operation.Buy ? TransactionOperation.B : TransactionOperation.S,
+                PRICE       = price,
+                TYPE        = orderType
+            };
             try
             {
-                Transaction newOrderTransaction = new Transaction
-                {
-                    ACTION      = TransactionAction.NEW_ORDER,
-                    ACCOUNT     = accountID,
-                    CLASSCODE   = classCode,
-                    SECCODE     = securityCode,
-                    QUANTITY    = qty,
-                    OPERATION   = operation == Operation.Buy ? TransactionOperation.B : TransactionOperation.S,
-                    PRICE       = price,
-                    TYPE        = orderType
-                };
                 res = await Quik.Trading.SendTransaction(newOrderTransaction).ConfigureAwait(false);
+                Thread.Sleep(500);
+                Console.WriteLine("res: " + res);
             }
             catch
             {
@@ -108,16 +109,15 @@ namespace QuikSharp
 
             while (!set)
             {
-                if (lastTransactionReply == null || lastTransactionReply.ResultMsg == null || lastTransactionReply.ResultMsg == "")
+                if (res > 0)
                 {
                     try { order_result = await Quik.Orders.GetOrder_by_transID(classCode, securityCode, res).ConfigureAwait(false); }
                     catch { order_result = new Order { RejectReason = "Неудачная попытка получения заявки по ID-транзакции №" + res }; }
-                    Thread.Sleep(500);
                 }
                 else
                 {
-                    if (order_result != null) order_result.RejectReason = lastTransactionReply.ResultMsg;
-                    else order_result = new Order { RejectReason = lastTransactionReply.ResultMsg };
+                    if (order_result != null) order_result.RejectReason = newOrderTransaction.ErrorMessage;
+                    else order_result = new Order { RejectReason = newOrderTransaction.ErrorMessage };
                 }
                 if (order_result != null && (order_result.RejectReason != "" || order_result.OrderNum > 0)) set = true;
             }

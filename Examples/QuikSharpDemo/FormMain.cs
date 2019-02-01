@@ -23,7 +23,7 @@ namespace QuikSharpDemo
         bool isServerConnected = false;
         bool isSubscribedToolOrderBook = false;
         bool isSubscribedToolCandles = false;
-        string secCode = "GZM8";
+        string secCode = "GZH9";
         string classCode = "";
         string clientCode;
         decimal bid;
@@ -258,7 +258,7 @@ namespace QuikSharpDemo
         {
             CallCommand();
         }
-        private void CallCommand()
+        private async Task CallCommand()
         {
             string selectedCommand = listBoxCommands.SelectedItem.ToString();
             switch (selectedCommand)
@@ -290,37 +290,9 @@ namespace QuikSharpDemo
                     {
                         decimal priceInOrder = Math.Round(tool.LastPrice - tool.LastPrice / 20, tool.PriceAccuracy);
                         textBoxLogsWindow.AppendText("Выставляем заявку на покупку, по цене:" + priceInOrder + " ..." + Environment.NewLine);
-                        //long transactionID = NewOrder(_quik, tool, Operation.Buy, priceInOrder, 1);
-                        //if (transactionID > 0)
-                        //{
-                        //    Thread.Sleep(500);
-                        //    textBoxLogsWindow.AppendText("Заявка выставлена. ID транзакции - " + transactionID + Environment.NewLine);
-                        //    try
-                        //    {
-                        //        listOrders = _quik.Orders.GetOrders().Result;
-                        //        foreach (Order _order in listOrders)
-                        //        {
-                        //            if (_order.TransID == transactionID && _order.ClassCode == tool.ClassCode && _order.SecCode == tool.SecurityCode)
-                        //            {
-                        //                textBoxLogsWindow.AppendText("Заявка выставлена. Номер заявки - " + _order.OrderNum + Environment.NewLine);
-                        //                textBoxOrderNumber.Text = _order.OrderNum.ToString();
-                        //                order = _order;
-                        //            }
-                        //        }
-                        //    }
-                        //    catch (Exception er)
-                        //    {
-                        //        textBoxLogsWindow.AppendText("Ошибка получения номера заявки. Error: " + er.Message + Environment.NewLine);
-                        //    }
-                        //}
-                        //else
-                        //{
-                        //    textBoxLogsWindow.AppendText("Неудачная попытка выставления заявки." + Environment.NewLine);
-                        //}
-                        order = _quik.Orders.SendLimitOrder(tool.ClassCode, tool.SecurityCode, tool.AccountID, Operation.Buy, priceInOrder, 1).Result;
+                        order = await _quik.Orders.SendLimitOrder(tool.ClassCode, tool.SecurityCode, tool.AccountID, Operation.Buy, priceInOrder, 1).ConfigureAwait(false);
                         if (order.OrderNum > 0)
                         {
-                            Thread.Sleep(500);
                             textBoxLogsWindow.AppendText("Заявка выставлена. ID транзакции - " + order.TransID + Environment.NewLine);
                             textBoxLogsWindow.AppendText("Заявка выставлена. Номер заявки - " + order.OrderNum + Environment.NewLine);
                             textBoxOrderNumber.Text = order.OrderNum.ToString();
@@ -337,8 +309,7 @@ namespace QuikSharpDemo
                     {
                         decimal priceInOrder = Math.Round(tool.LastPrice + tool.Step * 5, tool.PriceAccuracy);
                         textBoxLogsWindow.AppendText("Выставляем заявку на покупку, по цене:" + priceInOrder + " ..." + Environment.NewLine);
-                        //long transactionID = NewOrder(_quik, tool, Operation.Buy, priceInOrder, 1);
-                        long transactionID = _quik.Orders.SendLimitOrder(tool.ClassCode, tool.SecurityCode, tool.AccountID, Operation.Buy, priceInOrder, 1).Result.TransID;
+                        long transactionID = (await _quik.Orders.SendLimitOrder(tool.ClassCode, tool.SecurityCode, tool.AccountID, Operation.Buy, priceInOrder, 1).ConfigureAwait(false)).TransID;
                         if (transactionID > 0)
                         {
                             textBoxLogsWindow.AppendText("Заявка выставлена. ID транзакции - " + transactionID + Environment.NewLine);
@@ -374,7 +345,7 @@ namespace QuikSharpDemo
                     {
                         decimal priceInOrder = Math.Round(tool.LastPrice + tool.Step * 5, tool.PriceAccuracy);
                         textBoxLogsWindow.AppendText("Выставляем рыночную заявку на покупку..." + Environment.NewLine);
-                        long transactionID = _quik.Orders.SendMarketOrder(tool.ClassCode, tool.SecurityCode, tool.AccountID, Operation.Buy, 1).Result.TransID;
+                        long transactionID = (await _quik.Orders.SendMarketOrder(tool.ClassCode, tool.SecurityCode, tool.AccountID, Operation.Buy, 1).ConfigureAwait(false)).TransID;
                         if (transactionID > 0)
                         {
                             textBoxLogsWindow.AppendText("Заявка выставлена. ID транзакции - " + transactionID + Environment.NewLine);
