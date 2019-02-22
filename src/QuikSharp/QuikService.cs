@@ -87,6 +87,7 @@ namespace QuikSharp
         internal CandleFunctions Candles { get; set; }
         internal StopOrderFunctions StopOrders { get; set; }
 
+        internal const int UniqueIdOffset = 0;
         internal readonly string SessionId = DateTime.Now.ToString("yyMMddHHmmss");
         internal MemoryMappedFile mmf;
         internal MemoryMappedViewAccessor accessor;
@@ -716,30 +717,25 @@ namespace QuikSharp
         {
             if (mmf == null || accessor == null)
             {
-                if (WorkingFolder == "")
+                if (WorkingFolder == "") //WorkingFolder = Не определено. Создаем MMF в памяти
                 {
-                    //WorkingFolder = Не определено. Создаем MMF в памяти
-                    mmf = MemoryMappedFile.CreateOrOpen("UniqueID", 1024 * 10);
+                    mmf = MemoryMappedFile.CreateOrOpen("UniqueID", 4096);
                 }
-                else
+                else //WorkingFolder определен. Открываем MMF с диска
                 {
-                    //WorkingFolder определен. Открываем MMF с диска
-                    string diskFileName = WorkingFolder + "\\" + "UniqueID.QUIKSharp";
-                    mmf = MemoryMappedFile.CreateFromFile(diskFileName, FileMode.OpenOrCreate, "UniqueID", 1024 * 10);
+                    string diskFileName = WorkingFolder + "\\" + "QUIKSharp.Settings";
+                    mmf = MemoryMappedFile.CreateFromFile(diskFileName, FileMode.OpenOrCreate, "UniqueID", 4096);
                 }
                 accessor = mmf.CreateViewAccessor();
             }
             int newId = accessor.ReadInt32(1);
-            if (newId == 0)
-            {
-                newId = Convert.ToInt32(DateTime.Now.ToString("ddHHmmss"));
-            }
+            if (newId == 0) { newId = Convert.ToInt32(DateTime.Now.ToString("ddHHmmss")); }
             else
             {
                 if (newId >= 2147483638) newId = 100;
                 newId++;
             }
-            accessor.Write(1, newId);
+            accessor.Write(UniqueIdOffset, newId);
             return newId;
         }
 
