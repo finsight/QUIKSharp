@@ -717,25 +717,27 @@ namespace QuikSharp
         {
             if (mmf == null || accessor == null)
             {
-                if (WorkingFolder == "") //WorkingFolder = Не определено. Создаем MMF в памяти
+                if (String.IsNullOrEmpty(WorkingFolder)) //WorkingFolder = Не определено. Создаем MMF в памяти
                 {
                     mmf = MemoryMappedFile.CreateOrOpen("UniqueID", 4096);
                 }
                 else //WorkingFolder определен. Открываем MMF с диска
                 {
                     string diskFileName = WorkingFolder + "\\" + "QUIKSharp.Settings";
-                    mmf = MemoryMappedFile.CreateFromFile(diskFileName, FileMode.OpenOrCreate, "UniqueID", 4096);
+                    try { mmf = MemoryMappedFile.CreateFromFile(diskFileName, FileMode.OpenOrCreate, "UniqueID", 4096); }
+                    catch { mmf = MemoryMappedFile.CreateOrOpen("UniqueID", 4096); }
                 }
                 accessor = mmf.CreateViewAccessor();
             }
-            int newId = accessor.ReadInt32(1);
+            int newId = accessor.ReadInt32(UniqueIdOffset);
             if (newId == 0) { newId = Convert.ToInt32(DateTime.Now.ToString("ddHHmmss")); }
             else
             {
                 if (newId >= 2147483638) newId = 100;
                 newId++;
             }
-            accessor.Write(UniqueIdOffset, newId);
+            try { accessor.Write(UniqueIdOffset, newId); }
+            catch(Exception er) { Console.WriteLine("Неудачная попытка записини нового ID в файл MMF: " + er.Message); }
             return newId;
         }
 
