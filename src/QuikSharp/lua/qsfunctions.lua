@@ -571,6 +571,17 @@ end
 --- Candles functions ---
 -------------------------
 
+--- Возвращаем количество свечей по тегу
+function qsfunctions.get_num_candles(msg)
+	log("Called get_num_candles" .. msg.data, 2)
+	local spl = split(msg.data, "|")
+	local tag = spl[1]
+	
+	msg.data = getNumCandles(tag) * 1
+	return msg
+end
+
+
 --- Возвращаем все свечи по идентификатору графика. График должен быть открыт
 function qsfunctions.get_candles(msg)
 	log("Called get_candles" .. msg.data, 2)
