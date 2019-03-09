@@ -2,6 +2,7 @@
 
 using QuikSharp.DataStructures;
 using QuikSharp.DataStructures.Transaction;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -333,7 +334,8 @@ namespace QuikSharp
         {
             Trace.Assert(!transaction.TRANS_ID.HasValue, "TRANS_ID should be assigned automatically in SendTransaction functions");
 
-            transaction.TRANS_ID = QuikService.GetNewUniqueId();
+            //transaction.TRANS_ID = QuikService.GetNewUniqueId();
+            transaction.TRANS_ID = QuikService.GetUniqueTransactionId();
 
             //    Console.WriteLine("Trans Id from function = {0}", transaction.TRANS_ID);
 

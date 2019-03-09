@@ -8,6 +8,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.MemoryMappedFiles;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -76,12 +77,20 @@ namespace QuikSharp
         /// </summary>
         public bool IsStarted { get; private set; }
 
+        /// <summary>
+        /// info.exe file path
+        /// </summary>
+        public string WorkingFolder { get; set; }
+
         internal QuikEvents Events { get; set; }
         internal IPersistentStorage Storage { get; set; }
         internal CandleFunctions Candles { get; set; }
         internal StopOrderFunctions StopOrders { get; set; }
 
+        internal const int UniqueIdOffset = 0;
         internal readonly string SessionId = DateTime.Now.ToString("yyMMddHHmmss");
+        internal MemoryMappedFile mmf;
+        internal MemoryMappedViewAccessor accessor;
 
         private readonly IPAddress _host = IPAddress.Parse("127.0.0.1");
         private readonly int _responsePort;
@@ -699,6 +708,37 @@ namespace QuikSharp
                 _correlationId = 1;
                 return 1;
             }
+        }
+
+        /// <summary>
+        /// Get or Generate unique transaction ID for function SendTransaction()
+        /// </summary>
+        internal int GetUniqueTransactionId()
+        {
+            if (mmf == null || accessor == null)
+            {
+                if (String.IsNullOrEmpty(WorkingFolder)) //WorkingFolder = Не определено. Создаем MMF в памяти
+                {
+                    mmf = MemoryMappedFile.CreateOrOpen("UniqueID", 4096);
+                }
+                else //WorkingFolder определен. Открываем MMF с диска
+                {
+                    string diskFileName = WorkingFolder + "\\" + "QUIKSharp.Settings";
+                    try { mmf = MemoryMappedFile.CreateFromFile(diskFileName, FileMode.OpenOrCreate, "UniqueID", 4096); }
+                    catch { mmf = MemoryMappedFile.CreateOrOpen("UniqueID", 4096); }
+                }
+                accessor = mmf.CreateViewAccessor();
+            }
+            int newId = accessor.ReadInt32(UniqueIdOffset);
+            if (newId == 0) { newId = Convert.ToInt32(DateTime.Now.ToString("ddHHmmss")); }
+            else
+            {
+                if (newId >= 2147483638) newId = 100;
+                newId++;
+            }
+            try { accessor.Write(UniqueIdOffset, newId); }
+            catch(Exception er) { Console.WriteLine("Неудачная попытка записини нового ID в файл MMF: " + er.Message); }
+            return newId;
         }
 
         /// <summary>
