@@ -229,3 +229,12 @@ docs/content/release-notes.md
 !src/QuikSharp/lua/clibs/*.dll
 !src/QuikSharp/lua/clibs/socket/*.dll
 >>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
+ /.vs/QuikSharp/v15/Server/sqlite3/storage.ide-shm		
+ /.vs/QuikSharp/v15/Server/sqlite3/db.lock		
+ /.vs/QuikSharp/v15/Server/sqlite3/storage.ide-wal		
+ /.vs/QuikSharp/v15/Server/sqlite3/storage (Конфликтующая копия с компьютера HOHLOV-V 2019-01-31).ide-shm		
+ /.vs/QuikSharp/v15/Server/sqlite3/storage (Конфликтующая копия с компьютера HOHLOV-V 2019-02-01).ide-shm		
+ /.vs/QuikSharp/v15/Server/sqlite3/storage (Конфликтующая копия с компьютера Home-Rat 2019-01-31).ide-shm		
+ /.vs/QuikSharp/v15/Server/sqlite3/storage (Конфликтующая копия с компьютера HOHLOV-V 2019-02-04).ide-shm		
+ /.vs/QuikSharp/v15/Server/sqlite3/storage (Конфликтующая копия с компьютера Home-Rat 2019-02-01).ide-shm		
+ /.vs/QuikSharp/v15/Server/sqlite3/storage (Конфликтующая копия с компьютера TrdStation 2019-02-04).ide-shm
