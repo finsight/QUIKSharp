@@ -312,6 +312,22 @@ function qsfunctions.sendTransaction(msg)
     end
 end
 
+--- Функция заказывает получение параметров Таблицы текущих торгов. В случае успешного завершения функция возвращает «true», иначе – «false»
+function qsfunctions.paramRequest(msg)
+    local spl = split(msg.data, "|")
+    local class_code, sec_code, param_name = spl[1], spl[2], spl[3]
+    msg.data = ParamRequest(class_code, sec_code, param_name)
+    return msg
+end
+
+--- Функция отменяет заказ на получение параметров Таблицы текущих торгов. В случае успешного завершения функция возвращает «true», иначе – «false»
+function qsfunctions.cancelParamRequest(msg)
+    local spl = split(msg.data, "|")
+    local class_code, sec_code, param_name = spl[1], spl[2], spl[3]
+    msg.data = CancelParamRequest(class_code, sec_code, param_name)
+    return msg
+end
+
 --- Функция предназначена для получения значений всех параметров биржевой информации из Таблицы текущих значений параметров.
 -- С помощью этой функции можно получить любое из значений Таблицы текущих значений параметров для заданных кодов класса и бумаги.
 
