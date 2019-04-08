@@ -1,7 +1,7 @@
 ﻿namespace QuikSharp.DataStructures
 {
     /// <summary>
-    /// Наименования параметров для функции GetParamEx
+    /// Наименования параметров для функции GetParamEx и GetParamEx2
     /// </summary>
     public enum ParamNames
     {

@@ -322,6 +322,17 @@ function qsfunctions.getParamEx(msg)
     return msg
 end
 
+--- Функция предназначена для получения значений всех параметров биржевой информации из Таблицы текущих торгов 
+-- с возможностью в дальнейшем отказаться от получения определенных параметров, заказанных с помощью функции ParamRequest. 
+-- Для отказа от получения какого-либо параметра воспользуйтесь функцией CancelParamRequest. 
+-- Функция возвращает таблицу Lua с параметрами, аналогичными параметрам, возвращаемым функцией getParamEx
+function qsfunctions.getParamEx2(msg)
+    local spl = split(msg.data, "|")
+    local class_code, sec_code, param_name = spl[1], spl[2], spl[3]
+    msg.data = getParamEx2(class_code, sec_code, param_name)
+    return msg
+end
+
 -- Функция предназначена для получения информации по бумажным лимитам.
 function qsfunctions.getDepo(msg)
     local spl = split(msg.data, "|")

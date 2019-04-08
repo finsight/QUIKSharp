@@ -43,8 +43,6 @@ namespace QuikSharpDemo
         FuturesClientHolding futuresPosition;
         delegate void TextBoxTextDelegate(TextBox tb ,string text);
         delegate void TextBoxAppendTextDelegate(TextBox tb, string text);
-        //TextBoxTextDelegate m_TextBoxTextDelegate;
-        //TextBoxAppendTextDelegate m_TextBoxAppendTextDelegate;
 
         public FormMain()
         {
@@ -71,9 +69,6 @@ namespace QuikSharpDemo
             listBoxCommands.Items.Add("Получить таблицу сделок");
             listBoxCommands.Items.Add("Получить таблицу `Клиентский портфель`");
             listBoxCommands.Items.Add("Получить таблицы денежных лимитов");
-
-            //m_TextBoxTextDelegate = new TextBoxTextDelegate(Text2TextBox);
-            //m_TextBoxAppendTextDelegate = new TextBoxAppendTextDelegate(AppendText2TextBox);
         }
 
         private void ButtonStart_Click(object sender, EventArgs e)

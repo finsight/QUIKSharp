@@ -88,6 +88,16 @@ namespace QuikSharp
         Task<ParamTable> GetParamEx(string classCode, string secCode, ParamNames paramName);
 
         /// <summary>
+        /// Функция для получения всех значений Таблицы текущих значений параметров
+        /// </summary>
+        /// <param name="classCode"></param>
+        /// <param name="secCode"></param>
+        /// <param name="paramName"></param>
+        /// <returns></returns>
+        Task<ParamTable> GetParamEx2(string classCode, string secCode, string paramName);
+        Task<ParamTable> GetParamEx2(string classCode, string secCode, ParamNames paramName);
+
+        /// <summary>
         /// функция для получения таблицы сделок по заданному инструменту
         /// </summary>
         Task<List<Trade>> GetTrades();
@@ -265,6 +275,26 @@ namespace QuikSharp
         {
             var response = await QuikService.Send<Message<ParamTable>>(
                     (new Message<string>(classCode + "|" + secCode + "|" + paramName, "getParamEx"))).ConfigureAwait(false);
+            return response.Data;
+        }
+
+        /// <summary>
+        /// Функция для получения всех значений Таблицы текущих значений параметров
+        /// </summary>
+        /// <param name="classCode"></param>
+        /// <param name="secCode"></param>
+        /// <param name="paramName"></param>
+        /// <returns></returns>
+        public async Task<ParamTable> GetParamEx2(string classCode, string secCode, string paramName)
+        {
+            var response = await QuikService.Send<Message<ParamTable>>(
+                    (new Message<string>(classCode + "|" + secCode + "|" + paramName, "getParamEx2"))).ConfigureAwait(false);
+            return response.Data;
+        }
+        public async Task<ParamTable> GetParamEx2(string classCode, string secCode, ParamNames paramName)
+        {
+            var response = await QuikService.Send<Message<ParamTable>>(
+                    (new Message<string>(classCode + "|" + secCode + "|" + paramName, "getParamEx2"))).ConfigureAwait(false);
             return response.Data;
         }
 
