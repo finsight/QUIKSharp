@@ -360,6 +360,30 @@
         /// <summary>
         /// Тип цены фьючерса
         /// </summary>
-        ISPERCENT
+        ISPERCENT,
+        /// <summary>
+        /// Issuer
+        /// </summary>
+        FIRM_SHORT_NAME,
+        /// <summary>
+        /// Duration (дюрация)
+        /// </summary>
+        DURATION,
+        /// <summary>
+        /// YieldMaturity (Доходность к погашению)
+        /// </summary>
+        YIELD,
+        /// <summary>
+        /// Купон (размер/стоимость)
+        /// </summary>
+        COUPONVALUE,
+        /// <summary>
+        /// Периодичность выплаты купонов
+        /// </summary>
+        COUPONPERIOD,
+        /// <summary>
+        /// Дата ближайшей выплаты купона
+        /// </summary>
+        NEXTCOUPON
     }
 }
