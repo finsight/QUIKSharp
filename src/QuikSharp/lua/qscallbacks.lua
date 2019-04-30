@@ -14,14 +14,9 @@ local qscallbacks = {}
 -- сообщения после переподключения (если хватит места на диске)
 local function CleanUp()
     -- close log
-    pcall(logfile:close(logfile))
+    closeLog()
     -- discard missed values if any
-    if missed_values_file then
-        pcall(missed_values_file:close(missed_values_file))
-        missed_values_file = nil
-        pcall(os.remove, missed_values_file_name)
-        missed_values_file_name = nil
-    end
+    discardMissedValues()
 end
 
 --- Функция вызывается когда соединение с QuikSharp клиентом обрывается

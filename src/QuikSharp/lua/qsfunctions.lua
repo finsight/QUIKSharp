@@ -77,6 +77,14 @@ function qsfunctions.isConnected(msg)
     return msg
 end
 
+-- Функция предназначена для оповещения скрипта о том, что клиент собирается отсоединяться
+function qsfunctions.prepareToDisconnect(msg)
+	was_connected = false
+	discardMissedValues()
+	msg.data = true
+	return msg
+end
+
 --- Функция возвращает путь, по которому находится файл info.exe, исполняющий данный
 -- скрипт, без завершающего обратного слэша («\»). Например, C:\QuikFront.
 function qsfunctions.getWorkingFolder(msg)

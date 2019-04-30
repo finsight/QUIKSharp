@@ -23,11 +23,17 @@ namespace QuikSharp
         /// <returns></returns>
         Task<bool> IsConnected(int timeout = Timeout.Infinite);
 
-        /// <summary>
-        /// Функция возвращает путь, по которому находится запускаемый скрипт, без завершающего обратного слэша («\»). Например, C:\QuikFront\Scripts
-        /// </summary>
-        /// <returns></returns>
-        Task<string> GetScriptPath();
+		/// <summary>
+		/// Функция предназначена для для оповещения скрипта о том, что клиент собирается отсоединяться.
+		/// </summary>
+		/// <returns></returns>
+		Task<bool> PrepareToDisconnect(int timeout = Timeout.Infinite);
+
+		/// <summary>
+		/// Функция возвращает путь, по которому находится запускаемый скрипт, без завершающего обратного слэша («\»). Например, C:\QuikFront\Scripts
+		/// </summary>
+		/// <returns></returns>
+		Task<string> GetScriptPath();
 
         /// <summary>
         /// Функция возвращает значения параметров информационного окна (пункт меню Связь / Информационное окно…).
@@ -107,6 +113,13 @@ namespace QuikSharp
                 (new Message<string>("", "isConnected")), timeout).ConfigureAwait(false);
             return response.Data == "1";
         }
+
+	    public async Task<bool> PrepareToDisconnect(int timeout = Timeout.Infinite)
+	    {
+		    await QuikService.Send<Message<string>>(
+			    (new Message<string>("", "prepareToDisconnect")), timeout).ConfigureAwait(false);
+		    return true;
+	    }
 
 		public async Task<string> GetScriptPath()
         {
