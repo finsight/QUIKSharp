@@ -22,18 +22,19 @@ namespace QuikSharp
             if (storage == null) { Storage = new InMemoryStorage(); } else { Storage = storage; }
             QuikService = QuikService.Create(port);
             // poor man's DI
-            QuikService.Storage = Storage;
-            Events = QuikService.Events;
-            Debug = new DebugFunctions(port);
-            Service = new ServiceFunctions(port);
-            Class = new ClassFunctions(port);
-            OrderBook = new OrderBookFunctions(port);
-            Trading = new TradingFunctions(port);
-            StopOrders = new StopOrderFunctions(port, this);
-            Orders = new OrderFunctions(port, this);
-            Candles = new CandleFunctions(port);
-            QuikService.Candles = Candles;
-            QuikService.StopOrders = StopOrders;
+            QuikService.Storage         = Storage;
+            Events                      = QuikService.Events;
+            Debug                       = new DebugFunctions(port);
+            Service                     = new ServiceFunctions(port);
+            Class                       = new ClassFunctions(port);
+            OrderBook                   = new OrderBookFunctions(port);
+            Trading                     = new TradingFunctions(port);
+            StopOrders                  = new StopOrderFunctions(port, this);
+            Orders                      = new OrderFunctions(port, this);
+            Candles                     = new CandleFunctions(port);
+            QuikService.Candles         = Candles;
+            QuikService.StopOrders      = StopOrders;
+            QuikService.WorkingFolder   = Service.GetWorkingFolder().Result;
         }
 
         // Если запуск "сервиса" (потоков работы с Lua) происходит в конструкторе Quik, то возможности остановить "сервис" нет.

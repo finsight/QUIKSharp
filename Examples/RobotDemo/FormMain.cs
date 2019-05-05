@@ -391,13 +391,13 @@ namespace RobotDemo
             long res = 0;
             if (settings.RobotMode == "Боевой")
             {
-                Order order_new = new Order();
+                Order order_new     = new Order();
                 order_new.ClassCode = _tool.ClassCode;
-                order_new.SecCode = _tool.SecurityCode;
+                order_new.SecCode   = _tool.SecurityCode;
                 order_new.Operation = operation;
-                order_new.Price = price;
-                order_new.Quantity = qty;
-                order_new.Account = _tool.AccountID;
+                order_new.Price     = price;
+                order_new.Quantity  = qty;
+                order_new.Account   = _tool.AccountID;
                 try
                 {
                     res = _quik.Orders.CreateOrder(order_new).Result;

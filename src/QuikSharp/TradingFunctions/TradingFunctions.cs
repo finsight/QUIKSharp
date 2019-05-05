@@ -3,6 +3,7 @@
 using System;
 using QuikSharp.DataStructures;
 using QuikSharp.DataStructures.Transaction;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
@@ -17,7 +18,10 @@ namespace QuikSharp
     /// getMoneyEx - функция для получения информации по денежным лимитам указанного типа
     /// getFuturesLimit - функция для получения информации по фьючерсным лимитам
     /// getFuturesHolding - функция для получения информации по фьючерсным позициям
+    /// paramRequest - Функция заказывает получение параметров Таблицы текущих торгов
+    /// cancelParamRequest - Функция отменяет заказ на получение параметров Таблицы текущих торгов
     /// getParamEx - функция для получения значений Таблицы текущих значений параметров
+    /// getParamEx2 - функция для получения всех значений Таблицы текущих значений параметров
     /// getTradeDate - функция для получения даты торговой сессии
     /// sendTransaction - функция для работы с заявками
     /// CulcBuySell - функция для расчета максимально возможного количества лотов в заявке
@@ -79,6 +83,26 @@ namespace QuikSharp
         Task<List<OptionBoard>> GetOptionBoard(string classCode, string secCode);
 
         /// <summary>
+        /// Функция заказывает получение параметров Таблицы текущих торгов
+        /// </summary>
+        /// <param name="classCode"></param>
+        /// <param name="secCode"></param>
+        /// <param name="paramName"></param>
+        /// <returns></returns>
+        Task<ParamTable> ParamRequest(string classCode, string secCode, string paramName);
+        Task<ParamTable> ParamRequest(string classCode, string secCode, ParamNames paramName);
+
+        /// <summary>
+        /// Функция отменяет заказ на получение параметров Таблицы текущих торгов
+        /// </summary>
+        /// <param name="classCode"></param>
+        /// <param name="secCode"></param>
+        /// <param name="paramName"></param>
+        /// <returns></returns>
+        Task<ParamTable> CancelParamRequest(string classCode, string secCode, string paramName);
+        Task<ParamTable> CancelParamRequest(string classCode, string secCode, ParamNames paramName);
+
+        /// <summary>
         /// Функция для получения значений Таблицы текущих значений параметров
         /// </summary>
         /// <param name="classCode"></param>
@@ -87,6 +111,16 @@ namespace QuikSharp
         /// <returns></returns>
         Task<ParamTable> GetParamEx(string classCode, string secCode, string paramName, int timeout = Timeout.Infinite);
         Task<ParamTable> GetParamEx(string classCode, string secCode, ParamNames paramName, int timeout = Timeout.Infinite);
+
+        /// <summary>
+        /// Функция для получения всех значений Таблицы текущих значений параметров
+        /// </summary>
+        /// <param name="classCode"></param>
+        /// <param name="secCode"></param>
+        /// <param name="paramName"></param>
+        /// <returns></returns>
+        Task<ParamTable> GetParamEx2(string classCode, string secCode, string paramName);
+        Task<ParamTable> GetParamEx2(string classCode, string secCode, ParamNames paramName);
 
         /// <summary>
         /// функция для получения таблицы сделок по заданному инструменту
@@ -250,6 +284,46 @@ namespace QuikSharp
         }
 
         /// <summary>
+        /// Функция заказывает получение параметров Таблицы текущих торгов
+        /// </summary>
+        /// <param name="classCode"></param>
+        /// <param name="secCode"></param>
+        /// <param name="paramName"></param>
+        /// <returns></returns>
+        public async Task<ParamTable> ParamRequest(string classCode, string secCode, string paramName)
+        {
+            var response = await QuikService.Send<Message<ParamTable>>(
+                    (new Message<string>(classCode + "|" + secCode + "|" + paramName, "paramRequest"))).ConfigureAwait(false);
+            return response.Data;
+        }
+        public async Task<ParamTable> ParamRequest(string classCode, string secCode, ParamNames paramName)
+        {
+            var response = await QuikService.Send<Message<ParamTable>>(
+                    (new Message<string>(classCode + "|" + secCode + "|" + paramName, "paramRequest"))).ConfigureAwait(false);
+            return response.Data;
+        }
+
+        /// <summary>
+        /// Функция отменяет заказ на получение параметров Таблицы текущих торгов
+        /// </summary>
+        /// <param name="classCode"></param>
+        /// <param name="secCode"></param>
+        /// <param name="paramName"></param>
+        /// <returns></returns>
+        public async Task<ParamTable> CancelParamRequest(string classCode, string secCode, string paramName)
+        {
+            var response = await QuikService.Send<Message<ParamTable>>(
+                    (new Message<string>(classCode + "|" + secCode + "|" + paramName, "cancelParamRequest"))).ConfigureAwait(false);
+            return response.Data;
+        }
+        public async Task<ParamTable> CancelParamRequest(string classCode, string secCode, ParamNames paramName)
+        {
+            var response = await QuikService.Send<Message<ParamTable>>(
+                    (new Message<string>(classCode + "|" + secCode + "|" + paramName, "cancelParamRequest"))).ConfigureAwait(false);
+            return response.Data;
+        }
+
+        /// <summary>
         /// Функция для получения значений Таблицы текущих значений параметров
         /// </summary>
         /// <param name="classCode"></param>
@@ -266,6 +340,26 @@ namespace QuikSharp
         {
             var response = await QuikService.Send<Message<ParamTable>>(
                     (new Message<string>(classCode + "|" + secCode + "|" + paramName, "getParamEx")), timeout).ConfigureAwait(false);
+            return response.Data;
+        }
+
+        /// <summary>
+        /// Функция для получения всех значений Таблицы текущих значений параметров
+        /// </summary>
+        /// <param name="classCode"></param>
+        /// <param name="secCode"></param>
+        /// <param name="paramName"></param>
+        /// <returns></returns>
+        public async Task<ParamTable> GetParamEx2(string classCode, string secCode, string paramName)
+        {
+            var response = await QuikService.Send<Message<ParamTable>>(
+                    (new Message<string>(classCode + "|" + secCode + "|" + paramName, "getParamEx2"))).ConfigureAwait(false);
+            return response.Data;
+        }
+        public async Task<ParamTable> GetParamEx2(string classCode, string secCode, ParamNames paramName)
+        {
+            var response = await QuikService.Send<Message<ParamTable>>(
+                    (new Message<string>(classCode + "|" + secCode + "|" + paramName, "getParamEx2"))).ConfigureAwait(false);
             return response.Data;
         }
 
@@ -335,7 +429,8 @@ namespace QuikSharp
         {
             Trace.Assert(!transaction.TRANS_ID.HasValue, "TRANS_ID should be assigned automatically in SendTransaction functions");
 
-            transaction.TRANS_ID = QuikService.GetNewUniqueId();
+            //transaction.TRANS_ID = QuikService.GetNewUniqueId();
+            transaction.TRANS_ID = QuikService.GetUniqueTransactionId();
 
             //    Console.WriteLine("Trans Id from function = {0}", transaction.TRANS_ID);
 

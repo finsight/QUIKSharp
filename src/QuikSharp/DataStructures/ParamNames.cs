@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace QuikSharp.DataStructures
+﻿namespace QuikSharp.DataStructures
 {
+    /// <summary>
+    /// Наименования параметров для функции GetParamEx и GetParamEx2
+    /// </summary>
     public enum ParamNames
     {
         /// <summary>
@@ -364,9 +361,29 @@ namespace QuikSharp.DataStructures
         /// Тип цены фьючерса
         /// </summary>
         ISPERCENT,
-
-
-
-
+        /// <summary>
+        /// Issuer
+        /// </summary>
+        FIRM_SHORT_NAME,
+        /// <summary>
+        /// Duration (дюрация)
+        /// </summary>
+        DURATION,
+        /// <summary>
+        /// YieldMaturity (Доходность к погашению)
+        /// </summary>
+        YIELD,
+        /// <summary>
+        /// Купон (размер/стоимость)
+        /// </summary>
+        COUPONVALUE,
+        /// <summary>
+        /// Периодичность выплаты купонов
+        /// </summary>
+        COUPONPERIOD,
+        /// <summary>
+        /// Дата ближайшей выплаты купона
+        /// </summary>
+        NEXTCOUPON
     }
 }

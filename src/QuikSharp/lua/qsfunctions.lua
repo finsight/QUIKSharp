@@ -320,6 +320,22 @@ function qsfunctions.sendTransaction(msg)
     end
 end
 
+--- Функция заказывает получение параметров Таблицы текущих торгов. В случае успешного завершения функция возвращает «true», иначе – «false»
+function qsfunctions.paramRequest(msg)
+    local spl = split(msg.data, "|")
+    local class_code, sec_code, param_name = spl[1], spl[2], spl[3]
+    msg.data = ParamRequest(class_code, sec_code, param_name)
+    return msg
+end
+
+--- Функция отменяет заказ на получение параметров Таблицы текущих торгов. В случае успешного завершения функция возвращает «true», иначе – «false»
+function qsfunctions.cancelParamRequest(msg)
+    local spl = split(msg.data, "|")
+    local class_code, sec_code, param_name = spl[1], spl[2], spl[3]
+    msg.data = CancelParamRequest(class_code, sec_code, param_name)
+    return msg
+end
+
 --- Функция предназначена для получения значений всех параметров биржевой информации из Таблицы текущих значений параметров.
 -- С помощью этой функции можно получить любое из значений Таблицы текущих значений параметров для заданных кодов класса и бумаги.
 
@@ -327,6 +343,17 @@ function qsfunctions.getParamEx(msg)
     local spl = split(msg.data, "|")
     local class_code, sec_code, param_name = spl[1], spl[2], spl[3]
     msg.data = getParamEx(class_code, sec_code, param_name)
+    return msg
+end
+
+--- Функция предназначена для получения значений всех параметров биржевой информации из Таблицы текущих торгов 
+-- с возможностью в дальнейшем отказаться от получения определенных параметров, заказанных с помощью функции ParamRequest. 
+-- Для отказа от получения какого-либо параметра воспользуйтесь функцией CancelParamRequest. 
+-- Функция возвращает таблицу Lua с параметрами, аналогичными параметрам, возвращаемым функцией getParamEx
+function qsfunctions.getParamEx2(msg)
+    local spl = split(msg.data, "|")
+    local class_code, sec_code, param_name = spl[1], spl[2], spl[3]
+    msg.data = getParamEx2(class_code, sec_code, param_name)
     return msg
 end
 
@@ -578,6 +605,17 @@ end
 -------------------------
 --- Candles functions ---
 -------------------------
+
+--- Возвращаем количество свечей по тегу
+function qsfunctions.get_num_candles(msg)
+	log("Called get_num_candles" .. msg.data, 2)
+	local spl = split(msg.data, "|")
+	local tag = spl[1]
+	
+	msg.data = getNumCandles(tag) * 1
+	return msg
+end
+
 
 --- Возвращаем все свечи по идентификатору графика. График должен быть открыт
 function qsfunctions.get_candles(msg)
