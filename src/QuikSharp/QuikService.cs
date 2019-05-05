@@ -1,4 +1,4 @@
-﻿// Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
+// Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
 
 using Newtonsoft.Json;
 using QuikSharp.DataStructures;
@@ -8,6 +8,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.IO.MemoryMappedFiles;
 using System.Net;
 using System.Net.Sockets;
@@ -132,19 +133,31 @@ namespace QuikSharp
         {
             if (!IsStarted) return;
             IsStarted = false;
-            _cts.Cancel();
+	        _cts.Cancel();
             _cancelRegistration.Dispose();
 
-            // here all tasks must exit gracefully
-            var isCleanExit = Task.WaitAll(new[] { _requestTask, _responseTask, _callbackTask }, 5000);
-            Trace.Assert(isCleanExit, "All tasks must finish gracefully after cancellation token is cancelled!");
-        }
+	        try
+	        {
+		        // here all tasks must exit gracefully
+		        var isCleanExit = Task.WaitAll(new[] { _requestTask, _responseTask, _callbackTask }, 5000);
+		        Trace.Assert(isCleanExit, "All tasks must finish gracefully after cancellation token is cancelled!");
+	        }
+	        finally
+	        {
+				// cancel responses to release waiters
+		        foreach (var responseKey in Responses.Keys.ToList())
+		        {
+			        if (Responses.TryRemove(responseKey, out var responseInfo))
+				        responseInfo.Key.TrySetCanceled();
+		        }
+			}
+		}
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <exception cref="ApplicationException">Response message id does not exists in results dictionary</exception>
-        public void Start()
+		/// <summary>
+		///
+		/// </summary>
+		/// <exception cref="ApplicationException">Response message id does not exists in results dictionary</exception>
+		public void Start()
         {
             if (IsStarted) return;
             IsStarted = true;
@@ -264,8 +277,8 @@ namespace QuikSharp
                             while (!_cts.IsCancellationRequested)
                             {
                                 var readLineTask = reader.ReadLineAsync();
-                                var lineOrCancelledTask = await Task.WhenAny(readLineTask, _cancelledTcs.Task).ConfigureAwait(false);
-                                if (lineOrCancelledTask == _cancelledTcs.Task)
+                                await Task.WhenAny(readLineTask, _cancelledTcs.Task).ConfigureAwait(false);
+                                if (_cts.IsCancellationRequested)
                                 {
                                     break;
                                 }
@@ -369,10 +382,10 @@ namespace QuikSharp
                             while (!_cts.IsCancellationRequested)
                             {
                                 var readLineTask = reader.ReadLineAsync();
-                                var lineOrCancelledTask = await Task.WhenAny(readLineTask, _cancelledTcs.Task).ConfigureAwait(false);
-                                if (lineOrCancelledTask == _cancelledTcs.Task)
+	                            await Task.WhenAny(readLineTask, _cancelledTcs.Task).ConfigureAwait(false);
+	                            if (_cts.IsCancellationRequested)
                                 {
-                                    break;
+									break;
                                 }
                                 Trace.Assert(readLineTask.Status == TaskStatus.RanToCompletion);
                                 var response = readLineTask.Result;
@@ -405,18 +418,11 @@ namespace QuikSharp
                         catch (IOException e)
                         {
                             Trace.TraceError(e.ToString());
-                            if (!IsServiceConnected())
-                            {
-                                // handled exception will cause reconnect in the outer loop
-                                _connectedMre.Reset();
-                                this.Events.OnDisconnectedFromQuikCall();
-                            }
-                            else
-                            {
-                                throw;
-                            }
+	                        // handled exception will cause reconnect in the outer loop
+	                        _connectedMre.Reset();
+	                        this.Events.OnDisconnectedFromQuikCall();
                         }
-                    }
+					}
                 }
                 catch (OperationCanceledException)
                 {
@@ -447,7 +453,7 @@ namespace QuikSharp
             TaskScheduler.Default);
         }
 
-        private bool IsServiceConnected()
+        public bool IsServiceConnected()
         {
             return (_responseClient != null && _responseClient.Connected && _responseClient.Client.IsConnectedNow())
                    && (_callbackClient != null && _callbackClient.Connected && _callbackClient.Client.IsConnectedNow());
@@ -755,9 +761,18 @@ namespace QuikSharp
             return SessionId + "." + id;
         }
 
+	    /// <summary>
+	    /// Default timeout to use for send operations if no specific timeout supplied.
+	    /// </summary>
+	    public TimeSpan DefaultSendTimeout { get; set; } = Timeout.InfiniteTimeSpan;
+
         internal async Task<TResponse> Send<TResponse>(IMessage request, int timeout = 0)
             where TResponse : class, IMessage, new()
         {
+			// use DefaultSendTimeout for default calls
+			if (timeout == 0)
+		        timeout = (int) DefaultSendTimeout.TotalMilliseconds;
+
             var task = _connectedMre.WaitAsync();
             if (timeout > 0)
             {
@@ -786,20 +801,33 @@ namespace QuikSharp
             }
             if (timeout > 0)
             {
-                var ct = new CancellationTokenSource(timeout);
+                var ct = new CancellationTokenSource();
                 ctRegistration = ct.Token.Register(() =>
                 {
                     tcs.TrySetException(new TimeoutException("Send operation timed out"));
                     KeyValuePair<TaskCompletionSource<IMessage>, Type> temp;
                     Responses.TryRemove(request.Id.Value, out temp);
                 }, false);
-            }
-            Responses[request.Id.Value] = kvp;
+
+	            ct.CancelAfter(timeout);
+			}
+
+	        Responses[request.Id.Value] = kvp;
             // add to queue after responses dictionary
             EnvelopeQueue.Add(request);
-            var response = await tcs.Task.ConfigureAwait(false);
-            if (timeout > 0) { ctRegistration.Dispose(); }
-            return (response as TResponse);
+	        IMessage response;
+
+	        try
+			{
+		        response = await tcs.Task.ConfigureAwait(false);
+	        }
+	        finally 
+	        {
+		        if (timeout > 0)
+			        ctRegistration.Dispose();
+	        }
+
+			return (response as TResponse);
         }
     }
 }

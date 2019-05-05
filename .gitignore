@@ -145,7 +145,6 @@ ModelManifest.xml
 # Windows detritus
 # =========================
 
->>>>>>> 91b29cc115763bff30f3ed949bc7a2bf88d3b350
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
@@ -156,7 +155,6 @@ Desktop.ini
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
 
-<<<<<<< HEAD
 # Windows Installer files
 *.cab
 *.msi
@@ -190,7 +188,7 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
-=======
+
 # Mac desktop service store files
 .DS_Store
 
@@ -227,3 +225,5 @@ docs/content/release-notes.md
 
 !src/QuikSharp/lua/clibs/*.dll
 !src/QuikSharp/lua/clibs/socket/*.dll
+
+\.vs/

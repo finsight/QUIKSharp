@@ -1,10 +1,12 @@
 ﻿// Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
 
+using System;
 using QuikSharp.DataStructures;
 using QuikSharp.DataStructures.Transaction;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace QuikSharp
@@ -107,8 +109,8 @@ namespace QuikSharp
         /// <param name="secCode"></param>
         /// <param name="paramName"></param>
         /// <returns></returns>
-        Task<ParamTable> GetParamEx(string classCode, string secCode, string paramName);
-        Task<ParamTable> GetParamEx(string classCode, string secCode, ParamNames paramName);
+        Task<ParamTable> GetParamEx(string classCode, string secCode, string paramName, int timeout = Timeout.Infinite);
+        Task<ParamTable> GetParamEx(string classCode, string secCode, ParamNames paramName, int timeout = Timeout.Infinite);
 
         /// <summary>
         /// Функция для получения всех значений Таблицы текущих значений параметров
@@ -328,16 +330,16 @@ namespace QuikSharp
         /// <param name="secCode"></param>
         /// <param name="paramName"></param>
         /// <returns></returns>
-        public async Task<ParamTable> GetParamEx(string classCode, string secCode, string paramName)
+        public async Task<ParamTable> GetParamEx(string classCode, string secCode, string paramName, int timeout = Timeout.Infinite)
         {
             var response = await QuikService.Send<Message<ParamTable>>(
                     (new Message<string>(classCode + "|" + secCode + "|" + paramName, "getParamEx"))).ConfigureAwait(false);
             return response.Data;
         }
-        public async Task<ParamTable> GetParamEx(string classCode, string secCode, ParamNames paramName)
+        public async Task<ParamTable> GetParamEx(string classCode, string secCode, ParamNames paramName, int timeout = Timeout.Infinite)
         {
             var response = await QuikService.Send<Message<ParamTable>>(
-                    (new Message<string>(classCode + "|" + secCode + "|" + paramName, "getParamEx"))).ConfigureAwait(false);
+                    (new Message<string>(classCode + "|" + secCode + "|" + paramName, "getParamEx")), timeout).ConfigureAwait(false);
             return response.Data;
         }
 

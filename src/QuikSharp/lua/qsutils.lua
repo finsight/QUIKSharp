@@ -80,6 +80,21 @@ logfile = io.open (script_path.. "/logs/QuikSharp.log", "a")
 missed_values_file = nil
 missed_values_file_name = nil
 
+-- closes log
+function closeLog()
+	pcall(logfile:close(logfile))
+end
+
+-- discards missed values if any
+function discardMissedValues()
+    if missed_values_file then
+        pcall(missed_values_file:close(missed_values_file))
+        missed_values_file = nil
+        pcall(os.remove, missed_values_file_name)
+        missed_values_file_name = nil
+    end
+end
+
 -- current connection state
 is_connected = false
 --- indicates that QuikSharp was connected during this session
@@ -98,7 +113,7 @@ local callback_client
 
 --- accept client on server
 local function getResponseServer()
-    print('Waiting for a client')
+    log('Waiting for a response client...', 1)
 	local i = 0
 	if not response_server then
 		log("Cannot bind to response_server, probably the port is already in use", 3)
@@ -115,7 +130,7 @@ local function getResponseServer()
 end
 
 local function getCallbackClient()
-    print('Waiting for a client')
+    log('Waiting for a callback client...', 1)
 	local i = 0
 	if not callback_server then
 		log("Cannot bind to callback_server, probably the port is already in use", 3)
@@ -154,11 +169,13 @@ function qsutils.connect()
                 log("Loading values that a client missed during disconnect", 2)
                 missed_values_file:flush()
                 missed_values_file:close()
-                missed_values_file = nil
-                local previous_file_name = missed_values_file_name
+                missed_values_file = nil                
+				local previous_file_name = missed_values_file_name
                 missed_values_file_name = nil
                 for line in io.lines(previous_file_name) do
-                    callback_client:send(line..'\n')
+					if not pcall(callback_client.send, callback_client, line..'\n') then
+						break
+					end
                 end
                 -- remove previous file
                 pcall(os.remove, previous_file_name)
@@ -169,7 +186,7 @@ end
 
 local function disconnected()
     is_connected = false
-    print('Disconnecting...')
+    log('Disconnecting...', 1)
     if response_client then
         pcall(response_client.close, response_client)
         response_client = nil
