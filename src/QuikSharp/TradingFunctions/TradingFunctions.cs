@@ -333,7 +333,7 @@ namespace QuikSharp
         public async Task<ParamTable> GetParamEx(string classCode, string secCode, string paramName, int timeout = Timeout.Infinite)
         {
             var response = await QuikService.Send<Message<ParamTable>>(
-                    (new Message<string>(classCode + "|" + secCode + "|" + paramName, "getParamEx"))).ConfigureAwait(false);
+                    (new Message<string>(classCode + "|" + secCode + "|" + paramName, "getParamEx")), timeout).ConfigureAwait(false);
             return response.Data;
         }
         public async Task<ParamTable> GetParamEx(string classCode, string secCode, ParamNames paramName, int timeout = Timeout.Infinite)
