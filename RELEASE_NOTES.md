@@ -1,3 +1,8 @@
+#### 1.0.0 - May 16 2019
+* Updates & bug fixes from all commits since the last version.
+* Added netstandard2.0 target.
+* The first stable version, all essential functionality is battle-tested by users over the past year.
+
 #### 1.0.0-beta1 - July 10 2017
 * Update NuGet. Minor changes and some new functions (e.g. GetTradesAccounts).
 
