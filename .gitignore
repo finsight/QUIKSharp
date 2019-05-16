@@ -227,3 +227,4 @@ docs/content/release-notes.md
 !src/QuikSharp/lua/clibs/socket/*.dll
 
 \.vs/
+artifacts

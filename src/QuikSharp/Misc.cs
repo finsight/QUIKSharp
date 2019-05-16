@@ -8,10 +8,10 @@ namespace QuikSharp
     {
         /// <summary>
         /// The connection state of a socket is reflected in the Connected property,
-        ///  but this property only gets updated with the last send- or receive-action.
-        /// To determine the connection state before send or receive the one an only way
-        /// is polling the state directly from the socket it self. The following
-        ///  extension class will help doing this.
+        /// but this property is only updated with the last send or receive action.
+        /// To determine the connection state before send or receive the one and only way
+        /// is polling the state directly from the socket itself. The following
+        /// extension class does this.
         /// </summary>
         public static bool IsConnectedNow(this Socket s)
         {

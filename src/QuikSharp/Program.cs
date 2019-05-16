@@ -9,6 +9,20 @@ using System.Threading;
 
 namespace QuikSharp
 {
+#if NETSTANDARD
+    internal class ConsoleTraceListener : TraceListener
+    {
+        public override void Write(string message)
+        {
+            Console.Write(message);
+        }
+
+        public override void WriteLine(string message)
+        {
+            Console.WriteLine(message);
+        }
+    }
+#endif
     // Шаманство с обработкой закрытия может быть нужно, если кровь из носа следует
     // почистить за собой перед выходом, например снять все заявки или сохранить
     // необработанные данные. Взято из:
@@ -21,7 +35,7 @@ namespace QuikSharp
 
         private static bool _exitSystem;
 
-        #region Trap application termination
+#region Trap application termination
 
         [DllImport("Kernel32")]
         private static extern bool SetConsoleCtrlHandler(EventHandler handler, bool add);
@@ -59,7 +73,7 @@ namespace QuikSharp
             return true;
         }
 
-        #endregion Trap application termination
+#endregion Trap application termination
 
         private static void Main()
         {
@@ -107,7 +121,7 @@ namespace QuikSharp
 
             Console.WriteLine(time2);
 
-            #region Example
+#region Example
 
             double bestBidPrice = 0;
             double bestOfferPrice = 0;
@@ -142,7 +156,7 @@ namespace QuikSharp
             Console.WriteLine("Per call: " + (sw.ElapsedMilliseconds / n));
             Console.WriteLine("While Exit");
 
-            #endregion Example
+#endregion Example
 
             // hold the console so it doesn’t run off the end
             while (!_exitSystem)

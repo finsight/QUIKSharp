@@ -108,7 +108,7 @@ namespace QuikSharp
                 new JsonSerializerSettings
                 {
                     TypeNameHandling = TypeNameHandling.None, // Objects
-                    TypeNameAssemblyFormat = FormatterAssemblyStyle.Simple,
+                    Formatting = Formatting.Indented,
                     // NB this is important for correctness and performance
                     // Transaction could have many null properties
                     NullValueHandling = NullValueHandling.Ignore

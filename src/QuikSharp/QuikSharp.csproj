@@ -1,19 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-    <TargetFrameworks>net45</TargetFrameworks>
+  <PropertyGroup>
+    <TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
     <AssemblyName>QUIKSharp</AssemblyName>
     <RootNamespace>QUIKSharp</RootNamespace>
     <AssemblyOriginatorKeyFile>../../QUIKSharpKey.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
     <VersionPrefix>1.0.0</VersionPrefix>
-    <VersionSuffix>beta2</VersionSuffix>
+    <VersionSuffix>rc1</VersionSuffix>
     <VersionSuffix Condition="'$(VersionSuffix)' != '' And '$(BuildNumber)' != ''">$(VersionSuffix)-$(BuildNumber)</VersionSuffix>
     <PackageTags>QUIKSharp</PackageTags>
     <Product>QUIKSharp</Product>
     <PackageId>QUIKSharp</PackageId>
     <PackageProjectUrl>https://github.com/finsight/QUIKSharp</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/finsight/QUIKSharp/blob/master/LICENSE.txt</PackageLicenseUrl>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/finsight/QUIKSharp.git</RepositoryUrl>
     <Authors>Victor Baybekov and QUIK# contributers</Authors>
@@ -22,37 +22,35 @@
     <Copyright>Victor Baybekov and QUIK# contributers</Copyright>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn),1591</NoWarn>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net45|AnyCPU'">
-      <OutputPath>..\..\bin</OutputPath>
-      <DocumentationFile>..\..\bin\QUIKSharp.xml</DocumentationFile>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net45|AnyCPU'">
-      <OutputPath>..\..\bin</OutputPath>
-      <DocumentationFile>..\..\bin\QUIKSharp.xml</DocumentationFile>
-    </PropertyGroup>
-    <ItemGroup>
-      <None Remove="lua\clibs\lua51.dll" />
-      <None Remove="lua\clibs\socket\core.dll" />
-      <None Remove="lua\dkjson.lua" />
-      <None Remove="lua\qscallbacks.lua" />
-      <None Remove="lua\qsfunctions.lua" />
-      <None Remove="lua\qsutils.lua" />
-      <None Remove="lua\QuikSharp.lua" />
-      <None Remove="lua\socket.lua" />
-    </ItemGroup>
-    <ItemGroup>
-      <Content Include="lua\clibs\lua51.dll" />
-      <Content Include="lua\clibs\socket\core.dll" />
-      <Content Include="lua\dkjson.lua" />
-      <Content Include="lua\qscallbacks.lua" />
-      <Content Include="lua\qsfunctions.lua" />
-      <Content Include="lua\qsutils.lua" />
-      <Content Include="lua\QuikSharp.lua" />
-      <Content Include="lua\socket.lua" />
-    </ItemGroup>
-    <ItemGroup>
-      <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
-      <PackageReference Include="System.Buffers" Version="4.3.0" />
-    </ItemGroup>
+
+    <IncludeSource>true</IncludeSource>
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="lua\clibs\lua51.dll" />
+    <None Remove="lua\clibs\socket\core.dll" />
+    <None Remove="lua\dkjson.lua" />
+    <None Remove="lua\qscallbacks.lua" />
+    <None Remove="lua\qsfunctions.lua" />
+    <None Remove="lua\qsutils.lua" />
+    <None Remove="lua\QuikSharp.lua" />
+    <None Remove="lua\socket.lua" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="lua\clibs\lua51.dll" />
+    <Content Include="lua\clibs\socket\core.dll" />
+    <Content Include="lua\dkjson.lua" />
+    <Content Include="lua\qscallbacks.lua" />
+    <Content Include="lua\qsfunctions.lua" />
+    <Content Include="lua\qsutils.lua" />
+    <Content Include="lua\QuikSharp.lua" />
+    <Content Include="lua\socket.lua" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="System.Buffers" Version="4.5.0" />
+  </ItemGroup>
 </Project>
