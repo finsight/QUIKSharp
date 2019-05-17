@@ -19,7 +19,7 @@ public class Tool
     string name;
     string securityCode;
     string classCode;
-    string clientCode;
+    //string clientCode;
     string accountID;
     string firmID;
     int lot;

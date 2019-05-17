@@ -18,7 +18,7 @@ namespace QuikSharpDemo
 {
     public partial class FormMain : Form
     {
-        Char separator = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0];
+        //readonly Char separator = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0];
         public static Quik _quik;
         bool isServerConnected = false;
         bool isSubscribedToolOrderBook = false;

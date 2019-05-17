@@ -3,7 +3,6 @@
 using System;
 using QuikSharp.DataStructures;
 using QuikSharp.DataStructures.Transaction;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
@@ -108,6 +107,7 @@ namespace QuikSharp
         /// <param name="classCode"></param>
         /// <param name="secCode"></param>
         /// <param name="paramName"></param>
+        /// <param name="timeout"></param>
         /// <returns></returns>
         Task<ParamTable> GetParamEx(string classCode, string secCode, string paramName, int timeout = Timeout.Infinite);
         Task<ParamTable> GetParamEx(string classCode, string secCode, ParamNames paramName, int timeout = Timeout.Infinite);
@@ -329,6 +329,7 @@ namespace QuikSharp
         /// <param name="classCode"></param>
         /// <param name="secCode"></param>
         /// <param name="paramName"></param>
+        /// <param name="timeout"></param>
         /// <returns></returns>
         public async Task<ParamTable> GetParamEx(string classCode, string secCode, string paramName, int timeout = Timeout.Infinite)
         {
