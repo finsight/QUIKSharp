@@ -4,9 +4,8 @@ using QuikSharp.DataStructures;
 
 public class Tool   
 {
-    Char separator = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0];
-
-    Quik _quik;
+    readonly Char separator = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0];
+    readonly Quik _quik;
     string name;
     string securityCode;
     string classCode;

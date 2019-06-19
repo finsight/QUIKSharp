@@ -88,8 +88,8 @@ namespace QuikSharp
         /// <param name="secCode"></param>
         /// <param name="paramName"></param>
         /// <returns></returns>
-        Task<ParamTable> ParamRequest(string classCode, string secCode, string paramName);
-        Task<ParamTable> ParamRequest(string classCode, string secCode, ParamNames paramName);
+        Task<bool> ParamRequest(string classCode, string secCode, string paramName);
+        Task<bool> ParamRequest(string classCode, string secCode, ParamNames paramName);
 
         /// <summary>
         /// Функция отменяет заказ на получение параметров Таблицы текущих торгов
@@ -98,8 +98,8 @@ namespace QuikSharp
         /// <param name="secCode"></param>
         /// <param name="paramName"></param>
         /// <returns></returns>
-        Task<ParamTable> CancelParamRequest(string classCode, string secCode, string paramName);
-        Task<ParamTable> CancelParamRequest(string classCode, string secCode, ParamNames paramName);
+        Task<bool> CancelParamRequest(string classCode, string secCode, string paramName);
+        Task<bool> CancelParamRequest(string classCode, string secCode, ParamNames paramName);
 
         /// <summary>
         /// Функция для получения значений Таблицы текущих значений параметров
@@ -290,15 +290,15 @@ namespace QuikSharp
         /// <param name="secCode"></param>
         /// <param name="paramName"></param>
         /// <returns></returns>
-        public async Task<ParamTable> ParamRequest(string classCode, string secCode, string paramName)
+        public async Task<bool> ParamRequest(string classCode, string secCode, string paramName)
         {
-            var response = await QuikService.Send<Message<ParamTable>>(
+            var response = await QuikService.Send<Message<bool>>(
                     (new Message<string>(classCode + "|" + secCode + "|" + paramName, "paramRequest"))).ConfigureAwait(false);
             return response.Data;
         }
-        public async Task<ParamTable> ParamRequest(string classCode, string secCode, ParamNames paramName)
+        public async Task<bool> ParamRequest(string classCode, string secCode, ParamNames paramName)
         {
-            var response = await QuikService.Send<Message<ParamTable>>(
+            var response = await QuikService.Send<Message<bool>>(
                     (new Message<string>(classCode + "|" + secCode + "|" + paramName, "paramRequest"))).ConfigureAwait(false);
             return response.Data;
         }
@@ -310,15 +310,15 @@ namespace QuikSharp
         /// <param name="secCode"></param>
         /// <param name="paramName"></param>
         /// <returns></returns>
-        public async Task<ParamTable> CancelParamRequest(string classCode, string secCode, string paramName)
+        public async Task<bool> CancelParamRequest(string classCode, string secCode, string paramName)
         {
-            var response = await QuikService.Send<Message<ParamTable>>(
+            var response = await QuikService.Send<Message<bool>>(
                     (new Message<string>(classCode + "|" + secCode + "|" + paramName, "cancelParamRequest"))).ConfigureAwait(false);
             return response.Data;
         }
-        public async Task<ParamTable> CancelParamRequest(string classCode, string secCode, ParamNames paramName)
+        public async Task<bool> CancelParamRequest(string classCode, string secCode, ParamNames paramName)
         {
-            var response = await QuikService.Send<Message<ParamTable>>(
+            var response = await QuikService.Send<Message<bool>>(
                     (new Message<string>(classCode + "|" + secCode + "|" + paramName, "cancelParamRequest"))).ConfigureAwait(false);
             return response.Data;
         }
@@ -435,13 +435,15 @@ namespace QuikSharp
 
             //    Console.WriteLine("Trans Id from function = {0}", transaction.TRANS_ID);
 
-            Trace.Assert(transaction.CLIENT_CODE == null,
-                "Currently we use Comment to store correlation id for a transaction, " +
-                "its reply, trades and orders. Support for comments will be added later if needed");
-            // TODO Comments are useful to kill all orders with a single KILL_ALL_ORDERS
-            // But see e.g. this http://www.quik.ru/forum/import/27073/27076/
+            //Trace.Assert(transaction.CLIENT_CODE == null,
+            //    "Currently we use Comment to store correlation id for a transaction, " +
+            //    "its reply, trades and orders. Support for comments will be added later if needed");
+            //// TODO Comments are useful to kill all orders with a single KILL_ALL_ORDERS
+            //// But see e.g. this http://www.quik.ru/forum/import/27073/27076/
 
-            transaction.CLIENT_CODE = transaction.TRANS_ID.Value.ToString();
+            //transaction.CLIENT_CODE = transaction.TRANS_ID.Value.ToString();
+
+            if (transaction.CLIENT_CODE == null) transaction.CLIENT_CODE = transaction.TRANS_ID.Value.ToString();
 
             //this can be longer than 20 chars.
             //transaction.CLIENT_CODE = QuikService.PrependWithSessionId(transaction.TRANS_ID.Value);

@@ -18,7 +18,7 @@ namespace QuikSharpDemo
 {
     public partial class FormMain : Form
     {
-        //readonly Char separator = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0];
+        readonly Char separator = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0];
         public static Quik _quik;
         bool isServerConnected = false;
         bool isSubscribedToolOrderBook = false;
@@ -69,6 +69,8 @@ namespace QuikSharpDemo
             listBoxCommands.Items.Add("Получить таблицу сделок");
             listBoxCommands.Items.Add("Получить таблицу `Клиентский портфель`");
             listBoxCommands.Items.Add("Получить таблицы денежных лимитов");
+            listBoxCommands.Items.Add("Связка ParamRequest + OnParam + GetParamEx2");
+            listBoxCommands.Items.Add("CancelParamRequest");
         }
 
         private void ButtonStart_Click(object sender, EventArgs e)
@@ -201,6 +203,14 @@ namespace QuikSharpDemo
             textBoxLogsWindow.AppendText("Вызвано событие OnDepoLimit (изменение бумажного лимита)..." + Environment.NewLine);
             textBoxLogsWindow.AppendText("Заблокировано на покупку количества лотов - " + depLimit.LockedBuy + Environment.NewLine);
         }
+        void OnParamDo(Param _param)
+        {
+            if (_param.ClassCode == tool.ClassCode && _param.SecCode == tool.SecurityCode)
+            {
+                double bid = Convert.ToDouble(_quik.Trading.GetParamEx2(tool.ClassCode, tool.SecurityCode, ParamNames.BID).Result.ParamValue.Replace('.', separator));
+                AppendText2TextBox(textBoxLogsWindow, "Вызвано событие OnParam. Актуальное значение параметра 'BID' = " + bid + Environment.NewLine);
+            }
+        }
 
         private void TimerRenewForm_Tick(object sender, EventArgs e)
         {
@@ -253,6 +263,12 @@ namespace QuikSharpDemo
                     break;
                 case "Получить таблицы денежных лимитов":
                     textBoxDescription.Text = "Получить и отобразить таблицы денежных лимитов (стандартную и дополнительную Т2). Работает только на инструментах фондовой секции. quik.Trading.GetMoney() и quik.Trading.GetMoneyEx()";
+                    break;
+                case "Связка ParamRequest + OnParam + GetParamEx2":
+                    textBoxDescription.Text = "Демонстрация работы связки ParamRequest + OnParam + GetParamEx2";
+                    break;
+                case "CancelParamRequest":
+                    textBoxDescription.Text = "Отменяем подписку на обновление параметра и отключаем обработку события OnParam";
                     break;
             }
         }
@@ -494,6 +510,40 @@ namespace QuikSharpDemo
                         }
                     }
                     catch { AppendText2TextBox(textBoxLogsWindow, "Ошибка получения денежных лимитов." + Environment.NewLine); }
+                    break;
+                case "Связка ParamRequest + OnParam + GetParamEx2":
+                    try
+                    {
+                        AppendText2TextBox(textBoxLogsWindow, "Подписываемся на получение обновляемого параметра 'BID', через ParamRequest..." + Environment.NewLine);
+                        bool pReq = _quik.Trading.ParamRequest(tool.ClassCode, tool.SecurityCode, ParamNames.BID).Result;
+                        if (pReq)
+                        {
+                            AppendText2TextBox(textBoxLogsWindow, "Подписываемся на колбэк 'OnParam'..." + Environment.NewLine);
+                            _quik.Events.OnParam += OnParamDo;
+                        }
+                        else
+                        {
+                            AppendText2TextBox(textBoxLogsWindow, "Неудачная попытка подписки на обновление параметра..." + Environment.NewLine);
+                        }
+                    }
+                    catch { AppendText2TextBox(textBoxLogsWindow, "Ошибка работы в связке ParamRequest + OnParam + GetParamEx2." + Environment.NewLine); }
+                    break;
+                case "CancelParamRequest":
+                    try
+                    {
+                        AppendText2TextBox(textBoxLogsWindow, "Отменяем подписку на получение обновляемого параметра 'BID', через ParamRequest..." + Environment.NewLine);
+                        bool pReq = _quik.Trading.CancelParamRequest(tool.ClassCode, tool.SecurityCode, ParamNames.BID).Result;
+                        if (pReq)
+                        {
+                            AppendText2TextBox(textBoxLogsWindow, "Отменяем подписку на колбэк 'OnParam'..." + Environment.NewLine);
+                            _quik.Events.OnParam -= OnParamDo;
+                        }
+                        else
+                        {
+                            AppendText2TextBox(textBoxLogsWindow, "Неудачная попытка отписки на обновление параметра..." + Environment.NewLine);
+                        }
+                    }
+                    catch { AppendText2TextBox(textBoxLogsWindow, "Ошибка работы в связке ParamRequest + OnParam + GetParamEx2." + Environment.NewLine); }
                     break;
             }
         }

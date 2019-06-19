@@ -258,7 +258,7 @@ function qsfunctions.getTradeAccount(msg)
 	return msg
 end
 
---- Функция возвращает торговые счета в системе 
+--- Функция возвращает торговые счета в системе
 function qsfunctions.getTradeAccounts(msg)
 local ListAccounts={}
 	for i=0,getNumberOf("trade_accounts")-1 do
@@ -346,9 +346,9 @@ function qsfunctions.getParamEx(msg)
     return msg
 end
 
---- Функция предназначена для получения значений всех параметров биржевой информации из Таблицы текущих торгов 
--- с возможностью в дальнейшем отказаться от получения определенных параметров, заказанных с помощью функции ParamRequest. 
--- Для отказа от получения какого-либо параметра воспользуйтесь функцией CancelParamRequest. 
+--- Функция предназначена для получения значений всех параметров биржевой информации из Таблицы текущих торгов
+-- с возможностью в дальнейшем отказаться от получения определенных параметров, заказанных с помощью функции ParamRequest.
+-- Для отказа от получения какого-либо параметра воспользуйтесь функцией CancelParamRequest.
 -- Функция возвращает таблицу Lua с параметрами, аналогичными параметрам, возвращаемым функцией getParamEx
 function qsfunctions.getParamEx2(msg)
     local spl = split(msg.data, "|")
@@ -396,7 +396,7 @@ function qsfunctions.getFuturesHolding(msg)
 	if result then
 		msg.data = result
 	else
-		log("Futures holding returns nil", 3)
+		--log("Futures holding returns nil", 3)
 		msg.data = nil
 	end
     return msg
@@ -611,7 +611,7 @@ function qsfunctions.get_num_candles(msg)
 	log("Called get_num_candles" .. msg.data, 2)
 	local spl = split(msg.data, "|")
 	local tag = spl[1]
-	
+
 	msg.data = getNumCandles(tag) * 1
 	return msg
 end
