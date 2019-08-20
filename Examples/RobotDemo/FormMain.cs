@@ -78,8 +78,8 @@ namespace RobotDemo
             try
             {
                 textBoxLogs.AppendText("Подключаемся к терминалу Quik..." + Environment.NewLine);
-                //_quik = new Quik(Quik.DefaultPort, new InMemoryStorage());    // инициализируем объект Quik
-                _quik = new Quik(34136, new InMemoryStorage());    // отладочный вариант
+                _quik = new Quik(Quik.DefaultPort, new InMemoryStorage());    // инициализируем объект Quik
+                //_quik = new Quik(34136, new InMemoryStorage());    // отладочный вариант
             }
             catch
             {
