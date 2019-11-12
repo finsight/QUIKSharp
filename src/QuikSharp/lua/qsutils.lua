@@ -169,7 +169,7 @@ function qsutils.connect()
                 log("Loading values that a client missed during disconnect", 2)
                 missed_values_file:flush()
                 missed_values_file:close()
-                missed_values_file = nil                
+                missed_values_file = nil
 				local previous_file_name = missed_values_file_name
                 missed_values_file_name = nil
                 for line in io.lines(previous_file_name) do
