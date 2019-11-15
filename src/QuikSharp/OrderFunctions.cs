@@ -38,7 +38,8 @@ namespace QuikSharp
                 SECCODE     = order.SecCode,
                 QUANTITY    = order.Quantity,
                 OPERATION   = order.Operation == Operation.Buy ? TransactionOperation.B : TransactionOperation.S,
-                PRICE       = order.Price
+                PRICE       = order.Price,
+                CLIENT_CODE = order.ClientCode
             };
             return await Quik.Trading.SendTransaction(newOrderTransaction).ConfigureAwait(false);
         }
