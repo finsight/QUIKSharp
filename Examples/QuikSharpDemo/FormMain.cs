@@ -23,7 +23,7 @@ namespace QuikSharpDemo
         bool isServerConnected = false;
         bool isSubscribedToolOrderBook = false;
         bool isSubscribedToolCandles = false;
-        string secCode = "GZH9";
+        string secCode = "SRZ9";
         string classCode = "";
         string clientCode;
         decimal bid;
@@ -51,12 +51,12 @@ namespace QuikSharpDemo
         }
         void Init()
         {
-            textBoxSecCode.Text = secCode;
-            textBoxClassCode.Text = classCode;
-            buttonRun.Enabled = false;
-            buttonCommandRun.Enabled = false;
-            timerRenewForm.Enabled = false;
-            listBoxCommands.Enabled = false;
+            textBoxSecCode.Text         = secCode;
+            textBoxClassCode.Text       = classCode;
+            buttonRun.Enabled           = false;
+            buttonCommandRun.Enabled    = false;
+            timerRenewForm.Enabled      = false;
+            listBoxCommands.Enabled     = false;
             listBoxCommands.Items.Add("Получить исторические данные");
             listBoxCommands.Items.Add("Выставить лимитрированную заявку (без сделки)");
             listBoxCommands.Items.Add("Выставить лимитрированную заявку (c выполнением!!!)");
@@ -71,6 +71,7 @@ namespace QuikSharpDemo
             listBoxCommands.Items.Add("Получить таблицы денежных лимитов");
             listBoxCommands.Items.Add("Связка ParamRequest + OnParam + GetParamEx2");
             listBoxCommands.Items.Add("CancelParamRequest");
+            listBoxCommands.Items.Add("Отменить заказ на получение стакана");
         }
 
         private void ButtonStart_Click(object sender, EventArgs e)
@@ -140,36 +141,36 @@ namespace QuikSharpDemo
                     if (tool != null && tool.Name != null && tool.Name != "")
                     {
                         textBoxLogsWindow.AppendText("Инструмент " + tool.Name + " создан." + Environment.NewLine);
-                        textBoxAccountID.Text = tool.AccountID;
-                        textBoxFirmID.Text = tool.FirmID;
-                        textBoxShortName.Text = tool.Name;
-                        textBoxLot.Text = Convert.ToString(tool.Lot);
-                        textBoxStep.Text = Convert.ToString(tool.Step);
-                        textBoxGuaranteeProviding.Text = Convert.ToString(tool.GuaranteeProviding);
-                        textBoxLastPrice.Text = Convert.ToString(tool.LastPrice);
-                        textBoxQty.Text = Convert.ToString(GetPositionT2(_quik, tool, clientCode));
+                        textBoxAccountID.Text           = tool.AccountID;
+                        textBoxFirmID.Text              = tool.FirmID;
+                        textBoxShortName.Text           = tool.Name;
+                        textBoxLot.Text                 = Convert.ToString(tool.Lot);
+                        textBoxStep.Text                = Convert.ToString(tool.Step);
+                        textBoxGuaranteeProviding.Text  = Convert.ToString(tool.GuaranteeProviding);
+                        textBoxLastPrice.Text           = Convert.ToString(tool.LastPrice);
+                        textBoxQty.Text                 = Convert.ToString(GetPositionT2(_quik, tool, clientCode));
                         textBoxLogsWindow.AppendText("Подписываемся на стакан..." + Environment.NewLine);
                         _quik.OrderBook.Subscribe(tool.ClassCode, tool.SecurityCode).Wait();
-                        isSubscribedToolOrderBook = _quik.OrderBook.IsSubscribed(tool.ClassCode, tool.SecurityCode).Result;
+                        isSubscribedToolOrderBook       = _quik.OrderBook.IsSubscribed(tool.ClassCode, tool.SecurityCode).Result;
                         if (isSubscribedToolOrderBook)
                         {
-                            toolOrderBook = new OrderBook();
+                            toolOrderBook                   = new OrderBook();
                             textBoxLogsWindow.AppendText("Подписка на стакан прошла успешно." + Environment.NewLine);
                             textBoxLogsWindow.AppendText("Подписываемся на колбэк 'OnQuote'..." + Environment.NewLine);
                             _quik.Events.OnQuote += OnQuoteDo;
-                            timerRenewForm.Enabled = true;
-                            listBoxCommands.SelectedIndex = 0;
-                            listBoxCommands.Enabled = true;
-                            buttonCommandRun.Enabled = true;
+                            timerRenewForm.Enabled          = true;
+                            listBoxCommands.SelectedIndex   = 0;
+                            listBoxCommands.Enabled         = true;
+                            buttonCommandRun.Enabled        = true;
                         }
                         else
                         {
                             textBoxLogsWindow.AppendText("Подписка на стакан не удалась." + Environment.NewLine);
-                            textBoxBestBid.Text = "-";
-                            textBoxBestOffer.Text = "-";
-                            timerRenewForm.Enabled = false;
-                            listBoxCommands.Enabled = false;
-                            buttonCommandRun.Enabled = false;
+                            textBoxBestBid.Text             = "-";
+                            textBoxBestOffer.Text           = "-";
+                            timerRenewForm.Enabled          = false;
+                            listBoxCommands.Enabled         = false;
+                            buttonCommandRun.Enabled        = false;
                         }
                         textBoxLogsWindow.AppendText("Подписываемся на колбэк 'OnFuturesClientHolding'..." + Environment.NewLine);
                         _quik.Events.OnFuturesClientHolding += OnFuturesClientHoldingDo;
@@ -269,6 +270,9 @@ namespace QuikSharpDemo
                     break;
                 case "CancelParamRequest":
                     textBoxDescription.Text = "Отменяем подписку на обновление параметра и отключаем обработку события OnParam";
+                    break;
+                case "Отменить заказ на получение стакана":
+                    textBoxDescription.Text = "Вызываем функцию отмены заказа стакана по инструменту";
                     break;
             }
         }
@@ -544,6 +548,34 @@ namespace QuikSharpDemo
                         }
                     }
                     catch { AppendText2TextBox(textBoxLogsWindow, "Ошибка работы в связке ParamRequest + OnParam + GetParamEx2." + Environment.NewLine); }
+                    break;
+                case "Отменить заказ на получение стакана":
+                    try
+                    {
+                        AppendText2TextBox(textBoxLogsWindow, "Отменяем заказ на получение с сервера стакана по указанному классу и инструменту..." + Environment.NewLine);
+                        _quik.OrderBook.Unsubscribe(tool.ClassCode, tool.SecurityCode).Wait();
+                        int i = 0;
+                        while(isSubscribedToolOrderBook & i < 10)
+                        {
+                            Thread.Sleep(500);
+                            isSubscribedToolOrderBook = _quik.OrderBook.IsSubscribed(tool.ClassCode, tool.SecurityCode).Result;
+                        }
+                        if (isSubscribedToolOrderBook)
+                        {
+                            //toolOrderBook                   = new OrderBook();
+                            AppendText2TextBox(textBoxLogsWindow, "Отмена подписки на стакан не удалась." + Environment.NewLine);
+                        }
+                        else
+                        {
+                            toolOrderBook                   = null;
+                            AppendText2TextBox(textBoxLogsWindow, "Отмена подписки на стакан прошла успешно." + Environment.NewLine);
+                            bid                             = 0;
+                            offer                           = 0;
+                            textBoxBestBid.Text             = "-";
+                            textBoxBestOffer.Text           = "-";
+                        }
+                    }
+                    catch { AppendText2TextBox(textBoxLogsWindow, "Ошибка в функции отмены заказа стакана." + Environment.NewLine); }
                     break;
             }
         }
