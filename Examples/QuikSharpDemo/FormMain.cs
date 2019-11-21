@@ -132,12 +132,12 @@ namespace QuikSharpDemo
                 }
                 if (classCode!= null && classCode != "")
                 {
-                    textBoxClassCode.Text = classCode;
+                    textBoxClassCode.Text   = classCode;
                     textBoxLogsWindow.AppendText("Определяем код клиента..." + Environment.NewLine);
-                    clientCode = _quik.Class.GetClientCode().Result;
-                    textBoxClientCode.Text = clientCode;
+                    clientCode              = _quik.Class.GetClientCode().Result;
+                    textBoxClientCode.Text  = clientCode;
                     textBoxLogsWindow.AppendText("Создаем экземпляр инструмента " + secCode + "|" + classCode + "..." + Environment.NewLine);
-                    tool = new Tool(_quik, secCode, classCode);
+                    tool                    = new Tool(_quik, secCode, classCode);
                     if (tool != null && tool.Name != null && tool.Name != "")
                     {
                         textBoxLogsWindow.AppendText("Инструмент " + tool.Name + " создан." + Environment.NewLine);
@@ -553,12 +553,20 @@ namespace QuikSharpDemo
                     try
                     {
                         AppendText2TextBox(textBoxLogsWindow, "Отменяем заказ на получение с сервера стакана по указанному классу и инструменту..." + Environment.NewLine);
-                        _quik.OrderBook.Unsubscribe(tool.ClassCode, tool.SecurityCode).Wait();
+                        bool resultUnsub = await _quik.OrderBook.Unsubscribe(tool.ClassCode, tool.SecurityCode).ConfigureAwait(false);
+                        int count = 0;
+                        while (!resultUnsub && count < 10)
+                        {
+                            Thread.Sleep(500);
+                            resultUnsub = await _quik.OrderBook.Unsubscribe(tool.ClassCode, tool.SecurityCode).ConfigureAwait(false);
+                            count++;
+                        }
                         int i = 0;
-                        while(isSubscribedToolOrderBook & i < 10)
+                        while(isSubscribedToolOrderBook && i < 10)
                         {
                             Thread.Sleep(500);
                             isSubscribedToolOrderBook = _quik.OrderBook.IsSubscribed(tool.ClassCode, tool.SecurityCode).Result;
+                            i++;
                         }
                         if (isSubscribedToolOrderBook)
                         {
