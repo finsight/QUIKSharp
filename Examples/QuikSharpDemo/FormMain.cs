@@ -219,8 +219,10 @@ namespace QuikSharpDemo
             textBoxQty.Text = Convert.ToString(GetPositionT2(_quik, tool, clientCode));
             if (toolOrderBook != null && toolOrderBook.bid != null)
             {
-                textBoxBestBid.Text = bid.ToString();
-                textBoxBestOffer.Text = offer.ToString();
+                //textBoxBestBid.Text = bid.ToString();
+                //textBoxBestOffer.Text = offer.ToString();
+                Text2TextBox(textBoxBestBid, bid.ToString());
+                Text2TextBox(textBoxBestOffer, offer.ToString());
             }
             if (futuresPosition != null) textBoxVarMargin.Text = futuresPosition.varMargin.ToString(); 
         }
@@ -579,8 +581,8 @@ namespace QuikSharpDemo
                             AppendText2TextBox(textBoxLogsWindow, "Отмена подписки на стакан прошла успешно." + Environment.NewLine);
                             bid                             = 0;
                             offer                           = 0;
-                            textBoxBestBid.Text             = "-";
-                            textBoxBestOffer.Text           = "-";
+                            Text2TextBox(textBoxBestBid, "-");
+                            Text2TextBox(textBoxBestOffer, "-");
                         }
                     }
                     catch { AppendText2TextBox(textBoxLogsWindow, "Ошибка в функции отмены заказа стакана." + Environment.NewLine); }
