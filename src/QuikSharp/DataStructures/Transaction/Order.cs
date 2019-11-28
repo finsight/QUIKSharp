@@ -112,7 +112,7 @@ namespace QuikSharp.DataStructures.Transaction
         /// Идентификатор пользователя, снявшего заявку
         /// </summary>
         [JsonProperty("canceled_uid")]
-        public string CanceledUID { get; set; }
+        public long CanceledUID { get; set; }
 
         /// <summary>
         /// Код биржи в торговой системе
