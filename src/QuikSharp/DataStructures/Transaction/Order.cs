@@ -109,6 +109,12 @@ namespace QuikSharp.DataStructures.Transaction
         public long Uid { get; set; }
 
         /// <summary>
+        /// Идентификатор пользователя, снявшего заявку
+        /// </summary>
+        [JsonProperty("canceled_uid")]
+        public string CanceledUID { get; set; }
+
+        /// <summary>
         /// Код биржи в торговой системе
         /// </summary>
         [JsonProperty("exchange_code")]
@@ -217,7 +223,21 @@ namespace QuikSharp.DataStructures.Transaction
         public int MinQty { get; set; }
 
         /// <summary>
-        /// Тип исполнения заявки. Если имеет значение «0», значит значение не задано
+        /// Тип исполнения заявки. Возможные значения:
+        /// «0» – Значение не указано; 
+        /// «1» – Немедленно или отклонить; 
+        /// «2» – Поставить в очередь; 
+        /// «3» – Снять остаток; 
+        /// «4» – До снятия; 
+        /// «5» – До даты; 
+        /// «6» – В течение сессии; 
+        /// «7» – Открытие; 
+        /// «8» – Закрытие; 
+        /// «9» – Кросс; 
+        /// «11» – До следующей сессии; 
+        /// «13» – До отключения; 
+        /// «15» – До времени; 
+        /// «16» – Следующий аукцион; 
         /// </summary>
         [JsonProperty("exec_type")]
         public int ExecType { get; set; }
@@ -235,7 +255,19 @@ namespace QuikSharp.DataStructures.Transaction
         public int AcntType { get; set; }
 
         /// <summary>
-        /// Поле для получения параметров по западным площадкам. Если имеет значение «0», значит значение не задано
+        /// Роль в исполнении заявки. Возможные значения:
+        /// «0» – Не определено; 
+        /// «1» – Agent; 
+        /// «2» – Principal; 
+        /// «3» – Riskless principal; 
+        /// «4» – CFG give up; 
+        /// «5» – Cross as agent; 
+        /// «6» – Matched Principal; 
+        /// «7» – Proprietary; 
+        /// «8» – Individual; 
+        /// «9» – Agent for other member; 
+        /// «10» – Mixed; 
+        /// «11» – Market maker;
         /// </summary>
         [JsonProperty("capacity")]
         public int Capacity { get; set; }
