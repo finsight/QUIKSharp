@@ -31,7 +31,7 @@ namespace QuikSharp.Tests {
 
     [TestFixture]
     public class TransactionSpecTest {
-        readonly DebugFunctions _df = new DebugFunctions(Quik.DefaultPort);
+        readonly DebugFunctions _df = new DebugFunctions(Quik.DefaultPort, Quik.DefaultHost);
         Quik _q = new Quik();
         /// <summary>
         /// Make sure that Buy or Sell is never set by default

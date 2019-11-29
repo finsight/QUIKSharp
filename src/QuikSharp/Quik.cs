@@ -13,25 +13,29 @@ namespace QuikSharp
         /// 34130
         /// </summary>
         public const int DefaultPort = 34130;
+        /// <summary>
+        /// localhost
+        /// </summary>
+        public const string DefaultHost = "127.0.0.1";
 
         /// <summary>
         /// Quik interface in .NET constructor
         /// </summary>
-        public Quik(int port = DefaultPort, IPersistentStorage storage = null)
+        public Quik(int port = DefaultPort, IPersistentStorage storage = null, string host = DefaultHost)
         {
-            if (storage == null) { Storage = new InMemoryStorage(); } else { Storage = storage; }
-            QuikService = QuikService.Create(port);
+            Storage                     = storage == null ? new InMemoryStorage() : storage;
+            QuikService                 = QuikService.Create(port, host);
             // poor man's DI
             QuikService.Storage         = Storage;
             Events                      = QuikService.Events;
-            Debug                       = new DebugFunctions(port);
-            Service                     = new ServiceFunctions(port);
-            Class                       = new ClassFunctions(port);
-            OrderBook                   = new OrderBookFunctions(port);
-            Trading                     = new TradingFunctions(port);
-            StopOrders                  = new StopOrderFunctions(port, this);
-            Orders                      = new OrderFunctions(port, this);
-            Candles                     = new CandleFunctions(port);
+            Debug                       = new DebugFunctions(port, host);
+            Service                     = new ServiceFunctions(port, host);
+            Class                       = new ClassFunctions(port, host);
+            OrderBook                   = new OrderBookFunctions(port, host);
+            Trading                     = new TradingFunctions(port, host);
+            StopOrders                  = new StopOrderFunctions(port, this, host);
+            Orders                      = new OrderFunctions(port, this, host);
+            Candles                     = new CandleFunctions(port, host);
             QuikService.Candles         = Candles;
             QuikService.StopOrders      = StopOrders;
             QuikService.WorkingFolder   = Service.GetWorkingFolder().Result;

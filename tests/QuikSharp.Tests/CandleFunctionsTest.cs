@@ -13,7 +13,7 @@ namespace QuikSharp.Tests
         [Test]
         public void GetCandlesTest()
         {
-            CandleFunctions _cf = new CandleFunctions(Quik.DefaultPort);
+            CandleFunctions _cf = new CandleFunctions(Quik.DefaultPort, Quik.DefaultHost);
 
             //Quik quik = new Quik();
             string graphicTag = "RIU5M1";//В квике должен быть открыт график с этим (SBER2M) идентификатором.

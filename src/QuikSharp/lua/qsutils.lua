@@ -105,6 +105,7 @@ local port = 34130
 local callback_port = port + 1
 -- we need two ports since callbacks and responses conflict and write to the same socket at the same time
 -- I do not know how to make locking in Lua, it is just simpler to have two independent connections
+-- To connect to a remote terminal - replace 'localhost' with the terminal ip-address
 local response_server = socket.bind('localhost', port, 1)
 local callback_server = socket.bind('localhost', callback_port, 1)
 local response_client

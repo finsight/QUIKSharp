@@ -49,7 +49,8 @@ namespace QuikSharp
         ///
         /// </summary>
         /// <param name="port"></param>
-        public OrderBookFunctions(int port) { QuikService = QuikService.Create(port); }
+        /// <param name="host"></param>
+        public OrderBookFunctions(int port, string host) { QuikService = QuikService.Create(port, host); }
 
         /// <summary>
         ///

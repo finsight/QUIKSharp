@@ -22,7 +22,7 @@ namespace QuikSharp.DataStructures.Transaction
 
         internal void OnTransReplyCall(TransactionReply reply)
         {
-            if (OnTransReply != null) { OnTransReply(reply); }
+            OnTransReply?.Invoke(reply);
             // this should happen only once per transaction id
             Trace.Assert(TransactionReply == null);
             TransactionReply = reply;
@@ -40,7 +40,7 @@ namespace QuikSharp.DataStructures.Transaction
 
         internal void OnOrderCall(Order order)
         {
-            if (OnOrder != null) { OnOrder(order); }
+            OnOrder?.Invoke(order); 
             if (Orders == null) { Orders = new List<Order>(); }
             Orders.Add(order);
         }
@@ -52,7 +52,7 @@ namespace QuikSharp.DataStructures.Transaction
 
         internal void OnStopOrderCall(StopOrder stopOrder)
         {
-            if (OnStopOrder != null) { OnStopOrder(stopOrder); }
+            OnStopOrder?.Invoke(stopOrder);
             if (StopOrders == null) { StopOrders = new List<StopOrder>(); }
             StopOrders.Add(stopOrder);
         }
@@ -74,7 +74,7 @@ namespace QuikSharp.DataStructures.Transaction
 
         internal void OnTradeCall(Trade trade)
         {
-            if (OnTrade != null) { OnTrade(trade); }
+            OnTrade?.Invoke(trade);
             if (Trades == null) { Trades = new List<Trade>(); }
             Trades.Add(trade);
         }

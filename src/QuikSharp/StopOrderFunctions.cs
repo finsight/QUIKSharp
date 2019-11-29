@@ -20,13 +20,12 @@ namespace QuikSharp
 
         internal void RaiseNewStopOrderEvent(StopOrder stopOrder)
         {
-            if (NewStopOrder != null)
-                NewStopOrder(stopOrder);
+            NewStopOrder?.Invoke(stopOrder);
         }
 
-        public StopOrderFunctions(int port, Quik quik)
+        public StopOrderFunctions(int port, Quik quik, string host)
         {
-            QuikService = QuikService.Create(port);
+            QuikService = QuikService.Create(port, host);
             Quik = quik;
         }
 

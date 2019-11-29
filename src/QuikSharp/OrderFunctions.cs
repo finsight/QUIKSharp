@@ -18,9 +18,9 @@ namespace QuikSharp
         /// <summary>
         /// Конструктор.
         /// </summary>
-        public OrderFunctions(int port, Quik quik)
+        public OrderFunctions(int port, Quik quik, string host)
         {
-            QuikService = QuikService.Create(port);
+            QuikService = QuikService.Create(port, host);
             Quik = quik;
         }
 

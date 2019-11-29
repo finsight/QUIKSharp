@@ -191,9 +191,9 @@ namespace QuikSharp
     /// </summary>
     public class TradingFunctions : ITradingFunctions
     {
-        public TradingFunctions(int port)
+        public TradingFunctions(int port, string host)
         {
-            QuikService = QuikService.Create(port);
+            QuikService = QuikService.Create(port, host);
         }
 
         public QuikService QuikService { get; private set; }

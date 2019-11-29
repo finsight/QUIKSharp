@@ -7,9 +7,9 @@ namespace QuikSharp
 {
     public class DebugFunctions : IQuikService
     {
-        public DebugFunctions(int port)
+        public DebugFunctions(int port, string host)
         {
-            QuikService = QuikService.Create(port);
+            QuikService = QuikService.Create(port, host);
         }
 
         public QuikService QuikService { get; private set; }

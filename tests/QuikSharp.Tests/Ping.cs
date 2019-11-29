@@ -8,11 +8,11 @@ namespace QuikSharp.Tests
     [TestFixture]
     public class Ping
     {
-        readonly DebugFunctions _df = new DebugFunctions(Quik.DefaultPort);
+        readonly DebugFunctions _df = new DebugFunctions(Quik.DefaultPort, Quik.DefaultHost);
 
         [Test]
         public void PingWorks() {
-            var df = new DebugFunctions(Quik.DefaultPort);
+            var df = new DebugFunctions(Quik.DefaultPort, Quik.DefaultHost);
             var pong = df.Ping().Result;
         }
 

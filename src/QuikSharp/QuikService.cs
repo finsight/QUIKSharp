@@ -39,7 +39,7 @@ namespace QuikSharp
         /// <summary>
         /// For each port only one instance of QuikService
         /// </summary>
-        public static QuikService Create(int port)
+        public static QuikService Create(int port, string host)
         {
             lock (StaticSync)
             {
@@ -51,7 +51,7 @@ namespace QuikSharp
                 }
                 else
                 {
-                    service = new QuikService(port);
+                    service = new QuikService(port, host);
                     Services.Add(port, service);
                 }
 
@@ -65,12 +65,13 @@ namespace QuikSharp
             }
         }
 
-        private QuikService(int responsePort)
+        private QuikService(int responsePort, string host)
         {
-            _responsePort = responsePort;
-            _callbackPort = _responsePort + 1;
+            _responsePort   = responsePort;
+            _callbackPort   = _responsePort + 1;
+            _host           = IPAddress.Parse(host);
             Start();
-            Events = new QuikEvents(this);
+            Events          = new QuikEvents(this);
         }
 
         /// <summary>
@@ -93,7 +94,8 @@ namespace QuikSharp
         internal MemoryMappedFile mmf;
         internal MemoryMappedViewAccessor accessor;
 
-        private readonly IPAddress _host = IPAddress.Parse("127.0.0.1");
+        //private readonly IPAddress _host = IPAddress.Parse("127.0.0.1");
+        private readonly IPAddress _host;
         private readonly int _responsePort;
         private readonly int _callbackPort;
         private TcpClient _responseClient;

@@ -67,14 +67,17 @@
             this.textBoxQty = new System.Windows.Forms.TextBox();
             this.label16 = new System.Windows.Forms.Label();
             this.textBoxVarMargin = new System.Windows.Forms.TextBox();
+            this.checkBoxRemoteHost = new System.Windows.Forms.CheckBox();
+            this.textBoxHost = new System.Windows.Forms.TextBox();
+            this.label17 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // buttonStart
             // 
             this.buttonStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttonStart.Location = new System.Drawing.Point(13, 13);
+            this.buttonStart.Location = new System.Drawing.Point(243, 13);
             this.buttonStart.Name = "buttonStart";
-            this.buttonStart.Size = new System.Drawing.Size(1032, 23);
+            this.buttonStart.Size = new System.Drawing.Size(802, 23);
             this.buttonStart.TabIndex = 0;
             this.buttonStart.Text = "CONNECT";
             this.buttonStart.UseVisualStyleBackColor = true;
@@ -399,11 +402,40 @@
             this.textBoxVarMargin.Size = new System.Drawing.Size(140, 20);
             this.textBoxVarMargin.TabIndex = 6;
             // 
+            // checkBoxRemoteHost
+            // 
+            this.checkBoxRemoteHost.AutoSize = true;
+            this.checkBoxRemoteHost.Location = new System.Drawing.Point(218, 19);
+            this.checkBoxRemoteHost.Name = "checkBoxRemoteHost";
+            this.checkBoxRemoteHost.Size = new System.Drawing.Size(15, 14);
+            this.checkBoxRemoteHost.TabIndex = 7;
+            this.checkBoxRemoteHost.UseVisualStyleBackColor = true;
+            this.checkBoxRemoteHost.CheckedChanged += new System.EventHandler(this.CheckBoxRemoteHost_CheckedChanged);
+            // 
+            // textBoxHost
+            // 
+            this.textBoxHost.Enabled = false;
+            this.textBoxHost.Location = new System.Drawing.Point(93, 16);
+            this.textBoxHost.Name = "textBoxHost";
+            this.textBoxHost.Size = new System.Drawing.Size(113, 20);
+            this.textBoxHost.TabIndex = 6;
+            this.textBoxHost.Text = "127.0.0.1";
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(20, 19);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(57, 13);
+            this.label17.TabIndex = 5;
+            this.label17.Text = "Remote IP";
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1057, 547);
+            this.Controls.Add(this.checkBoxRemoteHost);
             this.Controls.Add(this.textBoxFirmID);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.textBoxClientCode);
@@ -432,8 +464,10 @@
             this.Controls.Add(this.label7);
             this.Controls.Add(this.textBoxShortName);
             this.Controls.Add(this.label6);
+            this.Controls.Add(this.textBoxHost);
             this.Controls.Add(this.textBoxSecCode);
             this.Controls.Add(this.label14);
+            this.Controls.Add(this.label17);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.buttonCommandRun);
             this.Controls.Add(this.textBoxDescription);
@@ -488,6 +522,9 @@
         private System.Windows.Forms.TextBox textBoxQty;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.TextBox textBoxVarMargin;
+        private System.Windows.Forms.CheckBox checkBoxRemoteHost;
+        private System.Windows.Forms.TextBox textBoxHost;
+        private System.Windows.Forms.Label label17;
     }
 }
 

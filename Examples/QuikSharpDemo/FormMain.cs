@@ -79,8 +79,11 @@ namespace QuikSharpDemo
             try
             {
                 textBoxLogsWindow.AppendText("Подключаемся к терминалу Quik..." + Environment.NewLine);
-                _quik = new Quik(Quik.DefaultPort, new InMemoryStorage());    // инициализируем объект Quik
-                //_quik = new Quik(34136, new InMemoryStorage());    // отладочное подключение
+                if (checkBoxRemoteHost.Checked) _quik = new Quik(Quik.DefaultPort, new InMemoryStorage(), textBoxHost.Text);    // инициализируем объект Quik с использованием удаленного IP-адреса терминала
+                else _quik = new Quik(Quik.DefaultPort, new InMemoryStorage());    // инициализируем объект Quik с использованием локального расположения терминала (по умолчанию)
+                //// Отладочный вариант подключения
+                //if (checkBoxRemoteHost.Checked) _quik = new Quik(34136, new InMemoryStorage(), textBoxHost.Text);    // инициализируем объект Quik с использованием удаленного IP-адреса терминала
+                //else _quik = new Quik(34136, new InMemoryStorage());    // инициализируем объект Quik с использованием локального расположения терминала (по умолчанию)
             }
             catch
             {
@@ -636,6 +639,7 @@ namespace QuikSharpDemo
             }
             return qty;
         }
+        private void CheckBoxRemoteHost_CheckedChanged(object sender, EventArgs e) { textBoxHost.Enabled = checkBoxRemoteHost.Checked ? true : false; }
         //long NewOrder(Quik _quik, Tool _tool, Operation operation, decimal price, int qty)
         //{
         //    long res = 0;

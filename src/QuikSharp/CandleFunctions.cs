@@ -24,9 +24,9 @@ namespace QuikSharp
                 NewCandle(candle);
         }
 
-        public CandleFunctions(int port)
+        public CandleFunctions(int port, string host)
         {
-            QuikService = QuikService.Create(port);
+            QuikService = QuikService.Create(port, host);
         }
 
 

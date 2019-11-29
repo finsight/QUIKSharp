@@ -66,9 +66,9 @@ namespace QuikSharp
     /// </summary>
     public class ClassFunctions : IClassFunctions
     {
-        public ClassFunctions(int port)
+        public ClassFunctions(int port, string host)
         {
-            QuikService = QuikService.Create(port);
+            QuikService = QuikService.Create(port, host);
         }
 
         public QuikService QuikService { get; private set; }

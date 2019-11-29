@@ -10,7 +10,7 @@ namespace QuikSharp
 
         public static void StartServices()
         {
-            quikService = QuikService.Create(Quik.DefaultPort);
+            quikService = QuikService.Create(Quik.DefaultPort, Quik.DefaultHost);
         }
 
         public static void StopServices()
