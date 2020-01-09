@@ -64,10 +64,10 @@ namespace QuikSharp
         /// </summary>
         Task<MoneyLimitEx> GetMoneyEx(string firmId, string clientCode, string tag, string currCode, int limitKind);
 
-        ///// <summary>
-        /////  функция для получения информации по фьючерсным лимитам
-        ///// </summary>
-        //Task<string> getFuturesLimit();
+        /// <summary>
+        ///  функция для получения информации по фьючерсным лимитам
+        /// </summary>
+        Task<List<FuturesLimits>> GetFuturesLimit(string firmId, string accId, int limitType, string currCode);
         ///// <summary>
         /////  функция для получения информации по фьючерсным позициям
         ///// </summary>
@@ -364,11 +364,32 @@ namespace QuikSharp
             return response.Data;
         }
 
+        /// <summary>
+        /// Функция для получения информации по фьючерсным лимитам
+        /// </summary>
+        /// <param name="firmId"></param>
+        /// <param name="accId"></param>
+        /// <param name="limitType"></param>
+        /// <param name="currCode"></param>
+        /// <returns></returns>
+        public async Task<List<FuturesLimits>> GetFuturesLimit(string firmId, string accId, int limitType, string currCode)
+        {
+            var response = await QuikService.Send<Message<List<FuturesLimits>>>(
+                    (new Message<string>(firmId + "|" + accId + "|" + limitType + "|" + currCode, "getFuturesLimit"))).ConfigureAwait(false);
+            return response.Data;
+        }
+        /// <summary>
+        /// Функция для получения информации по фьючерсным позициям
+        /// </summary>
+        /// <param name="firmId"></param>
+        /// <param name="accId"></param>
+        /// <param name="secCode"></param>
+        /// <param name="posType"></param>
+        /// <returns></returns>
         public async Task<FuturesClientHolding> GetFuturesHolding(string firmId, string accId, string secCode, int posType)
         {
             var response = await QuikService.Send<Message<FuturesClientHolding>>(
                     (new Message<string>(firmId + "|" + accId + "|" + secCode + "|" + posType, "getFuturesHolding"))).ConfigureAwait(false);
-
             return response.Data;
         }
 

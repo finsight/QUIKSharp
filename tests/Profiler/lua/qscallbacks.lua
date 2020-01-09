@@ -92,7 +92,7 @@ function OnQuote(class_code, sec_code)
         msg.t = timemsec()
         local server_time = getInfoParam("SERVERTIME")
         local status, ql2 = pcall(getQuoteLevel2, class_code, sec_code)
-        if status then
+        if status and ql2 ~= nil then
             msg.data = ql2
             msg.data.class_code = class_code
             msg.data.sec_code = sec_code
