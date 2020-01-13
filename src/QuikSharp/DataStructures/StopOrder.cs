@@ -21,6 +21,11 @@ namespace QuikSharp.DataStructures
         [JsonProperty("order_num")]
         public long OrderNum { get; set; }
 
+        /// <summary>
+        /// Поручение/комментарий, обычно: код клиента/номер поручения
+        /// </summary>
+        [JsonProperty("brokerref")]
+        public string Comment { get; set; }
         private int _flags;
 
         /// <summary>
@@ -66,6 +71,30 @@ namespace QuikSharp.DataStructures
         /// </summary>
         [JsonProperty("class_code")]
         public string ClassCode { get; set; }
+
+        /// <summary>
+        /// Отступ от min/max
+        /// </summary>
+        [JsonProperty("offset")]
+        public decimal Offset { get; set; }
+
+        /// <summary>
+        /// Единицы измерения отступа
+        /// </summary>
+        [JsonProperty("offset_unit")]
+        public OffsetUnits OffsetUnit { get; set; }
+
+        /// <summary>
+        /// Защитный спред
+        /// </summary>
+        [JsonProperty("spread")]
+        public decimal Spread { get; set; }
+
+        /// <summary>
+        /// Единицы измерения защитного спреда
+        /// </summary>
+        [JsonProperty("spread_unit")]
+        public OffsetUnits SpreadUnit { get; set; }
 
         private int _stopOrderTypeInt;
 
@@ -184,6 +213,9 @@ namespace QuikSharp.DataStructures
                 case 6:
                     return StopOrderType.TakeProfit;
 
+                case 9:
+                    return StopOrderType.TakeProfitStopLimit;
+
                 default:
                     return StopOrderType.NotImplemented;
             }
@@ -220,11 +252,15 @@ namespace QuikSharp.DataStructures
         /// <summary>
         ///«6» – тейк-профит
         /// </summary>
-        TakeProfit
+        TakeProfit,
 
         //«7» – стоп-лимит по исполнению активной заявки,
         //«8» –  тейк-профит по исполнению активной заявки,
-        //«9» - тэйк-профит и стоп-лимит
+
+        /// <summary>
+        /// «9» - тэйк-профит и стоп-лимит
+        /// </summary>
+        TakeProfitStopLimit
     }
 
     /// <summary>
