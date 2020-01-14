@@ -65,6 +65,17 @@ namespace QuikSharp
                 STOP_ORDER_KIND = ConvertStopOrderType(stopOrder.StopOrderType),
                 OPERATION = stopOrder.Operation == Operation.Buy ? TransactionOperation.B : TransactionOperation.S
             };
+            if (stopOrder.StopOrderType == StopOrderType.TakeProfit || stopOrder.StopOrderType == StopOrderType.TakeProfitStopLimit)
+            {
+                newStopOrderTransaction.OFFSET = stopOrder.Offset;
+                newStopOrderTransaction.SPREAD = stopOrder.Spread;
+                newStopOrderTransaction.OFFSET_UNITS = stopOrder.OffsetUnit;
+                newStopOrderTransaction.SPREAD_UNITS = stopOrder.SpreadUnit;
+            }
+            if (stopOrder.StopOrderType == StopOrderType.TakeProfitStopLimit)
+            {
+                newStopOrderTransaction.STOPPRICE2 = stopOrder.ConditionPrice2;
+            }
 
             //todo: Not implemented
             //["OFFSET"]=tostring(SysFunc.toPrice(SecCode,MaxOffset)),
@@ -88,6 +99,9 @@ namespace QuikSharp
 
                 case StopOrderType.TakeProfit:
                     return StopOrderKind.TAKE_PROFIT_STOP_ORDER;
+
+                case StopOrderType.TakeProfitStopLimit:
+                    return StopOrderKind.TAKE_PROFIT_AND_STOP_LIMIT_ORDER;
 
                 default:
                     throw new Exception("Not implemented stop order type: " + stopOrderType);

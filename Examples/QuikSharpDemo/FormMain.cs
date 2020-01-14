@@ -23,7 +23,7 @@ namespace QuikSharpDemo
         bool isServerConnected = false;
         bool isSubscribedToolOrderBook = false;
         bool isSubscribedToolCandles = false;
-        string secCode = "GZH0";
+        string secCode = "SiH0";
         string classCode = "";
         string clientCode;
         decimal bid;
@@ -75,6 +75,7 @@ namespace QuikSharpDemo
             listBoxCommands.Items.Add("Связка ParamRequest + OnParam + GetParamEx2");
             listBoxCommands.Items.Add("CancelParamRequest");
             listBoxCommands.Items.Add("Отменить заказ на получение стакана");
+            listBoxCommands.Items.Add("Выставить стоп-заявку типа тейк-профит и стоп-лимит");
         }
 
         private void ButtonStart_Click(object sender, EventArgs e)
@@ -207,8 +208,10 @@ namespace QuikSharpDemo
         }
         void OnDepoLimitDo(DepoLimitEx depLimit)
         {
-            textBoxLogsWindow.AppendText("Вызвано событие OnDepoLimit (изменение бумажного лимита)..." + Environment.NewLine);
-            textBoxLogsWindow.AppendText("Заблокировано на покупку количества лотов - " + depLimit.LockedBuy + Environment.NewLine);
+            AppendText2TextBox(textBoxLogsWindow, "Вызвано событие OnDepoLimit (изменение бумажного лимита)..." + Environment.NewLine);
+            AppendText2TextBox(textBoxLogsWindow, "Заблокировано на покупку количества лотов - " + depLimit.LockedBuy + Environment.NewLine);
+            //textBoxLogsWindow.AppendText("Вызвано событие OnDepoLimit (изменение бумажного лимита)..." + Environment.NewLine);
+            //textBoxLogsWindow.AppendText("Заблокировано на покупку количества лотов - " + depLimit.LockedBuy + Environment.NewLine);
         }
         void OnParamDo(Param _param)
         {
@@ -285,6 +288,10 @@ namespace QuikSharpDemo
                 case "Отменить заказ на получение стакана":
                     textBoxDescription.Text = "Вызываем функцию отмены заказа стакана по инструменту";
                     break;
+                case "Выставить стоп-заявку типа тейк-профит и стоп-лимит":
+                    textBoxDescription.Text = "Выставляем стоп-заявку типа тейк-профит и стоп-лимит. Закрываем short. Тейк-профит по цене минус 50 шагов цены от последней сделки. Стоп-лимит - плюс 40 шагов цены. Для тейпрофита для отступа используем тип шаг цены, для спреда - процент.";
+                    break;
+
             }
         }
         private void ButtonCommandRun_Click(object sender, EventArgs e)
@@ -616,6 +623,49 @@ namespace QuikSharpDemo
                         }
                     }
                     catch { AppendText2TextBox(textBoxLogsWindow, "Ошибка в функции отмены заказа стакана." + Environment.NewLine); }
+                    break;
+                case "Выставить стоп-заявку типа тейк-профит и стоп-лимит":
+                    try
+                    {
+                        decimal priceInOrder = Math.Round(tool.LastPrice, tool.PriceAccuracy);
+                        StopOrder orderNew = new StopOrder()
+                        {
+                            Account = tool.AccountID,
+                            ClassCode = tool.ClassCode,
+                            ClientCode = clientCode,
+                            SecCode = secCode,
+                            Offset = 50,
+                            OffsetUnit = OffsetUnits.PRICE_UNITS,
+                            Spread = 0.5M,
+                            SpreadUnit = OffsetUnits.PERCENTS,
+                            StopOrderType = StopOrderType.TakeProfitStopLimit,
+                            Condition = Condition.LessOrEqual,
+                            ConditionPrice = Math.Round(priceInOrder - 50 * tool.Step, tool.PriceAccuracy),
+                            ConditionPrice2 = Math.Round(priceInOrder + 40 * tool.Step, tool.PriceAccuracy),
+                            Price = Math.Round(priceInOrder + 45 * tool.Step, tool.PriceAccuracy),
+                            Operation = Operation.Buy,
+                            Quantity = 1
+                        };
+                        AppendText2TextBox(textBoxLogsWindow, "Выставляем стоп-заявку на покупку, по цене:" + priceInOrder + " ..." + Environment.NewLine);
+                        long transID = await _quik.StopOrders.CreateStopOrder(orderNew).ConfigureAwait(false);
+                        if (transID > 0)
+                        {
+                            AppendText2TextBox(textBoxLogsWindow, "Заявка выставлена. ID транзакции - " + transID + Environment.NewLine);
+                            Thread.Sleep(500);
+                            try
+                            {
+                                var listStopOrders = _quik.StopOrders.GetStopOrders().Result;
+                                foreach (StopOrder stopOrder in listStopOrders)
+                                {
+                                    if (stopOrder.TransId == transID && stopOrder.ClassCode == tool.ClassCode && stopOrder.SecCode == tool.SecurityCode)
+                                        AppendText2TextBox(textBoxLogsWindow,"Стоп-заявка выставлена. Номер стоп-заявки - " + stopOrder.OrderNum + Environment.NewLine);
+                                }
+                            }
+                            catch { AppendText2TextBox(textBoxLogsWindow, "Ошибка получения номера стоп-заявки." + Environment.NewLine); }
+                        }
+                        else AppendText2TextBox(textBoxLogsWindow, "Неудачная попытка выставления стоп-заявки." + Environment.NewLine);
+                    }
+                    catch { AppendText2TextBox(textBoxLogsWindow, "Ошибка выставления стоп-заявки." + Environment.NewLine); }
                     break;
             }
         }
