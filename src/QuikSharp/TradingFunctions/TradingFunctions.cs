@@ -67,10 +67,10 @@ namespace QuikSharp
         /// <summary>
         ///  функция для получения информации по фьючерсным лимитам
         /// </summary>
-        Task<List<FuturesLimits>> GetFuturesLimit(string firmId, string accId, int limitType, string currCode);
-        ///// <summary>
-        /////  функция для получения информации по фьючерсным позициям
-        ///// </summary>
+        Task<FuturesLimits> GetFuturesLimit(string firmId, string accId, int limitType, string currCode);
+        /// <summary>
+        ///  функция для получения информации по фьючерсным позициям
+        /// </summary>
         Task<FuturesClientHolding> GetFuturesHolding(string firmId, string accId, string secCode, int posType);
 
         /// <summary>
@@ -372,9 +372,9 @@ namespace QuikSharp
         /// <param name="limitType"></param>
         /// <param name="currCode"></param>
         /// <returns></returns>
-        public async Task<List<FuturesLimits>> GetFuturesLimit(string firmId, string accId, int limitType, string currCode)
+        public async Task<FuturesLimits> GetFuturesLimit(string firmId, string accId, int limitType, string currCode)
         {
-            var response = await QuikService.Send<Message<List<FuturesLimits>>>(
+            var response = await QuikService.Send<Message<FuturesLimits>>(
                     (new Message<string>(firmId + "|" + accId + "|" + limitType + "|" + currCode, "getFuturesLimit"))).ConfigureAwait(false);
             return response.Data;
         }
