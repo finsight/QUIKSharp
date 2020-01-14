@@ -23,7 +23,7 @@ namespace QuikSharpDemo
         bool isServerConnected = false;
         bool isSubscribedToolOrderBook = false;
         bool isSubscribedToolCandles = false;
-        string secCode = "SRZ9";
+        string secCode = "GZH0";
         string classCode = "";
         string clientCode;
         decimal bid;
@@ -35,11 +35,13 @@ namespace QuikSharpDemo
         List<Trade> listTrades;
         List<SecurityInfo> listSecurityInfo;
         List<DepoLimitEx> listDepoLimits;
+        List<FuturesLimits> listFuturesLimits;
         List<PortfolioInfoEx> listPortfolio;
         List<MoneyLimit> listMoneyLimits;
         List<MoneyLimitEx> listMoneyLimitsEx;
         FormOutputTable toolCandlesTable;
         Order order;
+        FuturesLimits futLimit;
         FuturesClientHolding futuresPosition;
         delegate void TextBoxTextDelegate(TextBox tb ,string text);
         delegate void TextBoxAppendTextDelegate(TextBox tb, string text);
@@ -65,6 +67,7 @@ namespace QuikSharpDemo
             listBoxCommands.Items.Add("Получить информацию по бумаге");
             listBoxCommands.Items.Add("Получить таблицу лимитов по бумаге");
             listBoxCommands.Items.Add("Получить таблицу лимитов по всем бумагам");
+            listBoxCommands.Items.Add("Получить таблицу по фьючерсным лимитам");
             listBoxCommands.Items.Add("Получить таблицу заявок");
             listBoxCommands.Items.Add("Получить таблицу сделок");
             listBoxCommands.Items.Add("Получить таблицу `Клиентский портфель`");
@@ -258,6 +261,9 @@ namespace QuikSharpDemo
                 case "Получить таблицу лимитов по всем бумагам":
                     textBoxDescription.Text = "Получить и отобразить таблицу лимитов по бумагам. quik.Trading.GetDepoLimits()";
                     break;
+                case "Получить таблицу по фьючерсным лимитам":
+                    textBoxDescription.Text = "Получить и отобразить таблицу лимитов по фьючерсам. quik.Trading.GetFuturesLimit(firmId, accId, limitType, currCode)";
+                    break;
                 case "Получить таблицу заявок":
                     textBoxDescription.Text = "Получить и отобразить таблицу всех клиентских заявок. quik.Orders.GetOrders()";
                     break;
@@ -441,6 +447,27 @@ namespace QuikSharpDemo
                             AppendText2TextBox(textBoxLogsWindow, "Выводим данные лимитов в таблицу..." + Environment.NewLine);
                             toolCandlesTable = new FormOutputTable(listDepoLimits);
                             toolCandlesTable.Show();
+                        }
+                    }
+                    catch { AppendText2TextBox(textBoxLogsWindow, "Ошибка получения лимитов." + Environment.NewLine); }
+                    break;
+                case "Получить таблицу по фьючерсным лимитам":
+                    try
+                    {
+                        AppendText2TextBox(textBoxLogsWindow, "Получаем таблицу фьючерсных лимитов..." + Environment.NewLine);
+                        futLimit = _quik.Trading.GetFuturesLimit(tool.FirmID, tool.AccountID, 0, "SUR").Result;
+
+                        if (futLimit != null)
+                        {
+                            listFuturesLimits = new List<FuturesLimits>();
+                            listFuturesLimits.Add(futLimit);
+                            AppendText2TextBox(textBoxLogsWindow, "Выводим данные лимитов в таблицу..." + Environment.NewLine);
+                            toolCandlesTable = new FormOutputTable(listFuturesLimits);
+                            toolCandlesTable.Show();
+                        }
+                        else
+                        {
+                            Console.WriteLine("futuresLimit = null");
                         }
                     }
                     catch { AppendText2TextBox(textBoxLogsWindow, "Ошибка получения лимитов." + Environment.NewLine); }

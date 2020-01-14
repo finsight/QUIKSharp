@@ -408,6 +408,20 @@ function qsfunctions.getMoneyEx(msg)
     return msg
 end
 
+-- Функция предназначена для получения информации по фьючерсным лимитам. 
+function qsfunctions.getFuturesLimit(msg)
+    local spl = split(msg.data, "|")
+    local firmId, accId, limitType, currCode = spl[1], spl[2], spl[3], spl[4]
+	local result, err = getFuturesLimit(firmId, accId, limitType*1, currCode)
+	if result then
+		msg.data = result
+	else
+		log("Futures limit returns nil", 3)
+		msg.data = nil
+	end
+    return msg
+end
+
 function qsfunctions.getFuturesHolding(msg)
     local spl = split(msg.data, "|")
     local firmId, accId, secCode, posType = spl[1], spl[2], spl[3], spl[4]

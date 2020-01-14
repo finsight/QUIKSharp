@@ -35,6 +35,12 @@ namespace QuikSharpDemo
             dataGridViewCandles.DataSource = _secInfo;
         }
 
+        public FormOutputTable(List<FuturesLimits> _futuresLimits)
+        {
+            InitializeComponent();
+            dataGridViewCandles.DataSource = _futuresLimits;
+        }
+
         public FormOutputTable(List<DepoLimit> _depoLimits)
         {
             InitializeComponent();
