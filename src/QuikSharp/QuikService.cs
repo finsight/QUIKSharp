@@ -14,6 +14,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 
 namespace QuikSharp
@@ -105,7 +106,15 @@ namespace QuikSharp
 
         private Task _requestTask;
         private Task _responseTask;
-        private Task _callbackTask;
+        private Task _callbackReceiverTask;
+        private Task _callbackInvokerTask;
+
+        private Channel<IMessage> _receivedCallbacksChannel =
+            Channel.CreateUnbounded<IMessage>(new UnboundedChannelOptions()
+            {
+                SingleReader = true,
+                SingleWriter = true
+            });
 
         private CancellationTokenSource _cts;
         private TaskCompletionSource<bool> _cancelledTcs;
@@ -128,6 +137,8 @@ namespace QuikSharp
         internal readonly ConcurrentDictionary<long, KeyValuePair<TaskCompletionSource<IMessage>, Type>>
             Responses = new ConcurrentDictionary<long, KeyValuePair<TaskCompletionSource<IMessage>, Type>>();
 
+        
+
         /// <summary>
         ///
         /// </summary>
@@ -141,7 +152,7 @@ namespace QuikSharp
 	        try
 	        {
 		        // here all tasks must exit gracefully
-		        var isCleanExit = Task.WaitAll(new[] { _requestTask, _responseTask, _callbackTask }, 5000);
+		        var isCleanExit = Task.WaitAll(new[] { _requestTask, _responseTask, _callbackReceiverTask }, 5000);
 		        Trace.Assert(isCleanExit, "All tasks must finish gracefully after cancellation token is cancelled!");
 	        }
 	        finally
@@ -279,8 +290,8 @@ namespace QuikSharp
                             while (!_cts.IsCancellationRequested)
                             {
                                 var readLineTask = reader.ReadLineAsync();
-                                await Task.WhenAny(readLineTask, _cancelledTcs.Task).ConfigureAwait(false);
-                                if (_cts.IsCancellationRequested)
+                                var completedTask = await Task.WhenAny(readLineTask, _cancelledTcs.Task).ConfigureAwait(false);
+                                if (completedTask == _cancelledTcs.Task || _cts.IsCancellationRequested)
                                 {
                                     break;
                                 }
@@ -362,7 +373,7 @@ namespace QuikSharp
             TaskScheduler.Default);
 
             // Callback Task
-            _callbackTask = Task.Factory.StartNew(async () =>
+            _callbackReceiverTask = Task.Factory.StartNew(async () =>
             {
                 try
                 {
@@ -384,14 +395,15 @@ namespace QuikSharp
                             while (!_cts.IsCancellationRequested)
                             {
                                 var readLineTask = reader.ReadLineAsync();
-	                            await Task.WhenAny(readLineTask, _cancelledTcs.Task).ConfigureAwait(false);
-	                            if (_cts.IsCancellationRequested)
+	                            var completedTask = await Task.WhenAny(readLineTask, _cancelledTcs.Task).ConfigureAwait(false);
+                                
+	                            if (completedTask == _cancelledTcs.Task ||  _cts.IsCancellationRequested)
                                 {
 									break;
                                 }
                                 Trace.Assert(readLineTask.Status == TaskStatus.RanToCompletion);
-                                var response = readLineTask.Result;
-                                if (response == null)
+                                var callback = readLineTask.Result;
+                                if (callback == null)
                                 {
                                     throw new IOException("Lua returned an empty response or closed the connection");
                                 }
@@ -400,21 +412,17 @@ namespace QuikSharp
                                 // to the threadpool and wait for the next message
                                 // A new task here gives c.30% boost for full TransactionSpec echo
 
-                                // ReSharper disable once UnusedVariable
-                                var doNotAwaitMe = Task.Factory.StartNew(r =>
+                                try
                                 {
-                                    try
-                                    {
-                                        var message = (r as string).FromJson(this);
-                                        Trace.Assert(!(message.Id.HasValue && message.Id > 0));
-                                        // it is a callback message
-                                        ProcessCallbackMessage(message);
-                                    }
-                                    catch (LuaException e)
-                                    {
-                                        Trace.TraceError(e.ToString());
-                                    }
-                                }, response, TaskCreationOptions.PreferFairness);
+                                    var message = callback.FromJson(this);
+                                    Trace.Assert(!(message.Id.HasValue && message.Id > 0));
+                                    // it is a callback message
+                                    await _receivedCallbacksChannel.Writer.WriteAsync(message);
+                                }
+                                catch (LuaException e)
+                                {
+                                    Trace.TraceError(e.ToString());
+                                }
                             }
                         }
                         catch (IOException e)
@@ -447,6 +455,26 @@ namespace QuikSharp
                             _callbackClient = null;
                             Trace.WriteLine("Callback channel disconnected");
                         }
+                    }
+                }
+            },
+            CancellationToken.None, // NB we use the token for signalling, could use a simple TCS
+            TaskCreationOptions.LongRunning,
+            TaskScheduler.Default);
+            
+            
+            _callbackInvokerTask = Task.Factory.StartNew(async () =>
+            {
+                while (!_cts.IsCancellationRequested)
+                {
+                    try
+                    {
+                        var message = await _receivedCallbacksChannel.Reader.ReadAsync(_cts.Token);
+                        ProcessCallbackMessage(message);
+                    }
+                    catch (LuaException e)
+                    {
+                        Trace.TraceError(e.ToString());
                     }
                 }
             },
