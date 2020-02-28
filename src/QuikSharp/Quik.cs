@@ -1,6 +1,7 @@
 ﻿// Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
 
 using System;
+using System.Text;
 
 namespace QuikSharp
 {
@@ -23,6 +24,7 @@ namespace QuikSharp
         /// </summary>
         public Quik(int port = DefaultPort, IPersistentStorage storage = null, string host = DefaultHost)
         {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             Storage                     = storage == null ? new InMemoryStorage() : storage;
             QuikService                 = QuikService.Create(port, host);
             // poor man's DI
