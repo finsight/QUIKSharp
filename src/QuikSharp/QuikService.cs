@@ -175,7 +175,7 @@ namespace QuikSharp
             if (IsStarted) return;
             IsStarted = true;
             _cts = new CancellationTokenSource();
-            _cancelledTcs = new TaskCompletionSource<bool>();
+            _cancelledTcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
             _cancelRegistration = _cts.Token.Register(() => _cancelledTcs.TrySetResult(true));
 
             // Request Task
@@ -821,7 +821,7 @@ namespace QuikSharp
                 await task.ConfigureAwait(false);
             }
 
-            var tcs = new TaskCompletionSource<IMessage>();
+            var tcs = new TaskCompletionSource<IMessage>(TaskCreationOptions.RunContinuationsAsynchronously);
             var ctRegistration = default(CancellationTokenRegistration);
 
             var kvp = new KeyValuePair<TaskCompletionSource<IMessage>, Type>(tcs, typeof(TResponse));

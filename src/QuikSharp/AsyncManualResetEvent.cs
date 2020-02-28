@@ -6,7 +6,7 @@ namespace QuikSharp
     // http://blogs.msdn.com/b/pfxteam/archive/2012/02/11/10266920.aspx
     internal class AsyncManualResetEvent
     {
-        private volatile TaskCompletionSource<bool> m_tcs = new TaskCompletionSource<bool>();
+        private volatile TaskCompletionSource<bool> m_tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 
         public Task WaitAsync()
         {
@@ -24,7 +24,7 @@ namespace QuikSharp
             {
                 var tcs = m_tcs;
                 if (!tcs.Task.IsCompleted ||
-                    Interlocked.CompareExchange(ref m_tcs, new TaskCompletionSource<bool>(), tcs) == tcs)
+                    Interlocked.CompareExchange(ref m_tcs, new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously), tcs) == tcs)
                     return;
             }
         }
