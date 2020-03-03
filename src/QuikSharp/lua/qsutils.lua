@@ -249,14 +249,14 @@ function sendCallback(msg_table)
         end
     end
     -- we need this break instead of else because we could lose connection inside the previous if
-    if not is_connected and was_connected then
-        if not missed_values_file then
-            missed_values_file_name = script_path .. "/logs/MissedCallbacks."..os.time()..".log"
-            missed_values_file = io.open(missed_values_file_name, "a")
-        end
-        missed_values_file:write(callback_string..'\n')
-        return nil, "Message added to the response queue"
-    end
+    --if not is_connected and was_connected then
+    --    if not missed_values_file then
+    --        missed_values_file_name = script_path .. "/logs/MissedCallbacks."..os.time()..".log"
+    --        missed_values_file = io.open(missed_values_file_name, "a")
+    --    end
+    --    missed_values_file:write(callback_string..'\n')
+    --    return nil, "Message added to the response queue"
+    --end
 end
 
 return qsutils
