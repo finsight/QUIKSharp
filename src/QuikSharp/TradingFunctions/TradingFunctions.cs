@@ -28,6 +28,9 @@ namespace QuikSharp
     /// getPortfolioInfoEx - функция для получения значений параметров таблицы «Клиентский портфель» с учетом вида лимита
     /// getBuySellInfo - функция для получения параметров таблицы «Купить/Продать»
     /// getBuySellInfoEx - функция для получения параметров (включая вид лимита) таблицы «Купить/Продать»
+    /// getTrdAccByClientCode - Функция возвращает торговый счет срочного рынка, соответствующий коду клиента фондового рынка с единой денежной позицией
+    /// getClientCodeByTrdAcc - Функция возвращает код клиента фондового рынка с единой денежной позицией, соответствующий торговому счету срочного рынка
+    /// isUcpClient - Функция предназначена для получения признака, указывающего имеет ли клиент единую денежную позицию
     /// </summary>
     public interface ITradingFunctions : IQuikService
     {
@@ -184,6 +187,30 @@ namespace QuikSharp
         /////  функция для получения параметров (включая вид лимита) таблицы «Купить/Продать»
         ///// </summary>
         //Task<string> getBuySellInfoEx();
+
+        /// <summary>
+        /// Функция возвращает торговый счет срочного рынка, соответствующий коду клиента фондового рынка с единой денежной позицией
+        /// </summary>
+        /// <param name="firmId"></param>
+        /// <param name="clientCode"></param>
+        /// <returns></returns>
+        Task<string> GetTrdAccByClientCode(string firmId, string clientCode);
+
+        /// <summary>
+        /// Функция возвращает код клиента фондового рынка с единой денежной позицией, соответствующий торговому счету срочного рынка
+        /// </summary>
+        /// <param name="firmId"></param>
+        /// <param name="trdAccId"></param>
+        /// <returns></returns>
+        Task<string> GetClientCodeByTrdAcc(string firmId, string trdAccId);
+
+        /// <summary>
+        /// Функция предназначена для получения признака, указывающего имеет ли клиент единую денежную позицию
+        /// </summary>
+        /// <param name="firmId">идентификатор фирмы фондового рынка</param>
+        /// <param name="client">код клиента фондового рынка или торговый счет срочного рынка</param>
+        /// <returns></returns>
+        Task<bool> IsUcpClient(string firmId, string client);
     }
 
     /// <summary>
@@ -433,6 +460,27 @@ namespace QuikSharp
         {
             var response = await QuikService.Send<Message<PortfolioInfoEx>>(
                     (new Message<string>(firmId + "|" + clientCode + "|" + limitKind, "getPortfolioInfoEx"))).ConfigureAwait(false);
+            return response.Data;
+        }
+
+        public async Task<string> GetTrdAccByClientCode(string firmId, string clientCode)
+        {
+            var response = await QuikService.Send<Message<string>>(
+                    (new Message<string>(firmId + "|" + clientCode, "GetTrdAccByClientCode"))).ConfigureAwait(false);
+            return response.Data;
+        }
+
+        public async Task<string> GetClientCodeByTrdAcc(string firmId, string trdAccId)
+        {
+            var response = await QuikService.Send<Message<string>>(
+                    (new Message<string>(firmId + "|" + trdAccId, "GetClientCodeByTrdAcc"))).ConfigureAwait(false);
+            return response.Data;
+        }
+
+        public async Task<bool> IsUcpClient(string firmId, string client)
+        {
+            var response = await QuikService.Send<Message<bool>>(
+                    (new Message<string>(firmId + "|" + client, "IsUcpClient"))).ConfigureAwait(false);
             return response.Data;
         }
 

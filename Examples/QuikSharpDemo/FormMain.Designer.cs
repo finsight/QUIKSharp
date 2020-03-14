@@ -70,6 +70,7 @@
             this.checkBoxRemoteHost = new System.Windows.Forms.CheckBox();
             this.textBoxHost = new System.Windows.Forms.TextBox();
             this.label17 = new System.Windows.Forms.Label();
+            this.textBox_RenewTime = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // buttonStart
@@ -430,6 +431,17 @@
             this.label17.TabIndex = 5;
             this.label17.Text = "Remote IP";
             // 
+            // textBox_RenewTime
+            // 
+            this.textBox_RenewTime.BackColor = System.Drawing.SystemColors.Control;
+            this.textBox_RenewTime.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox_RenewTime.Enabled = false;
+            this.textBox_RenewTime.Location = new System.Drawing.Point(93, 381);
+            this.textBox_RenewTime.Name = "textBox_RenewTime";
+            this.textBox_RenewTime.Size = new System.Drawing.Size(140, 13);
+            this.textBox_RenewTime.TabIndex = 6;
+            this.textBox_RenewTime.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -444,6 +456,7 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.textBoxClassCode);
             this.Controls.Add(this.label2);
+            this.Controls.Add(this.textBox_RenewTime);
             this.Controls.Add(this.textBoxBestOffer);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.textBoxLastPrice);
@@ -525,6 +538,7 @@
         private System.Windows.Forms.CheckBox checkBoxRemoteHost;
         private System.Windows.Forms.TextBox textBoxHost;
         private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.TextBox textBox_RenewTime;
     }
 }
 

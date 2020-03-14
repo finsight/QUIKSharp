@@ -1,6 +1,7 @@
 ﻿// Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
 
 using System.Threading.Tasks;
+using QuikSharp.DataStructures;
 
 namespace QuikSharp
 {
@@ -38,6 +39,11 @@ namespace QuikSharp
         /// Функция позволяет узнать, заказан ли с сервера стакан
         /// </summary>
         Task<bool> IsSubscribed(ISecurity security);
+
+        /// <summary>
+        /// Функция предназначена для получения стакана по указанному классу и инструменту
+        /// </summary>
+        Task<OrderBook> GetQuoteLevel2(string class_code, string sec_code);
     }
 
     /// <summary>
@@ -90,6 +96,13 @@ namespace QuikSharp
         {
             var response = await QuikService.Send<Message<bool>>(
                 (new Message<string>(class_code + "|" + sec_code, "IsSubscribed_Level_II_Quotes"))).ConfigureAwait(false);
+            return response.Data;
+        }
+
+        public async Task<OrderBook> GetQuoteLevel2(string class_code, string sec_code)
+        {
+            var response = await QuikService.Send<Message<OrderBook>>(
+                (new Message<string>(class_code + "|" + sec_code, "GetQuoteLevel2"))).ConfigureAwait(false);
             return response.Data;
         }
     }

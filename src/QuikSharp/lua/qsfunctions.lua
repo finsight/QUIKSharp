@@ -319,6 +319,24 @@ function qsfunctions.IsSubscribed_Level_II_Quotes(msg)
     return msg
 end
 
+--- ‘ункци€ предназначена дл€ получени€ стакана по указанному классу и инструменту.
+function qsfunctions.GetQuoteLevel2(msg)
+    local spl = split(msg.data, "|")
+    local class_code, sec_code = spl[1], spl[2]
+    local server_time = getInfoParam("SERVERTIME")
+    local status, ql2 = pcall(getQuoteLevel2, class_code, sec_code)
+    if status then
+        msg.data				= ql2
+        msg.data.class_code		= class_code
+        msg.data.sec_code		= sec_code
+        msg.data.server_time	= server_time
+        sendCallback(msg)
+    else
+        OnError(ql2)
+    end
+    return msg
+end
+
 -----------------------
 -- Trading functions --
 -----------------------
@@ -795,6 +813,34 @@ end
 --- ¬озвращает уникальный ключ дл€ инструмента на который подписываемс€ и инетрвала
 function get_key(class, sec, interval)
 	return class .. "|" .. sec .. "|" .. tostring(interval)
+end
+
+-------------------------
+--- UCP functions ---
+-------------------------
+
+--- ‘ункци€ возвращает торговый счет срочного рынка, соответствующий коду клиента фондового рынка с единой денежной позицией
+function qsfunctions.GetTrdAccByClientCode(msg)
+    local spl = split(msg.data, "|")
+    local firmId, clientCode = spl[1], spl[2]
+    msg.data = getTrdAccByClientCode(firmId, clientCode)
+    return msg
+end
+
+--- ‘ункци€ возвращает код клиента фондового рынка с единой денежной позицией, соответствующий торговому счету срочного рынка
+function qsfunctions.GetClientCodeByTrdAcc(msg)
+    local spl = split(msg.data, "|")
+    local firmId, trdAccId = spl[1], spl[2]
+    msg.data = getClientCodeByTrdAcc(firmId, trdAccId)
+    return msg
+end
+
+--- ‘ункци€ предназначена дл€ получени€ признака, указывающего имеет ли клиент единую денежную позицию
+function qsfunctions.IsUcpClient(msg)
+    local spl = split(msg.data, "|")
+    local firmId, client = spl[1], spl[2]
+    msg.data = isUcpClient(firmId, client)
+    return msg
 end
 
 return qsfunctions

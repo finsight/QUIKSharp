@@ -48,6 +48,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FormOrderBook.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormOrderBook.Designer.cs">
+      <DependentUpon>FormOrderBook.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormOutputTable.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -60,9 +66,13 @@
     <Compile Include="FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="Quote.cs" />
     <Compile Include="Tool.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="FormOrderBook.resx">
+      <DependentUpon>FormOrderBook.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormOutputTable.resx">
       <DependentUpon>FormOutputTable.cs</DependentUpon>
     </EmbeddedResource>
