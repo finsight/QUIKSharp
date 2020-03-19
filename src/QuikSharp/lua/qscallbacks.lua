@@ -57,27 +57,22 @@ function OnError(message)
 	end
 end
 
-
---- Функция вызывается терминалом QUIK при установлении связи с сервером QUIK.
-function OnConnected()
-    if is_connected then
-        local msg = {}
-        msg.t = timemsec()
-        msg.cmd = "OnConnected"
-        msg.data = ""
-        sendCallback(msg)
-    end
+--- Функция вызывается терминалом QUIK при отключении от сервера QUIK.
+function OnDisconnected()
+    local msg = {}
+    msg.cmd = "OnDisconnected"
+    msg.t = timemsec()
+    msg.data = ""
+    sendCallback(msg)
 end
 
 --- Функция вызывается терминалом QUIK при установлении связи с сервером QUIK.
-function OnDisconnected()
-    if is_connected then
-        local msg = {}
-        msg.t = timemsec()
-        msg.cmd = "OnDisconnected"
-        msg.data = ""
-        sendCallback(msg)
-    end
+function OnConnected()
+    local msg = {}
+    msg.cmd = "OnConnected"
+    msg.t = timemsec()
+    msg.data = ""
+    sendCallback(msg)
 end
 
 --- Функция вызывается терминалом QUIK при получении обезличенной сделки.
@@ -199,24 +194,6 @@ function OnParam(class_code, sec_code)
 	dat.class_code = class_code
 	dat.sec_code = sec_code
     msg.data = dat
-    sendCallback(msg)
-end
-
---- Функция вызывается терминалом QUIK при отключении от сервера QUIK.
-function OnDisconnected()
-    local msg = {}
-    msg.cmd = "OnDisconnected"
-    msg.t = timemsec()
-    msg.data = ""
-    sendCallback(msg)
-end
-
---- Функция вызывается терминалом QUIK при установлении связи с сервером QUIK.
-function OnConnected()
-    local msg = {}
-    msg.cmd = "OnConnected"
-    msg.t = timemsec()
-    msg.data = ""
     sendCallback(msg)
 end
 
