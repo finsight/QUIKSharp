@@ -33,11 +33,17 @@ if is_quik() then
 
 	-- ≈сли верси€ Quik 7 будет загружена существующа€ WIN32 библиотека 
 	-- ≈сли верси€ Quik 8 будет загружена WIN64 библиотека, - которую нужно положить в папку clibs64  
-	package.loadlib(getScriptPath()  .. libPath .. "lua51.dll", "main")
-	--package.loadlib(getScriptPath()  .. "\\clibs\\lua51.dll", "main")
+	--package.loadlib(getScriptPath()  .. libPath .. "lua51.dll", "main")
+
+	if qver >= 8.5 then
+		-- ≈сли верси€ Quik 8.5 или выше будет загружена WIN64 библиотека Lua 5.3, - которую нужно положить в папку clibs64  
+		package.loadlib(getScriptPath()..libPath.."lua53.dll", "main")
+	else
+		-- ≈сли верси€ Quik < 8.5 будет загружена WIN64 библиотека Lua 5.1, - которую нужно положить в папку clibs64  
+		package.loadlib(getScriptPath()..libPath.."lua51.dll", "main")
+	end
 end
 package.path = package.path .. ";" .. script_path .. "\\?.lua;" .. script_path .. "\\?.luac"..";"..".\\?.lua;"..".\\?.luac"
---package.cpath = package.cpath .. ";" .. script_path .. '\\clibs\\?.dll'..";"..'.\\clibs\\?.dll'
 package.cpath = package.cpath .. ";" .. script_path .. libPath .. '?.dll'..";".. '.' .. libPath .. '?.dll'
 
 local util = require("qsutils")

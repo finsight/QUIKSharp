@@ -18,17 +18,12 @@ namespace QuikSharp
         /// </summary>
         public event CandleHandler NewCandle;
 
-        internal void RaiseNewCandleEvent(Candle candle)
-        {
-            if (NewCandle != null)
-                NewCandle(candle);
-        }
+        internal void RaiseNewCandleEvent(Candle candle) { NewCandle?.Invoke(candle); }
 
         public CandleFunctions(int port, string host)
         {
             QuikService = QuikService.Create(port, host);
         }
-
 
         /// <summary>
         /// Функция предназначена для получения количества свечей по тегу

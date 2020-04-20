@@ -22,7 +22,6 @@ else
 	libPath = "\\clibs\\"
 end
 
---package.cpath = package.cpath..";"..'.\\clibs\\?.dll'
 package.cpath = package.cpath..";"..'.'..libPath..'?.dll'
 
 local util = require("qsutils")

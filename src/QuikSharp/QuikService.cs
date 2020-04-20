@@ -548,6 +548,9 @@ namespace QuikSharp
 
         private void ProcessCallbackMessage(IMessage message)
         {
+            /////////////////////
+            Trace.WriteLineIf(message == null, "Trace: ProcessCallbackMessage(). message = NULL");
+            /////////////////////
             if (message == null) throw new ArgumentNullException("message");
             EventNames eventName;
             var parsed = Enum.TryParse(message.Command, true, out eventName);
@@ -662,12 +665,14 @@ namespace QuikSharp
                         break;
 
                     case EventNames.OnParam:
+                        Trace.Assert(message != null, "Trace: EventNames.OnParam - message = NULL");
                         Trace.Assert(message is Message<Param>);
                         var data = ((Message<Param>)message).Data;
                         Events.OnParamCall(data);
                         break;
 
                     case EventNames.OnQuote:
+                        Trace.Assert(message != null, "Trace: EventNames.OnQuote - message = NULL");
                         Trace.Assert(message is Message<OrderBook>);
                         var ob = ((Message<OrderBook>)message).Data;
                         ob.LuaTimeStamp = message.CreatedTime;
@@ -700,6 +705,7 @@ namespace QuikSharp
                         break;
 
                     case EventNames.NewCandle:
+                        Trace.Assert(message != null, "Trace: EventNames.NewCandle - message = NULL");
                         Trace.Assert(message is Message<Candle>);
                         var candle = ((Message<Candle>)message).Data;
                         Candles.RaiseNewCandleEvent(candle);
