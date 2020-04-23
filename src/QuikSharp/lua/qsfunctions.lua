@@ -14,12 +14,15 @@ if qver == nil then
 else
 	libPath = "\\clibs"
 end
--- Если версия Quik 8 и выше, добавляем к наименованию папки 64, иначе оставляем существующий путь
-if qver >= 8 then
+
+if qver >= 8.5 then -- Если версия Quik 8.5 и выше, добавляем к наименованию папки 64\8.5x
+	libPath = libPath .. "64\\8.5x\\"
+else if qver >= 8 then -- Если версия Quik меньше 8.5 но больше или равно 8, добавляем к наименованию папки 64, иначе оставляем существующий путь
 	libPath = libPath .. "64\\"
 else
 	libPath = "\\clibs\\"
 end
+
 package.cpath = package.cpath..";"..'.'..libPath..'?.dll'
 
 local qsfunctions = {}
@@ -425,7 +428,7 @@ function qsfunctions.getMoneyEx(msg)
     return msg
 end
 
--- Функция предназначена для получения информации по фьючерсным лимитам. 
+-- Функция предназначена для получения информации по фьючерсным лимитам.
 function qsfunctions.getFuturesLimit(msg)
     local spl = split(msg.data, "|")
     local firmId, accId, limitType, currCode = spl[1], spl[2], spl[3], spl[4]
