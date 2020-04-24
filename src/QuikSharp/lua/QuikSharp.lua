@@ -13,7 +13,7 @@ if is_quik() then
 
 	-- Если запрос выполнен удачно, - выделим номер версии
 	if qver ~= nil then
-		qver = tonumber(qver:match("%d+"))
+		qver = tonumber(qver:match("%d+%.%d+"))
 	end
 
 	-- Если преобразование выполнено корректно, - определяем папку хранения библиотек
