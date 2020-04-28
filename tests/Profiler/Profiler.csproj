@@ -69,18 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="lua\dkjson.lua" />
-    <None Include="lua\qscallbacks.lua" />
-    <None Include="lua\qsfunctions.lua" />
-    <None Include="lua\qsutils.lua" />
-    <None Include="lua\QuikSharp.lua" />
-    <None Include="lua\socket.lua" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="lua\clibs\cjson.dll" />
-    <Content Include="lua\clibs\lua51.dll" />
-    <Content Include="lua\clibs\socket\core.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

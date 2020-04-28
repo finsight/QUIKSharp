@@ -23,8 +23,8 @@
         #region Код, автоматически созданный конструктором форм Windows
 
         /// <summary>
-        /// Обязательный метод для поддержки конструктора - не изменяйте
-        /// содержимое данного метода при помощи редактора кода.
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent()
         {
@@ -75,7 +75,7 @@
             // 
             // buttonStart
             // 
-            this.buttonStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.buttonStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (204)));
             this.buttonStart.Location = new System.Drawing.Point(243, 13);
             this.buttonStart.Name = "buttonStart";
             this.buttonStart.Size = new System.Drawing.Size(802, 23);
@@ -86,7 +86,7 @@
             // 
             // textBoxLogsWindow
             // 
-            this.textBoxLogsWindow.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.textBoxLogsWindow.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (204)));
             this.textBoxLogsWindow.Location = new System.Drawing.Point(243, 229);
             this.textBoxLogsWindow.Multiline = true;
             this.textBoxLogsWindow.Name = "textBoxLogsWindow";
@@ -210,7 +210,7 @@
             // 
             // buttonRun
             // 
-            this.buttonRun.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.buttonRun.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (204)));
             this.buttonRun.Location = new System.Drawing.Point(13, 69);
             this.buttonRun.Name = "buttonRun";
             this.buttonRun.Size = new System.Drawing.Size(1031, 23);
@@ -492,53 +492,52 @@
             this.Text = "QuikSharp Demo";
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
-        #endregion
-
-        private System.Windows.Forms.Button buttonStart;
-        private System.Windows.Forms.TextBox textBoxLogsWindow;
-        private System.Windows.Forms.ListBox listBoxCommands;
-        private System.Windows.Forms.TextBox textBoxDescription;
         private System.Windows.Forms.Button buttonCommandRun;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBoxSecCode;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBoxClassCode;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox textBoxAccountID;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox textBoxClientCode;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox textBoxFirmID;
         private System.Windows.Forms.Button buttonRun;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox textBoxShortName;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.TextBox textBoxLot;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.TextBox textBoxStep;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.TextBox textBoxBestBid;
+        private System.Windows.Forms.Button buttonStart;
+        private System.Windows.Forms.CheckBox checkBoxRemoteHost;
+        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.TextBox textBoxLastPrice;
         private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.TextBox textBoxBestOffer;
         private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.TextBox textBoxGuaranteeProviding;
-        private System.Windows.Forms.Timer timerRenewForm;
         private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.TextBox textBoxOrderNumber;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.TextBox textBoxQty;
         private System.Windows.Forms.Label label16;
-        private System.Windows.Forms.TextBox textBoxVarMargin;
-        private System.Windows.Forms.CheckBox checkBoxRemoteHost;
-        private System.Windows.Forms.TextBox textBoxHost;
         private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.ListBox listBoxCommands;
         private System.Windows.Forms.TextBox textBox_RenewTime;
+        private System.Windows.Forms.TextBox textBoxAccountID;
+        private System.Windows.Forms.TextBox textBoxBestBid;
+        private System.Windows.Forms.TextBox textBoxBestOffer;
+        private System.Windows.Forms.TextBox textBoxClassCode;
+        private System.Windows.Forms.TextBox textBoxClientCode;
+        private System.Windows.Forms.TextBox textBoxDescription;
+        private System.Windows.Forms.TextBox textBoxFirmID;
+        private System.Windows.Forms.TextBox textBoxGuaranteeProviding;
+        private System.Windows.Forms.TextBox textBoxHost;
+        private System.Windows.Forms.TextBox textBoxLastPrice;
+        private System.Windows.Forms.TextBox textBoxLogsWindow;
+        private System.Windows.Forms.TextBox textBoxLot;
+        private System.Windows.Forms.TextBox textBoxOrderNumber;
+        private System.Windows.Forms.TextBox textBoxQty;
+        private System.Windows.Forms.TextBox textBoxSecCode;
+        private System.Windows.Forms.TextBox textBoxShortName;
+        private System.Windows.Forms.TextBox textBoxStep;
+        private System.Windows.Forms.TextBox textBoxVarMargin;
+        private System.Windows.Forms.Timer timerRenewForm;
+
+        #endregion
     }
 }
 

@@ -1,30 +1,5 @@
 --~ // Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
 
-package.path = package.path .. ";" .. ".\\?.lua;" .. ".\\?.luac"
--- Получаем текущюю версию Quik
-local qver = getInfoParam("VERSION")
--- Если запрос выполнен удачно, - выделим номер версии
-if qver ~= nil then
-	qver = tonumber(qver:match("%d+%.%d+"))
-end
--- Если преобразование выполнено корректно, - определяем папку хранения библиотек
-if qver == nil then
-	message("QuikSharp! Не удалось определить версию QUIK", 3)
-	return
-else
-	libPath = "\\clibs"
-end
-
-if qver >= 8.5 then -- Если версия Quik 8.5 и выше, добавляем к наименованию папки 64\8.5x
-	libPath = libPath .. "64\\8.5x\\"
-elseif qver >= 8 then -- Если версия Quik меньше 8.5 но больше или равно 8, добавляем к наименованию папки 64, иначе оставляем существующий путь
-	libPath = libPath .. "64\\"
-else
-	libPath = "\\clibs\\"
-end
-
-package.cpath = package.cpath..";"..'.'..libPath..'?.dll'
-
 local qsfunctions = {}
 
 function qsfunctions.dispatch_and_process(msg)
@@ -46,7 +21,6 @@ function qsfunctions.dispatch_and_process(msg)
         return msg
     end
 end
-
 
 ---------------------
 -- Debug functions --
@@ -84,14 +58,12 @@ function qsfunctions.is_quik(msg)
     return msg
 end
 
-
-
 -----------------------
 -- Service functions --
 -----------------------
 
---- Функция предназначена для определения состояния подключения клиентского места к
--- серверу. Возвращает «1», если клиентское место подключено и «0», если не подключено.
+--- Р¤СѓРЅРєС†РёСЏ РїСЂРµРґРЅР°Р·РЅР°С‡РµРЅР° РґР»СЏ РѕРїСЂРµРґРµР»РµРЅРёСЏ СЃРѕСЃС‚РѕСЏРЅРёСЏ РїРѕРґРєР»СЋС‡РµРЅРёСЏ РєР»РёРµРЅС‚СЃРєРѕРіРѕ РјРµСЃС‚Р° Рє
+-- СЃРµСЂРІРµСЂСѓ. Р’РѕР·РІСЂР°С‰Р°РµС‚ В«1В», РµСЃР»Рё РєР»РёРµРЅС‚СЃРєРѕРµ РјРµСЃС‚Рѕ РїРѕРґРєР»СЋС‡РµРЅРѕ Рё В«0В», РµСЃР»Рё РЅРµ РїРѕРґРєР»СЋС‡РµРЅРѕ.
 function qsfunctions.isConnected(msg)
     -- set time when function was called
     msg.t = timemsec()
@@ -99,16 +71,8 @@ function qsfunctions.isConnected(msg)
     return msg
 end
 
--- Функция предназначена для оповещения скрипта о том, что клиент собирается отсоединяться
-function qsfunctions.prepareToDisconnect(msg)
-	was_connected = false
-	discardMissedValues()
-	msg.data = true
-	return msg
-end
-
---- Функция возвращает путь, по которому находится файл info.exe, исполняющий данный
--- скрипт, без завершающего обратного слэша («\»). Например, C:\QuikFront.
+--- Р¤СѓРЅРєС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ РїСѓС‚СЊ, РїРѕ РєРѕС‚РѕСЂРѕРјСѓ РЅР°С…РѕРґРёС‚СЃСЏ С„Р°Р№Р» info.exe, РёСЃРїРѕР»РЅСЏСЋС‰РёР№ РґР°РЅРЅС‹Р№
+-- СЃРєСЂРёРїС‚, Р±РµР· Р·Р°РІРµСЂС€Р°СЋС‰РµРіРѕ РѕР±СЂР°С‚РЅРѕРіРѕ СЃР»СЌС€Р° (В«\В»). РќР°РїСЂРёРјРµСЂ, C:\QuikFront.
 function qsfunctions.getWorkingFolder(msg)
     -- set time when function was called
     msg.t = timemsec()
@@ -116,8 +80,8 @@ function qsfunctions.getWorkingFolder(msg)
     return msg
 end
 
---- Функция возвращает путь, по которому находится запускаемый скрипт, без завершающего
--- обратного слэша («\»). Например, C:\QuikFront\Scripts.
+--- Р¤СѓРЅРєС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ РїСѓС‚СЊ, РїРѕ РєРѕС‚РѕСЂРѕРјСѓ РЅР°С…РѕРґРёС‚СЃСЏ Р·Р°РїСѓСЃРєР°РµРјС‹Р№ СЃРєСЂРёРїС‚, Р±РµР· Р·Р°РІРµСЂС€Р°СЋС‰РµРіРѕ
+-- РѕР±СЂР°С‚РЅРѕРіРѕ СЃР»СЌС€Р° (В«\В»). РќР°РїСЂРёРјРµСЂ, C:\QuikFront\Scripts.
 function qsfunctions.getScriptPath(msg)
     -- set time when function was called
     msg.t = timemsec()
@@ -125,8 +89,8 @@ function qsfunctions.getScriptPath(msg)
     return msg
 end
 
---- Функция возвращает значения параметров информационного окна (пункт меню
--- Связь / Информационное окно…).
+--- Р¤СѓРЅРєС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ Р·РЅР°С‡РµРЅРёСЏ РїР°СЂР°РјРµС‚СЂРѕРІ РёРЅС„РѕСЂРјР°С†РёРѕРЅРЅРѕРіРѕ РѕРєРЅР° (РїСѓРЅРєС‚ РјРµРЅСЋ
+-- РЎРІСЏР·СЊ / РРЅС„РѕСЂРјР°С†РёРѕРЅРЅРѕРµ РѕРєРЅРѕвЂ¦).
 function qsfunctions.getInfoParam(msg)
     -- set time when function was called
     msg.t = timemsec()
@@ -134,7 +98,7 @@ function qsfunctions.getInfoParam(msg)
     return msg
 end
 
---- Функция отображает сообщения в терминале QUIK.
+--- Р¤СѓРЅРєС†РёСЏ РѕС‚РѕР±СЂР°Р¶Р°РµС‚ СЃРѕРѕР±С‰РµРЅРёСЏ РІ С‚РµСЂРјРёРЅР°Р»Рµ QUIK.
 function qsfunctions.message(msg)
     log(msg.data, 1)
     msg.data = ""
@@ -151,21 +115,21 @@ function qsfunctions.error_message(msg)
     return msg
 end
 
---- Функция приостанавливает выполнение скрипта.
+--- Р¤СѓРЅРєС†РёСЏ РїСЂРёРѕСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РІС‹РїРѕР»РЅРµРЅРёРµ СЃРєСЂРёРїС‚Р°.
 function qsfunctions.sleep(msg)
     delay(msg.data)
     msg.data = ""
     return msg
 end
 
---- Функция для вывода отладочной информации.
+--- Р¤СѓРЅРєС†РёСЏ РґР»СЏ РІС‹РІРѕРґР° РѕС‚Р»Р°РґРѕС‡РЅРѕР№ РёРЅС„РѕСЂРјР°С†РёРё.
 function qsfunctions.PrintDbgStr(msg)
     log(msg.data, 0)
     msg.data = ""
     return msg
 end
 
--- Выводит на график метку
+-- Р’С‹РІРѕРґРёС‚ РЅР° РіСЂР°С„РёРє РјРµС‚РєСѓ
 function qsfunctions.addLabel(msg)
 	local spl = split(msg.data, "|")
 	local price, curdate, curtime, qty, path, id, algmnt, bgnd = spl[1], spl[2], spl[3], spl[4], spl[5], spl[6], spl[7], spl[8]
@@ -190,7 +154,7 @@ function qsfunctions.addLabel(msg)
 	return msg
 end
 
--- Удаляем выбранную метку
+-- РЈРґР°Р»СЏРµРј РІС‹Р±СЂР°РЅРЅСѓСЋ РјРµС‚РєСѓ
 function qsfunctions.delLabel(msg)
 	local spl = split(msg.data, "|")
 	local tag, id = spl[1], spl[2]
@@ -199,7 +163,7 @@ function qsfunctions.delLabel(msg)
 	return msg
 end
 
--- Удаляем все метки с графика
+-- РЈРґР°Р»СЏРµРј РІСЃРµ РјРµС‚РєРё СЃ РіСЂР°С„РёРєР°
 function qsfunctions.delAllLabels(msg)
 	local spl = split(msg.data, "|")
 	local id = spl[1]
@@ -212,28 +176,28 @@ end
 -- Class functions --
 ---------------------
 
---- Функция предназначена для получения списка кодов классов, переданных с сервера в ходе сеанса связи.
+--- Р¤СѓРЅРєС†РёСЏ РїСЂРµРґРЅР°Р·РЅР°С‡РµРЅР° РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ СЃРїРёСЃРєР° РєРѕРґРѕРІ РєР»Р°СЃСЃРѕРІ, РїРµСЂРµРґР°РЅРЅС‹С… СЃ СЃРµСЂРІРµСЂР° РІ С…РѕРґРµ СЃРµР°РЅСЃР° СЃРІСЏР·Рё.
 function qsfunctions.getClassesList(msg)
     msg.data = getClassesList()
 --    if  msg.data then log(msg.data) else log("getClassesList returned nil") end
     return msg
 end
 
---- Функция предназначена для получения информации о классе.
+--- Р¤СѓРЅРєС†РёСЏ РїСЂРµРґРЅР°Р·РЅР°С‡РµРЅР° РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РёРЅС„РѕСЂРјР°С†РёРё Рѕ РєР»Р°СЃСЃРµ.
 function qsfunctions.getClassInfo(msg)
     msg.data = getClassInfo(msg.data)
 --    if msg.data then log(msg.data.name) else log("getClassInfo  returned nil") end
     return msg
 end
 
---- Функция предназначена для получения списка кодов бумаг для списка классов, заданного списком кодов.
+--- Р¤СѓРЅРєС†РёСЏ РїСЂРµРґРЅР°Р·РЅР°С‡РµРЅР° РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ СЃРїРёСЃРєР° РєРѕРґРѕРІ Р±СѓРјР°Рі РґР»СЏ СЃРїРёСЃРєР° РєР»Р°СЃСЃРѕРІ, Р·Р°РґР°РЅРЅРѕРіРѕ СЃРїРёСЃРєРѕРј РєРѕРґРѕРІ.
 function qsfunctions.getClassSecurities(msg)
     msg.data = getClassSecurities(msg.data)
 --    if msg.data then log(msg.data) else log("getClassSecurities returned nil") end
     return msg
 end
 
---- Функция получает информацию по указанному классу и бумаге.
+--- Р¤СѓРЅРєС†РёСЏ РїРѕР»СѓС‡Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ РїРѕ СѓРєР°Р·Р°РЅРЅРѕРјСѓ РєР»Р°СЃСЃСѓ Рё Р±СѓРјР°РіРµ.
 function qsfunctions.getSecurityInfo(msg)
     local spl = split(msg.data, "|")
     local class_code, sec_code = spl[1], spl[2]
@@ -241,7 +205,7 @@ function qsfunctions.getSecurityInfo(msg)
     return msg
 end
 
---- Функция предназначена для определения класса по коду инструмента из заданного списка классов.
+--- Р¤СѓРЅРєС†РёСЏ РїСЂРµРґРЅР°Р·РЅР°С‡РµРЅР° РґР»СЏ РѕРїСЂРµРґРµР»РµРЅРёСЏ РєР»Р°СЃСЃР° РїРѕ РєРѕРґСѓ РёРЅСЃС‚СЂСѓРјРµРЅС‚Р° РёР· Р·Р°РґР°РЅРЅРѕРіРѕ СЃРїРёСЃРєР° РєР»Р°СЃСЃРѕРІ.
 function qsfunctions.getSecurityClass(msg)
     local spl = split(msg.data, "|")
     local classes_list, sec_code = spl[1], spl[2]
@@ -256,7 +220,7 @@ function qsfunctions.getSecurityClass(msg)
 	return msg
 end
 
---- Функция возвращает код клиента
+--- Р¤СѓРЅРєС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ РєРѕРґ РєР»РёРµРЅС‚Р°
 function qsfunctions.getClientCode(msg)
 	for i=0,getNumberOf("MONEY_LIMITS")-1 do
 		local clientcode = getItem("MONEY_LIMITS",i).client_code
@@ -268,7 +232,7 @@ function qsfunctions.getClientCode(msg)
 	return msg
 end
 
---- Функция возвращает торговый счет для запрашиваемого кода класса
+--- Р¤СѓРЅРєС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ С‚РѕСЂРіРѕРІС‹Р№ СЃС‡РµС‚ РґР»СЏ Р·Р°РїСЂР°С€РёРІР°РµРјРѕРіРѕ РєРѕРґР° РєР»Р°СЃСЃР°
 function qsfunctions.getTradeAccount(msg)
 	for i=0,getNumberOf("trade_accounts")-1 do
 		local trade_account = getItem("trade_accounts",i)
@@ -280,7 +244,7 @@ function qsfunctions.getTradeAccount(msg)
 	return msg
 end
 
---- Функция возвращает торговые счета в системе
+--- Р¤СѓРЅРєС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ С‚РѕСЂРіРѕРІС‹Рµ СЃС‡РµС‚Р° РІ СЃРёСЃС‚РµРјРµ
 function qsfunctions.getTradeAccounts(msg)
 local ListAccounts={}
 	for i=0,getNumberOf("trade_accounts")-1 do
@@ -294,10 +258,10 @@ end
 
 
 ---------------------------------------------------------------------
--- Order Book functions (Р¤СѓРЅРєС†РёРё РґР»СЏ СЂР°Р±РѕС‚С‹ СЃРѕ СЃС‚Р°РєР°РЅРѕРј РєРѕС‚РёСЂРѕРІРѕРє) --
+-- Order Book functions (Р В¤РЎС“Р Р…Р С”РЎвЂ Р С‘Р С‘ Р Т‘Р В»РЎРЏ РЎР‚Р В°Р В±Р С•РЎвЂљРЎвЂ№ РЎРѓР С• РЎРѓРЎвЂљР В°Р С”Р В°Р Р…Р С•Р С Р С”Р С•РЎвЂљР С‘РЎР‚Р С•Р Р†Р С•Р С”) --
 ---------------------------------------------------------------------
 
---- Функция заказывает на сервер получение стакана по указанному классу и бумаге.
+--- Р¤СѓРЅРєС†РёСЏ Р·Р°РєР°Р·С‹РІР°РµС‚ РЅР° СЃРµСЂРІРµСЂ РїРѕР»СѓС‡РµРЅРёРµ СЃС‚Р°РєР°РЅР° РїРѕ СѓРєР°Р·Р°РЅРЅРѕРјСѓ РєР»Р°СЃСЃСѓ Рё Р±СѓРјР°РіРµ.
 function qsfunctions.Subscribe_Level_II_Quotes(msg)
     local spl = split(msg.data, "|")
     local class_code, sec_code = spl[1], spl[2]
@@ -305,7 +269,7 @@ function qsfunctions.Subscribe_Level_II_Quotes(msg)
     return msg
 end
 
---- Функция отменяет заказ на получение с сервера стакана по указанному классу и бумаге.
+--- Р¤СѓРЅРєС†РёСЏ РѕС‚РјРµРЅСЏРµС‚ Р·Р°РєР°Р· РЅР° РїРѕР»СѓС‡РµРЅРёРµ СЃ СЃРµСЂРІРµСЂР° СЃС‚Р°РєР°РЅР° РїРѕ СѓРєР°Р·Р°РЅРЅРѕРјСѓ РєР»Р°СЃСЃСѓ Рё Р±СѓРјР°РіРµ.
 function qsfunctions.Unsubscribe_Level_II_Quotes(msg)
     local spl = split(msg.data, "|")
     local class_code, sec_code = spl[1], spl[2]
@@ -313,7 +277,7 @@ function qsfunctions.Unsubscribe_Level_II_Quotes(msg)
     return msg
 end
 
---- Функция позволяет узнать, заказан ли с сервера стакан по указанному классу и бумаге.
+--- Р¤СѓРЅРєС†РёСЏ РїРѕР·РІРѕР»СЏРµС‚ СѓР·РЅР°С‚СЊ, Р·Р°РєР°Р·Р°РЅ Р»Рё СЃ СЃРµСЂРІРµСЂР° СЃС‚Р°РєР°РЅ РїРѕ СѓРєР°Р·Р°РЅРЅРѕРјСѓ РєР»Р°СЃСЃСѓ Рё Р±СѓРјР°РіРµ.
 function qsfunctions.IsSubscribed_Level_II_Quotes(msg)
     local spl = split(msg.data, "|")
     local class_code, sec_code = spl[1], spl[2]
@@ -321,7 +285,7 @@ function qsfunctions.IsSubscribed_Level_II_Quotes(msg)
     return msg
 end
 
---- Функция предназначена для получения стакана по указанному классу и инструменту.
+--- Р¤СѓРЅРєС†РёСЏ РїСЂРµРґРЅР°Р·РЅР°С‡РµРЅР° РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ СЃС‚Р°РєР°РЅР° РїРѕ СѓРєР°Р·Р°РЅРЅРѕРјСѓ РєР»Р°СЃСЃСѓ Рё РёРЅСЃС‚СЂСѓРјРµРЅС‚Сѓ.
 function qsfunctions.GetQuoteLevel2(msg)
     local spl = split(msg.data, "|")
     local class_code, sec_code = spl[1], spl[2]
@@ -343,9 +307,9 @@ end
 -- Trading functions --
 -----------------------
 
---- отправляет транзакцию на сервер и возвращает пустое сообщение, которое
--- будет проигноировано. Вместо него, отправитель будет ждать события
--- OnTransReply, из которого по TRANS_ID он получит результат отправленной транзакции
+--- РѕС‚РїСЂР°РІР»СЏРµС‚ С‚СЂР°РЅР·Р°РєС†РёСЋ РЅР° СЃРµСЂРІРµСЂ Рё РІРѕР·РІСЂР°С‰Р°РµС‚ РїСѓСЃС‚РѕРµ СЃРѕРѕР±С‰РµРЅРёРµ, РєРѕС‚РѕСЂРѕРµ
+-- Р±СѓРґРµС‚ РїСЂРѕРёРіРЅРѕРёСЂРѕРІР°РЅРѕ. Р’РјРµСЃС‚Рѕ РЅРµРіРѕ, РѕС‚РїСЂР°РІРёС‚РµР»СЊ Р±СѓРґРµС‚ Р¶РґР°С‚СЊ СЃРѕР±С‹С‚РёСЏ
+-- OnTransReply, РёР· РєРѕС‚РѕСЂРѕРіРѕ РїРѕ TRANS_ID РѕРЅ РїРѕР»СѓС‡РёС‚ СЂРµР·СѓР»СЊС‚Р°С‚ РѕС‚РїСЂР°РІР»РµРЅРЅРѕР№ С‚СЂР°РЅР·Р°РєС†РёРё
 function qsfunctions.sendTransaction(msg)
     local res = sendTransaction(msg.data)
     if res~="" then
@@ -360,7 +324,7 @@ function qsfunctions.sendTransaction(msg)
     end
 end
 
---- Функция заказывает получение параметров Таблицы текущих торгов. В случае успешного завершения функция возвращает «true», иначе – «false»
+--- Р¤СѓРЅРєС†РёСЏ Р·Р°РєР°Р·С‹РІР°РµС‚ РїРѕР»СѓС‡РµРЅРёРµ РїР°СЂР°РјРµС‚СЂРѕРІ РўР°Р±Р»РёС†С‹ С‚РµРєСѓС‰РёС… С‚РѕСЂРіРѕРІ. Р’ СЃР»СѓС‡Р°Рµ СѓСЃРїРµС€РЅРѕРіРѕ Р·Р°РІРµСЂС€РµРЅРёСЏ С„СѓРЅРєС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ В«trueВ», РёРЅР°С‡Рµ вЂ“ В«falseВ»
 function qsfunctions.paramRequest(msg)
     local spl = split(msg.data, "|")
     local class_code, sec_code, param_name = spl[1], spl[2], spl[3]
@@ -368,7 +332,7 @@ function qsfunctions.paramRequest(msg)
     return msg
 end
 
---- Функция отменяет заказ на получение параметров Таблицы текущих торгов. В случае успешного завершения функция возвращает «true», иначе – «false»
+--- Р¤СѓРЅРєС†РёСЏ РѕС‚РјРµРЅСЏРµС‚ Р·Р°РєР°Р· РЅР° РїРѕР»СѓС‡РµРЅРёРµ РїР°СЂР°РјРµС‚СЂРѕРІ РўР°Р±Р»РёС†С‹ С‚РµРєСѓС‰РёС… С‚РѕСЂРіРѕРІ. Р’ СЃР»СѓС‡Р°Рµ СѓСЃРїРµС€РЅРѕРіРѕ Р·Р°РІРµСЂС€РµРЅРёСЏ С„СѓРЅРєС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ В«trueВ», РёРЅР°С‡Рµ вЂ“ В«falseВ»
 function qsfunctions.cancelParamRequest(msg)
     local spl = split(msg.data, "|")
     local class_code, sec_code, param_name = spl[1], spl[2], spl[3]
@@ -376,8 +340,8 @@ function qsfunctions.cancelParamRequest(msg)
     return msg
 end
 
---- Функция предназначена для получения значений всех параметров биржевой информации из Таблицы текущих значений параметров.
--- С помощью этой функции можно получить любое из значений Таблицы текущих значений параметров для заданных кодов класса и бумаги.
+--- Р¤СѓРЅРєС†РёСЏ РїСЂРµРґРЅР°Р·РЅР°С‡РµРЅР° РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ Р·РЅР°С‡РµРЅРёР№ РІСЃРµС… РїР°СЂР°РјРµС‚СЂРѕРІ Р±РёСЂР¶РµРІРѕР№ РёРЅС„РѕСЂРјР°С†РёРё РёР· РўР°Р±Р»РёС†С‹ С‚РµРєСѓС‰РёС… Р·РЅР°С‡РµРЅРёР№ РїР°СЂР°РјРµС‚СЂРѕРІ.
+-- РЎ РїРѕРјРѕС‰СЊСЋ СЌС‚РѕР№ С„СѓРЅРєС†РёРё РјРѕР¶РЅРѕ РїРѕР»СѓС‡РёС‚СЊ Р»СЋР±РѕРµ РёР· Р·РЅР°С‡РµРЅРёР№ РўР°Р±Р»РёС†С‹ С‚РµРєСѓС‰РёС… Р·РЅР°С‡РµРЅРёР№ РїР°СЂР°РјРµС‚СЂРѕРІ РґР»СЏ Р·Р°РґР°РЅРЅС‹С… РєРѕРґРѕРІ РєР»Р°СЃСЃР° Рё Р±СѓРјР°РіРё.
 function qsfunctions.getParamEx(msg)
     local spl = split(msg.data, "|")
     local class_code, sec_code, param_name = spl[1], spl[2], spl[3]
@@ -385,10 +349,10 @@ function qsfunctions.getParamEx(msg)
     return msg
 end
 
---- Функция предназначена для получения значении? всех параметров биржевои? информации из Таблицы текущих торгов
--- с возможностью в дальнеи?шем отказаться от получения определенных параметров, заказанных с помощью функции ParamRequest.
--- Для отказа от получения какого-либо параметра воспользуи?тесь функциеи? CancelParamRequest.
--- Функция возвращает таблицу Lua с параметрами, аналогичными параметрам, возвращаемым функциеи? getParamEx
+--- Р¤СѓРЅРєС†РёСЏ РїСЂРµРґРЅР°Р·РЅР°С‡РµРЅР° РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ Р·РЅР°С‡РµРЅРёРё? РІСЃРµС… РїР°СЂР°РјРµС‚СЂРѕРІ Р±РёСЂР¶РµРІРѕРё? РёРЅС„РѕСЂРјР°С†РёРё РёР· РўР°Р±Р»РёС†С‹ С‚РµРєСѓС‰РёС… С‚РѕСЂРіРѕРІ
+-- СЃ РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊСЋ РІ РґР°Р»СЊРЅРµРё?С€РµРј РѕС‚РєР°Р·Р°С‚СЊСЃСЏ РѕС‚ РїРѕР»СѓС‡РµРЅРёСЏ РѕРїСЂРµРґРµР»РµРЅРЅС‹С… РїР°СЂР°РјРµС‚СЂРѕРІ, Р·Р°РєР°Р·Р°РЅРЅС‹С… СЃ РїРѕРјРѕС‰СЊСЋ С„СѓРЅРєС†РёРё ParamRequest.
+-- Р”Р»СЏ РѕС‚РєР°Р·Р° РѕС‚ РїРѕР»СѓС‡РµРЅРёСЏ РєР°РєРѕРіРѕ-Р»РёР±Рѕ РїР°СЂР°РјРµС‚СЂР° РІРѕСЃРїРѕР»СЊР·СѓРё?С‚РµСЃСЊ С„СѓРЅРєС†РёРµРё? CancelParamRequest.
+-- Р¤СѓРЅРєС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ С‚Р°Р±Р»РёС†Сѓ Lua СЃ РїР°СЂР°РјРµС‚СЂР°РјРё, Р°РЅР°Р»РѕРіРёС‡РЅС‹РјРё РїР°СЂР°РјРµС‚СЂР°Рј, РІРѕР·РІСЂР°С‰Р°РµРјС‹Рј С„СѓРЅРєС†РёРµРё? getParamEx
 function qsfunctions.getParamEx2(msg)
     local spl = split(msg.data, "|")
     local class_code, sec_code, param_name = spl[1], spl[2], spl[3]
@@ -396,7 +360,7 @@ function qsfunctions.getParamEx2(msg)
     return msg
 end
 
--- Функция предназначена для получения информации по бумажным лимитам.
+-- Р¤СѓРЅРєС†РёСЏ РїСЂРµРґРЅР°Р·РЅР°С‡РµРЅР° РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РёРЅС„РѕСЂРјР°С†РёРё РїРѕ Р±СѓРјР°Р¶РЅС‹Рј Р»РёРјРёС‚Р°Рј.
 function qsfunctions.getDepo(msg)
     local spl = split(msg.data, "|")
     local clientCode, firmId, secCode, account = spl[1], spl[2], spl[3], spl[4]
@@ -404,7 +368,7 @@ function qsfunctions.getDepo(msg)
     return msg
 end
 
--- Функция предназначена для получения информации по бумажным лимитам.
+-- Р¤СѓРЅРєС†РёСЏ РїСЂРµРґРЅР°Р·РЅР°С‡РµРЅР° РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РёРЅС„РѕСЂРјР°С†РёРё РїРѕ Р±СѓРјР°Р¶РЅС‹Рј Р»РёРјРёС‚Р°Рј.
 function qsfunctions.getDepoEx(msg)
     local spl = split(msg.data, "|")
     local firmId, clientCode, secCode, account, limit_kind = spl[1], spl[2], spl[3], spl[4], spl[5]
@@ -412,7 +376,7 @@ function qsfunctions.getDepoEx(msg)
     return msg
 end
 
--- Функция для получения информации по денежным лимитам.
+-- Р¤СѓРЅРєС†РёСЏ РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РёРЅС„РѕСЂРјР°С†РёРё РїРѕ РґРµРЅРµР¶РЅС‹Рј Р»РёРјРёС‚Р°Рј.
 function qsfunctions.getMoney(msg)
     local spl = split(msg.data, "|")
     local client_code, firm_id, tag, curr_code = spl[1], spl[2], spl[3], spl[4]
@@ -420,7 +384,7 @@ function qsfunctions.getMoney(msg)
     return msg
 end
 
--- Функция для получения информации по денежным лимитам указанного типа.
+-- Р¤СѓРЅРєС†РёСЏ РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РёРЅС„РѕСЂРјР°С†РёРё РїРѕ РґРµРЅРµР¶РЅС‹Рј Р»РёРјРёС‚Р°Рј СѓРєР°Р·Р°РЅРЅРѕРіРѕ С‚РёРїР°.
 function qsfunctions.getMoneyEx(msg)
     local spl = split(msg.data, "|")
     local firm_id, client_code, tag, curr_code, limit_kind = spl[1], spl[2], spl[3], spl[4], spl[5]
@@ -428,7 +392,7 @@ function qsfunctions.getMoneyEx(msg)
     return msg
 end
 
--- Функция предназначена для получения информации по фьючерсным лимитам.
+-- Р¤СѓРЅРєС†РёСЏ РїСЂРµРґРЅР°Р·РЅР°С‡РµРЅР° РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РёРЅС„РѕСЂРјР°С†РёРё РїРѕ С„СЊСЋС‡РµСЂСЃРЅС‹Рј Р»РёРјРёС‚Р°Рј.
 function qsfunctions.getFuturesLimit(msg)
     local spl = split(msg.data, "|")
     local firmId, accId, limitType, currCode = spl[1], spl[2], spl[3], spl[4]
@@ -455,7 +419,7 @@ function qsfunctions.getFuturesHolding(msg)
     return msg
 end
 
--- Функция возвращает таблицу заявок (всю или по заданному инструменту)
+-- Р¤СѓРЅРєС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ С‚Р°Р±Р»РёС†Сѓ Р·Р°СЏРІРѕРє (РІСЃСЋ РёР»Рё РїРѕ Р·Р°РґР°РЅРЅРѕРјСѓ РёРЅСЃС‚СЂСѓРјРµРЅС‚Сѓ)
 function qsfunctions.get_orders(msg)
 	if msg.data ~= "" then
 		local spl = split(msg.data, "|")
@@ -473,7 +437,7 @@ function qsfunctions.get_orders(msg)
 	return msg
 end
 
--- Функция возвращает заявку по заданному инструменту и ID-транзакции
+-- Р¤СѓРЅРєС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ Р·Р°СЏРІРєСѓ РїРѕ Р·Р°РґР°РЅРЅРѕРјСѓ РёРЅСЃС‚СЂСѓРјРµРЅС‚Сѓ Рё ID-С‚СЂР°РЅР·Р°РєС†РёРё
 function qsfunctions.getOrder_by_ID(msg)
 	if msg.data ~= "" then
 		local spl = split(msg.data, "|")
@@ -493,7 +457,7 @@ function qsfunctions.getOrder_by_ID(msg)
 	return msg
 end
 
----- Функция возвращает заявку по номеру
+---- Р¤СѓРЅРєС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ Р·Р°СЏРІРєСѓ РїРѕ РЅРѕРјРµСЂСѓ
 function qsfunctions.getOrder_by_Number(msg)
 	for i=0,getNumberOf("orders")-1 do
 		local order = getItem("orders",i)
@@ -505,8 +469,8 @@ function qsfunctions.getOrder_by_Number(msg)
 	return msg
 end
 
---- Возвращает заявку по её номеру и классу инструмента ---
---- На основе http://help.qlua.org/ch4_5_1_1.htm ---
+--- Р’РѕР·РІСЂР°С‰Р°РµС‚ Р·Р°СЏРІРєСѓ РїРѕ РµС‘ РЅРѕРјРµСЂСѓ Рё РєР»Р°СЃСЃСѓ РёРЅСЃС‚СЂСѓРјРµРЅС‚Р° ---
+--- РќР° РѕСЃРЅРѕРІРµ http://help.qlua.org/ch4_5_1_1.htm ---
 function qsfunctions.get_order_by_number(msg)
 	local spl = split(msg.data, "|")
 	local class_code = spl[1]
@@ -515,8 +479,8 @@ function qsfunctions.get_order_by_number(msg)
 	return msg
 end
 
---- Возвращает список записей из таблицы 'Лимиты по бумагам'
---- На основе http://help.qlua.org/ch4_6_11.htm и http://help.qlua.org/ch4_5_3.htm
+--- Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє Р·Р°РїРёСЃРµР№ РёР· С‚Р°Р±Р»РёС†С‹ 'Р›РёРјРёС‚С‹ РїРѕ Р±СѓРјР°РіР°Рј'
+--- РќР° РѕСЃРЅРѕРІРµ http://help.qlua.org/ch4_6_11.htm Рё http://help.qlua.org/ch4_5_3.htm
 function qsfunctions.get_depo_limits(msg)
 	local sec_code = msg.data
 	local count = getNumberOf("depo_limits")
@@ -531,7 +495,7 @@ function qsfunctions.get_depo_limits(msg)
 	return msg
 end
 
--- Функция возвращает таблицу сделок (всю или по заданному инструменту)
+-- Р¤СѓРЅРєС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ С‚Р°Р±Р»РёС†Сѓ СЃРґРµР»РѕРє (РІСЃСЋ РёР»Рё РїРѕ Р·Р°РґР°РЅРЅРѕРјСѓ РёРЅСЃС‚СЂСѓРјРµРЅС‚Сѓ)
 function qsfunctions.get_trades(msg)
 	if msg.data ~= "" then
 		local spl = split(msg.data, "|")
@@ -549,7 +513,7 @@ function qsfunctions.get_trades(msg)
 	return msg
 end
 
--- Функция возвращает таблицу сделок по номеру заявки
+-- Р¤СѓРЅРєС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ С‚Р°Р±Р»РёС†Сѓ СЃРґРµР»РѕРє РїРѕ РЅРѕРјРµСЂСѓ Р·Р°СЏРІРєРё
 function qsfunctions.get_Trades_by_OrderNumber(msg)
 	local order_num = tonumber(msg.data)
 
@@ -564,7 +528,7 @@ function qsfunctions.get_Trades_by_OrderNumber(msg)
 	return msg
 end
 
--- Функция предназначена для получения значений параметров таблицы «Клиентский портфель», соответствующих идентификатору участника торгов «firmid» и коду клиента «client_code».
+-- Р¤СѓРЅРєС†РёСЏ РїСЂРµРґРЅР°Р·РЅР°С‡РµРЅР° РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ Р·РЅР°С‡РµРЅРёР№ РїР°СЂР°РјРµС‚СЂРѕРІ С‚Р°Р±Р»РёС†С‹ В«РљР»РёРµРЅС‚СЃРєРёР№ РїРѕСЂС‚С„РµР»СЊВ», СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РёС… РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂСѓ СѓС‡Р°СЃС‚РЅРёРєР° С‚РѕСЂРіРѕРІ В«firmidВ» Рё РєРѕРґСѓ РєР»РёРµРЅС‚Р° В«client_codeВ».
 function qsfunctions.getPortfolioInfo(msg)
     local spl = split(msg.data, "|")
     local firmId, clientCode = spl[1], spl[2]
@@ -572,7 +536,7 @@ function qsfunctions.getPortfolioInfo(msg)
     return msg
 end
 
--- Функция предназначена для получения значений параметров таблицы «Клиентский портфель», соответствующих идентификатору участника торгов «firmid», коду клиента «client_code» и виду лимита «limit_kind».
+-- Р¤СѓРЅРєС†РёСЏ РїСЂРµРґРЅР°Р·РЅР°С‡РµРЅР° РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ Р·РЅР°С‡РµРЅРёР№ РїР°СЂР°РјРµС‚СЂРѕРІ С‚Р°Р±Р»РёС†С‹ В«РљР»РёРµРЅС‚СЃРєРёР№ РїРѕСЂС‚С„РµР»СЊВ», СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РёС… РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂСѓ СѓС‡Р°СЃС‚РЅРёРєР° С‚РѕСЂРіРѕРІ В«firmidВ», РєРѕРґСѓ РєР»РёРµРЅС‚Р° В«client_codeВ» Рё РІРёРґСѓ Р»РёРјРёС‚Р° В«limit_kindВ».
 function qsfunctions.getPortfolioInfoEx(msg)
     local spl = split(msg.data, "|")
     local firmId, clientCode, limit_kind = spl[1], spl[2], spl[3]
@@ -600,10 +564,10 @@ end
 function getOptions(classCode,secCode)
 	--classCode = "SPBOPT"
 --BaseSecList="RIZ6"
-local SecList = getClassSecurities(classCode) --все сразу
+local SecList = getClassSecurities(classCode) --РІСЃРµ СЃСЂР°Р·Сѓ
 local t={}
 local p={}
-for sec in string.gmatch(SecList, "([^,]+)") do --перебираем опционы по очереди.
+for sec in string.gmatch(SecList, "([^,]+)") do --РїРµСЂРµР±РёСЂР°РµРј РѕРїС†РёРѕРЅС‹ РїРѕ РѕС‡РµСЂРµРґРё.
             local Optionbase=getParamEx(classCode,sec,"optionbase").param_image
             local Optiontype=getParamEx(classCode,sec,"optiontype").param_image
             if (string.find(secCode,Optionbase)~=nil) then
@@ -636,7 +600,7 @@ end
 -- Stop order functions --
 --------------------------
 
---- Возвращает список стоп-заявок
+--- Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє СЃС‚РѕРї-Р·Р°СЏРІРѕРє
 function qsfunctions.get_stop_orders(msg)
 	if msg.data ~= "" then
 		local spl = split(msg.data, "|")
@@ -659,7 +623,7 @@ end
 --- Candles functions ---
 -------------------------
 
---- Возвращаем количество свечей по тегу
+--- Р’РѕР·РІСЂР°С‰Р°РµРј РєРѕР»РёС‡РµСЃС‚РІРѕ СЃРІРµС‡РµР№ РїРѕ С‚РµРіСѓ
 function qsfunctions.get_num_candles(msg)
 	log("Called get_num_candles" .. msg.data, 2)
 	local spl = split(msg.data, "|")
@@ -670,7 +634,7 @@ function qsfunctions.get_num_candles(msg)
 end
 
 
---- Возвращаем все свечи по идентификатору графика. График должен быть открыт
+--- Р’РѕР·РІСЂР°С‰Р°РµРј РІСЃРµ СЃРІРµС‡Рё РїРѕ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂСѓ РіСЂР°С„РёРєР°. Р“СЂР°С„РёРє РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РѕС‚РєСЂС‹С‚
 function qsfunctions.get_candles(msg)
 	log("Called get_candles" .. msg.data, 2)
 	local spl = split(msg.data, "|")
@@ -693,14 +657,14 @@ function qsfunctions.get_candles(msg)
 	return msg
 end
 
---- Возвращаем все свечи по заданному инструменту и интервалу
+--- Р’РѕР·РІСЂР°С‰Р°РµРј РІСЃРµ СЃРІРµС‡Рё РїРѕ Р·Р°РґР°РЅРЅРѕРјСѓ РёРЅСЃС‚СЂСѓРјРµРЅС‚Сѓ Рё РёРЅС‚РµСЂРІР°Р»Сѓ
 function qsfunctions.get_candles_from_data_source(msg)
 	local ds, is_error = create_data_source(msg)
 	if not is_error then
-		--- датасорс изначально приходит пустой, нужно некоторое время подождать пока он заполниться данными
+		--- РґР°С‚Р°СЃРѕСЂСЃ РёР·РЅР°С‡Р°Р»СЊРЅРѕ РїСЂРёС…РѕРґРёС‚ РїСѓСЃС‚РѕР№, РЅСѓР¶РЅРѕ РЅРµРєРѕС‚РѕСЂРѕРµ РІСЂРµРјСЏ РїРѕРґРѕР¶РґР°С‚СЊ РїРѕРєР° РѕРЅ Р·Р°РїРѕР»РЅРёС‚СЊСЃСЏ РґР°РЅРЅС‹РјРё
 		repeat sleep(1) until ds:Size() > 0
 
-		local count = tonumber(split(msg.data, "|")[4]) --- возвращаем последние count свечей. Если равен 0, то возвращаем все доступные свечи.
+		local count = tonumber(split(msg.data, "|")[4]) --- РІРѕР·РІСЂР°С‰Р°РµРј РїРѕСЃР»РµРґРЅРёРµ count СЃРІРµС‡РµР№. Р•СЃР»Рё СЂР°РІРµРЅ 0, С‚Рѕ РІРѕР·РІСЂР°С‰Р°РµРј РІСЃРµ РґРѕСЃС‚СѓРїРЅС‹Рµ СЃРІРµС‡Рё.
 		local class, sec, interval = get_candles_param(msg)
 		local candles = {}
 		local start_i = count == 0 and 1 or math.max(1, ds:Size() - count + 1)
@@ -744,11 +708,11 @@ function fetch_candle(data_source, index)
 	return candle
 end
 
---- Словарь открытых подписок (datasources) на свечи
+--- РЎР»РѕРІР°СЂСЊ РѕС‚РєСЂС‹С‚С‹С… РїРѕРґРїРёСЃРѕРє (datasources) РЅР° СЃРІРµС‡Рё
 data_sources = {}
 last_indexes = {}
 
---- Подписаться на получения свечей по заданному инструмент и интервалу
+--- РџРѕРґРїРёСЃР°С‚СЊСЃСЏ РЅР° РїРѕР»СѓС‡РµРЅРёСЏ СЃРІРµС‡РµР№ РїРѕ Р·Р°РґР°РЅРЅРѕРјСѓ РёРЅСЃС‚СЂСѓРјРµРЅС‚ Рё РёРЅС‚РµСЂРІР°Р»Сѓ
 function qsfunctions.subscribe_to_candles(msg)
 	local ds, is_error = create_data_source(msg)
 	if not is_error then
@@ -782,7 +746,7 @@ function data_source_callback(index, class, sec, interval)
 	end
 end
 
---- Отписать от получения свечей по заданному инструменту и интервалу
+--- РћС‚РїРёСЃР°С‚СЊ РѕС‚ РїРѕР»СѓС‡РµРЅРёСЏ СЃРІРµС‡РµР№ РїРѕ Р·Р°РґР°РЅРЅРѕРјСѓ РёРЅСЃС‚СЂСѓРјРµРЅС‚Сѓ Рё РёРЅС‚РµСЂРІР°Р»Сѓ
 function qsfunctions.unsubscribe_from_candles(msg)
 	local class, sec, interval = get_candles_param(msg)
 	local key = get_key(class, sec, interval)
@@ -792,7 +756,7 @@ function qsfunctions.unsubscribe_from_candles(msg)
 	return msg
 end
 
---- Проверить открыта ли подписка на заданный инструмент и интервал
+--- РџСЂРѕРІРµСЂРёС‚СЊ РѕС‚РєСЂС‹С‚Р° Р»Рё РїРѕРґРїРёСЃРєР° РЅР° Р·Р°РґР°РЅРЅС‹Р№ РёРЅСЃС‚СЂСѓРјРµРЅС‚ Рё РёРЅС‚РµСЂРІР°Р»
 function qsfunctions.is_subscribed(msg)
 	local class, sec, interval = get_candles_param(msg)
 	local key = get_key(class, sec, interval)
@@ -806,13 +770,13 @@ function qsfunctions.is_subscribed(msg)
 	return msg
 end
 
---- Возвращает из msg информацию о инструменте на который подписываемся и интервале
+--- Р’РѕР·РІСЂР°С‰Р°РµС‚ РёР· msg РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РёРЅСЃС‚СЂСѓРјРµРЅС‚Рµ РЅР° РєРѕС‚РѕСЂС‹Р№ РїРѕРґРїРёСЃС‹РІР°РµРјСЃСЏ Рё РёРЅС‚РµСЂРІР°Р»Рµ
 function get_candles_param(msg)
 	local spl = split(msg.data, "|")
 	return spl[1], spl[2], tonumber(spl[3])
 end
 
---- Возвращает уникальный ключ для инструмента на который подписываемся и инетрвала
+--- Р’РѕР·РІСЂР°С‰Р°РµС‚ СѓРЅРёРєР°Р»СЊРЅС‹Р№ РєР»СЋС‡ РґР»СЏ РёРЅСЃС‚СЂСѓРјРµРЅС‚Р° РЅР° РєРѕС‚РѕСЂС‹Р№ РїРѕРґРїРёСЃС‹РІР°РµРјСЃСЏ Рё РёРЅРµС‚СЂРІР°Р»Р°
 function get_key(class, sec, interval)
 	return class .. "|" .. sec .. "|" .. tostring(interval)
 end
@@ -821,7 +785,7 @@ end
 --- UCP functions ---
 -------------------------
 
---- Функция возвращает торговый счет срочного рынка, соответствующий коду клиента фондового рынка с единой денежной позицией
+--- Р¤СѓРЅРєС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ С‚РѕСЂРіРѕРІС‹Р№ СЃС‡РµС‚ СЃСЂРѕС‡РЅРѕРіРѕ СЂС‹РЅРєР°, СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РёР№ РєРѕРґСѓ РєР»РёРµРЅС‚Р° С„РѕРЅРґРѕРІРѕРіРѕ СЂС‹РЅРєР° СЃ РµРґРёРЅРѕР№ РґРµРЅРµР¶РЅРѕР№ РїРѕР·РёС†РёРµР№
 function qsfunctions.GetTrdAccByClientCode(msg)
     local spl = split(msg.data, "|")
     local firmId, clientCode = spl[1], spl[2]
@@ -829,7 +793,7 @@ function qsfunctions.GetTrdAccByClientCode(msg)
     return msg
 end
 
---- Функция возвращает код клиента фондового рынка с единой денежной позицией, соответствующий торговому счету срочного рынка
+--- Р¤СѓРЅРєС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ РєРѕРґ РєР»РёРµРЅС‚Р° С„РѕРЅРґРѕРІРѕРіРѕ СЂС‹РЅРєР° СЃ РµРґРёРЅРѕР№ РґРµРЅРµР¶РЅРѕР№ РїРѕР·РёС†РёРµР№, СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РёР№ С‚РѕСЂРіРѕРІРѕРјСѓ СЃС‡РµС‚Сѓ СЃСЂРѕС‡РЅРѕРіРѕ СЂС‹РЅРєР°
 function qsfunctions.GetClientCodeByTrdAcc(msg)
     local spl = split(msg.data, "|")
     local firmId, trdAccId = spl[1], spl[2]
@@ -837,7 +801,7 @@ function qsfunctions.GetClientCodeByTrdAcc(msg)
     return msg
 end
 
---- Функция предназначена для получения признака, указывающего имеет ли клиент единую денежную позицию
+--- Р¤СѓРЅРєС†РёСЏ РїСЂРµРґРЅР°Р·РЅР°С‡РµРЅР° РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РїСЂРёР·РЅР°РєР°, СѓРєР°Р·С‹РІР°СЋС‰РµРіРѕ РёРјРµРµС‚ Р»Рё РєР»РёРµРЅС‚ РµРґРёРЅСѓСЋ РґРµРЅРµР¶РЅСѓСЋ РїРѕР·РёС†РёСЋ
 function qsfunctions.IsUcpClient(msg)
     local spl = split(msg.data, "|")
     local firmId, client = spl[1], spl[2]
