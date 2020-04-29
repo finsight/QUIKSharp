@@ -30,7 +30,7 @@ is_debug = false
 -- log files
 
 function openLog()
-    os.execute("mkdir "..script_path.."\\logs")
+    os.execute("mkdir \""..script_path.."\\logs\"")
     local lf = io.open (script_path.. "\\logs\\QUIK#_"..os.date("%Y%m%d")..".log", "a")
     if lf == nil then
         lf = io.open (script_path.. "\\QUIK#_"..os.date("%Y%m%d")..".log", "a")
