@@ -35,7 +35,7 @@ namespace QuikSharp.DataStructures
         /// Offer
         /// </summary>
         [JsonProperty("OFFER")]
-        public int OFFER { get; set; }
+        public double OFFER { get; set; }
 
         /// <summary>
         /// Longname
@@ -65,7 +65,7 @@ namespace QuikSharp.DataStructures
         /// Bid
         /// </summary>
         [JsonProperty("BID")]
-        public int BID { get; set; }
+        public double BID { get; set; }
 
         /// <summary>
         /// DaysToMatDate
