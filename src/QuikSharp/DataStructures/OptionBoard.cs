@@ -11,7 +11,7 @@ namespace QuikSharp.DataStructures
         /// Strike
         /// </summary>
         [JsonProperty("Strike")]
-        public int Strike { get; set; }
+        public double Strike { get; set; }
 
         /// <summary>
         /// Code
