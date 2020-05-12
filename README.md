@@ -1,4 +1,6 @@
-﻿QUIK#
+﻿[![Gitter](https://badges.gitter.im/QUIKSharp/community.svg)](https://gitter.im/QUIKSharp/community)
+
+QUIK#
 ==========
 QUIK# (QUIK Sharp) is the QUIK Lua interface ported to .NET.
 

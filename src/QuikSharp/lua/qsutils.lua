@@ -32,7 +32,7 @@ is_debug = false
 function openLog()
     os.execute("mkdir \""..script_path.."\\logs\"")
     local lf = io.open (script_path.. "\\logs\\QUIK#_"..os.date("%Y%m%d")..".log", "a")
-    if lf == nil then
+    if not lf then
         lf = io.open (script_path.. "\\QUIK#_"..os.date("%Y%m%d")..".log", "a")
     end
     return lf
@@ -40,7 +40,7 @@ end
 
 -- closes log
 function closeLog()
-    if logfile ~= nil then
+    if logfile then
         pcall(logfile:close(logfile))
     end
 end
@@ -60,7 +60,7 @@ function log(msg, level)
     local logLine = "LOG "..level..": "..msg
     print(logLine)
     local msecs = math.floor(math.fmod(timemsec(), 1000));
-    if logfile ~= nil then
+    if logfile then
         pcall(logfile.write, logfile, os.date("%Y-%m-%d %H:%M:%S").."."..msecs.." "..logLine.."\n")
         pcall(logfile.flush, logfile)
     end
