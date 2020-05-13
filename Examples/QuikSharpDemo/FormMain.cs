@@ -117,7 +117,7 @@ namespace QuikSharpDemo
                     }
                     // временный код
                     Trace.Listeners.Add(new TextWriterTraceListener(Console.Out));
-                    Trace.Listeners.Add(new TextWriterTraceListener(Application.StartupPath + "\\TraceLogging.log"));
+                    Trace.Listeners.Add(new TextWriterTraceListener("TraceLogging.log"));
                     // временный код
                 }
                 catch
@@ -240,7 +240,8 @@ namespace QuikSharpDemo
         }
         void OnNewCandleDo(Candle _candle)
         {
-            Trace.Assert(_candle != null, "Trace: candle = NULL");
+            Trace.Assert(_candle != null, DateTime.Now + ": Trace: candle = NULL");
+            Trace.WriteLine(DateTime.Now + ": Trace: OnNewCandleDo()");
             try
             {
                 if (_candle.ClassCode == tool.ClassCode && _candle.SecCode == tool.SecurityCode && _candle.Interval == CandleInterval.M15)
@@ -267,7 +268,8 @@ namespace QuikSharpDemo
                 Text2TextBox(textBoxBestBid, bid.ToString());
                 Text2TextBox(textBoxBestOffer, offer.ToString());
             }
-            if (futuresPosition != null) textBoxVarMargin.Text = futuresPosition.varMargin.ToString(); 
+            if (futuresPosition != null) textBoxVarMargin.Text = futuresPosition.varMargin.ToString();
+            Trace.Flush();
         }
         private void ListBoxCommands_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -768,6 +770,11 @@ namespace QuikSharpDemo
             return qty;
         }
         private void CheckBoxRemoteHost_CheckedChanged(object sender, EventArgs e) { textBoxHost.Enabled = checkBoxRemoteHost.Checked ? true : false; }
+
+        private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Trace.Close();
+        }
         //long NewOrder(Quik _quik, Tool _tool, Operation operation, decimal price, int qty)
         //{
         //    long res = 0;
