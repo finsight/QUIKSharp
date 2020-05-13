@@ -24,7 +24,7 @@ namespace RobotDemo
         bool entrancePause = false;
         bool closePause = false;
         bool toCloseAndStop = false;
-        string secCode = "SiH7";
+        string secCode = "SiM0";
         string classCode = "";
         string clientCode = "";
         string directionPosition = "-";
