@@ -115,10 +115,10 @@ namespace QuikSharpDemo
                         buttonRun.Enabled = false;
                         buttonStart.Enabled = true;
                     }
-                    // временный код
-                    Trace.Listeners.Add(new TextWriterTraceListener(Console.Out));
-                    Trace.Listeners.Add(new TextWriterTraceListener("TraceLogging.log"));
-                    // временный код
+                    // для отладки
+                    //Trace.Listeners.Add(new TextWriterTraceListener(Console.Out));
+                    //Trace.Listeners.Add(new TextWriterTraceListener("TraceLogging.log"));
+                    // для отладки
                 }
                 catch
                 {
@@ -204,19 +204,10 @@ namespace QuikSharpDemo
         {
             if (quote.sec_code == tool.SecurityCode && quote.class_code == tool.ClassCode)
             {
-                renewOrderBookTime = DateTime.Now;
-                toolOrderBook = quote;
-                bid = Convert.ToDecimal(toolOrderBook.bid[toolOrderBook.bid.Count() - 1].price);
-                offer = Convert.ToDecimal(toolOrderBook.offer[0].price);
-                //try
-                //{
-                //    if (toolOrderBookTable != null) toolOrderBookTable.Renew(toolOrderBook);
-
-                //}
-                //catch (Exception er)
-                //{
-                //    Console.WriteLine("Ошибка вывода стакана: " + er.Message);
-                //}
+                renewOrderBookTime  = DateTime.Now;
+                toolOrderBook       = quote;
+                bid                 = Convert.ToDecimal(toolOrderBook.bid[toolOrderBook.bid.Count() - 1].price);
+                offer               = Convert.ToDecimal(toolOrderBook.offer[0].price);
             }
         }
         void OnFuturesClientHoldingDo(FuturesClientHolding futPos)
@@ -227,8 +218,6 @@ namespace QuikSharpDemo
         {
             AppendText2TextBox(textBoxLogsWindow, "Вызвано событие OnDepoLimit (изменение бумажного лимита)..." + Environment.NewLine);
             AppendText2TextBox(textBoxLogsWindow, "Заблокировано на покупку количества лотов - " + depLimit.LockedBuy + Environment.NewLine);
-            //textBoxLogsWindow.AppendText("Вызвано событие OnDepoLimit (изменение бумажного лимита)..." + Environment.NewLine);
-            //textBoxLogsWindow.AppendText("Заблокировано на покупку количества лотов - " + depLimit.LockedBuy + Environment.NewLine);
         }
         void OnParamDo(Param _param)
         {
@@ -262,14 +251,12 @@ namespace QuikSharpDemo
             textBoxQty.Text = Convert.ToString(GetPositionT2(_quik, tool, clientCode));
             if (toolOrderBook != null && toolOrderBook.bid != null)
             {
-                //textBoxBestBid.Text = bid.ToString();
-                //textBoxBestOffer.Text = offer.ToString();
                 Text2TextBox(textBox_RenewTime, renewOrderBookTime.ToLongTimeString());
                 Text2TextBox(textBoxBestBid, bid.ToString());
                 Text2TextBox(textBoxBestOffer, offer.ToString());
             }
             if (futuresPosition != null) textBoxVarMargin.Text = futuresPosition.varMargin.ToString();
-            Trace.Flush();
+            //Trace.Flush();
         }
         private void ListBoxCommands_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -729,7 +716,6 @@ namespace QuikSharpDemo
             {
                 TextBoxTextDelegate d = new TextBoxTextDelegate(Text2TextBox);
                 _tb.Invoke(d, new object[] { _tb, _text });
-                //_tb.BeginInvoke(new Action(() => { _tb.Text = _text; }));
             }
             else _tb.Text = _text;
         }
@@ -773,27 +759,7 @@ namespace QuikSharpDemo
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Trace.Close();
+            //Trace.Close();
         }
-        //long NewOrder(Quik _quik, Tool _tool, Operation operation, decimal price, int qty)
-        //{
-        //    long res = 0;
-        //    Order order_new = new Order();
-        //    order_new.ClassCode = _tool.ClassCode;
-        //    order_new.SecCode = _tool.SecurityCode;
-        //    order_new.Operation = operation;
-        //    order_new.Price = price;
-        //    order_new.Quantity = qty;
-        //    order_new.Account = _tool.AccountID;
-        //    try
-        //    {
-        //        res = _quik.Orders.CreateOrder(order_new).Result;
-        //    }
-        //    catch
-        //    {
-        //        Console.WriteLine("Неудачная попытка отправки заявки");
-        //    }
-        //    return res;
-        //}
     }
 }
