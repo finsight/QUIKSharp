@@ -394,6 +394,17 @@ function qsfunctions.getMoneyEx(msg)
     return msg
 end
 
+-- Функция возвращает информацию по всем денежным лимитам.
+function qsfunctions.getMoneyLimits(msg)
+    local limits = {}
+    for i=0,getNumberOf("money_limits")-1 do
+        local limit = getItem("money_limits",i)
+	    table.insert(limits, limit)
+    end
+     msg.data = limits
+    return msg
+end
+
 -- Функция предназначена для получения информации по фьючерсным лимитам.
 function qsfunctions.getFuturesLimit(msg)
     local spl = split(msg.data, "|")
@@ -405,6 +416,17 @@ function qsfunctions.getFuturesLimit(msg)
 		log("Futures limit returns nil", 3)
 		msg.data = nil
 	end
+    return msg
+end
+
+-- Функция возвращает информацию по фьючерсным лимитам для всех торговых счетов.
+function qsfunctions.getFuturesClientLimits(msg)
+    local limits = {}
+    for i=0,getNumberOf("futures_client_limits")-1 do
+        local limit = getItem("futures_client_limits",i)
+	    table.insert(limits, limit)
+    end
+     msg.data = limits
     return msg
 end
 

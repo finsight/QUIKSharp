@@ -68,9 +68,19 @@ namespace QuikSharp
         Task<MoneyLimitEx> GetMoneyEx(string firmId, string clientCode, string tag, string currCode, int limitKind);
 
         /// <summary>
+        ///  функция для получения информации по денежным лимитам всех торговых счетов (кроме фьючерсных) и валют
+        ///  Лучшее место для получения связки clientCode + firmid
+        /// </summary>
+        Task<List<MoneyLimitEx>> GetMoneyLimits();
+
+        /// <summary>
         ///  функция для получения информации по фьючерсным лимитам
         /// </summary>
         Task<FuturesLimits> GetFuturesLimit(string firmId, string accId, int limitType, string currCode);
+        /// <summary>
+        ///  функция для получения информации по фьючерсным лимитам всех клиентских счетов
+        /// </summary>
+        Task<List<FuturesLimits>> GetFuturesClientLimits();
         /// <summary>
         ///  функция для получения информации по фьючерсным позициям
         /// </summary>
@@ -311,6 +321,17 @@ namespace QuikSharp
         }
 
         /// <summary>
+        ///  функция для получения информации по денежным лимитам всех торговых счетов (кроме фьючерсных) и валют.
+        ///  Лучшее место для получения связки clientCode + firmid
+        /// </summary>
+        public async Task<List<MoneyLimitEx>> GetMoneyLimits()
+        {
+            var response = await QuikService.Send<Message<List<MoneyLimitEx>>>(
+                (new Message<string>("", "getMoneyLimits"))).ConfigureAwait(false);
+            return response.Data;
+        }
+
+        /// <summary>
         /// Функция заказывает получение параметров Таблицы текущих торгов
         /// </summary>
         /// <param name="classCode"></param>
@@ -405,6 +426,17 @@ namespace QuikSharp
                     (new Message<string>(firmId + "|" + accId + "|" + limitType + "|" + currCode, "getFuturesLimit"))).ConfigureAwait(false);
             return response.Data;
         }
+
+        /// <summary>
+        ///  функция для получения информации по фьючерсным лимитам всех клиентских счетов
+        /// </summary>
+        public async Task<List<FuturesLimits>> GetFuturesClientLimits()
+        {
+            var response = await QuikService.Send<Message<List<FuturesLimits>>>(
+                    (new Message<string>("", "getFuturesClientLimits"))).ConfigureAwait(false);
+            return response.Data;
+        }
+
         /// <summary>
         /// Функция для получения информации по фьючерсным позициям
         /// </summary>
