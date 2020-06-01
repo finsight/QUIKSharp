@@ -236,7 +236,7 @@ end
 function qsfunctions.getTradeAccount(msg)
 	for i=0,getNumberOf("trade_accounts")-1 do
 		local trade_account = getItem("trade_accounts",i)
-		if string.find(trade_account.class_codes,msg.data,1,1) then
+		if string.find(trade_account.class_codes,'|' .. msg.data .. '|',1,1) then
 			msg.data = trade_account.trdaccid
 			return msg
 		end
@@ -244,14 +244,16 @@ function qsfunctions.getTradeAccount(msg)
 	return msg
 end
 
---- Функция возвращает торговые счета в системе
+--- Функция возвращает торговые счета в системе, у которых указаны поддерживаемые классы инструментов.
 function qsfunctions.getTradeAccounts(msg)
-local ListAccounts={}
+	local trade_accounts = {}
 	for i=0,getNumberOf("trade_accounts")-1 do
-		local trade_accounts = getItem("trade_accounts",i)
-		table.insert(ListAccounts,trade_accounts)
+		local trade_account = getItem("trade_accounts",i)
+		if trade_account.class_codes ~= "" then
+			table.insert(trade_accounts, trade_account)
+		end
 	end
-	msg.data=ListAccounts
+	msg.data = trade_accounts
 	return msg
 end
 
