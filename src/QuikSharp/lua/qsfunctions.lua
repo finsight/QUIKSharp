@@ -1,5 +1,6 @@
 --~ // Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
 
+local json = require ("dkjson")
 local qsfunctions = {}
 
 function qsfunctions.dispatch_and_process(msg)
@@ -206,15 +207,21 @@ function qsfunctions.getSecurityInfo(msg)
 end
 
 --- Функция берет на вход список из элементов в формате class_code|sec_code и возвращает список ответов функции getSecurityInfo. 
--- Количество бумаг в ответе может быть меньше, чем в запросе, потому что какие-то бумаги могут быть не найдены
+-- Если какая-то из бумаг не будет найдена, вместо ее значения придет null
 function qsfunctions.getSecurityInfoBulk(msg)
 	local result = {}
 	for i=1,#msg.data do
 		local spl = split(msg.data[i], "|")
 		local class_code, sec_code = spl[1], spl[2]
-		local security = getSecurityInfo(class_code, sec_code)
-		if security then
+
+		local status, security = pcall(getSecurityInfo, class_code, sec_code)
+        if status and security then
 			table.insert(result, security)
+		elseif not status then
+			log("Error happened while calling getSecurityInfoBulk with ".. class_code .. "|".. sec_code .. ": ".. security)
+			table.insert(result, json.null)
+		else
+			table.insert(result, json.null)
 		end
 	end
 	msg.data = result
@@ -404,7 +411,7 @@ function qsfunctions.getParamEx2(msg)
     return msg
 end
 
--- Функция принимает список строк (JSON Array) в формате class_code|sec_code|param_name и возвращает результаты вызова
+--- Функция принимает список строк (JSON Array) в формате class_code|sec_code|param_name и возвращает результаты вызова
 -- функции getParamEx2 для каждой строки запроса в виде списка в таком же порядке, как в запросе
 function qsfunctions.getParamEx2Bulk(msg)
 	local result = {}
