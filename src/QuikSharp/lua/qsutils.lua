@@ -31,7 +31,7 @@ function scriptFilename()
         return nil
     end
     local full_path = debug.getinfo(2, "S").source:sub(2)
-    return string.gsub(full_path, "^.*\\(.*)\.lua[c]*", "%1")
+    return string.gsub(full_path, "^.*\\(.*)[.]lua[c]?$", "%1")
 end
 
 -- when true will show QUIK message for log(...,0)
