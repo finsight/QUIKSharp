@@ -215,12 +215,12 @@ function qsfunctions.getSecurityInfoBulk(msg)
 		local class_code, sec_code = spl[1], spl[2]
 
 		local status, security = pcall(getSecurityInfo, class_code, sec_code)
-        if status and security then
+		if status and security then
 			table.insert(result, security)
-		elseif not status then
-			log("Error happened while calling getSecurityInfoBulk with ".. class_code .. "|".. sec_code .. ": ".. security)
-			table.insert(result, json.null)
 		else
+			if not status then
+				log("Error happened while calling getSecurityInfoBulk with ".. class_code .. "|".. sec_code .. ": ".. security)
+			end
 			table.insert(result, json.null)
 		end
 	end
