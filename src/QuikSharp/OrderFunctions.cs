@@ -1,4 +1,7 @@
-﻿using QuikSharp.DataStructures;
+﻿// Copyright (c) 2014-2020 QUIKSharp Authors https://github.com/finsight/QUIKSharp/blob/master/AUTHORS.md. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
+
+using QuikSharp.DataStructures;
 using QuikSharp.DataStructures.Transaction;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -32,13 +35,13 @@ namespace QuikSharp
         {
             Transaction newOrderTransaction = new Transaction
             {
-                ACTION      = TransactionAction.NEW_ORDER,
-                ACCOUNT     = order.Account,
-                CLASSCODE   = order.ClassCode,
-                SECCODE     = order.SecCode,
-                QUANTITY    = order.Quantity,
-                OPERATION   = order.Operation == Operation.Buy ? TransactionOperation.B : TransactionOperation.S,
-                PRICE       = order.Price,
+                ACTION = TransactionAction.NEW_ORDER,
+                ACCOUNT = order.Account,
+                CLASSCODE = order.ClassCode,
+                SECCODE = order.SecCode,
+                QUANTITY = order.Quantity,
+                OPERATION = order.Operation == Operation.Buy ? TransactionOperation.B : TransactionOperation.S,
+                PRICE = order.Price,
                 CLIENT_CODE = order.ClientCode
             };
             return await Quik.Trading.SendTransaction(newOrderTransaction).ConfigureAwait(false);
@@ -88,14 +91,14 @@ namespace QuikSharp
             Order order_result = new Order();
             Transaction newOrderTransaction = new Transaction
             {
-                ACTION      = TransactionAction.NEW_ORDER,
-                ACCOUNT     = accountID,
-                CLASSCODE   = classCode,
-                SECCODE     = securityCode,
-                QUANTITY    = qty,
-                OPERATION   = operation == Operation.Buy ? TransactionOperation.B : TransactionOperation.S,
-                PRICE       = price,
-                TYPE        = orderType
+                ACTION = TransactionAction.NEW_ORDER,
+                ACCOUNT = accountID,
+                CLASSCODE = classCode,
+                SECCODE = securityCode,
+                QUANTITY = qty,
+                OPERATION = operation == Operation.Buy ? TransactionOperation.B : TransactionOperation.S,
+                PRICE = price,
+                TYPE = orderType
             };
             try
             {
@@ -112,16 +115,24 @@ namespace QuikSharp
             {
                 if (res > 0)
                 {
-                    try { order_result = await Quik.Orders.GetOrder_by_transID(classCode, securityCode, res).ConfigureAwait(false); }
-                    catch { order_result = new Order { RejectReason = "Неудачная попытка получения заявки по ID-транзакции №" + res }; }
+                    try
+                    {
+                        order_result = await Quik.Orders.GetOrder_by_transID(classCode, securityCode, res).ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        order_result = new Order {RejectReason = "Неудачная попытка получения заявки по ID-транзакции №" + res};
+                    }
                 }
                 else
                 {
                     if (order_result != null) order_result.RejectReason = newOrderTransaction.ErrorMessage;
-                    else order_result = new Order { RejectReason = newOrderTransaction.ErrorMessage };
+                    else order_result = new Order {RejectReason = newOrderTransaction.ErrorMessage};
                 }
+
                 if (order_result != null && (order_result.RejectReason != "" || order_result.OrderNum > 0)) set = true;
             }
+
             return order_result;
         }
 

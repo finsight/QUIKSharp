@@ -1,3 +1,4 @@
+// Copyright (c) 2014-2020 QUIKSharp Authors https://github.com/finsight/QUIKSharp/blob/master/AUTHORS.md. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
 
 using Newtonsoft.Json;
@@ -10,7 +11,6 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Runtime.Serialization.Formatters;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -83,6 +83,7 @@ namespace QuikSharp
             {
                 _stringBuilder = new StringBuilder();
             }
+
             using (var writer = new JsonTextWriter(new StringWriter(_stringBuilder)))
             {
                 try
@@ -130,6 +131,7 @@ namespace QuikSharp
             {
                 value = null;
             }
+
             base.WriteJson(writer, value, serializer);
         }
     }
@@ -145,9 +147,9 @@ namespace QuikSharp
         }
 
         public override object ReadJson(JsonReader reader,
-                                        Type objectType,
-                                         object existingValue,
-                                         JsonSerializer serializer)
+            Type objectType,
+            object existingValue,
+            JsonSerializer serializer)
         {
             var t = JToken.Load(reader);
             T target = t.Value<T>();
@@ -155,8 +157,8 @@ namespace QuikSharp
         }
 
         public override void WriteJson(JsonWriter writer,
-                                       object value,
-                                       JsonSerializer serializer)
+            object value,
+            JsonSerializer serializer)
         {
             var t = JToken.FromObject(value.ToString());
             t.WriteTo(writer);
@@ -174,19 +176,19 @@ namespace QuikSharp
         }
 
         public override object ReadJson(JsonReader reader,
-                                        Type objectType,
-                                         object existingValue,
-                                         JsonSerializer serializer)
+            Type objectType,
+            object existingValue,
+            JsonSerializer serializer)
         {
             var t = JToken.Load(reader);
             return t.Value<decimal>();
         }
 
         public override void WriteJson(JsonWriter writer,
-                                       object value,
-                                       JsonSerializer serializer)
+            object value,
+            JsonSerializer serializer)
         {
-            decimal d = (decimal)value;
+            decimal d = (decimal) value;
             var t = JToken.FromObject(d.ToString("G29"));
             t.WriteTo(writer);
         }
@@ -204,9 +206,9 @@ namespace QuikSharp
         }
 
         public override object ReadJson(JsonReader reader,
-                                        Type objectType,
-                                         object existingValue,
-                                         JsonSerializer serializer)
+            Type objectType,
+            object existingValue,
+            JsonSerializer serializer)
         {
             var t = JToken.Load(reader);
             var target = t.Value<string>();
@@ -220,10 +222,10 @@ namespace QuikSharp
         }
 
         public override void WriteJson(JsonWriter writer,
-                                       object value,
-                                       JsonSerializer serializer)
+            object value,
+            JsonSerializer serializer)
         {
-            var t = JToken.FromObject(((DateTime)value).ToString("HHmmss"));
+            var t = JToken.FromObject(((DateTime) value).ToString("HHmmss"));
             t.WriteTo(writer);
         }
     }
@@ -257,6 +259,7 @@ namespace QuikSharp
                         exn = new LuaException(message);
                         break;
                 }
+
                 KeyValuePair<TaskCompletionSource<IMessage>, Type> kvp;
                 _service.Responses.TryRemove(id, out kvp);
                 var tcs = kvp.Key;
@@ -268,7 +271,7 @@ namespace QuikSharp
             {
                 var id = jObject.GetValue("id").Value<long>();
                 objectType = _service.Responses[id].Value;
-                return (IMessage)Activator.CreateInstance(objectType);
+                return (IMessage) Activator.CreateInstance(objectType);
             }
             else if (FieldExists("cmd", jObject))
             {
@@ -281,13 +284,13 @@ namespace QuikSharp
                     switch (eventName)
                     {
                         case EventNames.OnAccountBalance:
-                            return new Message<AccountBalance> { Data = new AccountBalance() };
+                            return new Message<AccountBalance> {Data = new AccountBalance()};
 
                         case EventNames.OnAccountPosition:
-                            return new Message<AccountPosition> { Data = new AccountPosition() };
+                            return new Message<AccountPosition> {Data = new AccountPosition()};
 
                         case EventNames.OnAllTrade:
-                            return new Message<AllTrade> { Data = new AllTrade() };
+                            return new Message<AllTrade> {Data = new AllTrade()};
 
                         case EventNames.OnCleanUp:
                         case EventNames.OnClose:
@@ -299,28 +302,28 @@ namespace QuikSharp
                             return new Message<string>();
 
                         case EventNames.OnDepoLimit:
-                            return new Message<DepoLimitEx> { Data = new DepoLimitEx() };
+                            return new Message<DepoLimitEx> {Data = new DepoLimitEx()};
 
                         case EventNames.OnDepoLimitDelete:
-                            return new Message<DepoLimitDelete> { Data = new DepoLimitDelete() };
+                            return new Message<DepoLimitDelete> {Data = new DepoLimitDelete()};
 
                         case EventNames.OnFirm:
-                            return new Message<Firm> { Data = new Firm() };
+                            return new Message<Firm> {Data = new Firm()};
 
                         case EventNames.OnFuturesClientHolding:
-                            return new Message<FuturesClientHolding> { Data = new FuturesClientHolding() };
+                            return new Message<FuturesClientHolding> {Data = new FuturesClientHolding()};
 
                         case EventNames.OnFuturesLimitChange:
-                            return new Message<FuturesLimits> { Data = new FuturesLimits() };
+                            return new Message<FuturesLimits> {Data = new FuturesLimits()};
 
                         case EventNames.OnFuturesLimitDelete:
-                            return new Message<FuturesLimitDelete> { Data = new FuturesLimitDelete() };
+                            return new Message<FuturesLimitDelete> {Data = new FuturesLimitDelete()};
 
                         case EventNames.OnMoneyLimit:
-                            return new Message<MoneyLimitEx> { Data = new MoneyLimitEx() };
+                            return new Message<MoneyLimitEx> {Data = new MoneyLimitEx()};
 
                         case EventNames.OnMoneyLimitDelete:
-                            return new Message<MoneyLimitDelete> { Data = new MoneyLimitDelete() };
+                            return new Message<MoneyLimitDelete> {Data = new MoneyLimitDelete()};
 
                         case EventNames.OnNegDeal:
                             break;
@@ -329,25 +332,25 @@ namespace QuikSharp
                             break;
 
                         case EventNames.OnOrder:
-                            return new Message<Order> { Data = new Order() };
+                            return new Message<Order> {Data = new Order()};
 
                         case EventNames.OnParam:
-                            return new Message<Param> { Data = new Param() };
+                            return new Message<Param> {Data = new Param()};
 
                         case EventNames.OnQuote:
-                            return new Message<OrderBook> { Data = new OrderBook() };
+                            return new Message<OrderBook> {Data = new OrderBook()};
 
                         case EventNames.OnStopOrder:
-                            return new Message<StopOrder> { Data = new StopOrder() };
+                            return new Message<StopOrder> {Data = new StopOrder()};
 
                         case EventNames.OnTrade:
-                            return new Message<Trade> { Data = new Trade() };
+                            return new Message<Trade> {Data = new Trade()};
 
                         case EventNames.OnTransReply:
-                            return new Message<TransactionReply> { Data = new TransactionReply() };
+                            return new Message<TransactionReply> {Data = new TransactionReply()};
 
                         case EventNames.NewCandle:
-                            return new Message<Candle> { Data = new Candle() };
+                            return new Message<Candle> {Data = new Candle()};
 
                         default:
                             throw new ArgumentOutOfRangeException();
@@ -367,6 +370,7 @@ namespace QuikSharp
                     }
                 }
             }
+
             throw new ArgumentException("Bad message format: no cmd or lua_error fields");
         }
 
@@ -394,9 +398,9 @@ namespace QuikSharp
         }
 
         public override object ReadJson(JsonReader reader,
-                                        Type objectType,
-                                         object existingValue,
-                                         JsonSerializer serializer)
+            Type objectType,
+            object existingValue,
+            JsonSerializer serializer)
         {
             // Load JObject from stream
             JObject jObject = JObject.Load(reader);
@@ -411,8 +415,8 @@ namespace QuikSharp
         }
 
         public override void WriteJson(JsonWriter writer,
-                                       object value,
-                                       JsonSerializer serializer)
+            object value,
+            JsonSerializer serializer)
         {
             throw new InvalidOperationException();
         }
@@ -436,6 +440,7 @@ namespace QuikSharp
                     {
                         inStream.CopyTo(compress);
                     }
+
                     return outStream.ToArray();
                 }
             }
@@ -456,6 +461,7 @@ namespace QuikSharp
                     {
                         inStream.CopyTo(compress);
                     }
+
                     return outStream.ToArray();
                 }
             }
@@ -475,9 +481,11 @@ namespace QuikSharp
                     {
                         deCompress.CopyTo(outStream);
                     }
+
                     outBytes = outStream.ToArray();
                 }
             }
+
             return outBytes;
         }
 
@@ -497,9 +505,11 @@ namespace QuikSharp
                     {
                         deCompress.CopyTo(outStream);
                     }
+
                     outBytes = outStream.ToArray();
                 }
             }
+
             return Encoding.UTF8.GetString(outBytes);
         }
     }

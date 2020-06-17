@@ -1,4 +1,5 @@
-﻿// Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
+﻿// Copyright (c) 2014-2020 QUIKSharp Authors https://github.com/finsight/QUIKSharp/blob/master/AUTHORS.md. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
 
 using QuikSharp.DataStructures;
 using System;
@@ -79,7 +80,7 @@ namespace QuikSharp
                 (new Message<string>("", "getClassesList"))).ConfigureAwait(false);
             return response.Data == null
                 ? new string[0]
-                : response.Data.TrimEnd(',').Split(new[] { "," }, StringSplitOptions.None);
+                : response.Data.TrimEnd(',').Split(new[] {","}, StringSplitOptions.None);
         }
 
         public async Task<ClassInfo> GetClassInfo(string classID)
@@ -107,7 +108,7 @@ namespace QuikSharp
                 (new Message<string>(classID, "getClassSecurities"))).ConfigureAwait(false);
             return response.Data == null
                 ? new string[0]
-                : response.Data.TrimEnd(',').Split(new[] { "," }, StringSplitOptions.None);
+                : response.Data.TrimEnd(',').Split(new[] {","}, StringSplitOptions.None);
         }
 
         public async Task<string> GetSecurityClass(string classesList, string secCode)

@@ -1,108 +1,110 @@
+// Copyright (c) 2014-2020 QUIKSharp Authors https://github.com/finsight/QUIKSharp/blob/master/AUTHORS.md. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
+
 using Newtonsoft.Json;
 
 namespace QuikSharp.DataStructures
 {
     /// <summary>
-    /// Лимиты по денежным средствам
+    /// Р›РёРјРёС‚С‹ РїРѕ РґРµРЅРµР¶РЅС‹Рј СЃСЂРµРґСЃС‚РІР°Рј
     /// </summary>
     public class MoneyLimitEx
     {
         // ReSharper disable InconsistentNaming
         /// <summary>
-        /// Код валюты
+        /// РљРѕРґ РІР°Р»СЋС‚С‹
         /// </summary>
         [JsonProperty("currcode")]
         public string CurrCode { get; set; }
 
         /// <summary>
-        /// Тэг расчетов
+        /// РўСЌРі СЂР°СЃС‡РµС‚РѕРІ
         /// </summary>
         [JsonProperty("tag")]
         public string Tag { get; set; }
 
         /// <summary>
-        /// Идентификатор фирмы
+        /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С„РёСЂРјС‹
         /// </summary>
         [JsonProperty("firmid")]
         public string FirmId { get; set; }
 
         /// <summary>
-        /// Код клиента
+        /// РљРѕРґ РєР»РёРµРЅС‚Р°
         /// </summary>
         [JsonProperty("client_code")]
         public string ClientCode { get; set; }
 
         /// <summary>
-        /// Входящий остаток по деньгам
+        /// Р’С…РѕРґСЏС‰РёР№ РѕСЃС‚Р°С‚РѕРє РїРѕ РґРµРЅСЊРіР°Рј
         /// </summary>
         [JsonProperty("openbal")]
         public double OpenBal { get; set; }
 
         /// <summary>
-        /// Входящий лимит по деньгам
+        /// Р’С…РѕРґСЏС‰РёР№ Р»РёРјРёС‚ РїРѕ РґРµРЅСЊРіР°Рј
         /// </summary>
         [JsonProperty("openlimit")]
         public double OpenLimit { get; set; }
 
         /// <summary>
-        /// Текущий остаток по деньгам
+        /// РўРµРєСѓС‰РёР№ РѕСЃС‚Р°С‚РѕРє РїРѕ РґРµРЅСЊРіР°Рј
         /// </summary>
         [JsonProperty("currentbal")]
         public double CurrentBal { get; set; }
 
         /// <summary>
-        /// Текущий лимит по деньгам
+        /// РўРµРєСѓС‰РёР№ Р»РёРјРёС‚ РїРѕ РґРµРЅСЊРіР°Рј
         /// </summary>
         [JsonProperty("currentlimit")]
         public double CurrentLimit { get; set; }
 
         /// <summary>
-        /// Заблокированное количество
+        /// Р—Р°Р±Р»РѕРєРёСЂРѕРІР°РЅРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ
         /// </summary>
         [JsonProperty("locked")]
         public double Locked { get; set; }
 
         /// <summary>
-        /// Стоимость активов в заявках на покупку немаржинальных бумаг
+        /// РЎС‚РѕРёРјРѕСЃС‚СЊ Р°РєС‚РёРІРѕРІ РІ Р·Р°СЏРІРєР°С… РЅР° РїРѕРєСѓРїРєСѓ РЅРµРјР°СЂР¶РёРЅР°Р»СЊРЅС‹С… Р±СѓРјР°Рі
         /// </summary>
         [JsonProperty("locked_value_coef")]
         public double LockedValueCoef { get; set; }
 
         /// <summary>
-        /// Стоимость активов в заявках на покупку маржинальных бумаг
+        /// РЎС‚РѕРёРјРѕСЃС‚СЊ Р°РєС‚РёРІРѕРІ РІ Р·Р°СЏРІРєР°С… РЅР° РїРѕРєСѓРїРєСѓ РјР°СЂР¶РёРЅР°Р»СЊРЅС‹С… Р±СѓРјР°Рі
         /// </summary>
         [JsonProperty("locked_margin_value")]
         public double LockedMarginValue { get; set; }
 
         /// <summary>
-        /// Плечо
+        /// РџР»РµС‡Рѕ
         /// </summary>
         [JsonProperty("leverage")]
         public double Leverage { get; set; }
 
         /// <summary>
-        /// Тип лимита. Возможные значения:
-        /// «0» – обычные лимиты,
-        /// иначе – технологические лимиты
+        /// РўРёРї Р»РёРјРёС‚Р°. Р’РѕР·РјРѕР¶РЅС‹Рµ Р·РЅР°С‡РµРЅРёСЏ:
+        /// В«0В» вЂ“ РѕР±С‹С‡РЅС‹Рµ Р»РёРјРёС‚С‹,
+        /// РёРЅР°С‡Рµ вЂ“ С‚РµС…РЅРѕР»РѕРіРёС‡РµСЃРєРёРµ Р»РёРјРёС‚С‹
         /// </summary>
         [JsonProperty("limit_kind")]
         public int LimitKind { get; set; }
 
         /// <summary>
-        /// Средневзвешенная цена приобретения позиции
+        /// РЎСЂРµРґРЅРµРІР·РІРµС€РµРЅРЅР°СЏ С†РµРЅР° РїСЂРёРѕР±СЂРµС‚РµРЅРёСЏ РїРѕР·РёС†РёРё
         /// </summary>
         [JsonProperty("wa_position_price")]
         public double WaPositionPrice { get; set; }
 
         /// <summary>
-        /// Гарантийное обеспечение заявок
+        /// Р“Р°СЂР°РЅС‚РёР№РЅРѕРµ РѕР±РµСЃРїРµС‡РµРЅРёРµ Р·Р°СЏРІРѕРє
         /// </summary>
         [JsonProperty("orders_collateral")]
         public double OrdersCollateral { get; set; }
 
         /// <summary>
-        /// Гарантийное обеспечение позиций
+        /// Р“Р°СЂР°РЅС‚РёР№РЅРѕРµ РѕР±РµСЃРїРµС‡РµРЅРёРµ РїРѕР·РёС†РёР№
         /// </summary>
         [JsonProperty("positions_collateral")]
         public double PositionsCollateral { get; set; }

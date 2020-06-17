@@ -1,4 +1,5 @@
-﻿// Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
+﻿// Copyright (c) 2014-2020 QUIKSharp Authors https://github.com/finsight/QUIKSharp/blob/master/AUTHORS.md. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
 
 using System.Threading.Tasks;
 using QuikSharp.DataStructures;
@@ -56,7 +57,10 @@ namespace QuikSharp
         /// </summary>
         /// <param name="port"></param>
         /// <param name="host"></param>
-        public OrderBookFunctions(int port, string host) { QuikService = QuikService.Create(port, host); }
+        public OrderBookFunctions(int port, string host)
+        {
+            QuikService = QuikService.Create(port, host);
+        }
 
         /// <summary>
         ///

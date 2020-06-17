@@ -1,4 +1,5 @@
-﻿// Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
+﻿// Copyright (c) 2014-2020 QUIKSharp Authors https://github.com/finsight/QUIKSharp/blob/master/AUTHORS.md. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
 
 using QuikSharp.DataStructures;
 using QuikSharp.DataStructures.Transaction;
@@ -146,9 +147,9 @@ namespace QuikSharp
         }
 
         /// <summary>
-		/// Событие вызывается когда библиотека QuikSharp была отключена от Quik'а
-		/// </summary>
-		public event VoidHandler OnDisconnectedFromQuik;
+        /// Событие вызывается когда библиотека QuikSharp была отключена от Quik'а
+        /// </summary>
+        public event VoidHandler OnDisconnectedFromQuik;
 
         internal void OnDisconnectedFromQuikCall()
         {
@@ -156,9 +157,9 @@ namespace QuikSharp
         }
 
         /// <summary>
-		/// Функция вызывается терминалом QUIK перед вызовом функции main().
+        /// Функция вызывается терминалом QUIK перед вызовом функции main().
         /// В качестве параметра принимает значение полного пути к запускаемому скрипту.
-		/// </summary>
+        /// </summary>
         public event InitHandler OnInit;
 
         /// <summary>
@@ -348,6 +349,7 @@ namespace QuikSharp
                     tr.OnOrderCall(order);
                 }
             }
+
             Trace.Assert(tr != null, "Transaction must exist in persistent storage until it is completed and all order messages are recieved");
         }
 
@@ -418,6 +420,7 @@ namespace QuikSharp
                     tr.OnStopOrderCall(stopOrder);
                 }
             }
+
             Trace.Assert(tr != null, "Transaction must exist in persistent storage until it is completed and all order messages are recieved");
         }
 
@@ -480,7 +483,7 @@ namespace QuikSharp
             OnTransReply?.Invoke(reply);
 
             // invoke event specific for the transaction
-            if (string.IsNullOrEmpty(reply.Comment))//"Initialization user successful" transaction doesn't contain comment
+            if (string.IsNullOrEmpty(reply.Comment)) //"Initialization user successful" transaction doesn't contain comment
                 return;
 
             if (QuikService.Storage.Contains(reply.Comment))

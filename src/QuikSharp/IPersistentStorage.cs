@@ -1,3 +1,4 @@
+// Copyright (c) 2014-2020 QUIKSharp Authors https://github.com/finsight/QUIKSharp/blob/master/AUTHORS.md. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
 
 using System.Collections.Generic;
@@ -44,7 +45,10 @@ namespace QuikSharp
         /// Useful for more advanced manipulation than IPersistentStorage
         /// QuikSharp depends only on IPersistentStorage
         /// </summary>
-        private static IDictionary<string, object> Storage { get { return Dic; } }
+        private static IDictionary<string, object> Storage
+        {
+            get { return Dic; }
+        }
 
         public void Set<T>(string key, T value)
         {
@@ -58,8 +62,8 @@ namespace QuikSharp
         {
             lock (syncRoot)
             {
-                var v = (T)Dic[key];
-                return (T)v;
+                var v = (T) Dic[key];
+                return (T) v;
             }
         }
 
@@ -71,6 +75,7 @@ namespace QuikSharp
                 {
                     return true;
                 }
+
                 return false;
             }
         }

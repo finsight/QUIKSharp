@@ -1,4 +1,5 @@
-﻿// Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
+﻿// Copyright (c) 2014-2020 QUIKSharp Authors https://github.com/finsight/QUIKSharp/blob/master/AUTHORS.md. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
 
 using System;
 
@@ -13,6 +14,7 @@ namespace QuikSharp
         /// 34130
         /// </summary>
         public const int DefaultPort = 34130;
+
         /// <summary>
         /// localhost
         /// </summary>
@@ -23,22 +25,22 @@ namespace QuikSharp
         /// </summary>
         public Quik(int port = DefaultPort, IPersistentStorage storage = null, string host = DefaultHost)
         {
-            Storage                     = storage == null ? new InMemoryStorage() : storage;
-            QuikService                 = QuikService.Create(port, host);
+            Storage = storage == null ? new InMemoryStorage() : storage;
+            QuikService = QuikService.Create(port, host);
             // poor man's DI
-            QuikService.Storage         = Storage;
-            Events                      = QuikService.Events;
-            Debug                       = new DebugFunctions(port, host);
-            Service                     = new ServiceFunctions(port, host);
-            Class                       = new ClassFunctions(port, host);
-            OrderBook                   = new OrderBookFunctions(port, host);
-            Trading                     = new TradingFunctions(port, host);
-            StopOrders                  = new StopOrderFunctions(port, this, host);
-            Orders                      = new OrderFunctions(port, this, host);
-            Candles                     = new CandleFunctions(port, host);
-            QuikService.Candles         = Candles;
-            QuikService.StopOrders      = StopOrders;
-            QuikService.WorkingFolder   = Service.GetWorkingFolder().Result;
+            QuikService.Storage = Storage;
+            Events = QuikService.Events;
+            Debug = new DebugFunctions(port, host);
+            Service = new ServiceFunctions(port, host);
+            Class = new ClassFunctions(port, host);
+            OrderBook = new OrderBookFunctions(port, host);
+            Trading = new TradingFunctions(port, host);
+            StopOrders = new StopOrderFunctions(port, this, host);
+            Orders = new OrderFunctions(port, this, host);
+            Candles = new CandleFunctions(port, host);
+            QuikService.Candles = Candles;
+            QuikService.StopOrders = StopOrders;
+            QuikService.WorkingFolder = Service.GetWorkingFolder().Result;
         }
 
         // Если запуск "сервиса" (потоков работы с Lua) происходит в конструкторе Quik, то возможности остановить "сервис" нет.
@@ -48,21 +50,21 @@ namespace QuikSharp
             QuikService.Stop();
         }
 
-	    public bool IsServiceConnected()
-	    {
-		    return QuikService.IsServiceConnected();
-	    }
+        public bool IsServiceConnected()
+        {
+            return QuikService.IsServiceConnected();
+        }
 
-	    /// <summary>
-	    /// Default timeout to use for send operations if no specific timeout supplied.
-	    /// </summary>
-	    public TimeSpan DefaultSendTimeout
-	    {
-		    get => QuikService.DefaultSendTimeout;
-		    set => QuikService.DefaultSendTimeout = value;
-	    }
+        /// <summary>
+        /// Default timeout to use for send operations if no specific timeout supplied.
+        /// </summary>
+        public TimeSpan DefaultSendTimeout
+        {
+            get => QuikService.DefaultSendTimeout;
+            set => QuikService.DefaultSendTimeout = value;
+        }
 
-		private QuikService QuikService { get; set; }
+        private QuikService QuikService { get; set; }
 
         /// <summary>
         /// Quik current data is all in local time. This property allows to convert it to UTC datetime

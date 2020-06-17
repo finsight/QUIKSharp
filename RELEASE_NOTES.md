@@ -1,3 +1,8 @@
+#### 2.0.0 - June 17 2020
+* Support for QUIK 64-bit (up to version 8.5)
+* Various bug fixes
+* Various Lua code improvements 
+
 #### 1.0.0 - May 16 2019
 * Updates & bug fixes from all commits since the last version.
 * Added netstandard2.0 target.
@@ -26,7 +31,7 @@
 * More than 3x  performance improvement with cjson instead of dkjson in Quik and c.30% in 
 a standalone Lua. Now they are almost at par - Quik just 13% slower. Now we have 80 micros
 for Quik and 70 micros for a standalone Lua (60 in profiler in release mode).
-* Added ClassFunctions (Функции для обращения к спискам доступных параметров) and several simple events
+* Added ClassFunctions (пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ) and several simple events
 * Correct Encoding to 1251
 #### 0.1.4 - December 22 2014
 * Implemented sendTransaction and tested its error handling (no actual trades yet)

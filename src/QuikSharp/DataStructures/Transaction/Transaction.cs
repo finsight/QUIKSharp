@@ -1,4 +1,5 @@
-﻿// Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
+﻿// Copyright (c) 2014-2020 QUIKSharp Authors https://github.com/finsight/QUIKSharp/blob/master/AUTHORS.md. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
 
 using Newtonsoft.Json;
 using System;
@@ -40,8 +41,12 @@ namespace QuikSharp.DataStructures.Transaction
 
         internal void OnOrderCall(Order order)
         {
-            OnOrder?.Invoke(order); 
-            if (Orders == null) { Orders = new List<Order>(); }
+            OnOrder?.Invoke(order);
+            if (Orders == null)
+            {
+                Orders = new List<Order>();
+            }
+
             Orders.Add(order);
         }
 
@@ -53,7 +58,11 @@ namespace QuikSharp.DataStructures.Transaction
         internal void OnStopOrderCall(StopOrder stopOrder)
         {
             OnStopOrder?.Invoke(stopOrder);
-            if (StopOrders == null) { StopOrders = new List<StopOrder>(); }
+            if (StopOrders == null)
+            {
+                StopOrders = new List<StopOrder>();
+            }
+
             StopOrders.Add(stopOrder);
         }
 
@@ -75,7 +84,11 @@ namespace QuikSharp.DataStructures.Transaction
         internal void OnTradeCall(Trade trade)
         {
             OnTrade?.Invoke(trade);
-            if (Trades == null) { Trades = new List<Trade>(); }
+            if (Trades == null)
+            {
+                Trades = new List<Trade>();
+            }
+
             Trades.Add(trade);
         }
 

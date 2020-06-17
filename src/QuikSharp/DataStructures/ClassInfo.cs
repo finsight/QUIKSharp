@@ -1,41 +1,43 @@
+// Copyright (c) 2014-2020 QUIKSharp Authors https://github.com/finsight/QUIKSharp/blob/master/AUTHORS.md. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
+
 using Newtonsoft.Json;
 
 namespace QuikSharp.DataStructures
 {
     /// <summary>
-    /// Описание класса
+    /// РћРїРёСЃР°РЅРёРµ РєР»Р°СЃСЃР°
     /// </summary>
     public class ClassInfo
     {
         // ReSharper disable InconsistentNaming
 
         /// <summary>
-        /// Код фирмы
+        /// РљРѕРґ С„РёСЂРјС‹
         /// </summary>
         [JsonProperty("firmid")]
         public string FirmId { get; set; }
 
         /// <summary>
-        /// Наименование класса
+        /// РќР°РёРјРµРЅРѕРІР°РЅРёРµ РєР»Р°СЃСЃР°
         /// </summary>
         [JsonProperty("name")]
         public string Name { get; set; }
 
         /// <summary>
-        /// Код класса
+        /// РљРѕРґ РєР»Р°СЃСЃР°
         /// </summary>
         [JsonProperty("code")]
         public string Code { get; set; }
 
         /// <summary>
-        /// Количество параметров в классе
+        /// РљРѕР»РёС‡РµСЃС‚РІРѕ РїР°СЂР°РјРµС‚СЂРѕРІ РІ РєР»Р°СЃСЃРµ
         /// </summary>
         [JsonProperty("npars")]
         public int NPars { get; set; }
 
         /// <summary>
-        /// Количество бумаг в классе
+        /// РљРѕР»РёС‡РµСЃС‚РІРѕ Р±СѓРјР°Рі РІ РєР»Р°СЃСЃРµ
         /// </summary>
         [JsonProperty("nsecs")]
         public int NSecs { get; set; }

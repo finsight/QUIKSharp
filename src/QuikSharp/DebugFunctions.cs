@@ -1,4 +1,5 @@
-﻿// Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
+﻿// Copyright (c) 2014-2020 QUIKSharp Authors https://github.com/finsight/QUIKSharp/blob/master/AUTHORS.md. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
 
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -17,13 +18,17 @@ namespace QuikSharp
         private class PingRequest : Message<string>
         {
             public PingRequest()
-                : base("Ping", "ping", null) { }
+                : base("Ping", "ping", null)
+            {
+            }
         }
 
         private class PingResponse : Message<string>
         {
             public PingResponse()
-                : base("Pong", "ping", null) { }
+                : base("Pong", "ping", null)
+            {
+            }
         }
 
         public async Task<string> Ping()

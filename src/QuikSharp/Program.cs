@@ -1,4 +1,5 @@
-﻿// Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
+﻿// Copyright (c) 2014-2020 QUIKSharp Authors https://github.com/finsight/QUIKSharp/blob/master/AUTHORS.md. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
 
 using QuikSharp.DataStructures;
 using System;
@@ -35,7 +36,7 @@ namespace QuikSharp
 
         private static bool _exitSystem;
 
-#region Trap application termination
+        #region Trap application termination
 
         [DllImport("Kernel32")]
         private static extern bool SetConsoleCtrlHandler(EventHandler handler, bool add);
@@ -73,7 +74,7 @@ namespace QuikSharp
             return true;
         }
 
-#endregion Trap application termination
+        #endregion Trap application termination
 
         private static void Main()
         {
@@ -121,7 +122,7 @@ namespace QuikSharp
 
             Console.WriteLine(time2);
 
-#region Example
+            #region Example
 
             double bestBidPrice = 0;
             double bestOfferPrice = 0;
@@ -156,7 +157,7 @@ namespace QuikSharp
             Console.WriteLine("Per call: " + (sw.ElapsedMilliseconds / n));
             Console.WriteLine("While Exit");
 
-#endregion Example
+            #endregion Example
 
             // hold the console so it doesn’t run off the end
             while (!_exitSystem)

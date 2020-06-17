@@ -1,4 +1,7 @@
-﻿using QuikSharp.DataStructures;
+﻿// Copyright (c) 2014-2020 QUIKSharp Authors https://github.com/finsight/QUIKSharp/blob/master/AUTHORS.md. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
+
+using QuikSharp.DataStructures;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -18,7 +21,10 @@ namespace QuikSharp
         /// </summary>
         public event CandleHandler NewCandle;
 
-        internal void RaiseNewCandleEvent(Candle candle) { NewCandle?.Invoke(candle); }
+        internal void RaiseNewCandleEvent(Candle candle)
+        {
+            NewCandle?.Invoke(candle);
+        }
 
         public CandleFunctions(int port, string host)
         {
@@ -85,7 +91,7 @@ namespace QuikSharp
         /// <returns>Список свечей.</returns>
         public async Task<List<Candle>> GetLastCandles(string classCode, string securityCode, CandleInterval interval, int count)
         {
-            var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval + "|" + count, "get_candles_from_data_source");
+            var message = new Message<string>(classCode + "|" + securityCode + "|" + (int) interval + "|" + count, "get_candles_from_data_source");
             Message<List<Candle>> response = await QuikService.Send<Message<List<Candle>>>(message).ConfigureAwait(false);
             return response.Data;
         }
@@ -98,7 +104,7 @@ namespace QuikSharp
         /// <param name="interval">интервал свечей (тайм-фрейм).</param>
         public async Task Subscribe(string classCode, string securityCode, CandleInterval interval)
         {
-            var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "subscribe_to_candles");
+            var message = new Message<string>(classCode + "|" + securityCode + "|" + (int) interval, "subscribe_to_candles");
             await QuikService.Send<Message<string>>(message).ConfigureAwait(false);
         }
 
@@ -110,7 +116,7 @@ namespace QuikSharp
         /// <param name="interval">интервал свечей (тайм-фрейм).</param>
         public async Task Unsubscribe(string classCode, string securityCode, CandleInterval interval)
         {
-            var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "unsubscribe_from_candles");
+            var message = new Message<string>(classCode + "|" + securityCode + "|" + (int) interval, "unsubscribe_from_candles");
             await QuikService.Send<Message<string>>(message).ConfigureAwait(false);
         }
 
@@ -122,7 +128,7 @@ namespace QuikSharp
         /// <param name="interval">интервал свечей (тайм-фрейм).</param>
         public async Task<bool> IsSubscribed(string classCode, string securityCode, CandleInterval interval)
         {
-            var message = new Message<string>(classCode + "|" + securityCode + "|" + (int)interval, "is_subscribed");
+            var message = new Message<string>(classCode + "|" + securityCode + "|" + (int) interval, "is_subscribed");
             Message<bool> response = await QuikService.Send<Message<bool>>(message).ConfigureAwait(false);
             return response.Data;
         }

@@ -1,4 +1,5 @@
-﻿// Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
+﻿// Copyright (c) 2014-2020 QUIKSharp Authors https://github.com/finsight/QUIKSharp/blob/master/AUTHORS.md. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
 
 using System;
 
@@ -57,6 +58,7 @@ namespace QuikSharp.DataStructures
         public int year { get; set; }
 
         // ReSharper restore InconsistentNaming
+
         /// <summary>
         ///
         /// </summary>
@@ -85,7 +87,7 @@ namespace QuikSharp.DataStructures
                 sec = dt.Second,
                 ms = dt.Millisecond,
                 mcs = 0, // ((int)(dt.TimeOfDay.Ticks) - ((dt.Hour * 60 + dt.Minute) * 60 + dt.Second) * 1000 * 10000) / 10,
-                week_day = (int)dt.DayOfWeek
+                week_day = (int) dt.DayOfWeek
             };
         }
     }

@@ -1,4 +1,7 @@
-﻿using QuikSharp.DataStructures;
+﻿// Copyright (c) 2014-2020 QUIKSharp Authors https://github.com/finsight/QUIKSharp/blob/master/AUTHORS.md. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE.txt in the project root for license information.
+
+using QuikSharp.DataStructures;
 using QuikSharp.DataStructures.Transaction;
 using System;
 using System.Collections.Generic;
@@ -58,7 +61,7 @@ namespace QuikSharp
                 ACCOUNT = stopOrder.Account,
                 CLASSCODE = stopOrder.ClassCode,
                 SECCODE = stopOrder.SecCode,
-                EXPIRY_DATE = "GTC",//до отмены
+                EXPIRY_DATE = "GTC", //до отмены
                 STOPPRICE = stopOrder.ConditionPrice,
                 PRICE = stopOrder.Price,
                 QUANTITY = stopOrder.Quantity,
@@ -72,6 +75,7 @@ namespace QuikSharp
                 newStopOrderTransaction.OFFSET_UNITS = stopOrder.OffsetUnit;
                 newStopOrderTransaction.SPREAD_UNITS = stopOrder.SpreadUnit;
             }
+
             if (stopOrder.StopOrderType == StopOrderType.TakeProfitStopLimit)
             {
                 newStopOrderTransaction.STOPPRICE2 = stopOrder.ConditionPrice2;
