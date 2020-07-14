@@ -443,7 +443,7 @@ namespace QuikSharpDemo
                         AppendText2TextBox(textBoxLogsWindow, "Получаем таблицу информации..." + Environment.NewLine);
                         listSecurityInfo = new List<SecurityInfo> { _quik.Class.GetSecurityInfo(tool.ClassCode, tool.SecurityCode).Result };
 
-                        if (listDepoLimits.Count > 0)
+                        if (listSecurityInfo.Count > 0)
                         {
                             AppendText2TextBox(textBoxLogsWindow, "Выводим данные в таблицу..." + Environment.NewLine);
                             toolCandlesTable = new FormOutputTable(listSecurityInfo);
