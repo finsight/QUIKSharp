@@ -441,5 +441,22 @@ namespace QuikSharp.DataStructures.Transaction
                     ? State.Canceled
                     : State.Completed);
         }
+
+
+        /// <summary>
+        /// Средняя цена заявки. Будет только в том случае, если заявка получена с помощью методов, 
+        /// в названии которых есть `WithInfo`, и только тогда, когда есть хоть одна сделка.
+        /// Вычисляется в Lua коде, а не выдается Quik'ом
+        /// </summary>
+        [JsonProperty("average_price")]
+        public decimal AveragePrice { get; set; }
+
+        /// <summary>
+        /// Время последней сделки в заявке. Будет только в том случае, если заявка получена с помощью методов, 
+        /// в названии которых есть `WithInfo`, и только тогда, когда есть хоть одна сделка.
+        /// Вычисляется в Lua коде, а не выдается Quik'ом
+        /// </summary>
+        [JsonProperty("last_trade_datetime")]
+        public QuikDateTime LastTradeDatetime { get; set; }
     }
 }

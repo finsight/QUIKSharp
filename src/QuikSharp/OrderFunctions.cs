@@ -167,12 +167,38 @@ namespace QuikSharp
         }
 
         /// <summary>
+        /// Возвращает заявку из хранилища терминала по её номеру. В заявке будут указаны дополнительные параметры, а именно
+        /// средняя цена и время последней сделки, но только если есть хоть одна сделка
+        /// </summary>
+        /// <param name="classCode">Класс инструмента.</param>
+        /// <param name="orderNum">Номер заявки.</param>
+        /// <returns></returns>
+        public async Task<Order> GetOrderWithInfo(string classCode, long orderNum)
+        {
+            var message = new Message<string>(classCode + "|" + orderNum, "get_order_with_info_by_number");
+            Message<Order> response = await QuikService.Send<Message<Order>>(message).ConfigureAwait(false);
+            return response.Data;
+        }
+
+        /// <summary>
         /// Возвращает список всех заявок.
         /// </summary>
         /// <returns></returns>
         public async Task<List<Order>> GetOrders()
         {
             var message = new Message<string>("", "get_orders");
+            Message<List<Order>> response = await QuikService.Send<Message<List<Order>>>(message).ConfigureAwait(false);
+            return response.Data;
+        }
+
+        /// <summary>
+        /// Возвращает список всех заявок. В них будут указаны средняя цена и время последней сделки, если есть хоть одна сделка.
+        /// Дополнительные параметры просчитываются в Lua коде, а не выдаются Quik'ом. Это займет чуть больше времени
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<Order>> GetOrdersWithInfo()
+        {
+            var message = new Message<string>("", "getOrdersWithInfo");
             Message<List<Order>> response = await QuikService.Send<Message<List<Order>>>(message).ConfigureAwait(false);
             return response.Data;
         }
@@ -188,6 +214,18 @@ namespace QuikSharp
         }
 
         /// <summary>
+        /// Возвращает список заявок для заданного инструмента. В них будут указаны средняя цена и время последней сделки, 
+        /// если есть хоть одна сделка.
+        /// Дополнительные параметры просчитываются в Lua коде, а не выдаются Quik'ом. Это займет чуть больше времени
+        /// </summary>
+        public async Task<List<Order>> GetOrdersWithInfo(string classCode, string securityCode)
+        {
+            var message = new Message<string>(classCode + "|" + securityCode, "getOrdersWithInfo");
+            Message<List<Order>> response = await QuikService.Send<Message<List<Order>>>(message).ConfigureAwait(false);
+            return response.Data;
+        }
+
+        /// <summary>
         /// Возвращает заявку для заданного инструмента по ID.
         /// </summary>
         public async Task<Order> GetOrder_by_transID(string classCode, string securityCode, long trans_id)
@@ -198,11 +236,33 @@ namespace QuikSharp
         }
 
         /// <summary>
+        /// Возвращает заявку для заданного инструмента по ID. В заявке будут указаны дополнительные параметры, а именно
+        /// средняя цена и время последней сделки, но только если есть хоть одна сделка
+        /// </summary>
+        public async Task<Order> GetOrderWithInfoByTransID(string classCode, string securityCode, long transId)
+        {
+            var message = new Message<string>(classCode + "|" + securityCode + "|" + transId, "getOrderWithInfoByID");
+            Message<Order> response = await QuikService.Send<Message<Order>>(message).ConfigureAwait(false);
+            return response.Data;
+        }
+
+        /// <summary>
         /// Возвращает заявку по номеру.
         /// </summary>
         public async Task<Order> GetOrder_by_Number(long order_num)
         {
             var message = new Message<string>(order_num.ToString(), "getOrder_by_Number");
+            Message<Order> response = await QuikService.Send<Message<Order>>(message).ConfigureAwait(false);
+            return response.Data;
+        }
+
+        /// <summary>
+        /// Возвращает заявку по номеру. В заявке будут указаны дополнительные параметры, а именно
+        /// средняя цена и время последней сделки, но только если есть хоть одна сделка
+        /// </summary>
+        public async Task<Order> GetOrderWithInfoByNumber(long orderNum)
+        {
+            var message = new Message<string>(orderNum.ToString(), "getOrderWithInfoByNumber");
             Message<Order> response = await QuikService.Send<Message<Order>>(message).ConfigureAwait(false);
             return response.Data;
         }

@@ -53,6 +53,26 @@ namespace QuikSharp
             return response.Data;
         }
 
+        /// <summary>
+        /// Возвращает стоп заявку для заданного инструмента по ID.
+        /// </summary>
+        public async Task<StopOrder> GetStopOrderByTransID(string classCode, string securityCode, long transId)
+        {
+            var message = new Message<string>(classCode + "|" + securityCode + "|" + transId, "getStopOrderByID");
+            Message<StopOrder> response = await QuikService.Send<Message<StopOrder>>(message).ConfigureAwait(false);
+            return response.Data;
+        }
+
+        /// <summary>
+        /// Возвращает стоп заявку по номеру.
+        /// </summary>
+        public async Task<StopOrder> GetStopOrderByNumber(long stopOrderNum)
+        {
+            var message = new Message<string>(stopOrderNum.ToString(), "getStopOrderByNumber");
+            Message<StopOrder> response = await QuikService.Send<Message<StopOrder>>(message).ConfigureAwait(false);
+            return response.Data;
+        }
+
         public async Task<long> CreateStopOrder(StopOrder stopOrder)
         {
             Transaction newStopOrderTransaction = new Transaction
