@@ -524,6 +524,34 @@ function qsfunctions.get_orders(msg)
 	return msg
 end
 
+--- Функция возвращает таблицу заявок (всю или по заданному инструменту) вместе с датой последней сделки и средней ценой
+function qsfunctions.get_orders_with_info(msg)
+	qsfunctions.get_orders(msg)
+	for i = 1, #msg.data do
+		fill_order_with_trades_data(msg.data[i])
+	end
+	return msg
+end
+
+-- Заполняет заявку полезными деталями: средней ценой с произвольным количеством цифр после запятой и временем последней сделки.
+-- В случае, если сделок не было, эти поля будут отсутствовать в ответе
+function fill_order_with_trades_data(order)
+	local qty_of_trades = 0
+	local price_qty = 0
+	for i = 0, getNumberOf("trades") - 1 do
+		local trade = getItem("trades", i)
+		if trade.order_num == order.order_num then
+			price_qty = price_qty + trade.price * trade.qty
+			qty_of_trades = qty_of_trades + trade.qty
+			order.last_trade_datetime = trade.datetime
+		end
+	end
+	if qty_of_trades > 0 then
+		order.average_price = price_qty / qty_of_trades
+	end
+	return order
+end
+
 -- Функция возвращает заявку по заданному инструменту и ID-транзакции
 function qsfunctions.getOrder_by_ID(msg)
 	if msg.data ~= "" then
@@ -544,6 +572,15 @@ function qsfunctions.getOrder_by_ID(msg)
 	return msg
 end
 
+-- Функция возвращает заявку по заданному инструменту и ID-транзакции вместе с датой последней сделки и средней ценой
+function qsfunctions.getOrder_with_info_by_ID(msg)
+	qsfunctions.getOrder_by_ID(msg)
+	if type(msg.data) == "table" then
+		fill_order_with_trades_data(msg.data)
+	end
+	return msg
+end
+
 ---- Функция возвращает заявку по номеру
 function qsfunctions.getOrder_by_Number(msg)
 	for i=0,getNumberOf("orders")-1 do
@@ -556,6 +593,15 @@ function qsfunctions.getOrder_by_Number(msg)
 	return msg
 end
 
+---- Функция возвращает заявку по номеру вместе с датой последней сделки и средней ценой
+function qsfunctions.getOrder_with_info_by_Number(msg)
+	qsfunctions.getOrder_by_Number(msg)
+	if type(msg.data) == "table" then
+		fill_order_with_trades_data(msg.data)
+	end
+	return msg
+end
+
 --- Возвращает заявку по её номеру и классу инструмента ---
 --- На основе http://help.qlua.org/ch4_5_1_1.htm ---
 function qsfunctions.get_order_by_number(msg)
@@ -563,6 +609,15 @@ function qsfunctions.get_order_by_number(msg)
 	local class_code = spl[1]
 	local order_id = tonumber(spl[2])
 	msg.data = getOrderByNumber(class_code, order_id)
+	return msg
+end
+
+--- Возвращает заявку по её номеру и классу инструмента вместе с датой последней сделки и средней ценой
+function qsfunctions.get_order_with_info_by_number(msg)
+	qsfunctions.get_order_by_number(msg)
+	if type(msg.data) == "table" then
+		fill_order_with_trades_data(msg.data)
+	end
 	return msg
 end
 
@@ -703,6 +758,36 @@ function qsfunctions.get_stop_orders(msg)
 		end
 	end
 	msg.data = stop_orders
+	return msg
+end
+
+-- Функция возвращает стоп заявку по заданному инструменту и ID-транзакции
+function qsfunctions.getStopOrder_by_ID(msg)
+	if msg.data ~= "" then
+		local spl = split(msg.data, "|")
+		class_code, sec_code, trans_id = spl[1], spl[2], spl[3]
+	end
+
+	local order_num = 0
+	for i = 0, getNumberOf("stop_orders") - 1 do
+		local order = getItem("stop_orders", i)
+		if order.class_code == class_code and order.sec_code == sec_code and order.trans_id == tonumber(trans_id) and order.order_num > order_num then
+			order_num = order.order_num
+			msg.data = order
+		end
+	end
+	return msg
+end
+
+---- Функция возвращает стоп заявку по номеру
+function qsfunctions.getStopOrder_by_Number(msg)
+	for i = 0, getNumberOf("stop_orders") - 1 do
+		local order = getItem("stop_orders", i)
+		if order.order_num == tonumber(msg.data) then
+			msg.data = order
+			return msg
+		end
+	end
 	return msg
 end
 
