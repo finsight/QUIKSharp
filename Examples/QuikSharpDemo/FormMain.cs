@@ -23,7 +23,7 @@ namespace QuikSharpDemo
         bool isServerConnected = false;
         bool isSubscribedToolOrderBook = false;
         bool isSubscribedToolCandles = false;
-        string secCode = "SiM0";
+        string secCode = "SiU0";
         string classCode = "";
         string clientCode;
         decimal bid;
@@ -242,6 +242,23 @@ namespace QuikSharpDemo
             catch (Exception er)
             {
                 Trace.WriteLine("Trace: Ошибка в OnNewCandleDo() - " + er.ToString());
+            }
+        }
+        void OnStopOrderDo(StopOrder _stopOrder)
+        {
+            Trace.Assert(_stopOrder != null, DateTime.Now + ": Trace: stopOrder = NULL");
+            Trace.WriteLine(DateTime.Now + ": Trace: OnStopOrderDo()");
+            try
+            {
+                if (_stopOrder != null && _stopOrder.OrderNum > 0)
+                {
+                    Trace.WriteLine("Trace: Вызвано событие OnStopOrder - 'Time' = " + DateTime.Now + ", 'OrderNum' = " + _stopOrder.OrderNum + ", 'State' = " + _stopOrder.State);
+                    AppendText2TextBox(textBoxLogsWindow, "Вызвано событие OnStopOrder - 'Time' = " + DateTime.Now + ", 'OrderNum' = " + _stopOrder.OrderNum + ", 'State' = " + _stopOrder.State + Environment.NewLine);
+                }
+            }
+            catch (Exception er)
+            {
+                Trace.WriteLine("Trace: Ошибка в OnStopOrderDo() - " + er.ToString());
             }
         }
 
@@ -667,24 +684,26 @@ namespace QuikSharpDemo
                 case "Выставить стоп-заявку типа тейк-профит и стоп-лимит":
                     try
                     {
+                        AppendText2TextBox(textBoxLogsWindow, "Подписываемся на событие OnStopOrder..." + Environment.NewLine);
+                        _quik.Events.OnStopOrder += OnStopOrderDo;
                         decimal priceInOrder = Math.Round(tool.LastPrice, tool.PriceAccuracy);
                         StopOrder orderNew = new StopOrder()
                         {
-                            Account = tool.AccountID,
-                            ClassCode = tool.ClassCode,
-                            ClientCode = clientCode,
-                            SecCode = secCode,
-                            Offset = 50,
-                            OffsetUnit = OffsetUnits.PRICE_UNITS,
-                            Spread = 0.5M,
-                            SpreadUnit = OffsetUnits.PERCENTS,
-                            StopOrderType = StopOrderType.TakeProfitStopLimit,
-                            Condition = Condition.LessOrEqual,
-                            ConditionPrice = Math.Round(priceInOrder - 50 * tool.Step, tool.PriceAccuracy),
+                            Account         = tool.AccountID,
+                            ClassCode       = tool.ClassCode,
+                            ClientCode      = clientCode,
+                            SecCode         = secCode,
+                            Offset          = 5,
+                            OffsetUnit      = OffsetUnits.PRICE_UNITS,
+                            Spread          = 0.1M,
+                            SpreadUnit      = OffsetUnits.PERCENTS,
+                            StopOrderType   = StopOrderType.TakeProfitStopLimit,
+                            Condition       = Condition.LessOrEqual,
+                            ConditionPrice  = Math.Round(priceInOrder - 50 * tool.Step, tool.PriceAccuracy),
                             ConditionPrice2 = Math.Round(priceInOrder + 40 * tool.Step, tool.PriceAccuracy),
-                            Price = Math.Round(priceInOrder + 45 * tool.Step, tool.PriceAccuracy),
-                            Operation = Operation.Buy,
-                            Quantity = 1
+                            Price           = Math.Round(priceInOrder + 45 * tool.Step, tool.PriceAccuracy),
+                            Operation       = Operation.Buy,
+                            Quantity        = 1
                         };
                         AppendText2TextBox(textBoxLogsWindow, "Выставляем стоп-заявку на покупку, по цене:" + priceInOrder + " ..." + Environment.NewLine);
                         long transID = await _quik.StopOrders.CreateStopOrder(orderNew).ConfigureAwait(false);
