@@ -691,7 +691,8 @@ namespace QuikSharp
                     case EventNames.OnStopOrder:
                         Trace.Assert(message is Message<StopOrder>);
                         StopOrder stopOrder = ((Message<StopOrder>) message).Data;
-                        StopOrders.RaiseNewStopOrderEvent(stopOrder);
+                        //StopOrders.RaiseNewStopOrderEvent(stopOrder);
+                        Events.OnStopOrderCall(stopOrder);
                         break;
 
                     case EventNames.OnTrade:
