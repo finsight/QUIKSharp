@@ -543,11 +543,11 @@ function fillOrderWithTradesData(order)
 		if trade.order_num == order.order_num then
 			price_qty = price_qty + trade.price * trade.qty
 			qty_of_trades = qty_of_trades + trade.qty
-			order.last_trade_datetime = trade.datetime
+			order.last_trade_datetime_ex = trade.datetime
 		end
 	end
 	if qty_of_trades > 0 then
-		order.average_price = price_qty / qty_of_trades
+		order.average_price_ex = price_qty / qty_of_trades
 	end
 	return order
 end
