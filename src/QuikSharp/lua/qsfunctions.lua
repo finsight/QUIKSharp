@@ -256,6 +256,19 @@ function qsfunctions.getClientCode(msg)
 	return msg
 end
 
+--- Функция возвращает все коды клиента
+function qsfunctions.getClientCodes(msg)
+	local client_codes = {}
+	for i=0,getNumberOf("MONEY_LIMITS")-1 do
+		local clientcode = getItem("MONEY_LIMITS",i).client_code
+		if clientcode ~= nil then
+			table.insert(client_codes, clientcode)
+		end
+	end
+	msg.data = client_codes
+	return msg
+end
+
 --- Функция возвращает торговый счет для запрашиваемого кода класса
 function qsfunctions.getTradeAccount(msg)
 	for i=0,getNumberOf("trade_accounts")-1 do

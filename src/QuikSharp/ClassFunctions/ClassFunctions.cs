@@ -51,6 +51,11 @@ namespace QuikSharp
         Task<string> GetClientCode();
 
         /// <summary>
+        /// Функция возвращает список всех кодов клиента.
+        /// </summary>
+        Task<List<string>> GetClientCodes();
+
+        /// <summary>
         /// Функция возвращает таблицу с описанием торгового счета для запрашиваемого кода класса.
         /// </summary>
         Task<string> GetTradeAccount(string classCode);
@@ -122,6 +127,13 @@ namespace QuikSharp
         {
             var response = await QuikService.Send<Message<string>>(
                 (new Message<string>("", "getClientCode"))).ConfigureAwait(false);
+            return response.Data;
+        }
+
+        public async Task<List<string>> GetClientCodes()
+        {
+            var response = await QuikService.Send<Message<List<string>>>(
+                (new Message<string>("", "getClientCodes"))).ConfigureAwait(false);
             return response.Data;
         }
 
