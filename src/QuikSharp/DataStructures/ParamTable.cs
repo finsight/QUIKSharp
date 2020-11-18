@@ -37,6 +37,14 @@ namespace QuikSharp.DataStructures
         [JsonProperty("param_image")]
         public string ParamImage { get; set; }
 
+        /// <summary>
+        /// Результат выполнения операции. Возможные значения:
+        /// «0» – ошибка;
+        /// «1» – параметр найден;
+        /// </summary>
+        [JsonProperty("result")]
+        public string Result { get; set; }
+
         public long LuaTimeStamp { get; set; }
     }
 }
