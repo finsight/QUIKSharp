@@ -335,7 +335,6 @@ function qsfunctions.GetQuoteLevel2(msg)
         msg.data.class_code		= class_code
         msg.data.sec_code		= sec_code
         msg.data.server_time	= server_time
-        sendCallback(msg)
     else
         OnError(ql2)
     end
