@@ -74,7 +74,7 @@ namespace QuikSharpDemo
             listBoxCommands.Items.Add("Получить таблицу сделок");
             listBoxCommands.Items.Add("Получить таблицу `Клиентский портфель`");
             listBoxCommands.Items.Add("Получить таблицы денежных лимитов");
-            listBoxCommands.Items.Add("Получить стакан заявок (не обновляемый)");
+            listBoxCommands.Items.Add("Получить стакан заявок");
             listBoxCommands.Items.Add("Связка ParamRequest + OnParam + GetParamEx2");
             listBoxCommands.Items.Add("CancelParamRequest");
             listBoxCommands.Items.Add("Отменить заказ на получение стакана");
@@ -266,14 +266,12 @@ namespace QuikSharpDemo
         {
             textBoxLastPrice.Text = Convert.ToString(tool.LastPrice);
             textBoxQty.Text = Convert.ToString(GetPositionT2(_quik, tool, clientCode));
-            //if (toolOrderBook != null) AppendText2TextBox(textBoxLogsWindow, "toolOrderBook.bid = " + toolOrderBook.bid[toolOrderBook.bid.Count() - 1].price + ", toolOrderBook.offer = " + toolOrderBook.offer[0].price + Environment.NewLine);
-            //if (toolOrderBook != null) AppendText2TextBox(textBoxLogsWindow, "toolOrderBook.bid_count = " + toolOrderBook.bid_count + ", toolOrderBook.offer_count = " + toolOrderBook.offer_count + Environment.NewLine);
-            //else AppendText2TextBox(textBoxLogsWindow, "toolOrderBook = null..." + Environment.NewLine);
             if (toolOrderBook != null && toolOrderBook.bid != null)
             {
                 Text2TextBox(textBox_RenewTime, renewOrderBookTime.ToLongTimeString());
                 Text2TextBox(textBoxBestBid, bid.ToString());
                 Text2TextBox(textBoxBestOffer, offer.ToString());
+                if (toolOrderBookTable != null) toolOrderBookTable.Renew(toolOrderBook);
             }
             if (futuresPosition != null) textBoxVarMargin.Text = futuresPosition.varMargin.ToString();
             //Trace.Flush();
@@ -322,7 +320,7 @@ namespace QuikSharpDemo
                 case "Получить таблицы денежных лимитов":
                     textBoxDescription.Text = "Получить и отобразить таблицы денежных лимитов (стандартную и дополнительную Т2). Работает только на инструментах фондовой секции. quik.Trading.GetMoney() и quik.Trading.GetMoneyEx()";
                     break;
-                case "Получить стакан заявок (не обновляемый)":
+                case "Получить стакан заявок":
                     textBoxDescription.Text = "Получить и отобразить стакан заявок в виде таблицы (данные на момент вызова функции. Без обновления)";
                     break;
                 case "Связка ParamRequest + OnParam + GetParamEx2":
@@ -597,7 +595,7 @@ namespace QuikSharpDemo
                     }
                     catch { AppendText2TextBox(textBoxLogsWindow, "Ошибка получения денежных лимитов." + Environment.NewLine); }
                     break;
-                case "Получить стакан заявок (не обновляемый)":
+                case "Получить стакан заявок":
                     try
                     {
                         if (toolOrderBook != null)
