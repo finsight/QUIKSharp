@@ -23,7 +23,7 @@ namespace QuikSharpDemo
         bool isServerConnected = false;
         bool isSubscribedToolOrderBook = false;
         bool isSubscribedToolCandles = false;
-        string secCode = "SiU0";
+        string secCode = "SiZ0";
         string classCode = "";
         string clientCode;
         decimal bid;
@@ -40,7 +40,7 @@ namespace QuikSharpDemo
         List<MoneyLimit> listMoneyLimits;
         List<MoneyLimitEx> listMoneyLimitsEx;
         FormOutputTable toolCandlesTable;
-        //FormOrderBook toolOrderBookTable;
+        FormOrderBook toolOrderBookTable;
         Order order;
         FuturesLimits futLimit;
         FuturesClientHolding futuresPosition;
@@ -74,7 +74,7 @@ namespace QuikSharpDemo
             listBoxCommands.Items.Add("Получить таблицу сделок");
             listBoxCommands.Items.Add("Получить таблицу `Клиентский портфель`");
             listBoxCommands.Items.Add("Получить таблицы денежных лимитов");
-            //listBoxCommands.Items.Add("Получить стакан заявок (не обновляемый)");
+            listBoxCommands.Items.Add("Получить стакан заявок (не обновляемый)");
             listBoxCommands.Items.Add("Связка ParamRequest + OnParam + GetParamEx2");
             listBoxCommands.Items.Add("CancelParamRequest");
             listBoxCommands.Items.Add("Отменить заказ на получение стакана");
@@ -266,6 +266,9 @@ namespace QuikSharpDemo
         {
             textBoxLastPrice.Text = Convert.ToString(tool.LastPrice);
             textBoxQty.Text = Convert.ToString(GetPositionT2(_quik, tool, clientCode));
+            //if (toolOrderBook != null) AppendText2TextBox(textBoxLogsWindow, "toolOrderBook.bid = " + toolOrderBook.bid[toolOrderBook.bid.Count() - 1].price + ", toolOrderBook.offer = " + toolOrderBook.offer[0].price + Environment.NewLine);
+            //if (toolOrderBook != null) AppendText2TextBox(textBoxLogsWindow, "toolOrderBook.bid_count = " + toolOrderBook.bid_count + ", toolOrderBook.offer_count = " + toolOrderBook.offer_count + Environment.NewLine);
+            //else AppendText2TextBox(textBoxLogsWindow, "toolOrderBook = null..." + Environment.NewLine);
             if (toolOrderBook != null && toolOrderBook.bid != null)
             {
                 Text2TextBox(textBox_RenewTime, renewOrderBookTime.ToLongTimeString());
@@ -319,9 +322,9 @@ namespace QuikSharpDemo
                 case "Получить таблицы денежных лимитов":
                     textBoxDescription.Text = "Получить и отобразить таблицы денежных лимитов (стандартную и дополнительную Т2). Работает только на инструментах фондовой секции. quik.Trading.GetMoney() и quik.Trading.GetMoneyEx()";
                     break;
-                //case "Получить стакан заявок (не обновляемый)":
-                //    textBoxDescription.Text = "Получить и отобразить стакан заявок в виде таблицы (данные на момент вызова функции. Без обновления)";
-                //    break;
+                case "Получить стакан заявок (не обновляемый)":
+                    textBoxDescription.Text = "Получить и отобразить стакан заявок в виде таблицы (данные на момент вызова функции. Без обновления)";
+                    break;
                 case "Связка ParamRequest + OnParam + GetParamEx2":
                     textBoxDescription.Text = "Демонстрация работы связки ParamRequest + OnParam + GetParamEx2";
                     break;
@@ -594,23 +597,23 @@ namespace QuikSharpDemo
                     }
                     catch { AppendText2TextBox(textBoxLogsWindow, "Ошибка получения денежных лимитов." + Environment.NewLine); }
                     break;
-                //case "Получить стакан заявок (не обновляемый)":
-                //    try
-                //    {
-                //        if (toolOrderBook != null)
-                //        {
-                //            AppendText2TextBox(textBoxLogsWindow, "Получаем данные о стакане с помощью функции GetQuoteLevel2..." + Environment.NewLine);
-                //            OrderBook orderBookCurrent = _quik.OrderBook.GetQuoteLevel2(tool.ClassCode, tool.SecurityCode).Result;
-                //            AppendText2TextBox(textBoxLogsWindow, "Выводим данные о стакане заявок в таблицу..." + Environment.NewLine);
-                //            //Console.WriteLine("Count offer = " + orderBookCurrent.offer_count);
-                //            //toolOrderBookTable = new FormOrderBook(toolOrderBook);
-                //            //toolOrderBookTable = new FormOrderBook(orderBookCurrent);
-                //            //toolOrderBookTable = new FormOrderBook();
-                //            //toolOrderBookTable.Show();
-                //        }
-                //    }
-                //    catch { AppendText2TextBox(textBoxLogsWindow, "Ошибка получения денежных лимитов." + Environment.NewLine); }
-                //    break;
+                case "Получить стакан заявок (не обновляемый)":
+                    try
+                    {
+                        if (toolOrderBook != null)
+                        {
+                            AppendText2TextBox(textBoxLogsWindow, "Получаем данные о стакане с помощью функции GetQuoteLevel2..." + Environment.NewLine);
+                            OrderBook orderBookCurrent = _quik.OrderBook.GetQuoteLevel2(tool.ClassCode, tool.SecurityCode).Result;
+                            AppendText2TextBox(textBoxLogsWindow, "Выводим данные о стакане заявок в таблицу..." + Environment.NewLine);
+                            //Console.WriteLine("Count offer = " + orderBookCurrent.offer_count);
+                            //toolOrderBookTable = new FormOrderBook(toolOrderBook);
+                            //toolOrderBookTable = new FormOrderBook(orderBookCurrent);
+                            toolOrderBookTable = new FormOrderBook();
+                            toolOrderBookTable.Show();
+                        }
+                    }
+                    catch { AppendText2TextBox(textBoxLogsWindow, "Ошибка получения денежных лимитов." + Environment.NewLine); }
+                    break;
                 case "Связка ParamRequest + OnParam + GetParamEx2":
                     try
                     {
@@ -666,7 +669,7 @@ namespace QuikSharpDemo
                         }
                         if (isSubscribedToolOrderBook)
                         {
-                            //toolOrderBook                   = new OrderBook();
+                            toolOrderBook                   = new OrderBook();
                             AppendText2TextBox(textBoxLogsWindow, "Отмена подписки на стакан не удалась." + Environment.NewLine);
                         }
                         else
