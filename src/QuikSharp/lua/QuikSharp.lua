@@ -16,7 +16,11 @@ if is_quik() then
 	quikVersion = getInfoParam("VERSION")
 
 	if quikVersion ~= nil then
-		quikVersion = tonumber(quikVersion:match("%d+%.%d+")) * 100
+		local t={}
+		for str in string.gmatch(quikVersion, "([^%.]+)") do
+			table.insert(t, str)
+        end
+		quikVersion = tonumber(t[1]) * 100 + tonumber(t[2])
 	end
 
 	if quikVersion == nil then
