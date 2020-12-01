@@ -16,7 +16,7 @@ if is_quik() then
 	quikVersion = getInfoParam("VERSION")
 
 	if quikVersion ~= nil then
-		quikVersion = tonumber(quikVersion:match("%d+%.%d+"))
+		quikVersion = tonumber(quikVersion:match("%d+%.%d+")) * 100
 	end
 
 	if quikVersion == nil then
@@ -32,9 +32,9 @@ if is_quik() then
     -- but in one issue someone said it doesn't work on machines that do not have Visual Studio. 
     local linkage = "MD"
     
-	if quikVersion >= 8.5 then
+	if quikVersion >= 850 then
         libPath = libPath .. "64\\53_"..linkage.."\\"
-	elseif quikVersion >= 8 then
+	elseif quikVersion >= 800 then
         libPath = libPath .. "64\\5.1_"..linkage.."\\"
 	else
 		libPath = "\\clibs\\5.1_"..linkage.."\\"
