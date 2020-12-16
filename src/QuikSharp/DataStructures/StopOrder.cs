@@ -77,6 +77,13 @@ namespace QuikSharp.DataStructures
         public string ClassCode { get; set; }
 
         /// <summary>
+        /// Дата и время выставления стоп-заявки
+        /// </summary>
+        [JsonProperty("order_date_time")]
+        public QuikDateTime Datetime { get; set; }
+
+
+        /// <summary>
         /// Отступ от min/max
         /// </summary>
         [JsonProperty("offset")]

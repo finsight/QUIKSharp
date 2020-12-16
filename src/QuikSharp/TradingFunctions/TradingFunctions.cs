@@ -536,7 +536,7 @@ namespace QuikSharp
         /// Send a single transaction to Quik server
         /// </summary>
         /// <param name="transaction"></param>
-        /// <returns></returns>
+        /// <returns> If transaction was sent, returns its id. Else returns negative id to mark an error.</returns>
         public async Task<long> SendTransaction(Transaction transaction)
         {
             Trace.Assert(!transaction.TRANS_ID.HasValue, "TRANS_ID should be assigned automatically in SendTransaction functions");
@@ -552,21 +552,20 @@ namespace QuikSharp
             //// TODO Comments are useful to kill all orders with a single KILL_ALL_ORDERS
             //// But see e.g. this http://www.quik.ru/forum/import/27073/27076/
 
-            //transaction.CLIENT_CODE = transaction.TRANS_ID.Value.ToString();
-
-            if (transaction.CLIENT_CODE == null) transaction.CLIENT_CODE = transaction.TRANS_ID.Value.ToString();
+            if (string.IsNullOrEmpty(transaction.CLIENT_CODE))
+                transaction.CLIENT_CODE = transaction.TRANS_ID.Value.ToString();
 
             //this can be longer than 20 chars.
             //transaction.CLIENT_CODE = QuikService.PrependWithSessionId(transaction.TRANS_ID.Value);
 
             try
             {
+                // store transaction
+                QuikService.Storage.Set(transaction.TRANS_ID.ToString(), transaction);
+
                 var response = await QuikService.Send<Message<bool>>(
                     (new Message<Transaction>(transaction, "sendTransaction"))).ConfigureAwait(false);
                 Trace.Assert(response.Data);
-
-                // store transaction
-                QuikService.Storage.Set(transaction.CLIENT_CODE, transaction);
 
                 return transaction.TRANS_ID.Value;
             }

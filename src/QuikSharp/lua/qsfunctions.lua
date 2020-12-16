@@ -543,9 +543,10 @@ function qsfunctions.getOrder_by_ID(msg)
 		class_code, sec_code, trans_id = spl[1], spl[2], spl[3]
 	end
 
+  local count = getNumberOf("orders")
 	local order_num = 0
 	local res
-	for i = 0, getNumberOf("orders") - 1 do
+	for i = 0, count - 1 do
 		local order = getItem("orders", i)
 		if order.class_code == class_code and order.sec_code == sec_code and order.trans_id == tonumber(trans_id) and order.order_num > order_num then
 			order_num = order.order_num
@@ -717,6 +718,40 @@ function qsfunctions.get_stop_orders(msg)
 	msg.data = stop_orders
 	return msg
 end
+
+-- Функция возвращает стоп-заявку по заданному инструменту и ID-транзакции
+function qsfunctions.getStopOrder_by_ID(msg)
+	if msg.data ~= "" then
+		local spl = split(msg.data, "|")
+		class_code, sec_code, trans_id = spl[1], spl[2], spl[3]
+	end
+
+	local count = getNumberOf("stop_orders")
+  local order_num = 0
+	local res
+	for i = 0, count - 1 do
+		local stop_order = getItem("stop_orders", i)
+		if stop_order.class_code == class_code and stop_order.sec_code == sec_code and stop_order.trans_id == tonumber(trans_id) and stop_order.order_num > order_num then
+			order_num = stop_order.order_num
+			res = stop_order
+		end
+	end
+	msg.data = res
+	return msg
+end
+
+---- Функция возвращает заявку по номеру
+function qsfunctions.getStopOrder_by_Number(msg)
+	for i=0,getNumberOf("stop_orders")-1 do
+		local order = getItem("stop_orders",i)
+		if order.order_num == tonumber(msg.data) then
+			msg.data = order
+			return msg
+		end
+	end
+	return msg
+end
+
 
 -------------------------
 --- Candles functions ---

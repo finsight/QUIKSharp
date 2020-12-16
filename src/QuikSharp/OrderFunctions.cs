@@ -56,9 +56,9 @@ namespace QuikSharp
         /// <param name="operation">Операция заявки (покупка/продажа)</param>
         /// <param name="price">Цена заявки</param>
         /// <param name="qty">Количество (в лотах)</param>
-        public async Task<Order> SendLimitOrder(string classCode, string securityCode, string accountID, Operation operation, decimal price, int qty)
+        public async Task<Order> SendLimitOrder(string classCode, string securityCode, string accountID, string clientCode, Operation operation, decimal price, int qty)
         {
-            return await SendOrder(classCode, securityCode, accountID, operation, price, qty, TransactionType.L).ConfigureAwait(false);
+            return await SendOrder(classCode, securityCode, accountID, clientCode, operation, price, qty, TransactionType.L).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -67,11 +67,12 @@ namespace QuikSharp
         /// <param name="classCode">Код класса инструмента</param>
         /// <param name="securityCode">Код инструмента</param>
         /// <param name="accountID">Счет клиента</param>
+        /// <param name="clientCode">Код клиента</param>
         /// <param name="operation">Операция заявки (покупка/продажа)</param>
         /// <param name="qty">Количество (в лотах)</param>
-        public async Task<Order> SendMarketOrder(string classCode, string securityCode, string accountID, Operation operation, int qty)
+        public async Task<Order> SendMarketOrder(string classCode, string securityCode, string accountID, string clientCode, Operation operation, int qty)
         {
-            return await SendOrder(classCode, securityCode, accountID, operation, 0, qty, TransactionType.M).ConfigureAwait(false);
+            return await SendOrder(classCode, securityCode, accountID, clientCode, operation, 0, qty, TransactionType.M).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -80,15 +81,14 @@ namespace QuikSharp
         /// <param name="classCode">Код класса инструмента</param>
         /// <param name="securityCode">Код инструмента</param>
         /// <param name="accountID">Счет клиента</param>
+        /// <param name="clientCode">Код клиента</param>
         /// <param name="operation">Операция заявки (покупка/продажа)</param>
         /// <param name="price">Цена заявки</param>
         /// <param name="qty">Количество (в лотах)</param>
         /// <param name="orderType">Тип заявки (L - лимитная, M - рыночная)</param>
-        async Task<Order> SendOrder(string classCode, string securityCode, string accountID, Operation operation, decimal price, int qty, TransactionType orderType)
+        async Task<Order> SendOrder(string classCode, string securityCode, string accountID, string clientCode, Operation operation, decimal price, int qty, TransactionType orderType)
         {
             long res = 0;
-            bool set = false;
-            Order order_result = new Order();
             Transaction newOrderTransaction = new Transaction
             {
                 ACTION = TransactionAction.NEW_ORDER,
@@ -98,12 +98,13 @@ namespace QuikSharp
                 QUANTITY = qty,
                 OPERATION = operation == Operation.Buy ? TransactionOperation.B : TransactionOperation.S,
                 PRICE = price,
-                TYPE = orderType
+                TYPE = orderType,
+                CLIENT_CODE = clientCode
             };
             try
             {
                 res = await Quik.Trading.SendTransaction(newOrderTransaction).ConfigureAwait(false);
-                Thread.Sleep(500);
+                Thread.Sleep(50);
                 Console.WriteLine("res: " + res);
             }
             catch
@@ -111,45 +112,66 @@ namespace QuikSharp
                 //ignore
             }
 
-            while (!set)
-            {
-                if (res > 0)
+            if(res < 0)
+                return new Order
                 {
-                    if (newOrderTransaction.TransactionReply != null && newOrderTransaction.TransactionReply.ErrorSource != 0)
-                      order_result = new Order 
-                      {
-                        RejectReason = 
-                            newOrderTransaction.TransactionReply.ResultMsg 
-                            ?? $"Transaction {res} error: code {newOrderTransaction.TransactionReply.ErrorCode}, source {newOrderTransaction.TransactionReply.ErrorSource}"
-                      };
-                    else
-                      try
-                      {
-                          order_result = await Quik.Orders.GetOrder_by_transID(classCode, securityCode, res).ConfigureAwait(false);
-                      }
-                      catch
-                      {
-                          order_result = new Order {RejectReason = "Неудачная попытка получения заявки по ID-транзакции №" + res};
-                      }
-                }
-                else
-                {
-                    if (order_result != null) order_result.RejectReason = newOrderTransaction.ErrorMessage;
-                    else order_result = new Order {RejectReason = newOrderTransaction.ErrorMessage};
-                }
+                    RejectReason = newOrderTransaction.ErrorMessage,
+                    ClassCode = classCode,
+                    SecCode = securityCode,
+                    Account = accountID,
+                    ClientCode = clientCode,
+                    Operation = operation,
+                    Price = price,
+                    Quantity = qty
+                };
 
-                if (order_result != null && (order_result.RejectReason != "" || order_result.OrderNum > 0)) set = true;
+            while (true)
+            {
+                if (newOrderTransaction.TransactionReply != null && newOrderTransaction.TransactionReply.ErrorSource != 0)
+                    return new Order
+                    {
+                        RejectReason =
+                            newOrderTransaction.TransactionReply.ResultMsg
+                            ?? $"Transaction {res} error: code {newOrderTransaction.TransactionReply.ErrorCode}, source {newOrderTransaction.TransactionReply.ErrorSource}",
+                        ClassCode = classCode,
+                        SecCode = securityCode,
+                        Account = accountID,
+                        ClientCode = clientCode,
+                        Operation = operation,
+                        Price = price,
+                        Quantity = qty
+                    };
+
+                try
+                {
+                    var result = await Quik.Orders.GetOrder_by_transID(classCode, securityCode, res).ConfigureAwait(false);
+                    if (result != null)
+                        return result;
+                }
+                catch(Exception e)
+                {
+                    return new Order
+                    {
+                        RejectReason = $"Неудачная попытка получения заявки по ID-транзакции №{res}, {e.Message}",
+                        ClassCode = classCode,
+                        SecCode = securityCode,
+                        Account = accountID,
+                        ClientCode = clientCode,
+                        Operation = operation,
+                        Price = price,
+                        Quantity = qty
+                    };
+                }
 
                 Thread.Sleep(10);
             }
-
-            return order_result;
         }
 
         /// <summary>
         /// Отмена заявки.
         /// </summary>
         /// <param name="order">Информация по заявке, которую требуется отменить.</param>
+        /// <returns>Номер транзакции</returns>
         public async Task<long> KillOrder(Order order)
         {
             Transaction killOrderTransaction = new Transaction
@@ -160,6 +182,31 @@ namespace QuikSharp
                 ORDER_KEY = order.OrderNum.ToString()
             };
             return await Quik.Trading.SendTransaction(killOrderTransaction).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Отмена заявки с ожиданием завершения транзакции.
+        /// </summary>
+        /// <param name="order">Информация по заявке, которую требуется отменить.</param>
+        /// <returns>Результат выполнения транзакции.</returns>
+        public async Task<TransactionReply> KillOrderEx(Order order)
+        {
+            Transaction killOrderTransaction = new Transaction
+            {
+                ACTION = TransactionAction.KILL_ORDER,
+                CLASSCODE = order.ClassCode,
+                SECCODE = order.SecCode,
+                ORDER_KEY = order.OrderNum.ToString()
+            };
+
+            var res = await Quik.Trading.SendTransaction(killOrderTransaction).ConfigureAwait(false);
+            if (res < 0)
+                return null;
+
+            while (killOrderTransaction.TransactionReply == null)
+                Thread.Sleep(10);
+
+            return killOrderTransaction.TransactionReply;
         }
 
         /// <summary>
