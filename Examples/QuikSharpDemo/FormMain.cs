@@ -23,7 +23,7 @@ namespace QuikSharpDemo
         bool isServerConnected = false;
         bool isSubscribedToolOrderBook = false;
         bool isSubscribedToolCandles = false;
-        string secCode = "SiZ0";
+        string secCode = "SiH1";
         string classCode = "";
         string clientCode;
         decimal bid;
@@ -72,6 +72,7 @@ namespace QuikSharpDemo
             listBoxCommands.Items.Add("Получить таблицу по фьючерсным лимитам");
             listBoxCommands.Items.Add("Получить таблицу заявок");
             listBoxCommands.Items.Add("Получить таблицу сделок");
+            listBoxCommands.Items.Add("Получить таблицу обезличенных сделок");
             listBoxCommands.Items.Add("Получить таблицу `Клиентский портфель`");
             listBoxCommands.Items.Add("Получить таблицы денежных лимитов");
             listBoxCommands.Items.Add("Получить стакан заявок");
@@ -314,6 +315,9 @@ namespace QuikSharpDemo
                 case "Получить таблицу сделок":
                     textBoxDescription.Text = "Получить и отобразить таблицу всех клиентских сделок. quik.Trading.GetTrades()";
                     break;
+                case "Получить таблицу обезличенных сделок":
+                    textBoxDescription.Text = "Получить и отобразить таблицу обезличенных сделок по инструменту. quik.Trading.GetAllTrades()";
+                    break;
                 case "Получить таблицу `Клиентский портфель`":
                     textBoxDescription.Text = "Получить и отобразить таблицу `Клиентский портфель`. quik.Trading.GetPortfolioInfoEx()";
                     break;
@@ -542,6 +546,21 @@ namespace QuikSharpDemo
                     {
                         AppendText2TextBox(textBoxLogsWindow, "Получаем таблицу сделок..." + Environment.NewLine);
                         listTrades = _quik.Trading.GetTrades().Result;
+
+                        if (listTrades.Count > 0)
+                        {
+                            AppendText2TextBox(textBoxLogsWindow, "Выводим данные о сделках в таблицу..." + Environment.NewLine);
+                            toolCandlesTable = new FormOutputTable(listTrades);
+                            toolCandlesTable.Show();
+                        }
+                    }
+                    catch { AppendText2TextBox(textBoxLogsWindow, "Ошибка получения сделок." + Environment.NewLine); }
+                    break;
+                case "Получить таблицу обезличенных сделок":
+                    try
+                    {
+                        AppendText2TextBox(textBoxLogsWindow, "Получаем таблицу обезличенных сделок..." + Environment.NewLine);
+                        listTrades = _quik.Trading.GetAllTrades(tool.ClassCode, tool.SecurityCode).Result;
 
                         if (listTrades.Count > 0)
                         {

@@ -227,6 +227,19 @@ namespace QuikSharp
         /// <param name="client">код клиента фондового рынка или торговый счет срочного рынка</param>
         /// <returns></returns>
         Task<bool> IsUcpClient(string firmId, string client);
+
+        /// <summary>
+        /// функция для получения таблицы обезличенных сделок
+        /// </summary>
+        Task<List<Trade>> GetAllTrades();
+
+        /// <summary>
+        /// функция для получения таблицы обезличенных сделок по заданному инструменту
+        /// </summary>
+        /// <param name="classCode"></param>
+        /// <param name="secCode"></param>
+        /// <returns></returns>
+        Task<List<Trade>> GetAllTrades(string classCode, string secCode);
     }
 
     /// <summary>
@@ -523,6 +536,20 @@ namespace QuikSharp
         {
             var response = await QuikService.Send<Message<bool>>(
                 (new Message<string>(firmId + "|" + client, "IsUcpClient"))).ConfigureAwait(false);
+            return response.Data;
+        }
+
+        public async Task<List<Trade>> GetAllTrades()
+        {
+            var response = await QuikService.Send<Message<List<Trade>>>(
+                (new Message<string>("", "get_all_trades"))).ConfigureAwait(false);
+            return response.Data;
+        }
+
+        public async Task<List<Trade>> GetAllTrades(string classCode, string secCode)
+        {
+            var response = await QuikService.Send<Message<List<Trade>>>(
+                (new Message<string>(classCode + "|" + secCode, "get_all_trades"))).ConfigureAwait(false);
             return response.Data;
         }
 

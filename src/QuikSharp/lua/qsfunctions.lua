@@ -643,6 +643,24 @@ function qsfunctions.getPortfolioInfoEx(msg)
     return msg
 end
 
+-- Функция предназначена для получения таблицы обезличенных сделок по выбранному инструменту или всю целиком.
+function qsfunctions.get_all_trades(msg)
+	if msg.data ~= "" then
+		local spl = split(msg.data, "|")
+		class_code, sec_code = spl[1], spl[2]
+	end
+
+	local trades = {}
+	for i = 0, getNumberOf("all_trades") - 1 do
+		local trade = getItem("all_trades", i)
+		if msg.data == "" or (trade.class_code == class_code and trade.sec_code == sec_code) then
+			table.insert(trades, trade)
+		end
+	end
+	msg.data = trades
+	return msg
+end
+
 
 --------------------------
 -- OptionBoard functions --
