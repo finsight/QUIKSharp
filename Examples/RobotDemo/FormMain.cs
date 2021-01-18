@@ -24,7 +24,7 @@ namespace RobotDemo
         bool entrancePause = false;
         bool closePause = false;
         bool toCloseAndStop = false;
-        string secCode = "SiM0";
+        string secCode = "SiH1";
         string classCode = "";
         string clientCode = "";
         string directionPosition = "-";
@@ -73,7 +73,7 @@ namespace RobotDemo
             }
         }
 
-        private void buttonConnect_Click(object sender, EventArgs e)
+        private void ButtonConnect_Click(object sender, EventArgs e)
         {
             try
             {
@@ -110,7 +110,7 @@ namespace RobotDemo
 
             }
         }
-        private void buttonStartStop_Click(object sender, EventArgs e)
+        private void ButtonStartStop_Click(object sender, EventArgs e)
         {
             if (started)
             {
@@ -166,7 +166,7 @@ namespace RobotDemo
                 }
             }
         }
-        private void buttonPositionReset_Click(object sender, EventArgs e)
+        private void ButtonPositionReset_Click(object sender, EventArgs e)
         {
             if (position.toolQty != 0)
             {
@@ -175,7 +175,7 @@ namespace RobotDemo
                 toCloseAndStop = true;
             }
         }
-        private void timerRun_Tick(object sender, EventArgs e)
+        private void TimerRun_Tick(object sender, EventArgs e)
         {
             textBoxLastPrice.Text = Math.Round(tool.LastPrice, tool.PriceAccuracy).ToString();
             Run();
@@ -224,7 +224,7 @@ namespace RobotDemo
                     else
                     {
                         Check_statusQuotation();
-                        if (!statusQuotation) GetQuotation(tool, settings.TF).Wait();
+                        if (!statusQuotation) GetQuotation(tool, settings.TF);
                     }
                 }
                 catch (Exception er)
@@ -239,14 +239,14 @@ namespace RobotDemo
         {
             if (toolCandles != null)
             {
-                if (toolCandles.Tables[tool.ClassCode + "|" + tool.SecurityCode + "|" + settings.TF] != null && toolCandles.Tables[tool.ClassCode + "|" + tool.SecurityCode + "|" + settings.TF] != null)
+                if (toolCandles.Tables[tool.ClassCode + "|" + tool.SecurityCode + "|" + settings.TF] != null)
                 {
                     statusQuotation = true;
                     _quik.Candles.NewCandle += OnNewCandle;
                 }
             }
         }
-        async Task GetQuotation(Tool instrument, CandleInterval tf)
+        void GetQuotation(Tool instrument, CandleInterval tf)
         {
             List<Candle> AllCandles;
             string InstrID;
@@ -263,7 +263,7 @@ namespace RobotDemo
                 }
                 textBoxLogs.AppendText("Подписка включена" + "..." + Environment.NewLine);
                 textBoxLogs.AppendText("Получаем таблицу свечей" + "..." + Environment.NewLine);
-                AllCandles = await _quik.Candles.GetAllCandles(instrument.ClassCode, instrument.SecurityCode, tf).ConfigureAwait(false);
+                AllCandles = _quik.Candles.GetAllCandles(instrument.ClassCode, instrument.SecurityCode, tf).Result;
                 InstrID = instrument.ClassCode + "|" + instrument.SecurityCode + "|" + tf;
                 if (toolCandles.Tables[InstrID] == null && AllCandles.Count > 1)
                 {

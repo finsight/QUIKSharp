@@ -111,7 +111,7 @@
             this.buttonConnect.TabIndex = 0;
             this.buttonConnect.Text = "Connect";
             this.buttonConnect.UseVisualStyleBackColor = true;
-            this.buttonConnect.Click += new System.EventHandler(this.buttonConnect_Click);
+            this.buttonConnect.Click += new System.EventHandler(this.ButtonConnect_Click);
             // 
             // groupBoxRobotSettings
             // 
@@ -262,7 +262,7 @@
             this.buttonStartStop.TabIndex = 0;
             this.buttonStartStop.Text = "СТАРТ";
             this.buttonStartStop.UseVisualStyleBackColor = true;
-            this.buttonStartStop.Click += new System.EventHandler(this.buttonStartStop_Click);
+            this.buttonStartStop.Click += new System.EventHandler(this.ButtonStartStop_Click);
             // 
             // groupBoxToolParam
             // 
@@ -456,7 +456,7 @@
             this.buttonPositionReset.TabIndex = 0;
             this.buttonPositionReset.Text = "Закрыть позицию";
             this.buttonPositionReset.UseVisualStyleBackColor = true;
-            this.buttonPositionReset.Click += new System.EventHandler(this.buttonPositionReset_Click);
+            this.buttonPositionReset.Click += new System.EventHandler(this.ButtonPositionReset_Click);
             // 
             // textBoxPositionQty
             // 
@@ -724,7 +724,7 @@
             // timerRun
             // 
             this.timerRun.Interval = 250;
-            this.timerRun.Tick += new System.EventHandler(this.timerRun_Tick);
+            this.timerRun.Tick += new System.EventHandler(this.TimerRun_Tick);
             // 
             // RobotDemo
             // 
