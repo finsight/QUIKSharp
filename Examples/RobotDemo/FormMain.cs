@@ -552,8 +552,11 @@ namespace RobotDemo
             else directionPosition = "SHORT";
             if (settings.RobotMode == "Боевой")
             {
-                position.entranceOrderID = NewOrder(_quik, tool, operation, price, qty);
-                textBoxLogs.AppendText("ID заявки - " + position.entranceOrderID + Environment.NewLine);
+                //position.entranceOrderID = NewOrder(_quik, tool, operation, price, qty);
+                //position.entranceOrderID = order.TransID;
+                //textBoxLogs.AppendText("ID заявки - " + position.entranceOrderID + Environment.NewLine);
+                position.entranceOrderNumber = _quik.Orders.SendLimitOrder(tool.ClassCode, tool.SecurityCode, tool.AccountID, operation, price, qty).Result.OrderNum;
+                textBoxLogs.AppendText("Номер заявки - " + position.entranceOrderNumber + Environment.NewLine);
             }
             else
             {
@@ -572,9 +575,11 @@ namespace RobotDemo
         {
             if (settings.RobotMode == "Боевой")
             {
-                if (position.toolQty > 0) position.closingOrderID = NewOrder(_quik, tool, Operation.Sell, price, Math.Abs(position.toolQty / tool.Lot));
-                else if (position.toolQty < 0) position.closingOrderID = NewOrder(_quik, tool, Operation.Buy, price, Math.Abs(position.toolQty / tool.Lot));
-                textBoxLogs.AppendText("ID заявки - " + position.closingOrderID + Environment.NewLine);
+                //if (position.toolQty > 0) position.closingOrderID = NewOrder(_quik, tool, Operation.Sell, price, Math.Abs(position.toolQty / tool.Lot));
+                //else if (position.toolQty < 0) position.closingOrderID = NewOrder(_quik, tool, Operation.Buy, price, Math.Abs(position.toolQty / tool.Lot));
+                //textBoxLogs.AppendText("ID заявки - " + position.closingOrderID + Environment.NewLine);
+                if (position.toolQty != 0) position.closingOrderNumber = _quik.Orders.SendLimitOrder(tool.ClassCode, tool.SecurityCode, tool.AccountID, position.toolQty > 0 ? Operation.Sell : Operation.Buy, price, Math.Abs(position.toolQty / tool.Lot)).Result.OrderNum;
+                textBoxLogs.AppendText("Номер заявки - " + position.closingOrderNumber + Environment.NewLine);
             }
             else
             {
@@ -603,30 +608,30 @@ namespace RobotDemo
         {
             if (position.entranceOrderID > 0 || position.entranceOrderNumber > 0)
             {
-                if (position.entranceOrderID > 0)
-                {
-                    //textBoxLogs.AppendText("Получаем номер заявки по ID заявки..." + Environment.NewLine);
-                    try
-                    {
-                        position.entranceOrderNumber = _quik.Orders.GetOrder_by_transID(tool.ClassCode, tool.SecurityCode, position.entranceOrderID).Result.OrderNum;
-                        //textBoxLogs.AppendText("entranceOrderNumber - " + position.entranceOrderNumber + Environment.NewLine);
-                    }
-                    catch
-                    {
-                        //textBoxLogs.AppendText("Неудачная попытка получения номера заявки по ID заявки..." + Environment.NewLine);
-                    }
-                    if (position.entranceOrderNumber > 0)
-                    {
-                        if (position.entranceOrderID > 0) position.entranceOrderID = 0;
-                    }
-                }
+                //if (position.entranceOrderID > 0)
+                //{
+                //    //textBoxLogs.AppendText("Получаем номер заявки по ID заявки..." + Environment.NewLine);
+                //    try
+                //    {
+                //        position.entranceOrderNumber = _quik.Orders.GetOrder_by_transID(tool.ClassCode, tool.SecurityCode, position.entranceOrderID).Result.OrderNum;
+                //        //textBoxLogs.AppendText("entranceOrderNumber - " + position.entranceOrderNumber + Environment.NewLine);
+                //    }
+                //    catch
+                //    {
+                //        //textBoxLogs.AppendText("Неудачная попытка получения номера заявки по ID заявки..." + Environment.NewLine);
+                //    }
+                //    if (position.entranceOrderNumber > 0)
+                //    {
+                //        if (position.entranceOrderID > 0) position.entranceOrderID = 0;
+                //    }
+                //}
                 if (position.entranceOrderNumber > 0)
                 {
-                    //textBoxLogs.AppendText("Получаем заявку № " + position.entranceOrderNumber + " из журнала..." + Environment.NewLine);
+                    textBoxLogs.AppendText("Получаем заявку № " + position.entranceOrderNumber + " из журнала..." + Environment.NewLine);
                     try
                     {
                         Order order = _quik.Orders.GetOrder_by_Number(position.entranceOrderNumber).Result;
-                        //textBoxLogs.AppendText("order.Balance - " + order.Balance + Environment.NewLine);
+                        textBoxLogs.AppendText("order.Balance - " + order.Balance + Environment.NewLine);
                         textBoxOrderDirection.Text = order.Operation.ToString();
                         textBoxOrderBalance.Text = order.Balance.ToString();
                         textBoxOrderNumber.Text = order.OrderNum.ToString();
@@ -703,21 +708,21 @@ namespace RobotDemo
         {
             if (position.closingOrderID > 0 || position.closingOrderNumber > 0)
             {
-                if (position.closingOrderID > 0)
-                {
-                    try
-                    {
-                        position.closingOrderNumber = _quik.Orders.GetOrder_by_transID(tool.ClassCode, tool.SecurityCode, position.closingOrderID).Result.OrderNum;
-                    }
-                    catch
-                    {
+                //if (position.closingOrderID > 0)
+                //{
+                //    try
+                //    {
+                //        position.closingOrderNumber = _quik.Orders.GetOrder_by_transID(tool.ClassCode, tool.SecurityCode, position.closingOrderID).Result.OrderNum;
+                //    }
+                //    catch
+                //    {
 
-                    }
-                    if (position.closingOrderNumber > 0)
-                    {
-                        if (position.closingOrderID > 0) position.closingOrderID = 0;
-                    }
-                }
+                //    }
+                //    if (position.closingOrderNumber > 0)
+                //    {
+                //        if (position.closingOrderID > 0) position.closingOrderID = 0;
+                //    }
+                //}
                 if (position.closingOrderNumber > 0)
                 {
                     try
