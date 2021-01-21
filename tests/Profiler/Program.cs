@@ -8,7 +8,7 @@ namespace Profiler {
     public class Program {
 
         public static void Ping() {
-            var _df = new DebugFunctions(Quik.DefaultPort);
+            var _df = new DebugFunctions(Quik.DefaultPort, Quik.DefaultHost);
 
             var sw = new Stopwatch();
             Console.WriteLine("Started");
@@ -40,7 +40,7 @@ namespace Profiler {
 
 
         public static void EchoTransaction() {
-            var _df = new DebugFunctions(Quik.DefaultPort);
+            var _df = new DebugFunctions(Quik.DefaultPort, Quik.DefaultHost);
 
             var sw = new Stopwatch();
             Console.WriteLine("Started");
