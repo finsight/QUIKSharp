@@ -60,6 +60,14 @@ namespace QuikSharp.Tests {
         }
 
         [Test]
+        public void addLabel2() {
+            var pixPath = "C:\\ClassesC\\Labels\\buy.bmp";
+            var res = _q.Service.AddLabel("MX1", 352000, "20210115", "125000", "1", pixPath);
+            Console.WriteLine("AddLabel: "
+                    + String.Join(",", Convert.ToString(res.Result)));
+        }
+
+        [Test]
         public void delLabel()
         {
             double tagId = 13;
