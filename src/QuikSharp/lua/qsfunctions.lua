@@ -156,6 +156,102 @@ function qsfunctions.addLabel(msg)
 	return msg
 end
 
+-- Выводит на график метку
+-- Функция возвращает числовой идентификатор метки. В случае неуспешного завершения функция возвращает «nil».
+function qsfunctions.addLabel2(msg)
+	local spl = split2(msg.data, "|");
+	local chartTag, yValue, strDate, strTime, text, imagePath, alignment, hint, r, g, b, transparency, tranBackgrnd, fontName, fontHeight =
+		spl[1], spl[2], spl[3], spl[4], spl[5], spl[6], spl[7], spl[8], spl[9], spl[10], spl[11], spl[12], spl[13], spl[14], spl[15];
+
+	-- значения по умолчанию
+	if text == "" then text = nil else r = 255 end
+	if imagePath == "" then imagePath = nil end
+	if alignment == "" then alignment = nil end
+	if hint == "" then hint = nil end
+	if r == "-1" then r = nil end
+	if g == "-1" then g = nil end
+	if b == "-1" then b = nil end
+	if transparency == "-1" then transparency = nil end
+	if tranBackgrnd == "-1" then tranBackgrnd = nil end
+	if fontName == "" then fontName = nil end
+	if fontHeight == "-1" then fontHeight = nil end
+
+	local labelParams = {
+		YVALUE = yValue:gsub(",", "."),
+		DATE = strDate,
+		TIME = strTime,
+		TEXT = text,
+		IMAGE_PATH = imagePath,
+		ALIGNMENT = alignment,
+		HINT = hint,
+		R = r,
+		G = g,
+		B = b,
+		TRANSPARENCY = transparency,
+		TRANSPARENT_BACKGROUND = tranBackgrnd,
+		FONT_FACE_NAME = fontName,
+		FONT_HEIGHT = fontHeight,
+	}
+
+	local res = AddLabel(chartTag, labelParams);
+
+	msg.data = res;
+	return msg;
+end
+
+-- Функция задает параметры для метки с указанным идентификатором.
+-- В случае успешного завершения функция возвращает «true», иначе – «false».
+function qsfunctions.setLabelParams(msg)
+	local spl = split2(msg.data, "|");
+	local chartTag, labelId, yValue, strDate, strTime, text, imagePath, alignment, hint, r, g, b, transparency, tranBackgrnd, fontName, fontHeight =
+		spl[1], spl[2], spl[3], spl[4], spl[5], spl[6], spl[7], spl[8], spl[9], spl[10], spl[11], spl[12], spl[13], spl[14], spl[15], spl[16];
+
+	-- значения по умолчанию
+	if text == "" then text = nil  else r = 255 end
+	if imagePath == "" then imagePath = nil end
+	if alignment == "" then alignment = nil end
+	if hint == "" then hint = nil end
+	if r == "-1" then r = nil end
+	if g == "-1" then g = nil end
+	if b == "-1" then b = nil end
+	if transparency == "-1" then transparency = nil end
+	if tranBackgrnd == "-1" then tranBackgrnd = nil end
+	if fontName == "" then fontName = nil end
+	if fontHeight == "-1" then fontHeight = nil end
+
+	local labelParams = {
+		YVALUE = yValue,
+		DATE = strDate,
+		TIME = strTime,
+		TEXT = text,
+		IMAGE_PATH = imagePath,
+		ALIGNMENT = alignment,
+		HINT = hint,
+		R = r,
+		G = g,
+		B = b,
+		TRANSPARENCY = transparency,
+		TRANSPARENT_BACKGROUND = tranBackgrnd,
+		FONT_FACE_NAME = fontName,
+		FONT_HEIGHT = fontHeight,
+	}
+
+	local res = SetLabelParams(chartTag, tonumber(labelId), labelParams);
+	msg.data = tostring(res);
+	return msg;
+end
+
+-- позволяет получить параметры метки
+-- Функция возвращает таблицу с параметрами метки. В случае неуспешного завершения функция возвращает «nil».
+function qsfunctions.getLabelParams(msg)
+	local spl = split2(msg.data, "|");
+	local chartTag, labelId = spl[1], spl[2];
+
+	local res = GetLabelParams(chartTag, tonumber(labelId));
+	msg.data = res;
+	return msg;
+end
+
 -- Удаляем выбранную метку
 function qsfunctions.delLabel(msg)
 	local spl = split(msg.data, "|")
@@ -207,7 +303,7 @@ function qsfunctions.getSecurityInfo(msg)
     return msg
 end
 
---- Функция берет на вход список из элементов в формате class_code|sec_code и возвращает список ответов функции getSecurityInfo. 
+--- Функция берет на вход список из элементов в формате class_code|sec_code и возвращает список ответов функции getSecurityInfo.
 -- Если какая-то из бумаг не будет найдена, вместо ее значения придет null
 function qsfunctions.getSecurityInfoBulk(msg)
 	local result = {}
@@ -370,7 +466,7 @@ function qsfunctions.paramRequest(msg)
     return msg
 end
 
---- Функция принимает список строк (JSON Array) в формате class_code|sec_code|param_name, вызывает функцию paramRequest для каждой строки. 
+--- Функция принимает список строк (JSON Array) в формате class_code|sec_code|param_name, вызывает функцию paramRequest для каждой строки.
 -- Возвращает список ответов в том же порядке
 function qsfunctions.paramRequestBulk(msg)
 	local result = {}

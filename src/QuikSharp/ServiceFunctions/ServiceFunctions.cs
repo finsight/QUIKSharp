@@ -4,6 +4,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using QuikSharp.DataStructures;
 
 namespace QuikSharp
 {
@@ -60,6 +61,64 @@ namespace QuikSharp
         /// <param name="backgnd"> On = 1, Off = 0</param>
         /// <returns>Возвращает Id метки</returns>
         Task<double> AddLabel(double price, string curDate, string curTime, string hint, string path, string tag, string alignment, double backgnd);
+
+        /// <summary>
+        /// Добавляет метку с заданными параметрами. Хотя бы один из параметров text или imagePath должен быть задан.
+        /// </summary>
+        /// <param name="chartTag">тег графика, к которому привязывается метка</param>
+        /// <param name="text">Подпись метки (если подпись не требуется, то пустая строка)</param>
+        /// <param name="imagePath">Путь к картинке, которая будет отображаться в качестве метки (пустая строка, если картинка не требуется).
+        /// Используются картинки формата *.bmp, *.jpeg</param>
+        /// <param name="alignment">Расположение картинки относительно точки. Текст распологается аналогично относительно картинки.
+        /// (возможно 4 варианта: LEFT, RIGHT, TOP, BOTTOM)   -- по умолчанию LEFT</param>
+        /// <param name="yValue">Значение параметра на оси Y, к которому будет привязана метка</param>
+        /// <param name="strDate">Дата в формате «ГГГГММДД», к которой привязана метка</param>
+        /// <param name="strTime">Время в формате «ЧЧММСС», к которому будет привязана метка</param>
+        /// <param name="r">Красная компонента цвета в формате RGB. Число в интервале [0;255]  -- по умолчанию 0</param>
+        /// <param name="g">Зеленая компонента цвета в формате RGB. Число в интервале [0;255]  -- по умолчанию 0</param>
+        /// <param name="b">Синяя компонента цвета в формате RGB. Число в интервале [0;255]    -- по умолчанию 0</param>
+        /// <param name="transparency">Прозрачность метки (картинки) в процентах. Значение должно быть в промежутке [0; 100]  -- по умолчанию = 0</param>
+        /// <param name="tranBackgrnd">Прозрачность фона картинки. Возможные значения: «0» – прозрачность отключена, «1» – прозрачность включена.
+        /// По умолчанию = 0. если == 1, то картинка не рисуется, и у текста исчезает фон. если ==0 то картинка рисуется и у текста есть черный фон.
+        /// Если картинка отсутствует и нужен только текст, то делать = 1</param>
+        /// <param name="fontName">Название шрифта (например «Arial»)  -- по умолчанию = "Arial"</param>
+        /// <param name="fontHeight">Размер шрифта -- -- по умолчанию = 12. </param>
+        /// <param name="hint">Текст всплывающей подсказки  </param>
+        /// <returns>Возвращает Id метки</returns>
+        Task<double> AddLabel(string chartTag, decimal yValue, string strDate, string strTime, string text = "", string imagePath = "", string alignment = "", string hint = "",
+            int r = -1, int g = -1, int b = -1, int transparency = -1, int tranBackgrnd = -1, string fontName = "", int fontHeight = -1);
+
+        /// <summary>
+        /// Функция задает параметры для метки с указанным идентификатором. 
+        /// </summary>
+        /// <param name="chartTag"></param>
+        /// <param name="labelId"></param>
+        /// <param name="yValue"></param>
+        /// <param name="strDate"></param>
+        /// <param name="strTime"></param>
+        /// <param name="text"></param>
+        /// <param name="imagePath"></param>
+        /// <param name="alignment"></param>
+        /// <param name="hint"></param>
+        /// <param name="r"></param>
+        /// <param name="g"></param>
+        /// <param name="b"></param>
+        /// <param name="transparency"></param>
+        /// <param name="tranBackgrnd"></param>
+        /// <param name="fontName"></param>
+        /// <param name="fontHeight"></param>
+        /// <returns></returns>
+        Task<bool> SetLabelParams(string chartTag, int labelId, decimal yValue, string strDate, string strTime, string text = "", string imagePath = "", string alignment = "", string hint = "",
+            int r = -1, int g = -1, int b = -1, int transparency = -1, int tranBackgrnd = -1, string fontName = "", int fontHeight = -1);
+
+        /// <summary>
+        /// Функция возвращает таблицу с параметрами метки. В случае неуспешного завершения функция возвращает «nil».
+        /// </summary>
+        /// <param name="chartTag">тег графика, к которому привязывается метка</param>
+        /// <param name="labelId">идентификатор метки.</param>
+        /// <returns></returns>
+        Task<Label> GetLabelParams(string chartTag, int labelId);
+
 
         /// <summary>
         /// Удаляет метку по ее Id
@@ -163,6 +222,33 @@ namespace QuikSharp
                 .ConfigureAwait(false);
             return response.Data;
         }
+
+        public async Task<double> AddLabel(string chartTag, decimal yValue, string strDate, string strTime, string text, string imagePath,
+    string alignment, string hint, int r, int g, int b, int transparency, int tranBackgrnd, string fontName, int fontHeight)
+        {
+
+            var msg = new Message<string>(chartTag + "|" + yValue + "|" + strDate + "|" + strTime + "|" + text + "|" + imagePath + "|" + alignment + "|" + hint + "|" +
+                                          r + "|" + g + "|" + b + "|" + transparency + "|" + tranBackgrnd + "|" + fontName + "|" + fontHeight, "addLabel2");
+            var response = await QuikService.Send<Message<double>>(msg).ConfigureAwait(false);
+            return response.Data;
+        }
+
+        public async Task<bool> SetLabelParams(string chartTag, int labelId, decimal yValue, string strDate, string strTime, string text, string imagePath,
+            string alignment, string hint, int r, int g, int b, int transparency, int tranBackgrnd, string fontName, int fontHeight)
+        {
+            var msg = new Message<string>(chartTag + "|" + labelId + "|" + yValue + "|" + strDate + "|" + strTime + "|" + text + "|" + imagePath + "|" + alignment + "|" + hint + "|" +
+                                          r + "|" + g + "|" + b + "|" + transparency + "|" + tranBackgrnd + "|" + fontName + "|" + fontHeight, "setLabelParams");
+            var response = await QuikService.Send<Message<bool>>(msg).ConfigureAwait(false);
+            return response.Data;
+        }
+
+        public async Task<Label> GetLabelParams(string chartTag, int labelId)
+        {
+            var msg = new Message<string>(chartTag + "|" + labelId, "getLabelParams");
+            var response = await QuikService.Send<Message<Label>>(msg).ConfigureAwait(false);
+            return response.Data;
+        }
+
 
         public async Task<bool> DelLabel(string tag, double id)
         {
