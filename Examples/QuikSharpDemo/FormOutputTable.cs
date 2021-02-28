@@ -22,67 +22,61 @@ namespace QuikSharpDemo
         {
             InitializeComponent();
         }
-
         public FormOutputTable(List<Candle> _candles)
         {
             InitializeComponent();
             dataGridViewCandles.DataSource = _candles;
         }
-
         public FormOutputTable(List<SecurityInfo> _secInfo)
         {
             InitializeComponent();
             dataGridViewCandles.DataSource = _secInfo;
         }
-
         public FormOutputTable(List<FuturesLimits> _futuresLimits)
         {
             InitializeComponent();
             dataGridViewCandles.DataSource = _futuresLimits;
         }
-
         public FormOutputTable(List<DepoLimit> _depoLimits)
         {
             InitializeComponent();
             dataGridViewCandles.DataSource = _depoLimits;
         }
-
         public FormOutputTable(List<DepoLimitEx> _limits)
         {
             InitializeComponent();
             dataGridViewCandles.DataSource = _limits;
         }
-
         public FormOutputTable(List<Order> _orders)
         {
             InitializeComponent();
             dataGridViewCandles.DataSource = _orders;
         }
-
         public FormOutputTable(List<Trade> _trades)
         {
             InitializeComponent();
             dataGridViewCandles.DataSource = _trades;
         }
-
+        public FormOutputTable(List<AllTrade> _trades)
+        {
+            InitializeComponent();
+            dataGridViewCandles.DataSource = _trades;
+        }
         public FormOutputTable(List<PortfolioInfo> _portfolio)
         {
             InitializeComponent();
             dataGridViewCandles.DataSource = _portfolio;
         }
-
         public FormOutputTable(List<PortfolioInfoEx> _portfolio)
         {
             InitializeComponent();
             dataGridViewCandles.DataSource = _portfolio;
         }
-
         public FormOutputTable(List<MoneyLimit> _moneyLimit)
         {
             InitializeComponent();
             dataGridViewCandles.DataSource = _moneyLimit;
         }
-
         public FormOutputTable(List<MoneyLimitEx> _moneyLimit)
         {
             InitializeComponent();

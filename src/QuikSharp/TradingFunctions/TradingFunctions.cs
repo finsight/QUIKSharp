@@ -231,7 +231,7 @@ namespace QuikSharp
         /// <summary>
         /// функция для получения таблицы обезличенных сделок
         /// </summary>
-        Task<List<Trade>> GetAllTrades();
+        Task<List<AllTrade>> GetAllTrades();
 
         /// <summary>
         /// функция для получения таблицы обезличенных сделок по заданному инструменту
@@ -239,7 +239,7 @@ namespace QuikSharp
         /// <param name="classCode"></param>
         /// <param name="secCode"></param>
         /// <returns></returns>
-        Task<List<Trade>> GetAllTrades(string classCode, string secCode);
+        Task<List<AllTrade>> GetAllTrades(string classCode, string secCode);
     }
 
     /// <summary>
@@ -539,16 +539,16 @@ namespace QuikSharp
             return response.Data;
         }
 
-        public async Task<List<Trade>> GetAllTrades()
+        public async Task<List<AllTrade>> GetAllTrades()
         {
-            var response = await QuikService.Send<Message<List<Trade>>>(
+            var response = await QuikService.Send<Message<List<AllTrade>>>(
                 (new Message<string>("", "get_all_trades"))).ConfigureAwait(false);
             return response.Data;
         }
 
-        public async Task<List<Trade>> GetAllTrades(string classCode, string secCode)
+        public async Task<List<AllTrade>> GetAllTrades(string classCode, string secCode)
         {
-            var response = await QuikService.Send<Message<List<Trade>>>(
+            var response = await QuikService.Send<Message<List<AllTrade>>>(
                 (new Message<string>(classCode + "|" + secCode, "get_all_trades"))).ConfigureAwait(false);
             return response.Data;
         }

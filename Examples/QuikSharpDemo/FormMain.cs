@@ -33,6 +33,7 @@ namespace QuikSharpDemo
         List<Candle> toolCandles;
         List<Order> listOrders;
         List<Trade> listTrades;
+        List<AllTrade> listAllTrades;
         List<SecurityInfo> listSecurityInfo;
         List<DepoLimitEx> listDepoLimits;
         List<FuturesLimits> listFuturesLimits;
@@ -560,12 +561,12 @@ namespace QuikSharpDemo
                     try
                     {
                         AppendText2TextBox(textBoxLogsWindow, "Получаем таблицу обезличенных сделок..." + Environment.NewLine);
-                        listTrades = _quik.Trading.GetAllTrades(tool.ClassCode, tool.SecurityCode).Result;
+                        listAllTrades = _quik.Trading.GetAllTrades(tool.ClassCode, tool.SecurityCode).Result;
 
-                        if (listTrades.Count > 0)
+                        if (listAllTrades.Count > 0)
                         {
                             AppendText2TextBox(textBoxLogsWindow, "Выводим данные о сделках в таблицу..." + Environment.NewLine);
-                            toolCandlesTable = new FormOutputTable(listTrades);
+                            toolCandlesTable = new FormOutputTable(listAllTrades);
                             toolCandlesTable.Show();
                         }
                     }
@@ -794,7 +795,7 @@ namespace QuikSharpDemo
             }
             return qty;
         }
-        private void CheckBoxRemoteHost_CheckedChanged(object sender, EventArgs e) { textBoxHost.Enabled = checkBoxRemoteHost.Checked ? true : false; }
+        private void CheckBoxRemoteHost_CheckedChanged(object sender, EventArgs e) { textBoxHost.Enabled = checkBoxRemoteHost.Checked; }
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
