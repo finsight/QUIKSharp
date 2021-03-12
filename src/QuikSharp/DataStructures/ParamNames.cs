@@ -481,6 +481,431 @@ namespace QuikSharp.DataStructures
         /// <summary>
         /// Дата ближайшей выплаты купона
         /// </summary>
-        NEXTCOUPON
+        NEXTCOUPON,
+
+        /// <summary>
+        /// Точные кол-ва
+        /// </summary>
+        QTY_SCALE,
+
+        /// <summary>
+        /// Агент по размещению
+        /// </summary>
+        AGENT_ID,
+
+        /// <summary>
+        /// Макс.акт.точ.кол
+        /// </summary>
+        MAX_ACT_QTYSCALE,
+
+        /// <summary>
+        /// Cтоимость шага в валюте
+        /// </summary>
+        STEP_IN_CURRENCY,
+
+        /// <summary>
+        /// % изменения к открытию
+        /// </summary>
+        OPENPCTCHANGE,
+
+        /// <summary>
+        /// Огран.отриц.цен
+        /// </summary>
+        NEGATIVEPRC,
+
+        /// <summary>
+        /// Открытие
+        /// </summary>
+        OPEN,
+
+        /// <summary>
+        /// Лучший спрос
+        /// </summary>
+        HIGHBID,
+
+        /// <summary>
+        /// Лучшее предложение
+        /// </summary>
+        LOWOFFER,
+
+        /// <summary>
+        /// Закрытие
+        /// </summary>
+        CLOSEPRICE,
+
+        /// <summary>
+        /// Вчерашняя рыночная цена
+        /// </summary>
+        MARKETPRICE,
+
+        /// <summary>
+        /// Рыночная цена
+        /// </summary>
+        MARKETPRICETODAY,
+
+        /// <summary>
+        /// Объем обр.
+        /// </summary>
+        ISSUESIZE,
+
+        /// <summary>
+        /// Официальная текущая цена
+        /// </summary>
+        LCURRENTPRICE,
+
+        /// <summary>
+        /// Официальная цена закрытия
+        /// </summary>
+        LCLOSEPRICE,
+
+        /// <summary>
+        /// Тип цены
+        /// </summary>
+        QUOTEBASIS,
+
+        /// <summary>
+        /// Призн.котир.
+        /// </summary>
+        ADMITTEDQUOTE,
+
+        /// <summary>
+        /// Призн.кот.пред.
+        /// </summary>
+        PREVADMITTEDQUOT,
+
+        /// <summary>
+        /// Спрос сессии
+        /// </summary>
+        LASTBID,
+
+        /// <summary>
+        /// Предложение сессии
+        /// </summary>
+        LASTOFFER,
+
+        /// <summary>
+        /// Рыночная цена2
+        /// </summary>
+        MARKETPRICE2,
+
+        /// <summary>
+        /// Предыдущая цена закрытия
+        /// </summary>
+        PREVLEGALCLOSEPR,
+
+        /// <summary>
+        /// Цена предторг.
+        /// </summary>
+        OPENPERIODPRICE,
+
+        /// <summary>
+        /// Мининимальная тек цена
+        /// </summary>
+        MIN_CURR_LAST,
+
+        /// <summary>
+        /// Код расчетов
+        /// </summary>
+        SETTLECODE,
+
+        /// <summary>
+        /// Вр. изм.м.т.ц.
+        /// </summary>
+        MIN_CURR_LAST_TI,
+
+        /// <summary>
+        /// Объем в обращении
+        /// </summary>
+        ISSUESIZEPLACED,
+
+        /// <summary>
+        /// Дата расчетов
+        /// </summary>
+        SETTLEDATE,
+
+        /// <summary>
+        /// Сопр.валюта
+        /// </summary>
+        CURRENCYID,
+
+        /// <summary>
+        /// Листинг
+        /// </summary>
+        LISTLEVEL,
+
+        /// <summary>
+        /// Размещение IPO
+        /// </summary>
+        PRIMARYDIST,
+
+        /// <summary>
+        /// Квалифицированный инвестор
+        /// </summary>
+        QUALIFIED,
+
+        /// <summary>
+        /// Дополнительная сессия
+        /// </summary>
+        EV_SESS_ALLOWED,
+
+        /// <summary>
+        /// П.И.Р.
+        /// </summary>
+        HIGH_RISK,
+
+        /// <summary>
+        /// Дата последних торгов
+        /// </summary>
+        PREVDATE,
+
+        /// <summary>
+        /// Цена контраг.
+        /// </summary>
+        COUNTERPRICE,
+
+        /// <summary>
+        /// Начало аукциона план
+        /// </summary>
+        PLANNEDTIME,
+
+        /// <summary>
+        /// Цена аукциона
+        /// </summary>
+        AUCTPRICE,
+
+        /// <summary>
+        /// Объем аукциона
+        /// </summary>
+        AUCTVALUE,
+
+        /// <summary>
+        /// Количество аукциона
+        /// </summary>
+        AUCTVOLUME,
+
+        /// <summary>
+        /// Количество сд.аукц.
+        /// </summary>
+        AUCTNUMTRADES,
+
+        /// <summary>
+        /// Дисбаланс ПА
+        /// </summary>
+        IMBALANCE,
+
+        /// <summary>
+        /// Рын.пок.
+        /// </summary>
+        MARKETVOLB,
+
+        /// <summary>
+        /// Рын.прод.
+        /// </summary>
+        MARKETVOLS,
+
+        /// <summary>
+        /// БГОП
+        /// </summary>
+        BGOP,
+
+        /// <summary>
+        /// БГОНП
+        /// </summary>
+        BGONP,
+
+        /// <summary>
+        /// Страйк
+        /// </summary>
+        STRIKE,
+
+        /// <summary>
+        /// Тип опциона
+        /// </summary>
+        OPTIONTYPE,
+
+        /// <summary>
+        /// Волатильность
+        /// </summary>
+        VOLATILITY,
+
+        /// <summary>
+        /// Теоретическая цена
+        /// </summary>
+        THEORPRICE,
+
+        /// <summary>
+        /// Марж.
+        /// </summary>
+        MARG,
+
+        /// <summary>
+        /// Разн. опц.
+        /// </summary>
+        OPTIONKIND,
+
+        /// <summary>
+        /// Суммарный объем премии
+        /// </summary>
+        TOTALPREMIUMVOL,
+
+        /// <summary>
+        /// Базовая валюта
+        /// </summary>
+        FIRST_CUR,
+
+        /// <summary>
+        /// Котир.валюта
+        /// </summary>
+        SECOND_CUR,
+
+        /// <summary>
+        /// Минимальное количество
+        /// </summary>
+        MINQTY,
+
+        /// <summary>
+        /// Максимальное количество
+        /// </summary>
+        MAXQTY,
+
+        /// <summary>
+        /// Минимальный шаг объема
+        /// </summary>
+        STEPQTY,
+
+        /// <summary>
+        /// Измемение к предыдущей оценке
+        /// </summary>
+        PRICEMINUSPREVWA,
+
+        /// <summary>
+        /// Базовый курс
+        /// </summary>
+        BASEPRICE,
+
+        /// <summary>
+        /// Дата расчетов 1
+        /// </summary>
+        SETTLEDATE1,
+
+        /// <summary>
+        /// Биржевая Сессия
+        /// </summary>
+        TRADINGPHASE,
+
+        /// <summary>
+        /// Заявок покупателей АКП
+        /// </summary>
+        DPVALINDICATORBU,
+
+        /// <summary>
+        /// Заявок продавцов АКП
+        /// </summary>
+        DPVALINDICATORSE,
+
+        /// <summary>
+        /// Курс
+        /// </summary>
+        CROSSRATE,
+
+        /// <summary>
+        /// Значение
+        /// </summary>
+        CURRENTVALUE,
+
+        /// <summary>
+        /// Значение закрытия
+        /// </summary>
+        LASTVALUE,
+
+        /// <summary>
+        /// Минимум
+        /// </summary>
+        MIN,
+
+        /// <summary>
+        /// Максимум
+        /// </summary>
+        MAX,
+
+        /// <summary>
+        /// Открытие
+        /// </summary>
+        OPENVALUE,
+
+        /// <summary>
+        /// % изменение
+        /// </summary>
+        PCHANGE,
+
+        /// <summary>
+        /// Открытие
+        /// </summary>
+        IOPEN,
+
+        /// <summary>
+        /// Мин.
+        /// </summary>
+        LOWVAL,
+
+        /// <summary>
+        /// Макс.
+        /// </summary>
+        HIGHVAL,
+
+        /// <summary>
+        /// Капитал. бумаг
+        /// </summary>
+        ICAPITAL,
+
+        /// <summary>
+        /// Объем инд.сдел.
+        /// </summary>
+        IVOLUME,
+
+        /// <summary>
+        /// НКД
+        /// </summary>
+        ACCRUEDINT,
+
+        /// <summary>
+        /// Доходность пред.оц.
+        /// </summary>
+        YIELDATPREVWAPRI,
+
+        /// <summary>
+        /// Доходность оц.
+        /// </summary>
+        YIELDATWAPRICE,
+
+        /// <summary>
+        /// Доходность закр.
+        /// </summary>
+        CLOSEYIELD,
+
+        /// <summary>
+        /// Оферта
+        /// </summary>
+        BUYBACKPRICE,
+
+        /// <summary>
+        /// Дата расч.доход
+        /// </summary>
+        BUYBACKDATE,
+
+        /// <summary>
+        /// Тип цены обл.
+        /// </summary>
+        OBLPERCENT,
+
+        /// <summary>
+        /// Суборд инстр-т
+        /// </summary>
+        SUBORDINATEDINST,
+
+        /// <summary>
+        /// Неточ. параметры
+        /// </summary>
+        BONDSREMARKS
     }
 }
