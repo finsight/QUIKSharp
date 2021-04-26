@@ -23,7 +23,7 @@ namespace QuikSharpDemo
         bool isServerConnected = false;
         bool isSubscribedToolOrderBook = false;
         bool isSubscribedToolCandles = false;
-        string secCode = "SiH1";
+        string secCode = "SiM1";
         string classCode = "";
         string clientCode;
         decimal bid;
@@ -37,6 +37,7 @@ namespace QuikSharpDemo
         List<SecurityInfo> listSecurityInfo;
         List<DepoLimitEx> listDepoLimits;
         List<FuturesLimits> listFuturesLimits;
+        List<FuturesClientHolding> listFuturesClientHoldings;
         List<PortfolioInfoEx> listPortfolio;
         List<MoneyLimit> listMoneyLimits;
         List<MoneyLimitEx> listMoneyLimitsEx;
@@ -71,6 +72,7 @@ namespace QuikSharpDemo
             listBoxCommands.Items.Add("Получить таблицу лимитов по бумаге");
             listBoxCommands.Items.Add("Получить таблицу лимитов по всем бумагам");
             listBoxCommands.Items.Add("Получить таблицу по фьючерсным лимитам");
+            listBoxCommands.Items.Add("Получить таблицу позиций по клиентским счетам (фьючерсы)");
             listBoxCommands.Items.Add("Получить таблицу заявок");
             listBoxCommands.Items.Add("Получить таблицу сделок");
             listBoxCommands.Items.Add("Получить таблицу обезличенных сделок");
@@ -310,6 +312,9 @@ namespace QuikSharpDemo
                 case "Получить таблицу по фьючерсным лимитам":
                     textBoxDescription.Text = "Получить и отобразить таблицу лимитов по фьючерсам. quik.Trading.GetFuturesLimit(firmId, accId, limitType, currCode)";
                     break;
+                case "Получить таблицу позиций по клиентским счетам (фьючерсы)":
+                    textBoxDescription.Text = "Получить и отобразить таблицу \"Позиции по клиенским счетам (фьючерсы)\". quik.Trading.GetFuturesClientHoldings()";
+                    break;
                 case "Получить таблицу заявок":
                     textBoxDescription.Text = "Получить и отобразить таблицу всех клиентских заявок. quik.Orders.GetOrders()";
                     break;
@@ -518,6 +523,25 @@ namespace QuikSharpDemo
                             listFuturesLimits = new List<FuturesLimits> { futLimit };
                             AppendText2TextBox(textBoxLogsWindow, "Выводим данные лимитов в таблицу..." + Environment.NewLine);
                             toolCandlesTable = new FormOutputTable(listFuturesLimits);
+                            toolCandlesTable.Show();
+                        }
+                        else
+                        {
+                            Console.WriteLine("futuresLimit = null");
+                        }
+                    }
+                    catch { AppendText2TextBox(textBoxLogsWindow, "Ошибка получения лимитов." + Environment.NewLine); }
+                    break;
+                case "Получить таблицу позиций по клиентским счетам (фьючерсы)":
+                    try
+                    {
+                        AppendText2TextBox(textBoxLogsWindow, "Получаем таблицу фьючерсных позиций..." + Environment.NewLine);
+                        listFuturesClientHoldings = _quik.Trading.GetFuturesClientHoldings().Result;
+
+                        if (listFuturesClientHoldings.Count > 0)
+                        {
+                            AppendText2TextBox(textBoxLogsWindow, "Выводим данные по фьючерсным позициям в таблицу..." + Environment.NewLine);
+                            toolCandlesTable = new FormOutputTable(listFuturesClientHoldings);
                             toolCandlesTable.Show();
                         }
                         else

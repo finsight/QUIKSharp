@@ -614,6 +614,17 @@ function qsfunctions.getFuturesHolding(msg)
     return msg
 end
 
+-- Функция для получения информации по всем фьючерсным позициям
+function qsfunctions.getFuturesClientHoldings(msg)
+    local holdings = {}
+    for i=0,getNumberOf("futures_client_holding")-1 do
+        local holding = getItem("futures_client_holding",i)
+	    table.insert(holdings, holding)
+    end
+     msg.data = holdings
+    return msg
+end
+
 -- Функция возвращает таблицу заявок (всю или по заданному инструменту)
 function qsfunctions.get_orders(msg)
 	if msg.data ~= "" then

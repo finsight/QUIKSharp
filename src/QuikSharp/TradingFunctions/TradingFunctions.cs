@@ -17,6 +17,7 @@ namespace QuikSharp
     /// getMoneyEx - функция для получения информации по денежным лимитам указанного типа
     /// getFuturesLimit - функция для получения информации по фьючерсным лимитам
     /// getFuturesHolding - функция для получения информации по фьючерсным позициям
+    /// getFuturesClientHoldings - функция для получения информации по всем фьючерсным позициям
     /// paramRequest - Функция заказывает получение параметров Таблицы текущих торгов
     /// cancelParamRequest - Функция отменяет заказ на получение параметров Таблицы текущих торгов
     /// getParamEx - функция для получения значений Таблицы текущих значений параметров
@@ -87,6 +88,11 @@ namespace QuikSharp
         ///  функция для получения информации по фьючерсным позициям
         /// </summary>
         Task<FuturesClientHolding> GetFuturesHolding(string firmId, string accId, string secCode, int posType);
+
+        /// <summary>
+        ///  функция для получения информации по всем фьючерсным позициям
+        /// </summary>
+        Task<List<FuturesClientHolding>> GetFuturesClientHoldings();
 
         /// <summary>
         /// Функция получения доски опционов
@@ -472,6 +478,17 @@ namespace QuikSharp
         {
             var response = await QuikService.Send<Message<FuturesClientHolding>>(
                 (new Message<string>(firmId + "|" + accId + "|" + secCode + "|" + posType, "getFuturesHolding"))).ConfigureAwait(false);
+            return response.Data;
+        }
+
+        /// <summary>
+        /// функция для получения информации по всем фьючерсным позициям
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<FuturesClientHolding>> GetFuturesClientHoldings()
+        {
+            var response = await QuikService.Send<Message<List<FuturesClientHolding>>>(
+                (new Message<string>("", "getFuturesClientHoldings"))).ConfigureAwait(false);
             return response.Data;
         }
 
