@@ -483,12 +483,13 @@ namespace QuikSharp
             OnTransReply?.Invoke(reply);
 
             // invoke event specific for the transaction
-            if (string.IsNullOrEmpty(reply.Comment)) //"Initialization user successful" transaction doesn't contain comment
-                return;
 
-            if (QuikService.Storage.Contains(reply.Comment))
+
+            var transId = reply.TransID.ToString();
+
+            if (QuikService.Storage.Contains(transId))
             {
-                var tr = QuikService.Storage.Get<Transaction>(reply.Comment);
+                var tr = QuikService.Storage.Get<Transaction>(transId);
                 lock (tr)
                 {
                     tr.OnTransReplyCall(reply);

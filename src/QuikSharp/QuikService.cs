@@ -791,7 +791,7 @@ namespace QuikSharp
             }
             else
             {
-                if (newId >= 2147483638) newId = 100;
+                if (newId >= 2147483637 || newId < 1) newId = 100;
                 newId++;
             }
 
