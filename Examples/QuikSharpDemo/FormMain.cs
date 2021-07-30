@@ -90,11 +90,11 @@ namespace QuikSharpDemo
             try
             {
                 textBoxLogsWindow.AppendText("Подключаемся к терминалу Quik..." + Environment.NewLine);
-                if (checkBoxRemoteHost.Checked) _quik = new Quik(Quik.DefaultPort, new InMemoryStorage(), textBoxHost.Text);    // инициализируем объект Quik с использованием удаленного IP-адреса терминала
-                else _quik = new Quik(Quik.DefaultPort, new InMemoryStorage());    // инициализируем объект Quik с использованием локального расположения терминала (по умолчанию)
-                //// Отладочный вариант подключения
-                //if (checkBoxRemoteHost.Checked) _quik = new Quik(34136, new InMemoryStorage(), textBoxHost.Text);    // инициализируем объект Quik с использованием удаленного IP-адреса терминала
-                //else _quik = new Quik(34136, new InMemoryStorage());    // инициализируем объект Quik с использованием локального расположения терминала (по умолчанию)
+                //if (checkBoxRemoteHost.Checked) _quik = new Quik(Quik.DefaultPort, new InMemoryStorage(), textBoxHost.Text);    // инициализируем объект Quik с использованием удаленного IP-адреса терминала
+                //else _quik = new Quik(Quik.DefaultPort, new InMemoryStorage());    // инициализируем объект Quik с использованием локального расположения терминала (по умолчанию)
+                // Отладочный вариант подключения
+                if (checkBoxRemoteHost.Checked) _quik = new Quik(34136, new InMemoryStorage(), textBoxHost.Text);    // инициализируем объект Quik с использованием удаленного IP-адреса терминала
+                else _quik = new Quik(34144, new InMemoryStorage());    // инициализируем объект Quik с использованием локального расположения терминала (по умолчанию)
             }
             catch
             {
@@ -142,7 +142,7 @@ namespace QuikSharpDemo
                 textBoxLogsWindow.AppendText("Определяем код класса инструмента " + secCode + ", по списку классов" + "..." + Environment.NewLine);
                 try
                 {
-                    classCode = _quik.Class.GetSecurityClass("SPBFUT,TQBR,TQBS,TQNL,TQLV,TQNE,TQOB,SPBXM", secCode).Result;
+                    classCode = textBoxClassCode.Text == "" ? _quik.Class.GetSecurityClass("SPBFUT,TQBR,TQBS,TQNL,TQLV,TQNE,TQOB,SPBXM", secCode).Result : textBoxClassCode.Text.ToUpper();
                 }
                 catch
                 {

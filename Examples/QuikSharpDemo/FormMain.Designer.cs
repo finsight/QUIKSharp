@@ -151,7 +151,6 @@
             // 
             // textBoxClassCode
             // 
-            this.textBoxClassCode.Enabled = false;
             this.textBoxClassCode.Location = new System.Drawing.Point(93, 98);
             this.textBoxClassCode.Name = "textBoxClassCode";
             this.textBoxClassCode.Size = new System.Drawing.Size(140, 20);
