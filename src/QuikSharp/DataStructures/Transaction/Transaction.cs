@@ -117,9 +117,9 @@ namespace QuikSharp.DataStructures.Transaction
         public string ErrorMessage { get; set; }
 
         ///////////////////////////////////////////////////////////////////////////////
-        ///
+        /// 
         ///  Transaction specification properties start here
-        ///
+        /// 
         ///////////////////////////////////////////////////////////////////////////////
 
         /// <summary>

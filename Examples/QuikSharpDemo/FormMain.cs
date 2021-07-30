@@ -23,7 +23,7 @@ namespace QuikSharpDemo
         bool isServerConnected = false;
         bool isSubscribedToolOrderBook = false;
         bool isSubscribedToolCandles = false;
-        string secCode = "SiM1";
+        string secCode = "SiU1";
         string classCode = "";
         string clientCode;
         decimal bid;
@@ -601,8 +601,16 @@ namespace QuikSharpDemo
                     {
                         AppendText2TextBox(textBoxLogsWindow, "Получаем таблицу `Клиентский портфель`..." + Environment.NewLine);
                         listPortfolio = new List<PortfolioInfoEx>();
-                        if (classCode == "SPBFUT") listPortfolio.Add(_quik.Trading.GetPortfolioInfoEx(tool.FirmID, tool.AccountID, 0).Result);
-                        else listPortfolio.Add(_quik.Trading.GetPortfolioInfoEx(tool.FirmID, clientCode, 2).Result);
+                        if (classCode == "SPBFUT")
+                        {
+                            listPortfolio.Add(_quik.Trading.GetPortfolioInfoEx(tool.FirmID, tool.AccountID, 0).Result);
+                        }
+                        else
+                        {
+                            listPortfolio.Add(_quik.Trading.GetPortfolioInfoEx(tool.FirmID, clientCode, 0).Result);
+                            listPortfolio.Add(_quik.Trading.GetPortfolioInfoEx(tool.FirmID, clientCode, 1).Result);
+                            listPortfolio.Add(_quik.Trading.GetPortfolioInfoEx(tool.FirmID, clientCode, 2).Result);
+                        }
 
                         if (listPortfolio.Count > 0)
                         {
