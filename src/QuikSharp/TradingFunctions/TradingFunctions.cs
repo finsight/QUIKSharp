@@ -24,7 +24,7 @@ namespace QuikSharp
     /// getParamEx2 - функция для получения всех значений Таблицы текущих значений параметров
     /// getTradeDate - функция для получения даты торговой сессии
     /// sendTransaction - функция для работы с заявками
-    /// CulcBuySell - функция для расчета максимально возможного количества лотов в заявке
+    /// CalcBuySell - функция для расчета максимально возможного количества лотов в заявке
     /// getPortfolioInfo - функция для получения значений параметров таблицы «Клиентский портфель»
     /// getPortfolioInfoEx - функция для получения значений параметров таблицы «Клиентский портфель» с учетом вида лимита
     /// getBuySellInfo - функция для получения параметров таблицы «Купить/Продать»
@@ -185,10 +185,11 @@ namespace QuikSharp
         /// </summary>
         Task<long> SendTransaction(Transaction transaction);
 
-        ///// <summary>
-        /////  функция для расчета максимально возможного количества лотов в заявке
-        ///// </summary>
-        //Task<string> CulcBuySell();
+        /// <summary>
+        ///  функция для расчета максимально возможного количества лотов в заявке
+        ///  При заданном параметре is_market=true, необходимо передать параметр price=0, иначе будет рассчитано максимально возможное количество лотов в заявке по цене price.
+        /// </summary>
+        Task<CalcBuySellResult> CalcBuySell(string classCode, string secCode, string clientCode, string trdAccId, double price, bool isBuy, bool isMarket);
         /// <summary>
         ///  функция для получения значений параметров таблицы «Клиентский портфель»
         /// </summary>
@@ -622,6 +623,14 @@ namespace QuikSharp
                 // the transaction was not sent
                 return (-transaction.TRANS_ID.Value);
             }
+        }
+
+        public async Task<CalcBuySellResult> CalcBuySell(string classCode, string secCode, string clientCode, string trdAccId, double price, bool isBuy, bool isMarket)
+        {
+            string quikPrice = price.ToString().Replace(',', '.');
+            var response = await QuikService.Send<Message<CalcBuySellResult>>(
+                (new Message<string>(classCode + "|" + secCode + "|" + clientCode + "|" + trdAccId + "|" + quikPrice + "|" + isBuy + "|" + isMarket, "calc_buy_sell"))).ConfigureAwait(false);
+            return response.Data;
         }
     }
 }

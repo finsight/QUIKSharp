@@ -83,6 +83,7 @@ namespace QuikSharpDemo
             listBoxCommands.Items.Add("CancelParamRequest");
             listBoxCommands.Items.Add("Отменить заказ на получение стакана");
             listBoxCommands.Items.Add("Выставить стоп-заявку типа тейк-профит и стоп-лимит");
+            listBoxCommands.Items.Add("Рассчитать максимальное количество лотов в заявке");
         }
 
         private void ButtonStart_Click(object sender, EventArgs e)
@@ -344,6 +345,9 @@ namespace QuikSharpDemo
                     break;
                 case "Выставить стоп-заявку типа тейк-профит и стоп-лимит":
                     textBoxDescription.Text = "Выставляем стоп-заявку типа тейк-профит и стоп-лимит. Закрываем short. Тейк-профит по цене минус 50 шагов цены от последней сделки. Стоп-лимит - плюс 40 шагов цены. Для тейпрофита для отступа используем тип шаг цены, для спреда - процент.";
+                    break;
+                case "Рассчитать максимальное количество лотов в заявке":
+                    textBoxDescription.Text = "Получить максимальное количество лото в заявке по текущему инструменту. (`покупка` по текущей цене, лимитированной заявкой)";
                     break;
 
             }
@@ -778,6 +782,20 @@ namespace QuikSharpDemo
                         else AppendText2TextBox(textBoxLogsWindow, "Неудачная попытка выставления стоп-заявки." + Environment.NewLine);
                     }
                     catch { AppendText2TextBox(textBoxLogsWindow, "Ошибка выставления стоп-заявки." + Environment.NewLine); }
+                    break;
+                case "Рассчитать максимальное количество лотов в заявке":
+                    try
+                    {
+                        AppendText2TextBox(textBoxLogsWindow, "Получаем максимальное количество лотов в заявке для текущей цены..." + Environment.NewLine);
+                        CalcBuySellResult res = await _quik.Trading.CalcBuySell(tool.ClassCode, tool.SecurityCode, clientCode, tool.AccountID, (double)tool.LastPrice, true, false).ConfigureAwait(false);
+                        if (res != null)
+                        {
+                            AppendText2TextBox(textBoxLogsWindow, "Количество лотов = " + res.Qty + ", Комиссия = " + res.Comission + Environment.NewLine);
+                            Thread.Sleep(500);
+                        }
+                        else AppendText2TextBox(textBoxLogsWindow, "Неудачная получения данных о максимальном количество лотов в заявке." + Environment.NewLine);
+                    }
+                    catch { AppendText2TextBox(textBoxLogsWindow, "Ошибка выполнения функции CalcBuySell." + Environment.NewLine); }
                     break;
             }
         }

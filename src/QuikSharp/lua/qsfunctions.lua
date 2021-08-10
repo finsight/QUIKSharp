@@ -441,6 +441,33 @@ end
 -- Trading functions --
 -----------------------
 
+--- Функция предназначена для расчета максимально возможного количества лотов в заявке.
+-- При заданном параметре is_market=true, необходимо передать параметр price=0, иначе будет рассчитано максимально возможное количество лотов в заявке по цене price.
+function qsfunctions.calc_buy_sell(msg)
+	local bs = CalcBuySell
+    local spl = split(msg.data, "|")
+    local class_code, sec_code, clientCode, account, price, is_buy, is_market = spl[1], spl[2], spl[3], spl[4], spl[5], spl[6], spl[7]
+	if is_buy == "True" then
+		is_buy = true
+	else
+		is_buy = false
+	end
+	if is_market == "True" then
+		is_market = true
+	else
+		is_market = false
+	end
+    local qty, comiss = bs(class_code, sec_code, clientCode, account, tonumber(price), is_buy, is_market)
+    if qty ~= "" then
+        msg.data				= {}
+        msg.data.qty			= qty
+        msg.data.comission		= comiss
+    else
+		message("Ошибка функции CalcBuySell", 1)
+    end
+    return msg
+end
+
 --- отправляет транзакцию на сервер и возвращает пустое сообщение, которое
 -- будет проигноировано. Вместо него, отправитель будет ждать события
 -- OnTransReply, из которого по TRANS_ID он получит результат отправленной транзакции
