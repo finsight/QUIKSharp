@@ -153,8 +153,15 @@ namespace QuikSharpDemo
                 {
                     textBoxClassCode.Text   = classCode;
                     textBoxLogsWindow.AppendText("Определяем код клиента..." + Environment.NewLine);
-                    clientCode              = _quik.Class.GetClientCode().Result;
-                    textBoxClientCode.Text  = clientCode;
+                    //clientCode              = _quik.Class.GetClientCode().Result;
+                    List<string> codes      = _quik.Class.GetClientCodes().Result;
+                    if (codes.Count > 0)
+                    {
+                        comboBox_ClientCode.Items.AddRange(codes.ToArray<object>());
+                        comboBox_ClientCode.SelectedItem    = comboBox_ClientCode.Items[0];
+                        clientCode                          = comboBox_ClientCode.SelectedItem.ToString();
+                    }
+
                     textBoxLogsWindow.AppendText("Создаем экземпляр инструмента " + secCode + "|" + classCode + "..." + Environment.NewLine);
                     tool                    = new Tool(_quik, secCode, classCode);
                     if (tool != null && tool.Name != null && tool.Name != "")
@@ -386,11 +393,12 @@ namespace QuikSharpDemo
                     {
                         decimal priceInOrder = Math.Round(tool.LastPrice - tool.LastPrice / 20, tool.PriceAccuracy);
                         AppendText2TextBox(textBoxLogsWindow, "Выставляем заявку на покупку, по цене:" + priceInOrder + " ..." + Environment.NewLine);
-                        order = await _quik.Orders.SendLimitOrder(tool.ClassCode, tool.SecurityCode, tool.AccountID, Operation.Buy, priceInOrder, 1).ConfigureAwait(false);
+                        order = await _quik.Orders.SendLimitOrder(tool.ClassCode, tool.SecurityCode, tool.AccountID, Operation.Buy, priceInOrder, 1, ExecutionCondition.PUT_IN_QUEUE, clientCode).ConfigureAwait(false);
                         if (order.OrderNum > 0)
                         {
                             AppendText2TextBox(textBoxLogsWindow, "Заявка выставлена. ID транзакции - " + order.TransID + Environment.NewLine);
                             AppendText2TextBox(textBoxLogsWindow, "Заявка выставлена. Номер заявки - " + order.OrderNum + Environment.NewLine);
+                            AppendText2TextBox(textBoxLogsWindow, "Заявка выставлена. Код клиента - " + order.ClientCode + Environment.NewLine);
                             Text2TextBox(textBoxOrderNumber, order.OrderNum.ToString());
                         }
                         else AppendText2TextBox(textBoxLogsWindow, "Неудачная попытка размещения заявки. Error: " + order.RejectReason + Environment.NewLine);
@@ -402,7 +410,7 @@ namespace QuikSharpDemo
                     {
                         decimal priceInOrder = Math.Round(tool.LastPrice + tool.Step * 5, tool.PriceAccuracy);
                         AppendText2TextBox(textBoxLogsWindow, "Выставляем заявку на покупку, по цене:" + priceInOrder + " ..." + Environment.NewLine);
-                        long transactionID = (await _quik.Orders.SendLimitOrder(tool.ClassCode, tool.SecurityCode, tool.AccountID, Operation.Buy, priceInOrder, 1).ConfigureAwait(false)).TransID;
+                        long transactionID = (await _quik.Orders.SendLimitOrder(tool.ClassCode, tool.SecurityCode, tool.AccountID, Operation.Buy, priceInOrder, 1, ExecutionCondition.PUT_IN_QUEUE, clientCode).ConfigureAwait(false)).TransID;
                         if (transactionID > 0)
                         {
                             AppendText2TextBox(textBoxLogsWindow, "Заявка выставлена. ID транзакции - " + transactionID + Environment.NewLine);
@@ -851,5 +859,7 @@ namespace QuikSharpDemo
         {
             //Trace.Close();
         }
+
+        private void ComboBox_ClientCode_SelectedIndexChanged(object sender, EventArgs e) { clientCode = comboBox_ClientCode.SelectedItem.ToString(); }
     }
 }

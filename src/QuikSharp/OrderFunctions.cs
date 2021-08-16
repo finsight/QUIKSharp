@@ -63,9 +63,10 @@ namespace QuikSharp
         /// <param name="price">Цена заявки</param>
         /// <param name="qty">Количество (в лотах)</param>
         /// <param name="executionCondition">Условие исполнения заявки (PUT_IN_QUEUE, FILL_OR_KILL, KILL_BALANCE)</param>
-        public async Task<Order> SendLimitOrder(string classCode, string securityCode, string accountID, Operation operation, decimal price, int qty, ExecutionCondition executionCondition = ExecutionCondition.PUT_IN_QUEUE)
+        /// <param name="clientCode">Код клиента</param>
+        public async Task<Order> SendLimitOrder(string classCode, string securityCode, string accountID, Operation operation, decimal price, int qty, ExecutionCondition executionCondition = ExecutionCondition.PUT_IN_QUEUE, string clientCode = null)
         {
-            return await SendOrder(classCode, securityCode, accountID, operation, price, qty, TransactionType.L, executionCondition).ConfigureAwait(false);
+            return await SendOrder(classCode, securityCode, accountID, operation, price, qty, TransactionType.L, executionCondition, clientCode).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -77,9 +78,10 @@ namespace QuikSharp
         /// <param name="operation">Операция заявки (покупка/продажа)</param>
         /// <param name="qty">Количество (в лотах)</param>
         /// <param name="executionCondition">Условие исполнения заявки (PUT_IN_QUEUE, FILL_OR_KILL, KILL_BALANCE)</param>
-        public async Task<Order> SendMarketOrder(string classCode, string securityCode, string accountID, Operation operation, int qty, ExecutionCondition executionCondition = ExecutionCondition.PUT_IN_QUEUE)
+        /// <param name="clientCode">Код клиента</param>
+        public async Task<Order> SendMarketOrder(string classCode, string securityCode, string accountID, Operation operation, int qty, ExecutionCondition executionCondition = ExecutionCondition.PUT_IN_QUEUE, string clientCode = null)
         {
-            return await SendOrder(classCode, securityCode, accountID, operation, 0, qty, TransactionType.M, executionCondition).ConfigureAwait(false);
+            return await SendOrder(classCode, securityCode, accountID, operation, 0, qty, TransactionType.M, executionCondition, clientCode).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -93,7 +95,8 @@ namespace QuikSharp
         /// <param name="qty">Количество (в лотах)</param>
         /// <param name="orderType">Тип заявки (L - лимитная, M - рыночная)</param>
         /// <param name="executionCondition">Условие исполнения заявки (PUT_IN_QUEUE, FILL_OR_KILL, KILL_BALANCE)</param>
-        async Task<Order> SendOrder(string classCode, string securityCode, string accountID, Operation operation, decimal price, int qty, TransactionType orderType, ExecutionCondition executionCondition = ExecutionCondition.PUT_IN_QUEUE)
+        /// <param name="clientCode">Код клиента</param>
+        async Task<Order> SendOrder(string classCode, string securityCode, string accountID, Operation operation, decimal price, int qty, TransactionType orderType, ExecutionCondition executionCondition = ExecutionCondition.PUT_IN_QUEUE, string clientCode = null)
         {
             long res = 0;
             bool set = false;
@@ -108,7 +111,8 @@ namespace QuikSharp
                 OPERATION = operation == Operation.Buy ? TransactionOperation.B : TransactionOperation.S,
                 PRICE = price,
                 TYPE = orderType,
-                EXECUTION_CONDITION = executionCondition
+                EXECUTION_CONDITION = executionCondition,
+                CLIENT_CODE = clientCode
             };
             try
             {

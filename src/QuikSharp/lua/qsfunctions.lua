@@ -358,7 +358,15 @@ function qsfunctions.getClientCodes(msg)
 	for i=0,getNumberOf("MONEY_LIMITS")-1 do
 		local clientcode = getItem("MONEY_LIMITS",i).client_code
 		if clientcode ~= nil then
-			table.insert(client_codes, clientcode)
+			fnd = false
+			for index, value in ipairs(client_codes) do
+				if value == clientcode then
+					fnd = true
+				end
+			end
+			if fnd == false then
+				table.insert(client_codes, clientcode)
+			end
 		end
 	end
 	msg.data = client_codes
