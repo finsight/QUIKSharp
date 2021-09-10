@@ -32,7 +32,8 @@ namespace QuikSharp.DataStructures.Transaction
         /// <summary>
         /// TransactionReply
         /// </summary>
-        public TransactionReply TransactionReply { get; set; }
+        volatile TransactionReply _transactionReply;
+        public TransactionReply TransactionReply { get => _transactionReply; set { _transactionReply = value; } }
 
         /// <summary>
         /// Функция вызывается терминалом QUIK при получении новой заявки или при изменении параметров существующей заявки.
