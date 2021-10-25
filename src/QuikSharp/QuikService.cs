@@ -151,7 +151,7 @@ namespace QuikSharp
             try
             {
                 // here all tasks must exit gracefully
-                var isCleanExit = Task.WaitAll(new[] {_requestTask, _responseTask, _callbackReceiverTask}, 5000);
+                var isCleanExit = Task.WaitAll(new[] {_requestTask, _responseTask, _callbackReceiverTask, _callbackInvokerTask}, 5000);
                 Trace.Assert(isCleanExit, "All tasks must finish gracefully after cancellation token is cancelled!");
             }
             finally
@@ -173,6 +173,8 @@ namespace QuikSharp
         {
             if (IsStarted) return;
             IsStarted = true;
+            _cts?.Dispose();
+            _cancelRegistration.Dispose();
             _cts = new CancellationTokenSource();
             _cancelledTcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
             _cancelRegistration = _cts.Token.Register(() => _cancelledTcs.TrySetResult(true));
@@ -191,51 +193,54 @@ namespace QuikSharp
                             Trace.WriteLine("Request/response channel connected");
                             try
                             {
-                                var stream = new NetworkStream(_responseClient.Client);
-                                var writer = new StreamWriter(stream);
-                                while (!_cts.IsCancellationRequested)
+                                using (var stream = new NetworkStream(_responseClient.Client))
+                                using (var writer = new StreamWriter(stream))
                                 {
-                                    IMessage message = null;
-                                    try
+                                    while (!_cts.IsCancellationRequested)
                                     {
-                                        // BLOCKING
-                                        message = EnvelopeQueue.Take(_cts.Token);
-                                        var request = message.ToJson();
-                                        //Trace.WriteLine("Request: " + request);
-                                        // scenario: Quik is restarted or script is stopped
-                                        // then writer must throw and we will add a message back
-                                        // then we will iterate over messages and cancel expired ones
-                                        if (!message.ValidUntil.HasValue || message.ValidUntil >= DateTime.UtcNow)
+                                        IMessage message = null;
+                                        try
                                         {
-                                            writer.WriteLine(request);
-                                            writer.Flush();
+                                            // BLOCKING
+                                            message = EnvelopeQueue.Take(_cts.Token);
+                                            var request = message.ToJson();
+                                            //Trace.WriteLine("Request: " + request);
+                                            // scenario: Quik is restarted or script is stopped
+                                            // then writer must throw and we will add a message back
+                                            // then we will iterate over messages and cancel expired ones
+                                            if (!message.ValidUntil.HasValue || message.ValidUntil >= DateTime.UtcNow)
+                                            {
+                                                writer.WriteLine(request);
+                                                writer.Flush();
+                                            }
+                                            else
+                                            {
+                                                Trace.Assert(message.Id.HasValue, "All requests must have correlation id");
+                                                Responses[message.Id.Value]
+                                                    .Key.SetException(
+                                                        new TimeoutException("ValidUntilUTC is less than current time"));
+                                                KeyValuePair<TaskCompletionSource<IMessage>, Type> tcs; // <IMessage>
+                                                Responses.TryRemove(message.Id.Value, out tcs);
+                                            }
                                         }
-                                        else
+                                        catch (OperationCanceledException)
                                         {
-                                            Trace.Assert(message.Id.HasValue, "All requests must have correlation id");
-                                            Responses[message.Id.Value]
-                                                .Key.SetException(
-                                                    new TimeoutException("ValidUntilUTC is less than current time"));
-                                            KeyValuePair<TaskCompletionSource<IMessage>, Type> tcs; // <IMessage>
-                                            Responses.TryRemove(message.Id.Value, out tcs);
+                                            // EnvelopeQueue.Take(_cts.Token) was cancelled via the token
                                         }
-                                    }
-                                    catch (OperationCanceledException)
-                                    {
-                                        // EnvelopeQueue.Take(_cts.Token) was cancelled via the token
-                                    }
-                                    catch (IOException)
-                                    {
-                                        // this catch is for unexpected and unchecked connection termination
-                                        // add back, there was an error while writing
-                                        if (message != null)
+                                        catch (IOException)
                                         {
-                                            EnvelopeQueue.Add(message);
+                                            // this catch is for unexpected and unchecked connection termination
+                                            // add back, there was an error while writing
+                                            if (message != null)
+                                            {
+                                                EnvelopeQueue.Add(message);
+                                            }
+    
+                                            break;
                                         }
-
-                                        break;
                                     }
                                 }
+                                
                             }
                             catch (IOException e)
                             {
@@ -261,6 +266,7 @@ namespace QuikSharp
                             {
                                 _responseClient.Client.Shutdown(SocketShutdown.Both);
                                 _responseClient.Close();
+                                _responseClient.Dispose();
                                 _responseClient =
                                     null; // У нас два потока работают с одним сокетом, но только один из них должен его закрыть !
                                 Trace.WriteLine("Response channel disconnected");
@@ -285,58 +291,61 @@ namespace QuikSharp
 
                             try
                             {
-                                var stream = new NetworkStream(_responseClient.Client);
-                                var reader = new StreamReader(stream, Encoding.GetEncoding(1251)); //true
-                                while (!_cts.IsCancellationRequested)
+                                using (var stream = new NetworkStream(_responseClient.Client))
+                                using (var reader = new StreamReader(stream, Encoding.GetEncoding(1251))) //true
                                 {
-                                    var readLineTask = reader.ReadLineAsync();
-                                    var completedTask = await Task.WhenAny(readLineTask, _cancelledTcs.Task).ConfigureAwait(false);
-                                    if (completedTask == _cancelledTcs.Task || _cts.IsCancellationRequested)
+                                    while (!_cts.IsCancellationRequested)
                                     {
-                                        break;
-                                    }
-
-                                    Trace.Assert(readLineTask.Status == TaskStatus.RanToCompletion);
-                                    var response = readLineTask.Result;
-                                    if (response == null)
-                                    {
-                                        throw new IOException("Lua returned an empty response or closed the connection");
-                                    }
-
-                                    // No IO exceptions possible for response, move its processing
-                                    // to the threadpool and wait for the next mesaage
-                                    // A new task here gives c.30% boost for full TransactionSpec echo
-
-                                    // ReSharper disable once UnusedVariable
-                                    var doNotAwaitMe = Task.Factory.StartNew(r =>
-                                    {
-                                        //var r = response;
-                                        //Trace.WriteLine("Response:" + response);
-                                        try
+                                        var readLineTask = reader.ReadLineAsync();
+                                        var completedTask = await Task.WhenAny(readLineTask, _cancelledTcs.Task).ConfigureAwait(false);
+                                        if (completedTask == _cancelledTcs.Task || _cts.IsCancellationRequested)
                                         {
-                                            var message = (r as string).FromJson(this);
-                                            Trace.Assert(message.Id.HasValue && message.Id > 0);
-                                            // it is a response message
-                                            if (!Responses.ContainsKey(message.Id.Value))
-                                                throw new ApplicationException("Unexpected correlation ID");
-                                            KeyValuePair<TaskCompletionSource<IMessage>, Type> tcs;
-                                            Responses.TryRemove(message.Id.Value, out tcs);
-                                            if (!message.ValidUntil.HasValue || message.ValidUntil >= DateTime.UtcNow)
-                                            {
-                                                tcs.Key.SetResult(message);
-                                            }
-                                            else
-                                            {
-                                                tcs.Key.SetException(
-                                                    new TimeoutException("ValidUntilUTC is less than current time"));
-                                            }
+                                            break;
                                         }
-                                        catch (LuaException e)
+    
+                                        Trace.Assert(readLineTask.Status == TaskStatus.RanToCompletion);
+                                        var response = readLineTask.Result;
+                                        if (response == null)
                                         {
-                                            Trace.TraceError(e.ToString());
+                                            throw new IOException("Lua returned an empty response or closed the connection");
                                         }
-                                    }, response, TaskCreationOptions.PreferFairness);
+    
+                                        // No IO exceptions possible for response, move its processing
+                                        // to the threadpool and wait for the next mesaage
+                                        // A new task here gives c.30% boost for full TransactionSpec echo
+    
+                                        // ReSharper disable once UnusedVariable
+                                        var doNotAwaitMe = Task.Factory.StartNew(r =>
+                                        {
+                                            //var r = response;
+                                            //Trace.WriteLine("Response:" + response);
+                                            try
+                                            {
+                                                var message = (r as string).FromJson(this);
+                                                Trace.Assert(message.Id.HasValue && message.Id > 0);
+                                                // it is a response message
+                                                if (!Responses.ContainsKey(message.Id.Value))
+                                                    throw new ApplicationException("Unexpected correlation ID");
+                                                KeyValuePair<TaskCompletionSource<IMessage>, Type> tcs;
+                                                Responses.TryRemove(message.Id.Value, out tcs);
+                                                if (!message.ValidUntil.HasValue || message.ValidUntil >= DateTime.UtcNow)
+                                                {
+                                                    tcs.Key.SetResult(message);
+                                                }
+                                                else
+                                                {
+                                                    tcs.Key.SetException(
+                                                        new TimeoutException("ValidUntilUTC is less than current time"));
+                                                }
+                                            }
+                                            catch (LuaException e)
+                                            {
+                                                Trace.TraceError(e.ToString());
+                                            }
+                                        }, response, TaskCreationOptions.PreferFairness);
+                                    }
                                 }
+                                
                             }
                             catch (TaskCanceledException)
                             {
@@ -365,6 +374,7 @@ namespace QuikSharp
                             {
                                 _responseClient.Client.Shutdown(SocketShutdown.Both);
                                 _responseClient.Close();
+                                _responseClient.Dispose();
                                 _responseClient = null; // У нас два потока работают с одним сокетом, но только один из них должен его закрыть !
                                 Trace.WriteLine("Response channel disconnected");
                             }
@@ -393,35 +403,37 @@ namespace QuikSharp
                             Trace.WriteLine("Callback channel connected");
                             try
                             {
-                                var stream = new NetworkStream(_callbackClient.Client);
-                                var reader = new StreamReader(stream, Encoding.GetEncoding(1251)); //true
-                                while (!_cts.IsCancellationRequested)
+                                using (var stream = new NetworkStream(_callbackClient.Client))
+                                using (var reader = new StreamReader(stream, Encoding.GetEncoding(1251))) //true
                                 {
-                                    var readLineTask = reader.ReadLineAsync();
-                                    var completedTask = await Task.WhenAny(readLineTask, _cancelledTcs.Task).ConfigureAwait(false);
-
-                                    if (completedTask == _cancelledTcs.Task || _cts.IsCancellationRequested)
+                                    while (!_cts.IsCancellationRequested)
                                     {
-                                        break;
-                                    }
-
-                                    Trace.Assert(readLineTask.Status == TaskStatus.RanToCompletion);
-                                    var callback = readLineTask.Result;
-                                    if (callback == null)
-                                    {
-                                        throw new IOException("Lua returned an empty response or closed the connection");
-                                    }
-
-                                    try
-                                    {
-                                        var message = callback.FromJson(this);
-                                        Trace.Assert(!(message.Id.HasValue && message.Id > 0));
-                                        // it is a callback message
-                                        await _receivedCallbacksChannel.Writer.WriteAsync(message);
-                                    }
-                                    catch (Exception e) // deserialization exception is possible
-                                    {
-                                        Trace.TraceError(e.ToString());
+                                        var readLineTask = reader.ReadLineAsync();
+                                        var completedTask = await Task.WhenAny(readLineTask, _cancelledTcs.Task).ConfigureAwait(false);
+    
+                                        if (completedTask == _cancelledTcs.Task || _cts.IsCancellationRequested)
+                                        {
+                                            break;
+                                        }
+    
+                                        Trace.Assert(readLineTask.Status == TaskStatus.RanToCompletion);
+                                        var callback = readLineTask.Result;
+                                        if (callback == null)
+                                        {
+                                            throw new IOException("Lua returned an empty response or closed the connection");
+                                        }
+    
+                                        try
+                                        {
+                                            var message = callback.FromJson(this);
+                                            Trace.Assert(!(message.Id.HasValue && message.Id > 0));
+                                            // it is a callback message
+                                            await _receivedCallbacksChannel.Writer.WriteAsync(message);
+                                        }
+                                        catch (Exception e) // deserialization exception is possible
+                                        {
+                                            Trace.TraceError(e.ToString());
+                                        }
                                     }
                                 }
                             }
@@ -452,6 +464,7 @@ namespace QuikSharp
                             {
                                 _callbackClient.Client.Shutdown(SocketShutdown.Both);
                                 _callbackClient.Close();
+                                _callbackClient.Dispose();
                                 _callbackClient = null;
                                 Trace.WriteLine("Callback channel disconnected");
                             }
@@ -466,9 +479,10 @@ namespace QuikSharp
                 {
                     while (!_cts.IsCancellationRequested)
                     {
+                        var cts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token);
                         try
                         {
-                            var message = await _receivedCallbacksChannel.Reader.ReadAsync(_cts.Token);
+                            var message = await _receivedCallbacksChannel.Reader.ReadAsync(cts.Token);
                             try
                             {
                                 ProcessCallbackMessage(message);
@@ -480,6 +494,10 @@ namespace QuikSharp
                         }
                         catch (OperationCanceledException)
                         {
+                        }
+                        finally
+                        {
+                            cts.Dispose();
                         }
                     }
                 },
@@ -507,6 +525,7 @@ namespace QuikSharp
                         ct.ThrowIfCancellationRequested();
                         try
                         {
+                            _responseClient?.Dispose();
                             _responseClient = new TcpClient
                             {
                                 ExclusiveAddressUse = true,
@@ -532,6 +551,7 @@ namespace QuikSharp
                         ct.ThrowIfCancellationRequested();
                         try
                         {
+                            _callbackClient?.Dispose();
                             _callbackClient = new TcpClient
                             {
                                 ExclusiveAddressUse = true,
@@ -860,9 +880,10 @@ namespace QuikSharp
                 request.Id = GetNewUniqueId();
             }
 
+            CancellationTokenSource ct = null;
             if (timeout > 0)
             {
-                var ct = new CancellationTokenSource();
+                ct = new CancellationTokenSource();
                 ctRegistration = ct.Token.Register(() =>
                 {
                     tcs.TrySetException(new TimeoutException("Send operation timed out"));
@@ -884,8 +905,11 @@ namespace QuikSharp
             }
             finally
             {
-                if (timeout > 0)
-                    ctRegistration.Dispose();
+	            if (timeout > 0)
+	            {
+		            ct?.Dispose();
+		            ctRegistration.Dispose();
+	            }
             }
 
             return (response as TResponse);
