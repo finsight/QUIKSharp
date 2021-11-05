@@ -129,14 +129,22 @@ namespace QuikSharp
             {
                 if (res > 0)
                 {
-                    try
-                    {
-                        order_result = await Quik.Orders.GetOrder_by_transID(classCode, securityCode, res).ConfigureAwait(false);
-                    }
-                    catch
-                    {
-                        order_result = new Order {RejectReason = "Неудачная попытка получения заявки по ID-транзакции №" + res};
-                    }
+                    if (newOrderTransaction.TransactionReply != null && newOrderTransaction.TransactionReply.ErrorSource != 0)
+                      order_result = new Order 
+                      {
+                        RejectReason = 
+                            newOrderTransaction.TransactionReply.ResultMsg 
+                            ?? $"Transaction {res} error: code {newOrderTransaction.TransactionReply.ErrorCode}, source {newOrderTransaction.TransactionReply.ErrorSource}"
+                      };
+                    else
+                      try
+                      {
+                          order_result = await Quik.Orders.GetOrder_by_transID(classCode, securityCode, res).ConfigureAwait(false);
+                      }
+                      catch
+                      {
+                          order_result = new Order {RejectReason = "Неудачная попытка получения заявки по ID-транзакции №" + res};
+                      }
                 }
                 else
                 {
@@ -145,6 +153,8 @@ namespace QuikSharp
                 }
 
                 if (order_result != null && (order_result.RejectReason != "" || order_result.OrderNum > 0)) set = true;
+
+                Thread.Sleep(10);
             }
 
             return order_result;
