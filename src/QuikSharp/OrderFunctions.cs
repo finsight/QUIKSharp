@@ -101,6 +101,10 @@ namespace QuikSharp
             long res = 0;
             bool set = false;
             Order order_result = new Order();
+            ///////
+            TransactionReply lastTransactionReply = new TransactionReply();
+            Quik.Events.OnTransReply += (TransactionReply transReply) => { if (transReply.TransID == res) lastTransactionReply = transReply; };
+            ///////
             Transaction newOrderTransaction = new Transaction
             {
                 ACTION = TransactionAction.NEW_ORDER,
@@ -129,13 +133,21 @@ namespace QuikSharp
             {
                 if (res > 0)
                 {
-                    try
+                    if (lastTransactionReply == null || lastTransactionReply.ResultMsg == null || lastTransactionReply.ResultMsg == "" || lastTransactionReply.ErrorCode == 0)
                     {
-                        order_result = await Quik.Orders.GetOrder_by_transID(classCode, securityCode, res).ConfigureAwait(false);
+                        try
+                        {
+                            order_result = await Quik.Orders.GetOrder_by_transID(classCode, securityCode, res).ConfigureAwait(false);
+                        }
+                        catch
+                        {
+                            order_result = new Order { RejectReason = "Неудачная попытка получения заявки по ID-транзакции №" + res };
+                        }
                     }
-                    catch
+                    else
                     {
-                        order_result = new Order {RejectReason = "Неудачная попытка получения заявки по ID-транзакции №" + res};
+                        if (order_result != null) order_result.RejectReason = lastTransactionReply.ResultMsg;
+                        else order_result = new Order { RejectReason = lastTransactionReply.ResultMsg };
                     }
                 }
                 else
@@ -146,6 +158,8 @@ namespace QuikSharp
 
                 if (order_result != null && (order_result.RejectReason != "" || order_result.OrderNum > 0)) set = true;
             }
+
+            Quik.Events.OnTransReply -= (TransactionReply transReply) => { };
 
             return order_result;
         }

@@ -23,7 +23,7 @@ namespace QuikSharpDemo
         bool isServerConnected = false;
         bool isSubscribedToolOrderBook = false;
         bool isSubscribedToolCandles = false;
-        string secCode = "SiU1";
+        string secCode = "SiZ1";
         string classCode = "";
         string clientCode;
         decimal bid;
@@ -391,7 +391,7 @@ namespace QuikSharpDemo
                 case "Выставить лимитрированную заявку (без сделки)":
                     try
                     {
-                        decimal priceInOrder = Math.Round(tool.LastPrice - tool.LastPrice / 20, tool.PriceAccuracy);
+                        decimal priceInOrder = Math.Round(tool.LastPrice - tool.LastPrice / 50, tool.PriceAccuracy);
                         AppendText2TextBox(textBoxLogsWindow, "Выставляем заявку на покупку, по цене:" + priceInOrder + " ..." + Environment.NewLine);
                         order = await _quik.Orders.SendLimitOrder(tool.ClassCode, tool.SecurityCode, tool.AccountID, Operation.Buy, priceInOrder, 1, ExecutionCondition.PUT_IN_QUEUE, clientCode).ConfigureAwait(false);
                         if (order.OrderNum > 0)
