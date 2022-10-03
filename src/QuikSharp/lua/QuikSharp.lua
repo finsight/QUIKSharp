@@ -36,8 +36,10 @@ if is_quik() then
     -- but in one issue someone said it doesn't work on machines that do not have Visual Studio. 
     local linkage = "MD"
     
+	if quikVersion >= 811 then
+        libPath = libPath .. "64\\54_MD\\"
 	if quikVersion >= 805 then
-        libPath = libPath .. "64\\54_"..linkage.."\\"
+        libPath = libPath .. "64\\53_"..linkage.."\\"
 	elseif quikVersion >= 800 then
         libPath = libPath .. "64\\5.1_"..linkage.."\\"
 	else
