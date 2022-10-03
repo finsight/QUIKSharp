@@ -38,7 +38,7 @@ if is_quik() then
     
 	if quikVersion >= 811 then
         libPath = libPath .. "64\\54_MD\\"
-	if quikVersion >= 805 then
+	elseif quikVersion >= 805 then
         libPath = libPath .. "64\\53_"..linkage.."\\"
 	elseif quikVersion >= 800 then
         libPath = libPath .. "64\\5.1_"..linkage.."\\"
