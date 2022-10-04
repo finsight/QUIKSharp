@@ -17,8 +17,8 @@
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/finsight/QUIKSharp.git</RepositoryUrl>
         <Authors>Victor Baybekov and QUIK# contributers</Authors>
-        <Company/>
-        <Product/>
+        <Company />
+        <Product />
         <Copyright>Victor Baybekov and QUIK# contributers</Copyright>
         <Description>QUIK# (QUIK Sharp) is the QUIK Lua interface ported to .NET. QUIK# exposes all functions and events available in QLUA as C# async functions and events.</Description>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -30,19 +30,19 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Remove="lua\**\*.*"/>
-        <Content Include="lua\**\*.*"/>
+        <None Remove="lua\**\*.*" />
+        <Content Include="lua\**\*.*" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
-        <PackageReference Include="System.Buffers" Version="4.5.1"/>
-        <PackageReference Include="System.Text.Encoding.CodePages" Version="4.7.0"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta2" />
+        <PackageReference Include="System.Buffers" Version="4.5.1" />
+        <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0-rc.1.22426.10" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="System.Threading.Channels" Version="4.7.1"/>
+        <PackageReference Include="System.Threading.Channels" Version="7.0.0-rc.1.22426.10" />
     </ItemGroup>
     <ItemGroup>
-        <Folder Include="lua\logs"/>
+        <Folder Include="lua\logs" />
     </ItemGroup>
 </Project>
