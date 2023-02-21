@@ -35,12 +35,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta2" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
         <PackageReference Include="System.Buffers" Version="4.5.1" />
-        <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0-rc.1.22426.10" />
+        <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="System.Threading.Channels" Version="7.0.0-rc.1.22426.10" />
+        <PackageReference Include="System.Threading.Channels" Version="7.0.0" />
     </ItemGroup>
     <ItemGroup>
         <Folder Include="lua\logs" />
