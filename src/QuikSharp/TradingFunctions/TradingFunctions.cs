@@ -3,6 +3,7 @@
 
 using QuikSharp.DataStructures;
 using QuikSharp.DataStructures.Transaction;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
@@ -171,10 +172,10 @@ namespace QuikSharp
         /////  функция для получения информации по инструменту
         ///// </summary>
         //Task<string> getSecurityInfo();
-        ///// <summary>
-        /////  функция для получения даты торговой сессии
-        ///// </summary>
-        //Task<string> getTradeDate();
+        /// <summary>
+        ///  функция для получения даты торговой сессии
+        /// </summary>
+        Task<DateTime> GetTradeDate();
 
         /// <summary>
         /// Функция отправляет транзакцию на сервер QUIK и сохраняет ее в словаре транзакций
@@ -520,6 +521,13 @@ namespace QuikSharp
             var response = await QuikService.Send<Message<List<Trade>>>(
                 (new Message<string>(orderNum.ToString(), "get_Trades_by_OrderNumber"))).ConfigureAwait(false);
             return response.Data;
+        }
+
+        public async Task<DateTime> GetTradeDate()
+        {
+            var response = await QuikService.Send<Message<QuikDateTime>>(
+                (new Message<string>("", "getTradeDate"))).ConfigureAwait(false);
+            return ((DateTime)response.Data);
         }
 
         public async Task<PortfolioInfo> GetPortfolioInfo(string firmId, string clientCode)

@@ -84,6 +84,7 @@ namespace QuikSharpDemo
             listBoxCommands.Items.Add("Отменить заказ на получение стакана");
             listBoxCommands.Items.Add("Выставить стоп-заявку типа тейк-профит и стоп-лимит");
             listBoxCommands.Items.Add("Рассчитать максимальное количество лотов в заявке");
+            listBoxCommands.Items.Add("Получить дату торговой сессии");
         }
 
         private void ButtonStart_Click(object sender, EventArgs e)
@@ -355,6 +356,9 @@ namespace QuikSharpDemo
                     break;
                 case "Рассчитать максимальное количество лотов в заявке":
                     textBoxDescription.Text = "Получить максимальное количество лото в заявке по текущему инструменту. (`покупка` по текущей цене, лимитированной заявкой)";
+                    break;
+                case "Получить дату торговой сессии":
+                    textBoxDescription.Text = "Получить дату текущей торговой сессии";
                     break;
 
             }
@@ -804,6 +808,20 @@ namespace QuikSharpDemo
                         else AppendText2TextBox(textBoxLogsWindow, "Неудачная получения данных о максимальном количество лотов в заявке." + Environment.NewLine);
                     }
                     catch { AppendText2TextBox(textBoxLogsWindow, "Ошибка выполнения функции CalcBuySell." + Environment.NewLine); }
+                    break;
+                case "Получить дату торговой сессии":
+                    try
+                    {
+                        AppendText2TextBox(textBoxLogsWindow, "Получаем дату торговой сессии..." + Environment.NewLine);
+                        DateTime res = await _quik.Trading.GetTradeDate().ConfigureAwait(false);
+                        if (res != null)
+                        {
+                            AppendText2TextBox(textBoxLogsWindow, "Дата торговой сессии = " + res.ToShortDateString() + Environment.NewLine);
+                            Thread.Sleep(500);
+                        }
+                        else AppendText2TextBox(textBoxLogsWindow, "Неудачная получения даты торговой сессии." + Environment.NewLine);
+                    }
+                    catch { AppendText2TextBox(textBoxLogsWindow, "Ошибка выполнения функции GetTradeDate." + Environment.NewLine); }
                     break;
             }
         }
