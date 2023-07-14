@@ -203,14 +203,15 @@ namespace QuikSharp
         /// </summary>
         Task<PortfolioInfoEx> GetPortfolioInfoEx(string firmId, string clientCode, int limitKind);
 
-        ///// <summary>
-        /////  функция для получения параметров таблицы «Купить/Продать»
-        ///// </summary>
-        //Task<string> getBuySellInfo();
-        ///// <summary>
-        /////  функция для получения параметров (включая вид лимита) таблицы «Купить/Продать»
-        ///// </summary>
-        //Task<string> getBuySellInfoEx();
+        /// <summary>
+        ///  функция для получения параметров таблицы «Купить/Продать»
+        /// </summary>
+        Task<BuySellInfo> GetBuySellInfo(string firmId, string clientCode, string classCode, string secCode, double price);
+
+        /// <summary>
+        ///  функция для получения параметров (включая вид лимита) таблицы «Купить/Продать»
+        /// </summary>
+        Task<BuySellInfo> GetBuySellInfoEx(string firmId, string clientCode, string classCode, string secCode, double price);
 
         /// <summary>
         /// Функция возвращает торговый счет срочного рынка, соответствующий коду клиента фондового рынка с единой денежной позицией
@@ -541,6 +542,20 @@ namespace QuikSharp
         {
             var response = await QuikService.Send<Message<PortfolioInfoEx>>(
                 (new Message<string>(firmId + "|" + clientCode + "|" + limitKind, "getPortfolioInfoEx"))).ConfigureAwait(false);
+            return response.Data;
+        }
+
+        public async Task<BuySellInfo> GetBuySellInfo(string firmId, string clientCode, string classCode, string secCode, double price)
+        {
+            var response = await QuikService.Send<Message<BuySellInfo>>(
+                (new Message<string>(firmId + "|" + clientCode + "|" + classCode + "|" + secCode + "|" + price, "getBuySellInfo"))).ConfigureAwait(false);
+            return response.Data;
+        }
+
+        public async Task<BuySellInfo> GetBuySellInfoEx(string firmId, string clientCode, string classCode, string secCode, double price)
+        {
+            var response = await QuikService.Send<Message<BuySellInfo>>(
+                (new Message<string>(firmId + "|" + clientCode + "|" + classCode + "|" + secCode + "|" + price, "getBuySellInfoEx"))).ConfigureAwait(false);
             return response.Data;
         }
 

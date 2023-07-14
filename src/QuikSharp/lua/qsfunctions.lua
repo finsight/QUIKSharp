@@ -809,6 +809,26 @@ function qsfunctions.get_all_trades(msg)
 	return msg
 end
 
+-- Функция предназначена для получения параметров таблицы «Купить/Продать».
+-- Функция возвращает таблицу Lua с параметрами из таблицы QUIK «Купить/Продать», означающими возможность купить либо продать указанный инструмент «sec_code» класса «class_code», 
+-- указанным клиентом «client_code» фирмы «firmid», по указанной цене «price». Если цена равна «0», то используются лучшие значения спроса/предложения.
+function qsfunctions.getBuySellInfo(msg)
+    local spl = split(msg.data, "|")
+    local firmId, clientCode, class_code, sec_code, price = spl[1], spl[2], spl[3], spl[4], spl[5]
+    msg.data = getBuySellInfo(firmId, clientCode, class_code, sec_code, tonumber(price))
+    return msg
+end
+
+-- Функция предназначена для получения параметров таблицы «Купить/Продать».
+-- Функция возвращает таблицу Lua с параметрами из таблицы QUIK «Купить/Продать», означающими возможность купить либо продать указанный инструмент «sec_code» класса «class_code», 
+-- указанным клиентом «client_code» фирмы «firmid», по указанной цене «price». Если цена равна «0», то используются лучшие значения спроса/предложения.
+function qsfunctions.getBuySellInfoEx(msg)
+    local spl = split(msg.data, "|")
+    local firmId, clientCode, class_code, sec_code, price = spl[1], spl[2], spl[3], spl[4], spl[5]
+    msg.data = getBuySellInfoEx(firmId, clientCode, class_code, sec_code, tonumber(price))
+    return msg
+end
+
 
 --------------------------
 -- OptionBoard functions --

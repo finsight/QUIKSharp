@@ -87,5 +87,10 @@ namespace QuikSharpDemo
             InitializeComponent();
             dataGridViewCandles.DataSource = _moneyLimit;
         }
+        public FormOutputTable(List<BuySellInfo> _buySellInfo)
+        {
+            InitializeComponent();
+            dataGridViewCandles.DataSource = _buySellInfo;
+        }
     }
 }

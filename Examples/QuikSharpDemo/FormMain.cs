@@ -23,7 +23,7 @@ namespace QuikSharpDemo
         bool isServerConnected = false;
         bool isSubscribedToolOrderBook = false;
         bool isSubscribedToolCandles = false;
-        string secCode = "SiZ1";
+        string secCode = "SiU3";
         string classCode = "";
         string clientCode;
         decimal bid;
@@ -41,6 +41,7 @@ namespace QuikSharpDemo
         List<PortfolioInfoEx> listPortfolio;
         List<MoneyLimit> listMoneyLimits;
         List<MoneyLimitEx> listMoneyLimitsEx;
+        List<BuySellInfo> listBuySellInfo;
         FormOutputTable toolCandlesTable;
         FormOrderBook toolOrderBookTable;
         Order order;
@@ -78,6 +79,7 @@ namespace QuikSharpDemo
             listBoxCommands.Items.Add("Получить таблицу обезличенных сделок");
             listBoxCommands.Items.Add("Получить таблицу `Клиентский портфель`");
             listBoxCommands.Items.Add("Получить таблицы денежных лимитов");
+            listBoxCommands.Items.Add("Получить таблицу Купить/Продать");
             listBoxCommands.Items.Add("Получить стакан заявок");
             listBoxCommands.Items.Add("Связка ParamRequest + OnParam + GetParamEx2");
             listBoxCommands.Items.Add("CancelParamRequest");
@@ -338,6 +340,9 @@ namespace QuikSharpDemo
                     break;
                 case "Получить таблицы денежных лимитов":
                     textBoxDescription.Text = "Получить и отобразить таблицы денежных лимитов (стандартную и дополнительную Т2). Работает только на инструментах фондовой секции. quik.Trading.GetMoney() и quik.Trading.GetMoneyEx()";
+                    break;
+                case "Получить таблицу Купить/Продать":
+                    textBoxDescription.Text = "Получить и отобразить таблицу с параметрами из таблицы QUIK «Купить/Продать», означающими возможность купить либо продать указанный инструмент «sec_code» класса «class_code», указанным клиентом «client_code» фирмы «firmid», по указанной цене «price». Если цена равна «0», то используются лучшие значения спроса/предложения. quik.Trading.GetBuySellInfo()";
                     break;
                 case "Получить стакан заявок":
                     textBoxDescription.Text = "Получить и отобразить стакан заявок в виде таблицы (данные на момент вызова функции. Без обновления)";
@@ -662,6 +667,23 @@ namespace QuikSharpDemo
                         }
                     }
                     catch { AppendText2TextBox(textBoxLogsWindow, "Ошибка получения денежных лимитов." + Environment.NewLine); }
+                    break;
+                case "Получить таблицу Купить/Продать":
+                    try
+                    {
+                        AppendText2TextBox(textBoxLogsWindow, "Получаем таблицу `Купить/Продать`..." + Environment.NewLine);
+                        listBuySellInfo = new List<BuySellInfo>();
+                        listBuySellInfo.Add(_quik.Trading.GetBuySellInfo(tool.FirmID, classCode == "SPBFUT" ? tool.AccountID : clientCode, tool.ClassCode, tool.SecurityCode, 0).Result);
+
+                        if (listBuySellInfo.Count > 0)
+                        {
+                            AppendText2TextBox(textBoxLogsWindow, "Выводим данные о параметрах Купить/Продать в таблицу..." + Environment.NewLine);
+                            toolCandlesTable = new FormOutputTable(listBuySellInfo);
+                            toolCandlesTable.Show();
+                        }
+                        else AppendText2TextBox(textBoxLogsWindow, "В таблице `Купить/Продать` отсутствуют записи." + Environment.NewLine);
+                    }
+                    catch { AppendText2TextBox(textBoxLogsWindow, "Ошибка получения таблицы Купить/Продать." + Environment.NewLine); }
                     break;
                 case "Получить стакан заявок":
                     try
