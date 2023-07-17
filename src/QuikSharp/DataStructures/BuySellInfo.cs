@@ -141,7 +141,7 @@ namespace QuikSharp.DataStructures
         /// Срок расчётов. Возможные значения: положительные целые числа, начиная с «0», соответствующие срокам расчётов из таблицы «Позиции по инструментам»: «0» – T0, «1» – T1, «2» – T2 и т.д.
         /// </summary>
         [JsonProperty("limit_kind")]
-        public int LimitKind { get; set; }
+        public string LimitKind { get; set; }
 
         /// <summary>
         /// Эффективный начальный дисконт для длинной позиции. Заполняется для клиентов типа «МД»

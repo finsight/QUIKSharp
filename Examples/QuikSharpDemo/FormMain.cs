@@ -342,7 +342,7 @@ namespace QuikSharpDemo
                     textBoxDescription.Text = "Получить и отобразить таблицы денежных лимитов (стандартную и дополнительную Т2). Работает только на инструментах фондовой секции. quik.Trading.GetMoney() и quik.Trading.GetMoneyEx()";
                     break;
                 case "Получить таблицу Купить/Продать":
-                    textBoxDescription.Text = "Получить и отобразить таблицу с параметрами из таблицы QUIK «Купить/Продать», означающими возможность купить либо продать указанный инструмент «sec_code» класса «class_code», указанным клиентом «client_code» фирмы «firmid», по указанной цене «price». Если цена равна «0», то используются лучшие значения спроса/предложения. quik.Trading.GetBuySellInfo()";
+                    textBoxDescription.Text = "Получить и отобразить таблицу с параметрами из таблицы QUIK «Купить/Продать», означающими возможность купить либо продать указанный инструмент «sec_code» класса «class_code», указанным клиентом «client_code» фирмы «firmid», по указанной цене «price». Если цена равна «0», то используются лучшие значения спроса/предложения. quik.Trading.GetBuySellInfo() и quik.Trading.GetBuySellInfoEx()";
                     break;
                 case "Получить стакан заявок":
                     textBoxDescription.Text = "Получить и отобразить стакан заявок в виде таблицы (данные на момент вызова функции. Без обновления)";
@@ -673,7 +673,7 @@ namespace QuikSharpDemo
                     {
                         AppendText2TextBox(textBoxLogsWindow, "Получаем таблицу `Купить/Продать`..." + Environment.NewLine);
                         listBuySellInfo = new List<BuySellInfo>();
-                        listBuySellInfo.Add(_quik.Trading.GetBuySellInfo(tool.FirmID, classCode == "SPBFUT" ? tool.AccountID : clientCode, tool.ClassCode, tool.SecurityCode, 0).Result);
+                        listBuySellInfo.Add(_quik.Trading.GetBuySellInfoEx(tool.FirmID, classCode == "SPBFUT" ? tool.AccountID : clientCode, tool.ClassCode, tool.SecurityCode, 0).Result);
 
                         if (listBuySellInfo.Count > 0)
                         {
