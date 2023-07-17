@@ -815,7 +815,14 @@ end
 function qsfunctions.getBuySellInfo(msg)
     local spl = split(msg.data, "|")
     local firmId, clientCode, class_code, sec_code, price = spl[1], spl[2], spl[3], spl[4], spl[5]
-    msg.data = getBuySellInfo(firmId, clientCode, class_code, sec_code, tonumber(price))
+
+	local result, err = getBuySellInfoEx(firmId, clientCode, class_code, sec_code, tonumber(price))
+	if result.is_margin_sec then
+		msg.data = result
+	else
+		--log("getBuySellInfo returns nil", 3)
+		msg.data = nil
+	end
     return msg
 end
 
@@ -825,7 +832,14 @@ end
 function qsfunctions.getBuySellInfoEx(msg)
     local spl = split(msg.data, "|")
     local firmId, clientCode, class_code, sec_code, price = spl[1], spl[2], spl[3], spl[4], spl[5]
-    msg.data = getBuySellInfoEx(firmId, clientCode, class_code, sec_code, tonumber(price))
+
+	local result, err = getBuySellInfoEx(firmId, clientCode, class_code, sec_code, tonumber(price))
+	if result.is_margin_sec then
+		msg.data = result
+	else
+		--log("getBuySellInfoEx returns nil", 3)
+		msg.data = nil
+	end
     return msg
 end
 
