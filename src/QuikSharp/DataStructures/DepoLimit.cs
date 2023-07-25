@@ -53,6 +53,10 @@ namespace QuikSharp.DataStructures
         [JsonProperty("depo_open_balance")]
         public double DepoOpenBalance { get; set; }
 
-        // ReSharper restore InconsistentNaming
+        /// <summary>
+        /// Входящий лимит по инструментам
+        /// </summary>
+        [JsonProperty("depo_open_limit")]
+        public double DepoOpenLimit { get; set; }
     }
 }

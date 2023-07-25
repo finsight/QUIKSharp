@@ -23,7 +23,8 @@ namespace QuikSharpDemo
         bool isServerConnected = false;
         bool isSubscribedToolOrderBook = false;
         bool isSubscribedToolCandles = false;
-        string secCode = "SiU3";
+        //string secCode = "SiU3";
+        string secCode = "SU26225RMFS1";
         string classCode = "";
         string clientCode;
         decimal bid;
@@ -114,6 +115,15 @@ namespace QuikSharpDemo
                     if (isServerConnected)
                     {
                         textBoxLogsWindow.AppendText("Соединение с сервером установлено." + Environment.NewLine);
+                        textBoxLogsWindow.AppendText("Определяем код клиента..." + Environment.NewLine);
+                        //clientCode              = _quik.Class.GetClientCode().Result;
+                        List<string> codes = _quik.Class.GetClientCodes().Result;
+                        if (codes.Count > 0)
+                        {
+                            comboBox_ClientCode.Items.AddRange(codes.ToArray<object>());
+                            comboBox_ClientCode.SelectedItem = comboBox_ClientCode.Items[0];
+                            clientCode = comboBox_ClientCode.SelectedItem.ToString();
+                        }
                         buttonRun.Enabled = true;
                         buttonStart.Enabled = false;
                     }
@@ -155,16 +165,6 @@ namespace QuikSharpDemo
                 if (classCode!= null && classCode != "")
                 {
                     textBoxClassCode.Text   = classCode;
-                    textBoxLogsWindow.AppendText("Определяем код клиента..." + Environment.NewLine);
-                    //clientCode              = _quik.Class.GetClientCode().Result;
-                    List<string> codes      = _quik.Class.GetClientCodes().Result;
-                    if (codes.Count > 0)
-                    {
-                        comboBox_ClientCode.Items.AddRange(codes.ToArray<object>());
-                        comboBox_ClientCode.SelectedItem    = comboBox_ClientCode.Items[0];
-                        clientCode                          = comboBox_ClientCode.SelectedItem.ToString();
-                    }
-
                     textBoxLogsWindow.AppendText("Создаем экземпляр инструмента " + secCode + "|" + classCode + "..." + Environment.NewLine);
                     tool                    = new Tool(_quik, secCode, classCode);
                     if (tool != null && tool.Name != null && tool.Name != "")

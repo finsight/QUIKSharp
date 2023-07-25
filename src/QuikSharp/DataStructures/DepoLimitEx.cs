@@ -85,9 +85,24 @@ namespace QuikSharp.DataStructures
 
         /// <summary>
         /// Цена приобретения
+        /// Старый параметр
         /// </summary>
         [JsonProperty("awg_position_price")]
         public double AweragePositionPrice { get; set; }
+
+        /// <summary>
+        /// Цена приобретения
+        /// </summary>
+        [JsonProperty("wa_position_price")]
+        public double WaPositionPrice { get; set; }
+
+        /// <summary>
+        /// Валюта, в которой отображается значение цены приобретения инструмента. 
+        /// Для облигаций, цена которых выражена в процентах от номинала, возвращается значение «%». 
+        /// Параметр может принимать значение "пусто", если в момент запроса данных в терминале отсутствует информация для расчета валюты цены приобретения
+        /// </summary>
+        [JsonProperty("wa_price_currency")]
+        public string WaPriceCurrency { get; set; }
 
         private long _limitKindInt;
 

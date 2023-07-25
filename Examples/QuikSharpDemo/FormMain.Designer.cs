@@ -127,7 +127,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(20, 45);
+            this.label1.Location = new System.Drawing.Point(245, 45);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(51, 13);
             this.label1.TabIndex = 5;
@@ -135,7 +135,7 @@
             // 
             // textBoxSecCode
             // 
-            this.textBoxSecCode.Location = new System.Drawing.Point(93, 42);
+            this.textBoxSecCode.Location = new System.Drawing.Point(318, 42);
             this.textBoxSecCode.Name = "textBoxSecCode";
             this.textBoxSecCode.Size = new System.Drawing.Size(140, 20);
             this.textBoxSecCode.TabIndex = 6;
@@ -159,7 +159,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(20, 154);
+            this.label3.Location = new System.Drawing.Point(20, 127);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(58, 13);
             this.label3.TabIndex = 5;
@@ -168,7 +168,7 @@
             // textBoxAccountID
             // 
             this.textBoxAccountID.Enabled = false;
-            this.textBoxAccountID.Location = new System.Drawing.Point(93, 151);
+            this.textBoxAccountID.Location = new System.Drawing.Point(93, 124);
             this.textBoxAccountID.Name = "textBoxAccountID";
             this.textBoxAccountID.Size = new System.Drawing.Size(140, 20);
             this.textBoxAccountID.TabIndex = 6;
@@ -176,7 +176,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(20, 127);
+            this.label4.Location = new System.Drawing.Point(20, 44);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(58, 13);
             this.label4.TabIndex = 5;
@@ -185,7 +185,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(20, 180);
+            this.label5.Location = new System.Drawing.Point(20, 153);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(37, 13);
             this.label5.TabIndex = 5;
@@ -194,7 +194,7 @@
             // textBoxFirmID
             // 
             this.textBoxFirmID.Enabled = false;
-            this.textBoxFirmID.Location = new System.Drawing.Point(93, 177);
+            this.textBoxFirmID.Location = new System.Drawing.Point(93, 150);
             this.textBoxFirmID.Name = "textBoxFirmID";
             this.textBoxFirmID.Size = new System.Drawing.Size(140, 20);
             this.textBoxFirmID.TabIndex = 6;
@@ -354,11 +354,11 @@
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(240, 45);
+            this.label14.Location = new System.Drawing.Point(465, 45);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(270, 13);
+            this.label14.Size = new System.Drawing.Size(465, 13);
             this.label14.TabIndex = 5;
-            this.label14.Text = "- НЕОБХОДИМО УКАЗАТЬ ТИКЕР ИНСТРУМЕНТА";
+            this.label14.Text = "- НЕОБХОДИМО УКАЗАТЬ ТИКЕР ИНСТРУМЕНТА ПЕРЕД НАЖАНИЕМ КНОПКИ \"RUN\"";
             // 
             // label15
             // 
@@ -436,7 +436,7 @@
             // comboBox_ClientCode
             // 
             this.comboBox_ClientCode.FormattingEnabled = true;
-            this.comboBox_ClientCode.Location = new System.Drawing.Point(93, 124);
+            this.comboBox_ClientCode.Location = new System.Drawing.Point(93, 41);
             this.comboBox_ClientCode.Name = "comboBox_ClientCode";
             this.comboBox_ClientCode.Size = new System.Drawing.Size(140, 21);
             this.comboBox_ClientCode.TabIndex = 8;
