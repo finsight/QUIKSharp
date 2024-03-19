@@ -66,6 +66,7 @@ namespace QuikSharpDemo
             timerRenewForm.Enabled      = false;
             listBoxCommands.Enabled     = false;
             listBoxCommands.Items.Add("Получить исторические данные");
+            listBoxCommands.Items.Add("Получить исторические данные (с параметром `bid`)");
             listBoxCommands.Items.Add("Выставить лимитрированную заявку (без сделки)");
             listBoxCommands.Items.Add("Выставить лимитрированную заявку (c выполнением!!!)");
             listBoxCommands.Items.Add("Выставить рыночную заявку (c выполнением!!!)");
@@ -96,10 +97,10 @@ namespace QuikSharpDemo
             {
                 textBoxLogsWindow.AppendText("Подключаемся к терминалу Quik..." + Environment.NewLine);
                 if (checkBoxRemoteHost.Checked) _quik = new Quik(Quik.DefaultPort, new InMemoryStorage(), textBoxHost.Text);    // инициализируем объект Quik с использованием удаленного IP-адреса терминала
-                else _quik = new Quik(Quik.DefaultPort, new InMemoryStorage());    // инициализируем объект Quik с использованием локального расположения терминала (по умолчанию)
+                //else _quik = new Quik(Quik.DefaultPort, new InMemoryStorage());    // инициализируем объект Quik с использованием локального расположения терминала (по умолчанию)
                 //// Отладочный вариант подключения
                 //if (checkBoxRemoteHost.Checked) _quik = new Quik(34136, new InMemoryStorage(), textBoxHost.Text);    // инициализируем объект Quik с использованием удаленного IP-адреса терминала
-                //else _quik = new Quik(34144, new InMemoryStorage());    // инициализируем объект Quik с использованием локального расположения терминала (по умолчанию)
+                else _quik = new Quik(34144, new InMemoryStorage());    // инициализируем объект Quik с использованием локального расположения терминала (по умолчанию)
             }
             catch
             {
@@ -124,6 +125,20 @@ namespace QuikSharpDemo
                             comboBox_ClientCode.SelectedItem = comboBox_ClientCode.Items[0];
                             clientCode = comboBox_ClientCode.SelectedItem.ToString();
                         }
+
+                        textBoxLogsWindow.AppendText("Определяем аккаунт..." + Environment.NewLine);
+                        List<TradesAccounts> accounts = _quik.Class.GetTradeAccounts().Result;
+                        if (accounts.Count > 0)
+                        {
+                            foreach(TradesAccounts account in accounts)
+                            {
+                                textBoxLogsWindow.AppendText("Найден аккаунт: " + "firmID-"+account.Firmid + ", TrdaccId-" + account.TrdaccId + ", MainTrdaccid-" + account.MainTrdaccid + Environment.NewLine);
+                            }
+                            //comboBox_ClientCode.Items.AddRange(codes.ToArray<object>());
+                            //comboBox_ClientCode.SelectedItem = comboBox_ClientCode.Items[0];
+                            //clientCode = comboBox_ClientCode.SelectedItem.ToString();
+                        }
+
                         buttonRun.Enabled = true;
                         buttonStart.Enabled = false;
                     }
@@ -299,6 +314,9 @@ namespace QuikSharpDemo
                 case "Получить исторические данные":
                     textBoxDescription.Text = "Получить и отобразить исторические данные котировок по заданному инструменту. Тайм-фрейм = 15 Minute";
                     break;
+                case "Получить исторические данные (с параметром `bid`)":
+                    textBoxDescription.Text = "Получить и отобразить исторические данные котировок по заданному инструменту и параметру `bid`. Тайм-фрейм = 15 Minute";
+                    break;
                 case "Выставить лимитрированную заявку (без сделки)":
                     textBoxDescription.Text = "Будет выставлена заявку на покупку 1-го лота заданного инструмента, по цене на 5% ниже текущей цены (вероятность срабатывания такой заявки достаточно низкая, чтобы успеть ее отменить)";
                     break;
@@ -388,6 +406,26 @@ namespace QuikSharpDemo
                         {
                             AppendText2TextBox(textBoxLogsWindow, "Получаем исторические данные..." + Environment.NewLine);
                             toolCandles = _quik.Candles.GetAllCandles(tool.ClassCode, tool.SecurityCode, CandleInterval.M15).Result;
+                            AppendText2TextBox(textBoxLogsWindow, "Выводим исторические данные в таблицу..." + Environment.NewLine);
+                            toolCandlesTable = new FormOutputTable(toolCandles);
+                            toolCandlesTable.Show();
+                            _quik.Candles.NewCandle += OnNewCandleDo;
+                        }
+                        else AppendText2TextBox(textBoxLogsWindow, "Неудачная попытка подписки на исторические данные." + Environment.NewLine);
+                    }
+                    catch { AppendText2TextBox(textBoxLogsWindow, "Ошибка получения исторических данных." + Environment.NewLine); }
+                    break;
+                case "Получить исторические данные (с параметром `bid`)":
+                    try
+                    {
+                        AppendText2TextBox(textBoxLogsWindow, "Подписываемся на получение исторических данных..." + Environment.NewLine);
+                        _quik.Candles.Subscribe(tool.ClassCode, tool.SecurityCode, CandleInterval.M15, "bid").Wait();
+                        AppendText2TextBox(textBoxLogsWindow, "Проверяем состояние подписки..." + Environment.NewLine);
+                        isSubscribedToolCandles = _quik.Candles.IsSubscribed(tool.ClassCode, tool.SecurityCode, CandleInterval.M15, "bid").Result;
+                        if (isSubscribedToolCandles)
+                        {
+                            AppendText2TextBox(textBoxLogsWindow, "Получаем исторические данные..." + Environment.NewLine);
+                            toolCandles = _quik.Candles.GetAllCandles(tool.ClassCode, tool.SecurityCode, CandleInterval.M15, "bid").Result;
                             AppendText2TextBox(textBoxLogsWindow, "Выводим исторические данные в таблицу..." + Environment.NewLine);
                             toolCandlesTable = new FormOutputTable(toolCandles);
                             toolCandlesTable.Show();
