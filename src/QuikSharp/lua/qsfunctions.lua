@@ -963,7 +963,7 @@ function qsfunctions.get_candles_from_data_source(msg)
 		--- датасорс изначально приходит пустой, нужно некоторое время подождать пока он заполниться данными
 		repeat sleep(1) until ds:Size() > 0
 
-		local count = tonumber(split(msg.data, "|")[4]) --- возвращаем последние count свечей. Если равен 0, то возвращаем все доступные свечи.
+		local count = tonumber(split(msg.data, "|")[5]) --- возвращаем последние count свечей. Если равен 0, то возвращаем все доступные свечи.
 		local class, sec, interval, param = get_candles_param(msg)
 		local candles = {}
 		local start_i = count == 0 and 1 or math.max(1, ds:Size() - count + 1)
@@ -982,10 +982,12 @@ end
 
 function create_data_source(msg)
 	local class, sec, interval, param = get_candles_param(msg)
-	if param == "" then
-		local ds, error_descr = CreateDataSource(class, sec, interval)
+	local ds
+	local error_descr
+	if param == "-" then
+		ds, error_descr = CreateDataSource(class, sec, interval)
 	else
-		local ds, error_descr = CreateDataSource(class, sec, interval, param)
+		ds, error_descr = CreateDataSource(class, sec, interval, param)
 	end
 	local is_error = false
 	if(error_descr ~= nil) then
