@@ -38,7 +38,7 @@ namespace QuikSharp.DataStructures
         /// Объем последней сделки
         /// </summary>
         [JsonProperty("volume")]
-        public int Volume { get; set; }
+        public decimal Volume { get; set; }
 
         /// <summary>
         /// Дата и время
