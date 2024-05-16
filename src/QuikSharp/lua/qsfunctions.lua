@@ -924,7 +924,7 @@ end
 
 --- Возвращаем количество свечей по тегу
 function qsfunctions.get_num_candles(msg)
-	log("Called get_num_candles" .. msg.data, 2)
+	--log("Called get_num_candles" .. msg.data, 2)
 	local spl = split(msg.data, "|")
 	local tag = spl[1]
 
@@ -935,7 +935,7 @@ end
 
 --- Возвращаем все свечи по идентификатору графика. График должен быть открыт
 function qsfunctions.get_candles(msg)
-	log("Called get_candles" .. msg.data, 2)
+	--log("Called get_candles" .. msg.data, 2)
 	local spl = split(msg.data, "|")
 	local tag = spl[1]
 	local line = tonumber(spl[2])
@@ -944,10 +944,10 @@ function qsfunctions.get_candles(msg)
 	if count == 0 then
 		count = getNumCandles(tag) * 1
 	end
-	log("Count: " .. count, 2)
+	--log("Count: " .. count, 2)
 	local t,n,l = getCandlesByIndex(tag, line, first_candle, count)
-	log("Candles table size: " .. n, 2)
-	log("Label: " .. l, 2)
+	--log("Candles table size: " .. n, 2)
+	--log("Label: " .. l, 2)
 	local candles = {}
 	for i = 0, count - 1 do
 		table.insert(candles, t[i])
