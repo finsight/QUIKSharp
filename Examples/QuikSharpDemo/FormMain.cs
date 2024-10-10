@@ -13,6 +13,7 @@ using QuikSharp.DataStructures.Transaction;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
+using QuikSharpDemo.Properties;
 
 namespace QuikSharpDemo
 {
@@ -45,6 +46,7 @@ namespace QuikSharpDemo
         List<BuySellInfo> listBuySellInfo;
         FormOutputTable toolCandlesTable;
         FormOrderBook toolOrderBookTable;
+        FormRequestValue requestValue;
         Order order;
         FuturesLimits futLimit;
         FuturesClientHolding futuresPosition;
@@ -71,6 +73,8 @@ namespace QuikSharpDemo
             listBoxCommands.Items.Add("Выставить лимитрированную заявку (c выполнением!!!)");
             listBoxCommands.Items.Add("Выставить рыночную заявку (c выполнением!!!)");
             listBoxCommands.Items.Add("Удалить активную заявку");
+            listBoxCommands.Items.Add("Получить заявку по номеру");
+            listBoxCommands.Items.Add("Получить заявку по ID транзакции");
             listBoxCommands.Items.Add("Получить информацию по бумаге");
             listBoxCommands.Items.Add("Получить таблицу лимитов по бумаге");
             listBoxCommands.Items.Add("Получить таблицу лимитов по всем бумагам");
@@ -329,6 +333,12 @@ namespace QuikSharpDemo
                 case "Выставить заявку (Удалить активную заявку)":
                     textBoxDescription.Text = "Если предварительно была выставлена заявка, заявка имеет статус 'Активна' и ее номер отображается в форме, то эта заявка будет удалена/отменена";
                     break;
+                case "Получить заявку по номеру":
+                    textBoxDescription.Text = "Попытаться получить заявку по номеру, который укажет пользователь";
+                    break;
+                case "Получить заявку по ID транзакции)":
+                    textBoxDescription.Text = "Попытаться получить заявку по ID транзакции, который укажет пользователь";
+                    break;
                 case "Получить таблицу лимитов по бумаге":
                     textBoxDescription.Text = "Получить и отобразить таблицу лимитов по бумагам. quik.Trading.GetDepoLimits(securityCode)";
                     break;
@@ -523,6 +533,98 @@ namespace QuikSharpDemo
                         Text2TextBox(textBoxOrderNumber, "");
                     }
                     catch { AppendText2TextBox(textBoxLogsWindow, "Ошибка удаления заявки." + Environment.NewLine); }
+                    break;
+                case "Получить заявку по номеру":
+                    try
+                    {
+                        AppendText2TextBox(textBoxLogsWindow, "Запрашиваем номер заявки у пользователя..." + Environment.NewLine);
+                        requestValue = new FormRequestValue();
+                        requestValue.ShowDialog();
+                        String requestedValue = requestValue.RequestedValue;
+                        requestValue.Dispose();
+                        if (requestedValue.Length > 0)
+                        {
+                            long orderNumber = 0;
+                            try
+                            {
+                                orderNumber = Convert.ToInt64(requestedValue.Replace(" ", ""));
+                            }
+                            catch
+                            {
+                                AppendText2TextBox(textBoxLogsWindow, "Полученное от пользователя значение не удалось преобразовать в номер заявки. Запрос не будет выполнен." + Environment.NewLine);
+                            }
+                            if (orderNumber > 0)
+                            {
+                                AppendText2TextBox(textBoxLogsWindow, "Ищем заявку с номером - " + orderNumber + " ..." + Environment.NewLine);
+                                Order findOrder = _quik.Orders.GetOrder_by_Number(orderNumber).Result;
+                                if (findOrder != null) 
+                                {
+                                    listOrders = new List<Order>
+                                    {
+                                        findOrder
+                                    };
+                                    AppendText2TextBox(textBoxLogsWindow, "Выводим данные о заявке в таблицу..." + Environment.NewLine);
+                                    toolCandlesTable = new FormOutputTable(listOrders);
+                                    toolCandlesTable.Show();
+                                }
+                                else
+                                {
+                                    AppendText2TextBox(textBoxLogsWindow, "Не удалось найти заявку по указанному номеру..." + Environment.NewLine);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            AppendText2TextBox(textBoxLogsWindow, "Номер заявки не указан. Запрос не будет выполнен." + Environment.NewLine);
+                        }
+                    }
+                    catch { AppendText2TextBox(textBoxLogsWindow, "Ошибка получения заявки по номеру." + Environment.NewLine); }
+                    break;
+                case "Получить заявку по ID транзакции":
+                    try
+                    {
+                        AppendText2TextBox(textBoxLogsWindow, "Запрашиваем ID транзакции у пользователя..." + Environment.NewLine);
+                        requestValue = new FormRequestValue();
+                        requestValue.ShowDialog();
+                        String requestedValue = requestValue.RequestedValue;
+                        requestValue.Dispose();
+                        if (requestedValue.Length > 0)
+                        {
+                            long transID = 0;
+                            try
+                            {
+                                transID = Convert.ToInt64(requestedValue.Replace(" ", ""));
+                            }
+                            catch
+                            {
+                                AppendText2TextBox(textBoxLogsWindow, "Полученное от пользователя значение не удалось преобразовать в ID транзакции. Запрос не будет выполнен." + Environment.NewLine);
+                            }
+                            if (transID > 0)
+                            {
+                                AppendText2TextBox(textBoxLogsWindow, "Ищем заявку с ID транзакции - " + transID + " ..." + Environment.NewLine);
+                                Order findOrder = _quik.Orders.GetOrder_by_transID(tool.ClassCode, tool.SecurityCode, transID).Result;
+                                if (findOrder != null)
+                                {
+                                    listOrders = new List<Order>
+                                    {
+                                        findOrder
+                                    };
+                                    AppendText2TextBox(textBoxLogsWindow, "Выводим данные о заявке в таблицу..." + Environment.NewLine);
+                                    toolCandlesTable = new FormOutputTable(listOrders);
+                                    toolCandlesTable.Show();
+                                }
+                                else
+                                {
+                                    AppendText2TextBox(textBoxLogsWindow, "Не удалось найти заявку по указанному ID транзакции..." + Environment.NewLine);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            AppendText2TextBox(textBoxLogsWindow, "ID транзакции не указан. Запрос не будет выполнен." + Environment.NewLine);
+                        }
+                    }
+                    catch { AppendText2TextBox(textBoxLogsWindow, "Ошибка получения заявки по ID транзакции." + Environment.NewLine); }
                     break;
                 case "Получить информацию по бумаге":
                     try

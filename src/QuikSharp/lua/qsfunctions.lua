@@ -692,7 +692,7 @@ function qsfunctions.getOrder_by_ID(msg)
 	end
 
 	local order_num = 0
-	local res
+	local res = nil
 	for i = 0, getNumberOf("orders") - 1 do
 		local order = getItem("orders", i)
 		if order.class_code == class_code and order.sec_code == sec_code and order.trans_id == tonumber(trans_id) and order.order_num > order_num then
@@ -713,6 +713,7 @@ function qsfunctions.getOrder_by_Number(msg)
 			return msg
 		end
 	end
+	msg.data = nil
 	return msg
 end
 
