@@ -25,7 +25,7 @@ namespace QuikSharpDemo
         bool isSubscribedToolOrderBook = false;
         bool isSubscribedToolCandles = false;
         //string secCode = "SiU3";
-        string secCode = "SU26225RMFS1";
+        string secCode = "SBER";
         string classCode = "";
         string clientCode;
         decimal bid;
@@ -175,7 +175,7 @@ namespace QuikSharpDemo
                 textBoxLogsWindow.AppendText("Определяем код класса инструмента " + secCode + ", по списку классов" + "..." + Environment.NewLine);
                 try
                 {
-                    classCode = textBoxClassCode.Text == "" ? _quik.Class.GetSecurityClass("SPBFUT,TQBR,TQBS,TQNL,TQLV,TQNE,TQOB,SPBXM", secCode).Result : textBoxClassCode.Text.ToUpper();
+                    classCode = textBoxClassCode.Text == "" ? _quik.Class.GetSecurityClass("SPBFUT,TQBR,TQBS,TQNL,TQLV,TQNE,TQOB,SPBXM,QJSIM", secCode).Result : textBoxClassCode.Text.ToUpper();
                 }
                 catch
                 {
