@@ -120,6 +120,17 @@ namespace QuikSharp.DataStructures
         [JsonProperty("real_varmargin")]
         public double RealVarMargin { get; set; }
 
+        /// <summary>
+        /// Уровень риска клиента
+        /// «0» – (пусто, по умолчанию), уровень риска не указан; 
+        /// «1» – КНУР(клиент с начальным уровнем риска); 
+        /// «2» – КСУР(клиент со стандартным уровнем риска); 
+        /// «3» – КПУР(клиент с повышенным уровнем риска); 
+        /// «4» – КОУР(клиент с особым уровнем риска)
+        /// </summary>
+        [JsonProperty("risk_level")]
+        public int RiskLevel { get; set; }
+
         // ReSharper restore InconsistentNaming
     }
 }
