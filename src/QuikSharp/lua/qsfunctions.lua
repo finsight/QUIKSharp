@@ -433,7 +433,7 @@ function qsfunctions.GetQuoteLevel2(msg)
     local spl = split(msg.data, "|")
     local class_code, sec_code = spl[1], spl[2]
     local server_time = getInfoParam("SERVERTIME")
-    local status, ql2 = pcall(getQuoteLevel2, class_code, sec_code)
+	local status, ql2 = pcall(getQuoteLevel2, class_code, sec_code)
     if status then
         msg.data				= ql2
         msg.data.class_code		= class_code
@@ -850,8 +850,8 @@ end
 --------------------------
 function qsfunctions.getOptionBoard(msg)
     local spl = split(msg.data, "|")
-    local classCode, secCode = spl[1], spl[2]
-	local result, err = getOptions(classCode, secCode)
+    local classCode, secCode, series = spl[1], spl[2], spl[3]
+	local result, err = getOptions(classCode, secCode, series )
 	if result then
 		msg.data = result
 	else
@@ -861,35 +861,75 @@ function qsfunctions.getOptionBoard(msg)
     return msg
 end
 
-function getOptions(classCode,secCode)
+function getOptions(classCode,secCode,series)
 	--classCode = "SPBOPT"
 --BaseSecList="RIZ6"
+--series: 0 - ближайшая неделя, 1 - ближний месяц, 2 - ближний квартал, 4 - все
 local SecList = getClassSecurities(classCode) --все сразу
 local t={}
 local p={}
+local week = false
+local month = false
+local quartal = false
+local all = false
+local len = 0;
+local days_to_mat
+local last_char
 for sec in string.gmatch(SecList, "([^,]+)") do --перебираем опционы по очереди.
+			week = false
+			month = false
+			quartal = false
+			all = false
+			
+
             local Optionbase=getParamEx(classCode,sec,"optionbase").param_image
-            local Optiontype=getParamEx(classCode,sec,"optiontype").param_image
-            if (string.find(secCode,Optionbase)~=nil) then
+            if (string.find(secCode,Optionbase)~=nil ) then
+
+				days_to_mat = getParamEx(classCode,sec,"DAYS_TO_MAT_DATE").param_value+0
+				len = string.len(sec)
+				last_char = string.sub(sec, len)
+
+				--log("Last char:"..last_char)
+				--log("Type:"..type(tonumber(last_char)))
+				if(tonumber(last_char) ~= nil) then
+				--	log("Convert: "..tonumber(last_char))
+					month = true
+				end
+				
+				
 
 
-                p={
-                    ["code"]=getParamEx(classCode,sec,"code").param_image,
-					["Name"]=getSecurityInfo(classCode,sec).name,
-					["DAYS_TO_MAT_DATE"]=getParamEx(classCode,sec,"DAYS_TO_MAT_DATE").param_value+0,
-					["BID"]=getParamEx(classCode,sec,"BID").param_value+0,
-					["OFFER"]=getParamEx(classCode,sec,"OFFER").param_value+0,
-					["OPTIONBASE"]=getParamEx(classCode,sec,"optionbase").param_image,
-					["OPTIONTYPE"]=getParamEx(classCode,sec,"optiontype").param_image,
-					["Longname"]=getParamEx(classCode,sec,"longname").param_image,
-					["shortname"]=getParamEx(classCode,sec,"shortname").param_image,
-					["Volatility"]=getParamEx(classCode,sec,"volatility").param_value+0,
-					["Strike"]=getParamEx(classCode,sec,"strike").param_value+0
-                    }
+				if( tonumber(days_to_mat) <= 8 ) then
+				--	log("this week".."Sec:"..sec.." Days:"..days_to_mat)
+					week = true
+				else
+				--	log("Sec:"..sec.." Days:"..days_to_mat)
+				end
+
+				if(( tonumber(series) == 0 and week) or (tonumber(series) == 1 and month) ) or tonumber(series) == 4 then
+					p={
+						["code"]=getParamEx(classCode,sec,"code").param_image,
+						["Name"]=getSecurityInfo(classCode,sec).name,
+						["DAYS_TO_MAT_DATE"]=days_to_mat,
+						["BID"]=getParamEx(classCode,sec,"BID").param_value+0,
+						["OFFER"]=getParamEx(classCode,sec,"OFFER").param_value+0,
+						["OPTIONBASE"]=Optionbase,
+						["OPTIONTYPE"]=getParamEx(classCode,sec,"optiontype").param_image,
+						["Longname"]=getParamEx(classCode,sec,"longname").param_image,
+						["shortname"]=getParamEx(classCode,sec,"shortname").param_image,
+						["Volatility"]=getParamEx(classCode,sec,"volatility").param_value+0,
+						["Strike"]=getParamEx(classCode,sec,"strike").param_value+0,
+						["Lastprice"]=getParamEx(classCode,sec,"last").param_value+0,
+						["THEORPRICE"]=getParamEx(classCode,sec,"THEORPRICE").param_value+0,
+						["MAT_DATE"]=getParamEx(classCode,sec,"MAT_DATE").param_image,
+						["STEPPRICET"]=getParamEx(classCode,sec,"STEPPRICET").param_value+0,
+						["SEC_PRICE_STEP"]=getParamEx(classCode,sec,"SEC_PRICE_STEP").param_value+0
+						}
 
 
 
-                        table.insert( t, p )
+							table.insert( t, p )
+				end
             end
 
 end
