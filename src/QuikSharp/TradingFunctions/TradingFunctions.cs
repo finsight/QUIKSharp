@@ -100,8 +100,9 @@ namespace QuikSharp
         /// </summary>
         /// <param name="classCode"></param>
         /// <param name="secCode"></param>
+        /// <param name="series"></param>
         /// <returns></returns>
-        Task<List<OptionBoard>> GetOptionBoard(string classCode, string secCode);
+        Task<List<OptionBoard>> GetOptionBoard(string classCode, string secCode, string series);
 
         /// <summary>
         /// Функция заказывает получение параметров Таблицы текущих торгов
@@ -495,9 +496,9 @@ namespace QuikSharp
             return response.Data;
         }
 
-        public async Task<List<OptionBoard>> GetOptionBoard(string classCode, string secCode)
+        public async Task<List<OptionBoard>> GetOptionBoard(string classCode, string secCode, string series)
         {
-            var message = new Message<string>(classCode + "|" + secCode, "getOptionBoard");
+            var message = new Message<string>(classCode + "|" + secCode + "|" + series, "getOptionBoard");
             Message<List<OptionBoard>> response =
                 await QuikService.Send<Message<List<OptionBoard>>>(message).ConfigureAwait(false);
             return response.Data;
