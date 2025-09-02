@@ -975,6 +975,7 @@ function qsfunctions.get_candles_from_data_source(msg)
 			candle.interval = interval
 			table.insert(candles, candle)
 		end
+		ds:SetEmptyCallback()
 		ds:Close()
 		msg.data = candles
 	end
@@ -1056,6 +1057,7 @@ end
 function qsfunctions.unsubscribe_from_candles(msg)
 	local class, sec, interval, param = get_candles_param(msg)
 	local key = get_key(class, sec, interval, param)
+	data_sources[key]:SetEmptyCallback()
 	data_sources[key]:Close()
 	data_sources[key] = nil
 	last_indexes[key] = nil
