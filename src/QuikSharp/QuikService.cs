@@ -17,6 +17,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using System.Diagnostics; // Для Process
+using System.Runtime.InteropServices; // Для RuntimeInformation
 
 namespace QuikSharp
 {
@@ -784,20 +786,53 @@ namespace QuikSharp
         {
             if (mmf == null || accessor == null)
             {
-                if (String.IsNullOrEmpty(WorkingFolder)) //WorkingFolder = Не определено. Создаем MMF в памяти
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
-                    mmf = MemoryMappedFile.CreateOrOpen("UniqueID", 4096);
+                    // Оригинальная логика для Windows
+                    if (String.IsNullOrEmpty(WorkingFolder)) //WorkingFolder = Не определено. Создаем MMF в памяти
+                    {
+                        mmf = MemoryMappedFile.CreateOrOpen("UniqueID", 4096);
+                    }
+                    else //WorkingFolder определен. Открываем MMF с диска
+                    {
+                        string diskFileName = WorkingFolder + "\\" + "QUIKSharp.Settings";
+                        try
+                        {
+                            mmf = MemoryMappedFile.CreateFromFile(diskFileName, FileMode.OpenOrCreate, "UniqueID", 4096);
+                        }
+                        catch
+                        {
+                            mmf = MemoryMappedFile.CreateOrOpen("UniqueID", 4096);
+                        }
+                    }
                 }
-                else //WorkingFolder определен. Открываем MMF с диска
+                else
                 {
-                    string diskFileName = WorkingFolder + "\\" + "QUIKSharp.Settings";
+                    // Логика для macOS/Linux: file-backed MMF без mapName
+                    string filePath = !String.IsNullOrEmpty(WorkingFolder)
+                        ? Path.Combine(WorkingFolder, "QUIKSharp.Settings")
+                        : Path.Combine(Path.GetTempPath(), $"QUIKSharp.Settings_{Process.GetCurrentProcess().Id}.dat");
+
                     try
                     {
-                        mmf = MemoryMappedFile.CreateFromFile(diskFileName, FileMode.OpenOrCreate, "UniqueID", 4096);
+                        using (var fileStream = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite))
+                        {
+                            if (fileStream.Length < 4096)
+                            {
+                                fileStream.SetLength(4096);
+                            }
+                            mmf = MemoryMappedFile.CreateFromFile(fileStream, null, 4096, MemoryMappedFileAccess.ReadWrite, HandleInheritability.None, true);
+                        }
                     }
                     catch
                     {
-                        mmf = MemoryMappedFile.CreateOrOpen("UniqueID", 4096);
+                        // Fallback на временный файл
+                        filePath = Path.GetTempFileName();
+                        using (var fileStream = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite))
+                        {
+                            fileStream.SetLength(4096);
+                            mmf = MemoryMappedFile.CreateFromFile(fileStream, null, 4096, MemoryMappedFileAccess.ReadWrite, HandleInheritability.None, true);
+                        }
                     }
                 }
 
