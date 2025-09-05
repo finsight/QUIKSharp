@@ -5,6 +5,8 @@ local socket = require ("socket")
 local json = require ("dkjson")
 local qsutils = {}
 
+os.execute("mkdir \""..script_path.."\\logs\"")
+
 --- Sleep that always works
 function delay(msec)
     if sleep then
@@ -40,14 +42,51 @@ is_debug = false
 
 -- log files
 
-function openLog()
-    os.execute("mkdir \""..script_path.."\\logs\"")
-    local lf = io.open (script_path.. "\\logs\\QUIK#_"..os.date("%Y%m%d")..".log", "a")
-    if not lf then
-        lf = io.open (script_path.. "\\QUIK#_"..os.date("%Y%m%d")..".log", "a")
+-- Функция log (полностью переписана)
+function log(msg, level)
+    if not msg then msg = "" end
+    if not level then level = 0 end
+    
+    local logLine = "LOG " .. level .. ": " .. msg
+    print(logLine)  -- Для консоли, если нужно
+    
+    -- Вывод в QUIK message только для важных уровней или debug
+    if (level == 1 or level == 2 or level == 3 or is_debug) and message then
+        pcall(message, msg, level)
     end
-    return lf
+    
+    -- Путь к файлу (как в оригинале)
+    local log_path = script_path .. "\\logs\\QUIK#_" .. os.date("%Y%m%d") .. ".log"
+    
+    -- Открываем заново каждый раз
+    local lf = io.open(log_path, "a")
+    if not lf then
+        -- Retry один раз, на случай временной блокировки
+        lf = io.open(log_path, "a")
+        if not lf then
+            -- Fallback: только в QUIK message, если возможно
+            if message then
+                pcall(message, "Ошибка логирования: не удалось открыть файл " .. log_path, 3)
+            end
+            return  -- Выходим, чтобы не крашить
+        end
+    end
+    
+    -- Запись с timestamp
+    local msecs = math.floor(math.fmod(timemsec(), 1000))  -- timemsec() из QUIK
+    pcall(lf.write, lf, os.date("%Y-%m-%d %H:%M:%S") .. "." .. msecs .. " " .. logLine .. "\n")
+    pcall(lf.flush, lf)
+    pcall(lf.close, lf)  -- Закрываем сразу
 end
+
+--function openLog()
+--    os.execute("mkdir \""..script_path.."\\logs\"")
+--    local lf = io.open (script_path.. "\\logs\\QUIK#_"..os.date("%Y%m%d")..".log", "a")
+--    if not lf then
+--        lf = io.open (script_path.. "\\QUIK#_"..os.date("%Y%m%d")..".log", "a")
+--    end
+--    return lf
+--end
 
 -- Returns contents of config.json file or nil if no such file exists
 function readConfigAsJson()
@@ -99,34 +138,36 @@ function paramsFromConfig(scriptName)
     end
 end
 
--- closes log
-function closeLog()
-    if logfile then
-        pcall(logfile:close(logfile))
-    end
-end
 
-logfile = openLog()
+---- closes log
+--function closeLog()
+--    if logfile then
+--        pcall(logfile:close(logfile))
+--    end
+--end
+--
+--logfile = openLog()
+--
+----- Write to log file and to Quik messages
+--function log(msg, level)
+--    if not msg then msg = "" end
+--    if level == 1 or level == 2 or level == 3 or is_debug then
+--        -- only warnings and recoverable errors to Quik
+--        if message then
+--            pcall(message, msg, level)
+--        end
+--    end
+--    if not level then level = 0 end
+--    local logLine = "LOG "..level..": "..msg
+--    print(logLine)
+--    local msecs = math.floor(math.fmod(timemsec(), 1000));
+--    if logfile then
+--        pcall(logfile.write, logfile, os.date("%Y-%m-%d %H:%M:%S").."."..msecs.." "..logLine.."\n")
+--        pcall(logfile.flush, logfile)
+--        pcall(logfile.close, logfile)
+--    end
+--end
 
---- Write to log file and to Quik messages
-function log(msg, level)
-    if not msg then msg = "" end
-    if level == 1 or level == 2 or level == 3 or is_debug then
-        -- only warnings and recoverable errors to Quik
-        if message then
-            pcall(message, msg, level)
-        end
-    end
-    if not level then level = 0 end
-    local logLine = "LOG "..level..": "..msg
-    print(logLine)
-    local msecs = math.floor(math.fmod(timemsec(), 1000));
-    if logfile then
-        pcall(logfile.write, logfile, os.date("%Y-%m-%d %H:%M:%S").."."..msecs.." "..logLine.."\n")
-        pcall(logfile.flush, logfile)
-        pcall(logfile.close, logfile)
-    end
-end
 
 -- Doesn't work if string contains empty values, eg. 'foo,,bar'. You get {'foo','bar'} instead of {'foo', '', 'bar'}
 function split(inputstr, sep)

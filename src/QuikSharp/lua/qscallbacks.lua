@@ -6,7 +6,7 @@ package.path = package.path..";"..".\\?.lua;"..".\\?.luac"
 local qscallbacks = {}
 
 local function CleanUp()
-    closeLog()
+    --closeLog()
 end
 
 function OnQuikSharpDisconnected()
