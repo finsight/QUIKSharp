@@ -129,6 +129,12 @@ namespace QuikSharp.DataStructures
         [JsonProperty("exec_market")]
         public string ExecMarket { get; set; }
 
+        /// <summary>
+        /// Идентификатор индикативной ставки
+        /// </summary>
+        [JsonProperty("benchmark")]
+        public string Benchmark { get; set; }
+
         public long LuaTimeStamp { get; set; }
     }
 }

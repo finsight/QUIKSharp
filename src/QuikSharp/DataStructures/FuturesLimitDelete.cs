@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 namespace QuikSharp.DataStructures
 {
     /// <summary>
-    /// При удалении лимита по срочному рынку функция возвращает таблицу Lua с параметрами
+    /// При удалении лимита по срочному рынку функция возвращает таблицу Lua "Удаление фьючерсного лимита" с параметрами
     /// </summary>
     public class FuturesLimitDelete
     {

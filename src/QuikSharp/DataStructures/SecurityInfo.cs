@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 namespace QuikSharp.DataStructures
 {
     /// <summary>
+    /// Описание параметров таблицы Инструменты
     /// Результат getSecurityInfo
     /// </summary>
     public class SecurityInfo
@@ -273,5 +274,12 @@ namespace QuikSharp.DataStructures
         /// </summary>
         [JsonProperty("settle_date")]
         public int SettleDate { get; set; }
+
+        ///// <summary>
+        ///// Ноги составного инструмента в формате leg_<N>
+        ///// понка непонятно как реализовывать
+        ///// </summary>
+        //[JsonProperty("legs")]
+        //public table Legs { get; set; }
     }
 }

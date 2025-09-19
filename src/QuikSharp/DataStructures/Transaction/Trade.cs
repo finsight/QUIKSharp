@@ -44,6 +44,12 @@ namespace QuikSharp.DataStructures.Transaction
         public string FirmId { get; set; }
 
         /// <summary>
+        /// Идентификатор пользователя, отказавшегося от сделки
+        /// </summary>
+        [JsonProperty("canceled_uid")]
+        public double CanceledUserID { get; set; }
+
+        /// <summary>
         /// Торговый счет
         /// </summary>
         [JsonProperty("account")]
@@ -120,6 +126,12 @@ namespace QuikSharp.DataStructures.Transaction
         /// </summary>
         [JsonProperty("accrued2")]
         public double Accrued2 { get; set; }
+
+        /// <summary>
+        /// Срок РЕПО, в календарных днях
+        /// </summary>
+        [JsonProperty("repoterm")]
+        public double RepoTerm { get; set; }
 
         /// <summary>
         /// Сумма РЕПО
@@ -495,5 +507,88 @@ namespace QuikSharp.DataStructures.Transaction
         /// </summary>
         [JsonProperty("cross_rate")]
         public double CrossRate { get; set; }
+
+        /// <summary>
+        /// Дата фиксации котировки для расчетов. Заполняется для контрактов типа «NDF» (см. параметр operation_type)
+        /// </summary>
+        [JsonProperty("fixing_date")]
+        public double FixingDate { get; set; }
+
+        /// <summary>
+        /// Дата, начиная с которой допускается совершение валютирования. Заполняется только для контрактов типа «FLEX FORWARD» (см. параметр operation_type)
+        /// </summary>
+        [JsonProperty("start_date")]
+        public double StartDate { get; set; }
+
+        /// <summary>
+        /// Тип совершаемой операции. Возможные значения:
+        /// «-1» – «NOT_DEFINED»;
+        /// «0» – «SPOT»;
+        /// «1» – «FORWARD»;
+        /// «2» – «SWAP»;
+        /// «6» – «NDF»;
+        /// «7» – «FLEX FORWARD»
+        /// </summary>
+        [JsonProperty("operation_type")]
+        public int OperationType { get; set; }
+
+        /// <summary>
+        /// Цена котировки по спот-инструменту в момент совершения сделки
+        /// </summary>
+        [JsonProperty("spot_rate")]
+        public double SpotRate { get; set; }
+
+        /// <summary>
+        /// Код валюты комиссии торговой системы
+        /// </summary>
+        [JsonProperty("ts_commission_currency")]
+        public string TSCommissionCurrency { get; set; }
+
+        /// <summary>
+        /// Код валюты комиссии брокера
+        /// </summary>
+        [JsonProperty("broker_commission_currency")]
+        public string BrokerCommissionCurrency { get; set; }
+
+        /// <summary>
+        /// Идентификатор торговой сессии. Возможные значения:
+        /// «0» –«Не определено»; 
+        /// «1» –«Основная сессия»; 
+        /// «2» –«Дополнительная сессия»; 
+        /// «3» –«Итоги дня»
+        /// </summary>
+        [JsonProperty("trading_session")]
+        public int TradingSession { get; set; }
+
+        /// <summary>
+        /// Идентификатор индикативной ставки
+        /// </summary>
+        [JsonProperty("benchmark")]
+        public string Benchmark { get; set; }
+
+        /// <summary>
+        /// Тип сделки депозита. Возможные значения:
+        /// «0» – сделка не типа «депозит»; 
+        /// «1» – «Намерение»; 
+        /// «2» –«Депозит»; 
+        /// «3» –«Изъятие»; 
+        /// «4» –«Закрытие планового пополнения»; 
+        /// «5» –«Принудительное закрытие»; 
+        /// «6» –«Перенос пополнения» 
+        /// </summary>
+        [JsonProperty("deposit_intent")]
+        public int DepositIntent { get; set; }
+
+        /// <summary>
+        /// День Т+1 для сделок РЕПО с Открытой датой
+        /// </summary>
+        [JsonProperty("open_repo2date")]
+        public double OpenRepo2Date { get; set; }
+
+        /// <summary>
+        /// Стоимость выкупа РЕПО с открытой датой в день T+1
+        /// </summary>
+        [JsonProperty("open_repo2value")]
+        public double OpenRepo2Value { get; set; }
     }
 }

@@ -31,7 +31,7 @@ namespace QuikSharp.DataStructures
         /// <summary>
         /// Торговые счета
         /// </summary>
-        [JsonProperty("accounts")]
+        [JsonProperty("trade_accounts")]
         public string TradeAccounts { get; set; }
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace QuikSharp.DataStructures
         public string NegDealReports { get; set; }
 
         /// <summary>
-        /// Текущие позиции по бумагам
+        /// Позиции участника по инструментам
         /// </summary>
         [JsonProperty("firm_holding")]
         public string FirmHolding { get; set; }
@@ -126,15 +126,21 @@ namespace QuikSharp.DataStructures
         public string AccountBalance { get; set; }
 
         /// <summary>
-        /// Обязательства и требования по деньгам
-        /// </summary>
-        [JsonProperty("ccp_positions")]
-        public string CCPPositions { get; set; }
-
-        /// <summary>
         /// Обязательства и требования по активам
         /// </summary>
         [JsonProperty("ccp_holdings")]
         public string CCPHoldings { get; set; }
+
+        /// <summary>
+        /// Валюта: обязательства и требования по активам
+        /// </summary>
+        [JsonProperty("rm_holdings")]
+        public string RMHoldings { get; set; }
+
+        /// <summary>
+        /// Обязательства и требования по деньгам
+        /// </summary>
+        [JsonProperty("ccp_positions")]
+        public string CCPPositions { get; set; }
     }
 }

@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 namespace QuikSharp.DataStructures
 {
     /// <summary>
-    /// При изменении текущей позиции по счету функция возвращает таблицу Lua с параметрами
+    /// При изменении текущей позиции по счету функция возвращает таблицу Lua «Позиции участника по торговым счетам» с параметрами
     /// </summary>
     public class AccountBalance
     {

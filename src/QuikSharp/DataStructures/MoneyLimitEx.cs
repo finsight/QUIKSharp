@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 namespace QuikSharp.DataStructures
 {
     /// <summary>
-    /// Лимиты по денежным средствам
+    /// Позиции по деньгам (ранее - Лимиты по денежным средствам)
     /// </summary>
     public class MoneyLimitEx
     {

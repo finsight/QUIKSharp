@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 namespace QuikSharp.DataStructures
 {
     /// <summary>
-    /// При обработке удаления бумажного лимита функция возвращает таблицу Lua с параметрами
+    /// При обработке удаления бумажного лимита функция возвращает таблицу Lua "Удаление позиции по инструментам" с параметрами
     /// </summary>
     public class DepoLimitDelete
     {

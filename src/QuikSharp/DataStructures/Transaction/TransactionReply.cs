@@ -10,6 +10,9 @@ namespace QuikSharp.DataStructures.Transaction
     /// </summary>
     public class TransactionReply : IWithLuaTimeStamp
     {
+        [JsonProperty("lua_timestamp")]
+        public long LuaTimeStamp { get; internal set; }
+
         /// <summary>
         /// Пользовательский идентификатор транзакции
         /// </summary>
@@ -157,7 +160,23 @@ namespace QuikSharp.DataStructures.Transaction
         [JsonProperty("gate_reply_time")]
         public QuikDateTime GateReplyTime { get; set; }
 
-        [JsonProperty("lua_timestamp")]
-        public long LuaTimeStamp { get; internal set; }
+        /// <summary>
+        /// Дата и время отправки транзакции, локальное время клиента в UTC
+        /// </summary>
+        [JsonProperty("sent_local_time")]
+        public QuikDateTime SentLocalTime { get; set; }
+
+        /// <summary>
+        /// Дата и время получения ответа на транзакцию, локальное время клиента в UTC
+        /// </summary>
+        [JsonProperty("got_local_time")]
+        public QuikDateTime GotLocalTime { get; set; }
+
+        ///// <summary>
+        ///// Заявки. Параметр добавляется в ответ на транзакцию только при наличии двух и более заявок, связанных с транзакцией
+        ///// Пока непонятно как реализовывать
+        ///// </summary>
+        //[JsonProperty("orders")]
+        //public List<Order> Orders { get; set; }
     }
 }

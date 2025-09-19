@@ -113,7 +113,7 @@ namespace QuikSharp.DataStructures.Transaction
         /// Идентификатор пользователя, снявшего заявку
         /// </summary>
         [JsonProperty("canceled_uid")]
-        public long CanceledUID { get; set; }
+        public long CanceledUserID { get; set; }
 
         /// <summary>
         /// Код биржи в торговой системе
@@ -170,7 +170,9 @@ namespace QuikSharp.DataStructures.Transaction
         public string BankAccID { get; set; }
 
         /// <summary>
-        /// Способ указания объема заявки. Возможные значения: «0» – по количеству, «1» – по объему
+        /// Способ указания объема заявки. Возможные значения: 
+        /// «0» – по количеству, 
+        /// «1» – по объему
         /// </summary>
         [JsonProperty("value_entry_type")]
         public int ValueEntryType { get; set; }
@@ -401,6 +403,97 @@ namespace QuikSharp.DataStructures.Transaction
         /// </summary>
         [JsonProperty("executing_trader_short_code")]
         public long ExecutingTraderShortCode { get; set; }
+
+        /// <summary>
+        /// Дата расчетов. Для свопов дата расчетов первой части операции своп
+        /// </summary>
+        [JsonProperty("settle_date")]
+        public long SettleDate { get; set; }
+
+        /// <summary>
+        /// Дата расчетов второй части операции своп
+        /// </summary>
+        [JsonProperty("settle_date2")]
+        public long SettleDate2 { get; set; }
+
+        /// <summary>
+        /// Дата, начиная с которой допускается совершение валютирования. Заполняется только для контрактов типа «FLEX FORWARD» (см. параметр operation_type)
+        /// </summary>
+        [JsonProperty("start_date")]
+        public long StartDate { get; set; }
+
+        /// <summary>
+        /// Тип совершаемой операции. Возможные значения: 
+        /// «-1» – «NOT_DEFINED»; 
+        /// «0» – «SPOT»; 
+        /// «1» – «FORWARD»; 
+        /// «2» – «SWAP»; 
+        /// «6» – «NDF»; 
+        /// «7» – «FLEX FORWARD»
+        /// </summary>
+        [JsonProperty("operation_type")]
+        public int OperationType { get; set; }
+
+        /// <summary>
+        /// Количество второй части операции своп
+        /// </summary>
+        [JsonProperty("qty2")]
+        public int Quantity2 { get; set; }
+
+        /// <summary>
+        /// Объем второй части операции своп
+        /// </summary>
+        [JsonProperty("value2")]
+        public decimal Value2 { get; set; }
+
+        /// <summary>
+        /// Видимая часть в общей сумме заявки в %
+        /// </summary>
+        [JsonProperty("visibility_factor")]
+        public double VisibilityFactor { get; set; }
+
+        /// <summary>
+        /// Сумма РЕПО видимой части (точность валюты расчетов заявки/инструмента)
+        /// </summary>
+        [JsonProperty("visible_repo_value")]
+        public double VisibleRepoValue { get; set; }
+
+        /// <summary>
+        /// Идентификатор торговой сессии. Возможные значения:
+        /// «0» –«Не определено»; 
+        /// «1» –«Основная сессия»; 
+        /// «2» –«Дополнительная сессия»; 
+        /// «3» –«Итоги дня»
+        /// </summary>
+        [JsonProperty("trading_session")]
+        public int TradingSession { get; set; }
+
+        /// <summary>
+        /// Тип ввода значения цены заявки. Возможные значения:
+        /// «1» – «По цене»; 
+        /// «2» – «По доходности»; 
+        /// «3» - «По средневзвешенной цене»
+        /// </summary>
+        [JsonProperty("price_entry_type")]
+        public int PriceEntryType { get; set; }
+
+        /// <summary>
+        /// Код инструмента, являющийся приоритетным обеспечением
+        /// </summary>
+        [JsonProperty("lseccode")]
+        public string LSecCode { get; set; }
+
+        /// <summary>
+        /// Идентификатор индикативной ставки
+        /// </summary>
+        [JsonProperty("benchmark")]
+        public string Benchmark { get; set; }
+
+        /// <summary>
+        /// Внешнее количество
+        /// </summary>
+        [JsonProperty("external_qty")]
+        public int ExternalQuantity { get; set; }
 
         /// <summary>
         /// Тип операции - Buy или Sell

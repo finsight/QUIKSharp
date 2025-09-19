@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 namespace QuikSharp.DataStructures
 {
     /// <summary>
-    /// При получении изменений ограничений по срочному рынку функция возвращает таблицу Lua с параметрами
+    /// При получении изменений ограничений по срочному рынку функция возвращает таблицу Lua "Ограничения по клиентским счетам" с параметрами
     /// </summary>
     public class FuturesLimits
     {
@@ -130,6 +130,24 @@ namespace QuikSharp.DataStructures
         /// </summary>
         [JsonProperty("risk_level")]
         public int RiskLevel { get; set; }
+
+        /// <summary>
+        /// Гарантийное обеспечение без учета заявок, с учетом текущего реализованного риска (с учетом текущих цен) по риск-параметрам на начало сессии
+        /// </summary>
+        [JsonProperty("go_without_orders")]
+        public double GOWithoutOrders { get; set; }
+
+        /// <summary>
+        /// Гарантийное обеспечение без учета заявок с учетом текущих риск-параметров и рыночных данных, в ден. выражении. Отображается с точностью до 2 знаков после разделителя
+        /// </summary>
+        [JsonProperty("go_planned")]
+        public double GOPlanned { get; set; }
+
+        /// <summary>
+        /// Индикативная вариационная маржа с учетом текущего индикативного курса валют, руб. (рассчитывается аналогично текущей индикативной вариационной марже, учитывает в т.ч. вариационную маржу по закрытым позициям). Рассчитывается торговой системой срочного рынка Московской Биржи. Отображается с точностью до 2 знаков после разделителя
+        /// </summary>
+        [JsonProperty("indicative_varmargin")]
+        public double IndicativeVarMargin { get; set; }
 
         // ReSharper restore InconsistentNaming
     }

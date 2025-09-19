@@ -6,21 +6,33 @@ using Newtonsoft.Json;
 namespace QuikSharp.DataStructures
 {
     /// <summary>
-    /// trades accounts class
+    /// Описание параметров таблицы Торговые счета
     /// </summary>
     public class TradesAccounts
     {
-        /// <summary>
-        /// Описание
-        /// </summary>
-        [JsonProperty("description")]
-        public string Description { get; set; }
-
         /// <summary>
         /// Список кодов классов, разделенных символом «|»
         /// </summary>
         [JsonProperty("class_codes")]
         public string ClassCodes { get; set; }
+
+        /// <summary>
+        /// Идентификатор фирмы
+        /// </summary>
+        [JsonProperty("firmid")]
+        public string Firmid { get; set; }
+
+        /// <summary>
+        /// Код торгового счета
+        /// </summary>
+        [JsonProperty("trdaccid")]
+        public string TrdaccId { get; set; }
+
+        /// <summary>
+        /// Описание
+        /// </summary>
+        [JsonProperty("description")]
+        public string Description { get; set; }
 
         /// <summary>
         /// Запрет необеспеченных продаж. Возможные значения:
@@ -37,6 +49,12 @@ namespace QuikSharp.DataStructures
         public string MainTrdaccid { get; set; }
 
         /// <summary>
+        /// Расчетная организация по «Т0»
+        /// </summary>
+        [JsonProperty("bankid_t0")]
+        public string BankIdT0 { get; set; }
+
+        /// <summary>
         /// Расчетная организация по «Т+»
         /// </summary>
         [JsonProperty("bankid_tplus")]
@@ -49,30 +67,10 @@ namespace QuikSharp.DataStructures
         public int TrdaccType { get; set; }
 
         /// <summary>
-        /// Идентификатор фирмы
-        /// </summary>
-        [JsonProperty("firmid")]
-        public string Firmid { get; set; }
-
-        /// <summary>
         /// Раздел счета Депо
         /// </summary>
         [JsonProperty("depunitid")]
         public string DepunitId { get; set; }
-
-        /// <summary>
-        /// Расчетная организация по «Т0»
-        /// </summary>
-        [JsonProperty("bankid_t0")]
-        public string BankIdT0 { get; set; }
-
-        /// <summary>
-        /// Тип раздела. Возможные значения:
-        /// «0» – раздел обеспечения;
-        /// иначе – для торговых разделов
-        /// </summary>
-        [JsonProperty("firmuse")]
-        public int Firmuse { get; set; }
 
         /// <summary>
         /// Статус торгового счета. Возможные значения:
@@ -83,16 +81,18 @@ namespace QuikSharp.DataStructures
         public int Status { get; set; }
 
         /// <summary>
+        /// Тип раздела. Возможные значения:
+        /// «0» – раздел обеспечения;
+        /// иначе – для торговых разделов
+        /// </summary>
+        [JsonProperty("firmuse")]
+        public int Firmuse { get; set; }
+
+        /// <summary>
         /// Номер счета депо в депозитарии
         /// </summary>
         [JsonProperty("depaccid")]
         public string DepaccId { get; set; }
-
-        /// <summary>
-        /// Код торгового счета
-        /// </summary>
-        [JsonProperty("trdaccid")]
-        public string TrdaccId { get; set; }
 
         /// <summary>
         /// Код дополнительной позиции по денежным средствам

@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 namespace QuikSharp.DataStructures
 {
     /// <summary>
+    /// Описание параметров таблицы «Позиции участника по деньгам»
     /// При изменении денежной позиции по счету функция возвращает таблицу Lua с параметрами
     /// </summary>
     public class AccountPosition

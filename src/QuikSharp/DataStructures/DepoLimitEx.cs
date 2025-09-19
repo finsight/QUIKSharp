@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 namespace QuikSharp.DataStructures
 {
     /// <summary>
+    /// Описание параметров таблицы «Позиции по инструментам»
     /// На основе: http://help.qlua.org/ch4_6_11.htm
     /// Запись, которую можно получить из таблицы "Лимиты по бумагам" (depo_limits)
     /// </summary>
