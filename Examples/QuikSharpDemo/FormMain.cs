@@ -21,6 +21,7 @@ namespace QuikSharpDemo
     {
         readonly Char separator = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0];
         public static Quik _quik;
+        int portConnection = Quik.DefaultPort;
         bool isServerConnected = false;
         bool isSubscribedToolOrderBook = false;
         bool isSubscribedToolCandles = false;
@@ -61,12 +62,13 @@ namespace QuikSharpDemo
         }
         void Init()
         {
-            textBoxSecCode.Text         = secCode;
-            textBoxClassCode.Text       = classCode;
-            buttonRun.Enabled           = false;
-            buttonCommandRun.Enabled    = false;
-            timerRenewForm.Enabled      = false;
-            listBoxCommands.Enabled     = false;
+            textBoxSecCode.Text                 = secCode;
+            textBoxClassCode.Text               = classCode;
+            numericUpDownPortConnection.Value   = Convert.ToDecimal(portConnection);
+            buttonRun.Enabled                   = false;
+            buttonCommandRun.Enabled            = false;
+            timerRenewForm.Enabled              = false;
+            listBoxCommands.Enabled             = false;
             listBoxCommands.Items.Add("Получить исторические данные");
             listBoxCommands.Items.Add("Получить исторические данные (с параметром `bid`)");
             listBoxCommands.Items.Add("Выставить лимитрированную заявку (без сделки)");
@@ -99,12 +101,10 @@ namespace QuikSharpDemo
         {
             try
             {
-                textBoxLogsWindow.AppendText("Подключаемся к терминалу Quik..." + Environment.NewLine);
+                portConnection = Convert.ToUInt16(numericUpDownPortConnection.Value);
+                textBoxLogsWindow.AppendText("Подключаемся к терминалу Quik (порт: " + portConnection.ToString() + ")..." + Environment.NewLine);
                 if (checkBoxRemoteHost.Checked) _quik = new Quik(Quik.DefaultPort, new InMemoryStorage(), textBoxHost.Text);    // инициализируем объект Quik с использованием удаленного IP-адреса терминала
-                //else _quik = new Quik(Quik.DefaultPort, new InMemoryStorage());    // инициализируем объект Quik с использованием локального расположения терминала (по умолчанию)
-                //// Отладочный вариант подключения
-                //if (checkBoxRemoteHost.Checked) _quik = new Quik(34136, new InMemoryStorage(), textBoxHost.Text);    // инициализируем объект Quik с использованием удаленного IP-адреса терминала
-                else _quik = new Quik(34144, new InMemoryStorage());    // инициализируем объект Quik с использованием локального расположения терминала (по умолчанию)
+                else _quik = new Quik(portConnection, new InMemoryStorage());    // инициализируем объект Quik с использованием локального расположения терминала (по умолчанию)
             }
             catch
             {

@@ -610,7 +610,10 @@ namespace QuikSharp
             Trace.Assert(!transaction.TRANS_ID.HasValue, "TRANS_ID should be assigned automatically in SendTransaction functions");
 
             //transaction.TRANS_ID = QuikService.GetNewUniqueId();
-            transaction.TRANS_ID = QuikService.GetUniqueTransactionId();
+            if (!transaction.TRANS_ID.HasValue || transaction.TRANS_ID == 0)
+            {
+                transaction.TRANS_ID = QuikService.GetUniqueTransactionId();
+            }
 
             //    Console.WriteLine("Trans Id from function = {0}", transaction.TRANS_ID);
 

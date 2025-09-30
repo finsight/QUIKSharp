@@ -71,14 +71,17 @@
             this.label17 = new System.Windows.Forms.Label();
             this.textBox_RenewTime = new System.Windows.Forms.TextBox();
             this.comboBox_ClientCode = new System.Windows.Forms.ComboBox();
+            this.label18 = new System.Windows.Forms.Label();
+            this.numericUpDownPortConnection = new System.Windows.Forms.NumericUpDown();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPortConnection)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonStart
             // 
             this.buttonStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttonStart.Location = new System.Drawing.Point(243, 13);
+            this.buttonStart.Location = new System.Drawing.Point(468, 13);
             this.buttonStart.Name = "buttonStart";
-            this.buttonStart.Size = new System.Drawing.Size(802, 23);
+            this.buttonStart.Size = new System.Drawing.Size(577, 23);
             this.buttonStart.TabIndex = 0;
             this.buttonStart.Text = "CONNECT";
             this.buttonStart.UseVisualStyleBackColor = true;
@@ -442,11 +445,48 @@
             this.comboBox_ClientCode.TabIndex = 8;
             this.comboBox_ClientCode.SelectedIndexChanged += new System.EventHandler(this.ComboBox_ClientCode_SelectedIndexChanged);
             // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(245, 19);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(26, 13);
+            this.label18.TabIndex = 5;
+            this.label18.Text = "Port";
+            // 
+            // numericUpDownPortConnection
+            // 
+            this.numericUpDownPortConnection.Increment = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            this.numericUpDownPortConnection.Location = new System.Drawing.Point(318, 16);
+            this.numericUpDownPortConnection.Maximum = new decimal(new int[] {
+            50000,
+            0,
+            0,
+            0});
+            this.numericUpDownPortConnection.Minimum = new decimal(new int[] {
+            34130,
+            0,
+            0,
+            0});
+            this.numericUpDownPortConnection.Name = "numericUpDownPortConnection";
+            this.numericUpDownPortConnection.Size = new System.Drawing.Size(140, 20);
+            this.numericUpDownPortConnection.TabIndex = 9;
+            this.numericUpDownPortConnection.Value = new decimal(new int[] {
+            34134,
+            0,
+            0,
+            0});
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1057, 547);
+            this.Controls.Add(this.numericUpDownPortConnection);
             this.Controls.Add(this.comboBox_ClientCode);
             this.Controls.Add(this.checkBoxRemoteHost);
             this.Controls.Add(this.textBoxFirmID);
@@ -479,6 +519,7 @@
             this.Controls.Add(this.label6);
             this.Controls.Add(this.textBoxHost);
             this.Controls.Add(this.textBoxSecCode);
+            this.Controls.Add(this.label18);
             this.Controls.Add(this.label14);
             this.Controls.Add(this.label17);
             this.Controls.Add(this.label1);
@@ -491,6 +532,7 @@
             this.Name = "FormMain";
             this.Text = "QuikSharp Demo";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPortConnection)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -541,6 +583,8 @@
         #endregion
 
         private System.Windows.Forms.ComboBox comboBox_ClientCode;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.NumericUpDown numericUpDownPortConnection;
     }
 }
 
