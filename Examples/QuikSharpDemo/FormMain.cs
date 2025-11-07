@@ -26,7 +26,7 @@ namespace QuikSharpDemo
         bool isSubscribedToolOrderBook = false;
         bool isSubscribedToolCandles = false;
         //string secCode = "SiU3";
-        string secCode = "SU26225RMFS1";
+        string secCode = "BANE";
         string classCode = "";
         string clientCode;
         decimal bid;
@@ -75,6 +75,7 @@ namespace QuikSharpDemo
             listBoxCommands.Items.Add("Выставить лимитрированную заявку (c выполнением!!!)");
             listBoxCommands.Items.Add("Выставить рыночную заявку (c выполнением!!!)");
             listBoxCommands.Items.Add("Удалить активную заявку");
+            //listBoxCommands.Items.Add("Изменить активную заявку");
             listBoxCommands.Items.Add("Получить заявку по номеру");
             listBoxCommands.Items.Add("Получить заявку по ID транзакции");
             listBoxCommands.Items.Add("Получить информацию по бумаге");
@@ -330,8 +331,11 @@ namespace QuikSharpDemo
                 case "Выставить рыночную заявку (c выполнением!!!)":
                     textBoxDescription.Text = "Будет выставлена заявку на покупку 1-го лота заданного инструмента, \"по рынку\" (Заявка будет автоматически исполнена по текущим доступным ценам!!!)";
                     break;
-                case "Выставить заявку (Удалить активную заявку)":
+                case "Удалить активную заявку":
                     textBoxDescription.Text = "Если предварительно была выставлена заявка, заявка имеет статус 'Активна' и ее номер отображается в форме, то эта заявка будет удалена/отменена";
+                    break;
+                case "Изменить активную заявку":
+                    textBoxDescription.Text = "Если предварительно была выставлена заявка, заявка имеет статус 'Активна' и ее номер отображается в форме, то в этой заявке будет изменено количество и цена";
                     break;
                 case "Получить заявку по номеру":
                     textBoxDescription.Text = "Попытаться получить заявку по номеру, который укажет пользователь";
@@ -448,7 +452,7 @@ namespace QuikSharpDemo
                 case "Выставить лимитрированную заявку (без сделки)":
                     try
                     {
-                        decimal priceInOrder = Math.Round(tool.LastPrice - tool.LastPrice / 50, tool.PriceAccuracy);
+                        decimal priceInOrder = Math.Round(Math.Round((tool.LastPrice - tool.LastPrice / 50) / tool.Step, 0) * tool.Step, tool.PriceAccuracy);
                         AppendText2TextBox(textBoxLogsWindow, "Выставляем заявку на покупку, по цене:" + priceInOrder + " ..." + Environment.NewLine);
                         order = await _quik.Orders.SendLimitOrder(tool.ClassCode, tool.SecurityCode, tool.AccountID, Operation.Buy, priceInOrder, 1, ExecutionCondition.PUT_IN_QUEUE, clientCode).ConfigureAwait(false);
                         if (order.OrderNum > 0)
@@ -534,6 +538,27 @@ namespace QuikSharpDemo
                     }
                     catch { AppendText2TextBox(textBoxLogsWindow, "Ошибка удаления заявки." + Environment.NewLine); }
                     break;
+                //case "Изменить активную заявку":
+                //    try
+                //    {
+                //        if (order != null && order.OrderNum > 0) AppendText2TextBox(textBoxLogsWindow, "Изменяем заявку на покупку с номером - " + order.OrderNum + " ..." + Environment.NewLine);
+                //        decimal priceInOrder = Math.Round(Math.Round((tool.LastPrice - tool.LastPrice / 50 - tool.Step * 10) / tool.Step, 0) * tool.Step, tool.PriceAccuracy);
+                //        int qtyInOrder = 2;
+                //        AppendText2TextBox(textBoxLogsWindow, "Изменяем в заявке цену с "+ order.Price+ " на "+ priceInOrder + ", и количество с "+order.Quantity+" на "+ qtyInOrder + " ..." + Environment.NewLine);
+                //        //Order changedOrder = await _quik.Orders.ChangeOrder(order, priceInOrder, qtyInOrder).ConfigureAwait(false);
+                //        Order changedOrder = await ChangeOrder(order, priceInOrder, qtyInOrder).ConfigureAwait(false);
+                //        if (changedOrder.OrderNum > 0)
+                //        {
+                //            order = changedOrder;
+                //            AppendText2TextBox(textBoxLogsWindow, "Заявка изменена. ID транзакции - " + order.TransID + Environment.NewLine);
+                //            AppendText2TextBox(textBoxLogsWindow, "Заявка изменена. Номер заявки - " + order.OrderNum + Environment.NewLine);
+                //            AppendText2TextBox(textBoxLogsWindow, "Заявка изменена. Код клиента - " + order.ClientCode + Environment.NewLine);
+                //            Text2TextBox(textBoxOrderNumber, order.OrderNum.ToString());
+                //        }
+                //        else AppendText2TextBox(textBoxLogsWindow, "Неудачная попытка изменения заявки. Error: " + changedOrder.RejectReason + Environment.NewLine);
+                //    }
+                //    catch (Exception er) { textBoxLogsWindow.AppendText("Ошибка процедуры изменения заявки. Error: " + er.Message + Environment.NewLine); }
+                //    break;
                 case "Получить заявку по номеру":
                     try
                     {
@@ -1041,5 +1066,85 @@ namespace QuikSharpDemo
         }
 
         private void ComboBox_ClientCode_SelectedIndexChanged(object sender, EventArgs e) { clientCode = comboBox_ClientCode.SelectedItem.ToString(); }
+
+        /// <summary>
+        /// Изменение заявки.
+        /// </summary>
+        /// <param name="order">Изменяемая заявка</param>
+        /// <param name="price">Новая цена заявки</param>
+        /// <param name="qty">Новое количество (в лотах)</param>
+        /// <param name="executionCondition">Условие исполнения заявки (PUT_IN_QUEUE, FILL_OR_KILL, KILL_BALANCE)</param>
+        async Task<Order> ChangeOrder(Order order, decimal price = 0, int qty = 0, ExecutionCondition executionCondition = ExecutionCondition.PUT_IN_QUEUE)
+        {
+            long res = 0;
+            bool set = false;
+            Order order_result = new Order();
+            ///////
+            TransactionReply lastTransactionReply = new TransactionReply();
+            //Quik.Events.OnTransReply += (TransactionReply transReply) => { if (transReply.TransID == res) lastTransactionReply = transReply; };
+            _quik.Events.OnTransReply += (TransactionReply transReply) => { if (transReply.TransID == res) lastTransactionReply = transReply; };
+            ///////
+            Transaction newOrderTransaction = new Transaction
+            {
+                ACTION              = TransactionAction.ORDER_AMEND,
+                ACCOUNT             = order.Account,
+                CLASSCODE           = order.ClassCode,
+                SECCODE             = order.SecCode,
+                QUANTITY            = qty == 0 ? order.Quantity : qty,
+                OPERATION           = order.Operation == Operation.Buy ? TransactionOperation.B : TransactionOperation.S,
+                PRICE               = price == 0 ? order.Price : price,
+                TYPE                = TransactionType.L,
+                EXECUTION_CONDITION = executionCondition,
+                CLIENT_CODE         = order.ClientCode
+            };
+            try
+            {
+                //res = await Quik.Trading.SendTransaction(newOrderTransaction).ConfigureAwait(false);
+                res = await _quik.Trading.SendTransaction(newOrderTransaction).ConfigureAwait(false);
+                Thread.Sleep(500);
+                Console.WriteLine("res: " + res);
+            }
+            catch
+            {
+                //ignore
+            }
+
+            while (!set)
+            {
+                if (res > 0)
+                {
+                    if (lastTransactionReply == null || lastTransactionReply.ResultMsg == null || lastTransactionReply.ResultMsg == "" || lastTransactionReply.ErrorCode == 0)
+                    {
+                        try
+                        {
+                            //order_result = await Quik.Orders.GetOrder_by_transID(classCode, securityCode, res).ConfigureAwait(false);
+                            order_result = await _quik.Orders.GetOrder_by_transID(order.ClassCode, order.SecCode, res).ConfigureAwait(false);
+                        }
+                        catch
+                        {
+                            order_result = new Order { RejectReason = "Неудачная попытка получения заявки по ID-транзакции №" + res };
+                        }
+                    }
+                    else
+                    {
+                        if (order_result != null) order_result.RejectReason = lastTransactionReply.ResultMsg;
+                        else order_result = new Order { RejectReason = lastTransactionReply.ResultMsg };
+                    }
+                }
+                else
+                {
+                    if (order_result != null) order_result.RejectReason = newOrderTransaction.ErrorMessage;
+                    else order_result = new Order { RejectReason = newOrderTransaction.ErrorMessage };
+                }
+
+                if (order_result != null && (order_result.RejectReason != "" || order_result.OrderNum > 0)) set = true;
+            }
+
+            //Quik.Events.OnTransReply -= (TransactionReply transReply) => { };
+            _quik.Events.OnTransReply -= (TransactionReply transReply) => { };
+
+            return order_result;
+        }
+
     }
 }

@@ -107,6 +107,14 @@ namespace QuikSharp.DataStructures
         /// </summary>
         SET_FUT_LIMIT,
 
+        /// <summary>
+        /// изменить существующую заявку
+        /// Если указанные в транзакции поля ACCOUNT, BUYSELL, SECBOARD, SECCODE, CLIENTCODE не
+        /// совпадают со значениями полей изменяемой заявки, то транзакция отвергается. Изменяемая
+        /// заявка в этом случае не снимается
+        /// </summary>
+        ORDER_AMEND
+
         // ReSharper restore InconsistentNaming
     }
 
